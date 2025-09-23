@@ -1,0 +1,20 @@
+{
+  "version": "0.2",
+  "words": [
+    "chassis"
+  ],
+  "language": "en-US",
+  "files": [
+    "**/*.md",
+    "**/*.mdx",
+  ],
+  "ignorePaths": [
+    ".cspell.json",
+    "**/tests/**",
+    "dist/",
+    "site/.astro/",
+    "site/public/",
+    "vendor/"
+  ],
+  "useGitignore": true
+}

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "pnpm build",
+  "buildCommand": "pnpm site:build",
   "outputDirectory": "_site",
   "rewrites": [
     {
