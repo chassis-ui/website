@@ -25,33 +25,37 @@ export const remarkCxConfig: Plugin<[], Root> = function () {
 
     // https://github.com/syntax-tree/mdast#nodes
     // https://github.com/syntax-tree/mdast-util-mdx-jsx#nodes
-    visit(ast, ['code', 'definition', 'image', 'inlineCode', 'link', 'mdxJsxFlowElement', 'text'], (node) => {
-      switch (node.type) {
-        case 'code':
-        case 'inlineCode':
-        case 'text': {
-          node.value = replaceConfigInText(node.value)
-          break
-        }
-        case 'image': {
-          if (node.alt) {
-            node.alt = replaceConfigInText(node.alt)
+    visit(
+      ast,
+      ['code', 'definition', 'image', 'inlineCode', 'link', 'mdxJsxFlowElement', 'text'],
+      (node) => {
+        switch (node.type) {
+          case 'code':
+          case 'inlineCode':
+          case 'text': {
+            node.value = replaceConfigInText(node.value)
+            break
           }
+          case 'image': {
+            if (node.alt) {
+              node.alt = replaceConfigInText(node.alt)
+            }
 
-          node.url = replaceConfigInText(node.url)
-          break
-        }
-        case 'definition':
-        case 'link': {
-          node.url = replaceConfigInText(node.url)
-          break
-        }
-        case 'mdxJsxFlowElement': {
-          node.attributes = replaceConfigInAttributes(node.attributes)
-          break
+            node.url = replaceConfigInText(node.url)
+            break
+          }
+          case 'definition':
+          case 'link': {
+            node.url = replaceConfigInText(node.url)
+            break
+          }
+          case 'mdxJsxFlowElement': {
+            node.attributes = replaceConfigInAttributes(node.attributes)
+            break
+          }
         }
       }
-    })
+    )
   }
 }
 
@@ -91,7 +95,10 @@ function getConfigValueAtPath(path: string) {
   return typeof value === 'string' ? value : undefined
 }
 
-function replaceInFrontmatter(record: Record<string, unknown>, replacer: (value: string) => string) {
+function replaceInFrontmatter(
+  record: Record<string, unknown>,
+  replacer: (value: string) => string
+) {
   for (const [key, value] of Object.entries(record)) {
     if (typeof value === 'string') {
       record[key] = replacer(value)

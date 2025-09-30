@@ -2,12 +2,12 @@
   @include media-breakpoint-up(large) {
     position: sticky;
     top: 4rem;
-    padding: 1.5rem .5rem;
     // background-color: var(--cx-bg-main);
     // Override collapse behaviors
     // stylelint-disable-next-line declaration-no-important
     display: block !important;
     height: subtract(100vh, 3rem);
+    padding: 1.5rem .5rem;
     // Prevent focus styles to be cut off:
     overflow-y: auto;
   }
@@ -33,35 +33,35 @@
   }
 
   @include media-breakpoint-up(large) {
-    & li:before {
-      content: " ";
+    & li::before {
+      position: absolute;
       width: 4px;
       height: 48px;
-      background-color: var(--cx-secondary-30);
-      position: absolute;
-      margin-left: 6.5px;
       margin-top: -4px;
+      margin-left: 6.5px;
+      content: " ";
+      background-color: var(--cx-secondary-30);
     }
 
-    & li:first-child:before {
+    & li:first-child::before {
       height: 14px;
       margin-top: 14px;
     }
 
-    & li:last-child:before {
+    & li:last-child::before {
       height: 14px;
     }
 
-    & li:after {
-      content: " ";
-      width: 8px;
-      height: 8px;
+    & li::after {
       //border-left: 8px var(--cx-border-style) var(--cx-secondary-base-color);
       position: absolute;
+      left: 1.025rem;
+      width: 8px;
+      height: 8px;
+      margin-top: .65rem;
+      content: " ";
       background-color: var(--cx-secondary-30);
       border-radius: 50%;
-      margin-top: .65rem;
-      left: 1.025rem;
     }
   }
 }
@@ -99,11 +99,11 @@
 }
 
 .cxd-links-link {
-  padding: .15rem .5rem;
   width: 100%;
-  margin-left: 0;
+  padding: .15rem .5rem;
   padding-left: 1.675rem;
   margin-top: .125rem;
+  margin-left: 0;
   //margin-left: 1.125rem;
   color: var(--cx-fg-color);
   text-decoration: if($link-decoration == none, null, none);
@@ -117,9 +117,9 @@
   }
 
   &.active {
+    font-weight: 600;
     color: var(--cx-secondary-contrast-color);
     background-color: var(--cx-secondary-base-color);
-    font-weight: 600;
   }
   .active &:not(.active):hover {
     background-color: var(--cx-secondary-dim-slight);

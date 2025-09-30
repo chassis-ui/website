@@ -1,0 +1,11 @@
+---
+const containerClass = Astro.props.containerClass || 'container-fluid page-section'
+const rowClass = Astro.props.rowClass || 'row'
+const Content = Astro.props.content
+---
+
+<div class={containerClass}>
+  <div class={rowClass}>
+    {Content ? <Content /> : <slot />}
+  </div>
+</div>

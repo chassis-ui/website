@@ -1,0 +1,70 @@
+---
+import type { Layout } from '@libs/layout'
+
+interface Props {
+  layout: Layout
+}
+
+const { layout } = Astro.props
+---
+
+<button
+  class=`nav-link dropdown-toggle`
+  id="cxd-theme"
+  type="button"
+  aria-expanded="false"
+  data-cx-toggle="dropdown"
+  {...layout !== 'examples' ? { 'data-cx-display': 'static' } : {}}
+  aria-label="Toggle theme (auto)"
+>
+  <svg class="icon theme-icon-active" aria-hidden="true"><use href="#circle-half-solid"></use></svg>
+  <span
+    class=`${layout === 'examples' ? 'visually-hidden' : 'd-large-none ms-xsmall'}`
+    id="cxd-theme-text">Toggle theme</span
+  >
+</button>
+<ul
+  class=`dropdown-menu dropdown-menu-end${layout === 'examples' ? ' shadow' : ''}`
+  aria-labelledby="cxd-theme-text"
+>
+  <li>
+    <button
+      type="button"
+      class="dropdown-item d-flex align-items-center"
+      data-cx-theme-value="light"
+      aria-pressed="false"
+    >
+      <svg class="icon icon-reset me-xsmall" aria-hidden="true"><use href="#sun-solid"></use></svg>
+      Light
+      <svg class="icon ms-auto d-none" aria-hidden="true"><use href="#check-solid"></use></svg>
+    </button>
+  </li>
+  <li>
+    <button
+      type="button"
+      class="dropdown-item d-flex align-items-center"
+      data-cx-theme-value="dark"
+      aria-pressed="false"
+    >
+      <svg class="icon icon-reset me-xsmall" aria-hidden="true"
+        ><use href="#moon-stars-solid"></use></svg
+      >
+      Dark
+      <svg class="icon ms-auto d-none" aria-hidden="true"><use href="#check-solid"></use></svg>
+    </button>
+  </li>
+  <li>
+    <button
+      type="button"
+      class="dropdown-item d-flex align-items-center active"
+      data-cx-theme-value="auto"
+      aria-pressed="true"
+    >
+      <svg class="icon icon-reset me-xsmall" aria-hidden="true"
+        ><use href="#circle-half-solid"></use></svg
+      >
+      Auto
+      <svg class="icon ms-auto d-none" aria-hidden="true"><use href="#check-solid"></use></svg>
+    </button>
+  </li>
+</ul>

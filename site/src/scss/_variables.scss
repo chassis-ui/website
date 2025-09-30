@@ -183,17 +183,17 @@ $cxd-callout-variants: info, warning, danger, default !default;
 //    }
 //  }
 
-  .cxd-intro  h1 {
-    line-height: 1.25em;
-  }
- .cxd-intro  h1,
- .cxd-content > h1,
- .cxd-content > h2,
- .cxd-content > h3,
- .cxd-content > h4 {
-   font-family: var(--cx-font-family-display) !important;
-   font-weight: var(--cx-font-weight-display-strong) !important;
- }
+.cxd-intro h1 {
+  line-height: 1.25em;
+}
+.cxd-intro h1,
+.cxd-content > h1,
+.cxd-content > h2,
+.cxd-content > h3,
+.cxd-content > h4 {
+  font-family: var(--cx-font-family-display) !important;
+  font-weight: var(--cx-font-weight-display-strong) !important;
+}
 
 .cxd-playground textarea {
   font-family: var(--cx-font-family-code) !important;

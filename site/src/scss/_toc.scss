@@ -6,14 +6,14 @@
     top: 4rem;
     right: 0;
     z-index: 2;
+    height: subtract(100vh, 7rem);
+    padding: 1rem 0;
+    overflow-y: auto;
     // border-image: linear-gradient(var(--cx-border-subtle) 25%, var(--cx-transparent-color) 50%) 1;
     // border-width: 0;
     // border-style: solid;
     // border-left-width: var(--cx-border-width);
     color: var(--cx-fg-subtle);
-    height: subtract(100vh, 7rem);
-    padding: 1rem 0;
-    overflow-y: auto;
   }
 
   nav {

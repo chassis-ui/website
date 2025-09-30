@@ -31,7 +31,12 @@ if (frontmatter.toc) {
 <BaseLayout {...Astro.props} layout="docs" overrides={{ body: bodyProps }}>
   <div slot="main" class="container-2xlarge cxd-gutter mt-medium my-medium-4 cxd-layout">
     <aside class="cxd-sidebar">
-      <div class="offcanvas-large offcanvas-start" tabindex="-1" id="cxdSidebar" aria-labelledby="cxdSidebarOffcanvasLabel">
+      <div
+        class="offcanvas-large offcanvas-start"
+        tabindex="-1"
+        id="cxdSidebar"
+        aria-labelledby="cxdSidebarOffcanvasLabel"
+      >
         <div class="offcanvas-header border-bottom">
           <h5 class="offcanvas-title" id="cxdSidebarOffcanvasLabel">Browse docs</h5>
           <button
@@ -50,18 +55,10 @@ if (frontmatter.toc) {
 
     <main class="cxd-main order-1">
       <div class="cxd-intro pt-xsmall ps-large-2">
-        <div class="d-medium-flex flex-medium-row-reverse align-items-center justify-content-between">
+        <div
+          class="d-medium-flex flex-medium-row-reverse align-items-center justify-content-between"
+        >
           <div class="mb-medium mb-medium-0 d-flex text-nowrap">
-            {
-              // This is needed because we want to show the badge if show_badge isn't present or is set to false
-              frontmatter.added &&
-                ((frontmatter.added.show_badge !== undefined && frontmatter.added.show_badge === true) ||
-                  frontmatter.added.show_badge === undefined) && (
-                  <small class="d-inline-flex px-xsmall py-2xsmall fw-semibold text-success-emphasis bg-success-subtle border border-success-subtle rounded-2 me-xsmall">
-                    Added in v{frontmatter.added.version}
-                  </small>
-                )
-            }
             <a
               class="button default small"
               href={`${getConfig().repo}/blob/v${getConfig().current_version}/site/src/content/${id}`}
@@ -75,7 +72,11 @@ if (frontmatter.toc) {
           <h1 class="cxd-title mb-0" id="content">{frontmatter.title}</h1>
         </div>
         <div class="cxd-subtitle">
-          {frontmatter.description && <Fragment set:html={processMarkdownToHtml(frontmatter.description)} />}
+          {
+            frontmatter.description && (
+              <Fragment set:html={processMarkdownToHtml(frontmatter.description)} />
+            )
+          }
         </div>
         <Ads />
       </div>

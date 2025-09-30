@@ -20,6 +20,8 @@ export default defineConfig([
   {
     plugins: { import: importPlugin, unicorn: unicornPlugin },
     rules: {
+      'no-unused-vars': 'warn',
+      'no-useless-escape': 'warn',
       'prettier/prettier': 'warn'
     }
   },
@@ -30,16 +32,13 @@ export default defineConfig([
     }
   },
   {
-    files: ['site/**/*.js', 'site/**/*.cjs'],
-    languageOptions: {
-      globals: globals.browser
-    }
-  },
-  {
     files: ['**/*.ts', '**/*.astro/*.js'],
     languageOptions: {
       globals: { ...globals.node, ...globals.browser },
-      parser: tseslint.parser
+      parser: tseslint.parser,
+      parserOptions: {
+        project: './site/tsconfig.json'
+      }
     }
   },
   {
@@ -49,8 +48,21 @@ export default defineConfig([
       parser: astroPlugin.parser,
       parserOptions: {
         parser: tseslint.parser,
-        extraFileExtensions: ['.astro']
+        extraFileExtensions: ['.astro'],
+        project: './site/tsconfig.json'
       }
+    }
+  },
+  {
+    files: ['site/**/*.js', 'site/**/*.cjs'],
+    languageOptions: {
+      globals: globals.browser
+    }
+  },
+  {
+    files: ['examples/**'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser }
     }
   }
 ])

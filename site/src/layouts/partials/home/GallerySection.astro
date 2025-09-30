@@ -1,0 +1,21 @@
+---
+import ResponsiveImage from '@components/common/ResponsiveImage.astro'
+---
+
+<div
+  id="gallery-section"
+  class="media-section vh-75 overflow-hidden bg-evident border-top border-bottom border-subtle"
+>
+  <div class="gallery-content">
+    <ResponsiveImage
+      imgPath="/assets/images/home/comp-gallery-light.png"
+      alt="Chassis UI"
+      classes="mb-5xlarge image-fluid w-100 display-light"
+    />
+    <ResponsiveImage
+      imgPath="/assets/images/home/comp-gallery-dark.png"
+      alt="Chassis UI"
+      classes="mb-5xlarge image-fluid w-100 display-dark"
+    />
+  </div>
+</div>

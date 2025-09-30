@@ -1,0 +1,80 @@
+---
+import ResponsiveImage from '@components/common/ResponsiveImage.astro'
+---
+
+<section id="figma-section" class="home-section bg-evident vh-full">
+  <div id="figma-carousel" class="carousel slide">
+    <div class="carousel-inner text-center">
+      <div class="carousel-item active" data-cx-interval="5000">
+        <div class="col-12 col-large-8 offset-large-2">
+          <h1 class="section-title">Documentation pagesfor detailed insights</h1>
+          <p class="section-body">
+            Each component file has a documentation page provides comprehensive information on
+            variants, properties, specifications, and design tokens. Empower product managers,
+            design leads, and engineering teams to enhance projects with clarity and confidence.
+          </p>
+        </div>
+        <div class="col-12 col-large-10 offset-large-1">
+          <ResponsiveImage
+            imgPath="/assets/images/home/figma-docs-light.png"
+            alt="Chassis UI"
+            classes="image-fluid w-100"
+          />
+        </div>
+      </div>
+      <div class="carousel-item" data-cx-interval="5000">
+        <div class="col-8 offset-2">
+          <h1 class="section-title">Elevate your design with a powerful color system</h1>
+          <p class="section-body">
+            Chassis creates distinct color tokens linked to essential UI elements—text, backgrounds,
+            icons, and indicators. With multiple emphasis levels, it ensures a cohesive and visually
+            appealing design across all components, making it easier for product managers, design
+            leads, and engineering teams to enhance their projects.
+          </p>
+        </div>
+        <div class="col-10 offset-1">
+          <ResponsiveImage
+            imgPath="/assets/images/home/figma-library-light.png"
+            alt="Chassis UI"
+            classes="image-fluid w-100"
+          />
+        </div>
+      </div>
+      <div class="carousel-item" data-cx-interval="5000">
+        <div class="col-8 offset-2">
+          <h1 class="section-title">Documentation pagesfor detailed insights</h1>
+          <p class="section-body">
+            Each component file has a documentation page provides comprehensive information on
+            variants, properties, specifications, and design tokens. Empower product managers,
+            design leads, and engineering teams to enhance projects with clarity and confidence.
+          </p>
+        </div>
+        <div class="col-10 offset-1">
+          <ResponsiveImage
+            imgPath="/assets/images/home/figma-tokens-light.png"
+            alt="Chassis UI"
+            classes="image-fluid w-100"
+          />
+        </div>
+      </div>
+    </div>
+    <button
+      class="button large link carousel-control-prev"
+      type="button"
+      data-cx-target="#figma-carousel"
+      data-cx-slide="prev"
+    >
+      <svg class="icon"><use xlink:href="#chevron-left-solid"></use></svg>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button
+      class="button large link carousel-control-next"
+      type="button"
+      data-cx-target="#figma-carousel"
+      data-cx-slide="next"
+    >
+      <svg class="icon"><use xlink:href="#chevron-right-solid"></use></svg>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</section>

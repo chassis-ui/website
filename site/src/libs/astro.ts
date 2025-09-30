@@ -94,9 +94,12 @@ function chassis_auto_import() {
   const autoImportedComponentDefinitions: string[] = []
 
   for (const autoImportedComponentDirectory of autoImportedComponentDirectories) {
-    const components = fs.readdirSync(path.join(getDocsFsPath(), 'src/components', autoImportedComponentDirectory), {
-      withFileTypes: true
-    })
+    const components = fs.readdirSync(
+      path.join(getDocsFsPath(), 'src/components', autoImportedComponentDirectory),
+      {
+        withFileTypes: true
+      }
+    )
 
     for (const component of components) {
       if (component.isFile()) {
@@ -127,7 +130,10 @@ export declare global {
 }
 `
 
-  fs.writeFileSync(path.join(getDocsFsPath(), 'src/types/auto-import.d.ts'), autoImportedComponentDefinition)
+  fs.writeFileSync(
+    path.join(getDocsFsPath(), 'src/types/auto-import.d.ts'),
+    autoImportedComponentDefinition
+  )
 
   return autoImport({
     imports: autoImportedComponents
@@ -138,8 +144,6 @@ function cleanPublicDirectory() {
   fs.rmSync(getDocsPublicFsPath(), { force: true, recursive: true })
 }
 
-// Copy the `dist` folder from the root of the repo containing the latest version of Chassis to make it available from
-// the `/docs/${docs_version}/dist` URL.
 function copyChassisAssets() {
   const source = getChassisAssetsFsPath()
   const destination = path.join(getDocsPublicFsPath(), 'assets')
@@ -159,13 +163,15 @@ function copyChassisCSS() {
   fs.cpSync(source, destination, { recursive: true })
 }
 
-// Copy the `icons` folder from the current project to make it available from the `/icons` URL.
+// Copy the `icons` folder from the chassis-tokens repo to make it available from the `/icons` URL.
 function copyChassisIcons() {
-  const source = getChassisIconsFsPath()
+  const svgs_source = path.join(getChassisIconsFsPath(), 'svgs')
+  const font_source = path.join(getChassisIconsFsPath(), 'font')
   const destination = path.join(getDocsPublicFsPath(), 'assets', 'icons')
 
   fs.mkdirSync(destination, { recursive: true })
-  fs.cpSync(source, destination, { recursive: true })
+  fs.cpSync(font_source, destination, { recursive: true })
+  fs.cpSync(svgs_source, destination, { recursive: true })
 }
 
 // Copy the content as-is of the `static` folder to make it available from the `/` URL.
@@ -173,7 +179,7 @@ function copyChassisIcons() {
 // `config.yml` file.
 function copyStatic() {
   const source = getDocsStaticFsPath()
-  const destination = path.join(getDocsPublicFsPath(), 'assets')
+  const destination = path.join(getDocsPublicFsPath())
 
   copyStaticRecursively(source, destination)
 }
@@ -196,7 +202,7 @@ function copyStaticRecursively(source: string, destination: string) {
     if (entry.isFile()) {
       fs.cpSync(path.join(source, entry.name), path.join(destination, entry.name))
     } else if (entry.isDirectory()) {
-      fs.mkdirSync(path.join(destination, entry.name)), { recursive: true }
+      ;(fs.mkdirSync(path.join(destination, entry.name)), { recursive: true })
 
       copyStaticRecursively(path.join(source, entry.name), path.join(destination, entry.name))
     }

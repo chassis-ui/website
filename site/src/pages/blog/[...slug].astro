@@ -11,10 +11,10 @@ export async function getStaticPaths() {
     const year = pubDate.getFullYear()
     const month = String(pubDate.getMonth() + 1).padStart(2, '0')
     const day = String(pubDate.getDate()).padStart(2, '0')
-    
+
     // Extract slug from the file path (remove year folder and extension)
     const slug = blogPage.id.replace(/^\d{4}\//, '').replace(/\.(md|mdx)$/, '')
-    
+
     return {
       params: { slug: `${year}/${month}/${day}/${slug}` },
       props: { blogPage }
@@ -33,40 +33,45 @@ const { id, data } = blogPage
 const { Content, headings, remarkPluginFrontmatter } = await render(blogPage)
 ---
 
-<BaseLayout 
-  title={data.title}
-  frontmatter={{ description: data.description }}
->
+<BaseLayout title={data.title} frontmatter={{ description: data.description }}>
   <div class="container py-large">
     <div class="row">
       <div class="col-12 col-lg-8 mx-auto">
         <article>
           <header class="mb-xlarge text-center">
             <h1 class="h1 mb-medium">{data.title}</h1>
-            
+
             <div class="d-flex align-items-center justify-content-center text-muted mb-medium">
               <time datetime={data.pubDate?.toISOString()}>
-                {data.pubDate ? new Date(data.pubDate).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                }) : ''}
+                {
+                  data.pubDate
+                    ? new Date(data.pubDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })
+                    : ''
+                }
               </time>
-              {data.author && (
-                <>
-                  <span class="mx-small">•</span>
-                  <span>by {data.author}</span>
-                </>
-              )}
+              {
+                data.author && (
+                  <>
+                    <span class="mx-small">•</span>
+                    <span>by {data.author}</span>
+                  </>
+                )
+              }
             </div>
 
-            {data.tags && data.tags.length > 0 && (
-              <div class="mb-medium">
-                {data.tags.map((tag: string) => (
-                  <span class="badge bg-light text-dark me-xsmall">{tag}</span>
-                ))}
-              </div>
-            )}
+            {
+              data.tags && data.tags.length > 0 && (
+                <div class="mb-medium">
+                  {data.tags.map((tag: string) => (
+                    <span class="badge bg-light text-dark me-xsmall">{tag}</span>
+                  ))}
+                </div>
+              )
+            }
           </header>
 
           <div class="prose prose-lg mx-auto">
@@ -74,9 +79,7 @@ const { Content, headings, remarkPluginFrontmatter } = await render(blogPage)
           </div>
 
           <footer class="mt-xlarge pt-large border-top text-center">
-            <a href="/blog" class="btn btn-outline-primary">
-              ← Back to Blog
-            </a>
+            <a href="/blog" class="btn btn-outline-primary"> ← Back to Blog </a>
           </footer>
         </article>
       </div>

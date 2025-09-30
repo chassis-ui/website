@@ -6,9 +6,9 @@
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 3;
   margin-top: .75rem;
   margin-right: .75rem;
-  z-index: 3;
   .button-mode {
     background-color: var(--cx-bg-idle);
     border: var(--cx-border-width) solid var(--cx-border-subtle);

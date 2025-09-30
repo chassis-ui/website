@@ -1,17 +1,30 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
-import ResponsiveImage from "@components/ResponsiveImage.astro";
-import HomeHero from "@layouts/partials/HomeHero.astro";
-import HomeGallery from "@layouts/partials/HomeGallery.astro";
-import HomeSingleSource from "@layouts/partials/HomeSingleSource.astro";
-import HomeCarousel from "@layouts/partials/HomeCarousel.astro";
-import HomeModularity from "@layouts/partials/HomeModularity.astro";
+import BaseLayout from '@layouts/BaseLayout.astro'
+import Hero from '@layouts/partials/home/HeroSection.astro'
+import Gallery from '@layouts/partials/home/GallerySection.astro'
+import SingleSource from '@layouts/partials/home/SingleSourceSection.astro'
+import Figma from '@layouts/partials/home/FigmaSection.astro'
+import Modularity from '@layouts/partials/home/ModularitySection.astro'
+import Assets from '@layouts/partials/home/AssetsSection.astro'
+import Tokens from '@layouts/partials/home/TokensSection.astro'
+import Contact from '@layouts/partials/home/ContactSection.astro'
+import Icons from '@layouts/partials/home/HomeIcons.svg?raw'
+import type { LayoutOverridesHTMLAttributes } from '@libs/layout'
+const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
+bodyProps['class'] = 'home-body'
 ---
 
-<BaseLayout {...Astro.props} layout="docs">
-  <HomeHero />
-  <HomeGallery />
-  <HomeSingleSource />
-  <HomeCarousel />
-  <HomeModularity />
+<BaseLayout {...Astro.props} layout="docs" overrides={{ body: bodyProps }}>
+  <Hero />
+  <Gallery />
+  <SingleSource />
+  <Figma />
+  <Modularity />
+  <Assets />
+  <Tokens />
+  <Contact />
+  <div class="d-none"><Fragment set:html={Icons} /></div>
 </BaseLayout>
+<Fragment slot="scripts">
+  <script src="@assets/home.js"></script>
+</Fragment>

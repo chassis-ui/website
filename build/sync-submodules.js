@@ -156,7 +156,7 @@ class SubmoduleSync {
 
         for (const command of submodule.buildCommands) {
           try {
-            this.runCommand(command, submodulePath, true)
+            this.runCommand(command, submodulePath, false)
           } catch (buildError) {
             this.log(`Build command failed: ${command}`, 'error')
             this.log(`Error: ${buildError.message}`, 'error')
@@ -168,8 +168,18 @@ class SubmoduleSync {
         if (submodule.buildOutputPath) {
           const outputPath = path.join(submodulePath, submodule.buildOutputPath)
           if (fs.existsSync(outputPath)) {
-            const contents = fs.readdirSync(outputPath)
-            this.log(`${submodule.name} built successfully (${contents.length} files)`, 'success')
+            // Simple file count using shell command
+            try {
+              const result = this.runCommand(
+                `find "${outputPath}" -type f | wc -l`,
+                this.rootDir,
+                true
+              )
+              const fileCount = parseInt(result.trim())
+              this.log(`${submodule.name} built successfully (${fileCount} files)`, 'success')
+            } catch {
+              this.log(`${submodule.name} build output created successfully`, 'success')
+            }
           } else {
             this.log(`Build output not found at expected location`, 'warning')
           }
@@ -220,7 +230,7 @@ class SubmoduleSync {
         console.log('')
         this.log('Submodule changes detected', 'info')
         this.log(
-          'Run `git add . && git commit -m "chore: update submodules"` to commit changes',
+          ' Run `git add . && git commit -m "chore: update submodules"` to commit changes',
           'warning'
         )
       } else {

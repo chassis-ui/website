@@ -3,9 +3,9 @@
 // 2. CSS framework (depends on tokens being available)
 
 $prefix: cx- !default;
-// Import tokens from the Chassis Tokens package  
-@import '_settings.scss';
-@import "../../../node_modules/@ozgurgunes/chassis-tokens/dist/tokens/web/chassis-docs/allTokens.scss";
+// Import tokens from the Chassis Tokens package
+@import "_settings";
+@import "../../../node_modules/@ozgurgunes/chassis-tokens/dist/tokens/web/chassis-docs/allTokens";
 // Import CSS framework (now tokens are available)
 // @import '../../../../chassis-css/scss/chassis.scss';
-@import 'docs.scss';
+@import "docs";

@@ -383,9 +383,9 @@
     margin-top: .8125rem;
     margin-bottom: 0;
     overflow: overlay;
-    white-space: pre;
     font-size: var(--cx-font-size-code-small);
     line-height: var(--cx-line-height-code-small);
+    white-space: pre;
     background-color: transparent;
     border: 0;
   }
@@ -406,8 +406,8 @@
 
 .highlight-toolbar {
   background-color: var(--cxd-pre-bg, var(--cx-bg-even));
-  border-bottom: var(--cx-border-width) var(--cx-border-style) var(--cx-border-subtle);
   border-top: var(--cx-border-width) var(--cx-border-style) var(--cx-border-subtle);
+  border-bottom: var(--cx-border-width) var(--cx-border-style) var(--cx-border-subtle);
 
   + .highlight {
     @include border-top-radius(0);

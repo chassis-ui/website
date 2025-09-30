@@ -1,5 +1,8 @@
-@use "../../../node_modules/@ozgurgunes/chassis-tokens/dist/tokens/web/chassis-docs/template-large-numbers.scss" as large;
+@use "../../../node_modules/@ozgurgunes/chassis-tokens/dist/web/chassis-docs/number-large" as large;
+@use "../../../node_modules/@ozgurgunes/chassis-tokens/dist/web/chassis-docs/number-medium" as medium;
+@use "../../../node_modules/@ozgurgunes/chassis-tokens/dist/web/chassis-docs/number-small" as small;
 // $prefix: cx- !default;
+
 /*!
  * Chassis - CSS Docs (https://ozgurgunes.github.io/chassis-css//)
  * Copyright 2025 Chassis
@@ -32,8 +35,8 @@ $enable-cssgrid: true;
 //@import "colors";
 // @import "../../../chassis-tokens/dist/tokens/web/chassis_docs_light";
 
-@import '_settings.scss';
-@import "../../../node_modules/@ozgurgunes/chassis-tokens/dist/tokens/web/chassis-docs/allTokens.scss";
+@import "settings";
+@import "../../../node_modules/@ozgurgunes/chassis-tokens/dist/web/chassis-docs/base";
 
 @import "../../../node_modules/@ozgurgunes/chassis-css/scss/functions";
 @import "../../../node_modules/@ozgurgunes/chassis-css/scss/tokens";
@@ -79,34 +82,27 @@ $enable-cssgrid: true;
 @import "syntax";
 @import "anchor";
 
-@import "../../../node_modules/@ozgurgunes/chassis-css/scss/grid";
-// stylelint-disable
-// $prefix: cx;
-:export {
-  colorDefaul: $cx-color-base-context-light-default-base-color;
-  colorPrimary: $cx-color-base-context-light-primary-base-color;
-}
-// stylelint-enable
 
 /* Hide light-mode things when in dark mode */
-[data-cx-theme=dark] .display-light {
-    display: none;
+[data-cx-theme="dark"] .display-light {
+  display: none;
 }
+
 /* Hide dark-mode things when in light mode */
-[data-cx-theme=light] .display-dark {
-    display: none;
+[data-cx-theme="light"] .display-dark {
+  display: none;
 }
 
 .section-main {
   width: 592px;
 }
 
-.vh-full {
-  height: calc(100vh - 64px);
+.min-vh-full {
+  min-height: #{calc(100vh - 64px)};
 }
 .vh-50 {
-  height: 50vh
+  height: 50vh;
 }
 .vh-75 {
-  height: 75vh
+  height: 75vh;
 }

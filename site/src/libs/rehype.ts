@@ -7,7 +7,11 @@ import { SKIP, visit } from 'unist-util-visit'
 export const rehypeCxTable: Plugin<[], Root> = function () {
   return function rehypeCxTablePlugin(ast) {
     visit(ast, 'element', (node, _index, parent) => {
-      if (node.tagName !== 'table' || parent?.type !== 'mdxJsxFlowElement' || parent.name !== 'CxTable') {
+      if (
+        node.tagName !== 'table' ||
+        parent?.type !== 'mdxJsxFlowElement' ||
+        parent.name !== 'CxTable'
+      ) {
         return SKIP
       }
 

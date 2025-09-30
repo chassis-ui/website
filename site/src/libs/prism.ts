@@ -57,7 +57,9 @@ function lineWrapPlugin(env: hooks.HookEnvironmentMap['after-tokenize']) {
     const line = lines[i]
 
     // Check if this is an empty line
-    const isEmptyLine = line.length === 0 || (line.length === 1 && typeof line[0] === 'string' && line[0].trim() === '')
+    const isEmptyLine =
+      line.length === 0 ||
+      (line.length === 1 && typeof line[0] === 'string' && line[0].trim() === '')
 
     // Check if this is a comment-only line
     const isCommentLine = line.every((token) => {

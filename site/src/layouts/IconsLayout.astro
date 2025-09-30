@@ -10,7 +10,10 @@ bodyProps['data-cx-target'] = '#icons-nav'
 ---
 
 <BaseLayout {...Astro.props} layout="icons" overrides={{ body: bodyProps }}>
-  <div slot="main" class="container-2xlarge px-medium px-medium-4xlarge cxd-gutter icon-docs icon-reset pt-medium-large pb-medium-large">
+  <div
+    slot="main"
+    class="container-2xlarge px-medium px-medium-4xlarge cxd-gutter icon-docs icon-reset pt-medium-large pb-medium-large"
+  >
     <slot />
   </div>
 </BaseLayout>

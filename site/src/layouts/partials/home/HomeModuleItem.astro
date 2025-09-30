@@ -1,0 +1,13 @@
+---
+import Placeholder from '@components/shortcodes/Placeholder.astro'
+const { icon, title, url } = Astro.props
+import IconAi from '../../../../public/assets/images/home/icon-ai.svg'
+---
+
+<div class="feature-col">
+  <div class="module-item">
+    <img src={`/assets/images/home/${icon}.svg`} alt="" class="icon-img" />
+
+    <div><h5 class="feature-body">{title}</h5></div>
+  </div>
+</div>

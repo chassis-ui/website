@@ -1,0 +1,72 @@
+---
+import ResponsiveImage from '@components/common/ResponsiveImage.astro'
+import FeatureItem from '@layouts/partials/home/HomeFeatureItem.astro'
+import Code from '@components/shortcodes/Code.astro'
+---
+
+<section id="single-source-section" class="home-section">
+  <div class="section-content">
+    <div class="section-main">
+      <article class="section-intro">
+        <h1 class="section-title">
+          <span class="text-nowrap font-normal d-block">Single Source of Truth.</span> Multiple Expressions.
+        </h1>
+        <p class="section-body">
+          Whether you're shipping a client-facing app, operational tool, or internal dashboard,
+          Chassis helps you centralize and scale design decisions.
+        </p>
+        <p class="section-body">
+          Design tokens can be modded per brand, app, or platform — enabling a multi-brand,
+          multi-platform system from a single source of truth.
+        </p>
+      </article>
+      <div class="features">
+        <FeatureItem
+          icon="home-chess-horse"
+          title={`<span class="font-normal d-block">Strategic</span> Multi-brand Capability`}
+          body="Extend your design system across different brand identities without redundant investment in component rebuilding."
+        />
+        <FeatureItem
+          icon="home-bullseye-arrow"
+          title={`<span class="font-normal d-block">Cross-platform</span> Business Alignment`}
+          body="Deploy uniform design principles to web, mobile, and desktop with platform-appropriate expressions."
+        />
+        <FeatureItem
+          icon="home-thumbs-up"
+          title={`<span class="font-normal d-block">Operational </span> Workflow Efficiency`}
+          body="Eliminate costly handoff delays between design and development teams through a shared, automated design language."
+        />
+      </div>
+    </div>
+    <div class="section-aside">
+      <div class="media-stack">
+        <div>
+          <Code
+            lang="json"
+            code={`// JSON
+// tokens/figma/brandA-appA.json
+{
+  "color": {
+    "button": {
+      "primary": {
+        "bg-hover": {
+          "$type": "color",
+          "$value": "{color.context.primary.bg-hover}"
+        }
+      }
+    }
+  }
+}`}
+          />
+        </div>
+        <div class="section-image">
+          <ResponsiveImage
+            imgPath="/assets/images/home/platforms.png"
+            alt="Chassis UI"
+            classes="section-media"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

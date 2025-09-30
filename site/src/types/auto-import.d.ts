@@ -9,4 +9,5 @@ export declare global {
   export const Code: typeof import('@shortcodes/Code.astro').default
   export const CxTable: typeof import('@shortcodes/CxTable.astro').default
   export const Example: typeof import('@shortcodes/Example.astro').default
+  export const Placeholder: typeof import('@shortcodes/Placeholder.astro').default
 }

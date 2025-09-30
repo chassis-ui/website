@@ -6,7 +6,7 @@ import { getConfig } from '@libs/config'
 
 export async function getStaticPaths({ paginate }: any) {
   const config = getConfig()
-  
+
   // Sort blog posts by publication date (newest first)
   const sortedPosts = blogPages.sort((a, b) => {
     const dateA = new Date(a.data.pubDate || 0)
@@ -14,7 +14,7 @@ export async function getStaticPaths({ paginate }: any) {
     return dateB.getTime() - dateA.getTime()
   })
 
-  return paginate(sortedPosts, { 
+  return paginate(sortedPosts, {
     pageSize: config.blog.pageSize
   })
 }
@@ -49,17 +49,19 @@ function getBlogPostUrl(post: any): string {
   const year = pubDate.getFullYear()
   const month = String(pubDate.getMonth() + 1).padStart(2, '0')
   const day = String(pubDate.getDate()).padStart(2, '0')
-  
+
   // Extract slug from the file path (remove year folder and extension)
   const slug = post.id.replace(/^\d{4}\//, '').replace(/\.(md|mdx)$/, '')
-  
+
   return `/blog/${year}/${month}/${day}/${slug}`
 }
 ---
 
-<BaseLayout 
+<BaseLayout
   title="Blog - Chassis Design System"
-  frontmatter={{ description: "Insights, tutorials, and stories from the Chassis Design System team" }}
+  frontmatter={{
+    description: 'Insights, tutorials, and stories from the Chassis Design System team'
+  }}
 >
   <div class="container py-large">
     <header class="mb-xlarge text-center">
@@ -73,97 +75,107 @@ function getBlogPostUrl(post: any): string {
       <div class="col-12 col-lg-8 mx-auto">
         <!-- Blog posts list -->
         <div class="mb-xlarge">
-          {page.data.map((post: any) => (
-            <article class="mb-xlarge pb-xlarge border-bottom">
-              <header class="mb-medium">
-                <h2 class="h3 mb-small">
-                  <a href={getBlogPostUrl(post)} class="text-decoration-none">
-                    {post.data.title}
-                  </a>
-                </h2>
-                
-                <div class="d-flex align-items-center text-muted small mb-small">
-                  <time datetime={post.data.pubDate?.toISOString()}>
-                    {formatDate(post.data.pubDate || new Date())}
-                  </time>
-                  <span class="mx-small">•</span>
-                  <span>{getReadingTime(post.body || '')}</span>
-                  {post.data.author && (
-                    <>
-                      <span class="mx-small">•</span>
-                      <span>by {post.data.author}</span>
-                    </>
+          {
+            page.data.map((post: any) => (
+              <article class="mb-xlarge pb-xlarge border-bottom">
+                <header class="mb-medium">
+                  <h2 class="h3 mb-small">
+                    <a href={getBlogPostUrl(post)} class="text-decoration-none">
+                      {post.data.title}
+                    </a>
+                  </h2>
+
+                  <div class="d-flex align-items-center text-muted small mb-small">
+                    <time datetime={post.data.pubDate?.toISOString()}>
+                      {formatDate(post.data.pubDate || new Date())}
+                    </time>
+                    <span class="mx-small">•</span>
+                    <span>{getReadingTime(post.body || '')}</span>
+                    {post.data.author && (
+                      <>
+                        <span class="mx-small">•</span>
+                        <span>by {post.data.author}</span>
+                      </>
+                    )}
+                  </div>
+
+                  {post.data.tags && post.data.tags.length > 0 && (
+                    <div class="mb-small">
+                      {post.data.tags.map((tag: string) => (
+                        <span class="badge bg-light text-dark me-xsmall">{tag}</span>
+                      ))}
+                    </div>
                   )}
+                </header>
+
+                <div class="mb-medium">
+                  <p class="text-muted">{post.data.description}</p>
                 </div>
 
-                {post.data.tags && post.data.tags.length > 0 && (
-                  <div class="mb-small">
-                    {post.data.tags.map((tag: string) => (
-                      <span class="badge bg-light text-dark me-xsmall">{tag}</span>
-                    ))}
-                  </div>
-                )}
-              </header>
-
-              <div class="mb-medium">
-                <p class="text-muted">
-                  {post.data.description}
-                </p>
-              </div>
-
-              <footer>
-                <a href={getBlogPostUrl(post)} class="btn btn-outline-primary btn-sm">
-                  Read more →
-                </a>
-              </footer>
-            </article>
-          ))}
+                <footer>
+                  <a href={getBlogPostUrl(post)} class="btn btn-outline-primary btn-sm">
+                    Read more →
+                  </a>
+                </footer>
+              </article>
+            ))
+          }
         </div>
 
         <!-- Pagination -->
-        {page.lastPage > 1 && (
-          <nav aria-label="Blog pagination" class="d-flex justify-content-center">
-            <ul class="pagination">
-              {page.url.prev && (
-                <li class="page-item">
-                  <a href={page.url.prev} class="page-link" aria-label="Previous page">
-                    ← Previous
-                  </a>
-                </li>
-              )}
-              
-              {Array.from({ length: page.lastPage }, (_, i) => i + 1).map((pageNum) => (
-                <li class={`page-item ${pageNum === page.currentPage ? 'active' : ''}`}>
-                  {pageNum === page.currentPage ? (
-                    <span class="page-link" aria-current="page">{pageNum}</span>
-                  ) : (
-                    <a href={pageNum === 1 ? '/blog' : `/blog/${pageNum}`} class="page-link" aria-label={`Page ${pageNum}`}>
-                      {pageNum}
+        {
+          page.lastPage > 1 && (
+            <nav aria-label="Blog pagination" class="d-flex justify-content-center">
+              <ul class="pagination">
+                {page.url.prev && (
+                  <li class="page-item">
+                    <a href={page.url.prev} class="page-link" aria-label="Previous page">
+                      ← Previous
                     </a>
-                  )}
-                </li>
-              ))}
+                  </li>
+                )}
 
-              {page.url.next && (
-                <li class="page-item">
-                  <a href={page.url.next} class="page-link" aria-label="Next page">
-                    Next →
-                  </a>
-                </li>
-              )}
-            </ul>
-          </nav>
-        )}
+                {Array.from({ length: page.lastPage }, (_, i) => i + 1).map((pageNum) => (
+                  <li class={`page-item ${pageNum === page.currentPage ? 'active' : ''}`}>
+                    {pageNum === page.currentPage ? (
+                      <span class="page-link" aria-current="page">
+                        {pageNum}
+                      </span>
+                    ) : (
+                      <a
+                        href={pageNum === 1 ? '/blog' : `/blog/${pageNum}`}
+                        class="page-link"
+                        aria-label={`Page ${pageNum}`}
+                      >
+                        {pageNum}
+                      </a>
+                    )}
+                  </li>
+                ))}
+
+                {page.url.next && (
+                  <li class="page-item">
+                    <a href={page.url.next} class="page-link" aria-label="Next page">
+                      Next →
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </nav>
+          )
+        }
 
         <!-- No posts message -->
-        {page.data.length === 0 && (
-          <div class="text-center py-xlarge">
-            <h3 class="h4 mb-medium text-muted">No blog posts yet</h3>
-            <p class="text-muted">
-              Check back soon for insights and tutorials about design systems!
-            </p>
-          </div>
-        )}
+        {
+          page.data.length === 0 && (
+            <div class="text-center py-xlarge">
+              <h3 class="h4 mb-medium text-muted">No blog posts yet</h3>
+              <p class="text-muted">
+                Check back soon for insights and tutorials about design systems!
+              </p>
+            </div>
+          )
+        }
       </div>
     </div>
   </div>

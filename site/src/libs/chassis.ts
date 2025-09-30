@@ -21,7 +21,8 @@ export function getChassisCssProps(direction: 'rtl' | undefined) {
 
   // Only apply integrity checks for CDN URLs (starting with 'http')
   if (import.meta.env.PROD && cxCssLinkHref.startsWith('http')) {
-    cxCssLinkProps.integrity = direction === 'rtl' ? getConfig().cdn.css_rtl_hash : getConfig().cdn.css_hash
+    cxCssLinkProps.integrity =
+      direction === 'rtl' ? getConfig().cdn.css_rtl_hash : getConfig().cdn.css_hash
   }
 
   return cxCssLinkProps

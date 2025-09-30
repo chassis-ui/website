@@ -1,6 +1,6 @@
 ---
 import { replacePlaceholdersInHtml } from '@libs/placeholder'
-import { Prism } from '@astrojs/prism'
+import Code from '@components/shortcodes/Code.astro'
 
 interface Props {
   /**
@@ -65,95 +65,96 @@ const simplifiedMarkup = markup
 <script is:inline>
   // Helper to detect the user's preferred theme
   function getPreferredTheme() {
+    // eslint-disable-next-line prettier/prettier
     // First check localStorage
-    const storedTheme = localStorage.getItem('theme');
+    const storedTheme = localStorage.getItem('theme')
     if (storedTheme && storedTheme !== 'auto') {
-      return storedTheme;
+      return storedTheme
     }
 
     // Then check system preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   }
 
   // Direct theme toggle function that's globally accessible
   function toggleTheme(button) {
-    const example = button.closest('.cxd-example-snippet').querySelector('.cxd-example');
-    if (!example) return;
+    const example = button.closest('.cxd-example-snippet').querySelector('.cxd-example')
+    if (!example) return
 
     // Get current theme - try from element, then use detection logic if not set
-    let currentTheme = example.getAttribute('data-cx-theme');
+    let currentTheme = example.getAttribute('data-cx-theme')
     if (!currentTheme) {
       // If element doesn't have theme set, use preferred theme
-      currentTheme = getPreferredTheme();
+      currentTheme = getPreferredTheme()
     }
 
     // Toggle to the opposite
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
 
     // Get system preferred theme
-    const preferredTheme = getPreferredTheme();
+    const preferredTheme = getPreferredTheme()
 
     // If the new theme matches the preferred system theme, remove the attribute
     // to let it naturally follow system preference
     if (newTheme === preferredTheme) {
-      example.removeAttribute('data-cx-theme');
+      example.removeAttribute('data-cx-theme')
     } else {
       // Otherwise, explicitly set the theme
-      example.setAttribute('data-cx-theme', newTheme);
+      example.setAttribute('data-cx-theme', newTheme)
     }
 
     // Update the icon to match the theme
-    const iconUse = button.querySelector('use');
+    const iconUse = button.querySelector('use')
     if (iconUse) {
-      const iconHref = newTheme === 'dark' ? '#sun-solid' : '#moon-solid';
-      iconUse.setAttribute('xlink:href', iconHref);
+      const iconHref = newTheme === 'dark' ? '#sun-solid' : '#moon-solid'
+      iconUse.setAttribute('xlink:href', iconHref)
     }
   }
 
   // Initialize theme icons for all buttons based on current theme
   document.addEventListener('DOMContentLoaded', () => {
-    const preferredTheme = getPreferredTheme();
+    const preferredTheme = getPreferredTheme()
 
     document.querySelectorAll('.button-mode').forEach((button) => {
       // Initialize tooltip
       if (window.chassis && window.chassis.Tooltip) {
-        window.chassis.Tooltip.getOrCreateInstance(button);
+        window.chassis.Tooltip.getOrCreateInstance(button)
       }
 
       // Set initial icon based on theme
-      const iconUse = button.querySelector('use');
+      const iconUse = button.querySelector('use')
       if (iconUse) {
-        const example = button.closest('.cxd-example-snippet')?.querySelector('.cxd-example');
-        const currentTheme = example?.getAttribute('data-cx-theme') || preferredTheme;
-        const iconHref = currentTheme === 'dark' ? '#sun-solid' : '#moon-solid';
-        iconUse.setAttribute('xlink:href', iconHref);
+        const example = button.closest('.cxd-example-snippet')?.querySelector('.cxd-example')
+        const currentTheme = example?.getAttribute('data-cx-theme') || preferredTheme
+        const iconHref = currentTheme === 'dark' ? '#sun-solid' : '#moon-solid'
+        iconUse.setAttribute('xlink:href', iconHref)
       }
 
       // Add event listener if not already set through onclick
       if (!button.hasAttribute('onclick')) {
-        button.addEventListener('click', () => toggleTheme(button));
+        button.addEventListener('click', () => toggleTheme(button))
       }
-    });
-  });
+    })
+  })
 </script>
 
 <div class="cxd-example-snippet cxd-code-snippet">
   {
     showPreview && (
       <div id={id} class:list={['cxd-example m-0 border-0 context', className]}>
-        { !showMarkup && (
+        {!showMarkup && (
           <div class="cxd-mode">
-              <button
-                type="button"
-                class="button-mode mt-0 me-0 text-nowrap"
-                title="Toggle color mode"
-                onclick="toggleTheme(this)"
-              >
-                <svg class="icon" aria-hidden="true">
-                  <use xlink:href="#swatchbook-solid" />
-                </svg>
-              </button>
-              </div>
+            <button
+              type="button"
+              class="button-mode mt-0 me-0 text-nowrap"
+              title="Toggle color mode"
+              onclick="toggleTheme(this)"
+            >
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#swatchbook-solid" />
+              </svg>
+            </button>
+          </div>
         )}
         <Fragment set:html={markup} />
       </div>
@@ -177,7 +178,7 @@ const simplifiedMarkup = markup
                   <use xlink:href="#swatchbook-solid" />
                 </svg>
               </button>
-              <span class="vr mx-xsmall"></span>
+              <span class="vr mx-xsmall" />
               <button
                 type="button"
                 class="button-edit text-nowrap"
@@ -196,9 +197,7 @@ const simplifiedMarkup = markup
             </div>
           </div>
         )}
-        <div class="highlight">
-          <Prism code={simplifiedMarkup} lang={lang} />
-        </div>
+        <Code code={simplifiedMarkup} lang={lang} nestedInExample={true} />
       </>
     )
   }
