@@ -41,7 +41,7 @@ const sidebar = getData('sidebar')
                   const url = `/${unversionedPageSlug}`
                   const active = Astro.params.slug === unversionedPageSlug
 
-                  const generatedPage = docsPages.find((page) => page.slug === unversionedPageSlug)
+                  const generatedPage = docsPages.find((page) => page.id === unversionedPageSlug)
 
                   // This test should not be necessary, see comments for `getSlug()` in `src/libs/utils.ts`.
                   if (!generatedPage) {
@@ -73,7 +73,7 @@ const sidebar = getData('sidebar')
               <li class="cxd-links-span-all mt-2xsmall mb-medium mx-large border-top" />
               <li class="cxd-links-span-all">
                 <a
-                  href={`/docs/${getConfig().docs_version}/${groupSlug}/`}
+                  href={`/docs/${groupSlug}/`}
                   class:list={['cxd-links-link d-inline-block rounded small', { active }]}
                   aria-current={active ? 'page' : undefined}
                 >

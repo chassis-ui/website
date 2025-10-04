@@ -1,0 +1,56 @@
+---
+title: build.js
+description: Main build orchestrator for Chassis Tokens
+toc: true
+---
+
+# build.js
+
+The main entry point for the Chassis Tokens build system. This script orchestrates the entire token transformation process, including CLI parameter parsing, task generation, and invoking Style Dictionary for each build task.
+
+## Key Responsibilities
+
+- Parses CLI arguments (brand, theme, app, screen) using `minimist`
+- Loads configuration from `package.json` and `tokens/$themes.json`
+- Registers all custom Style Dictionary extensions (filters, transforms, formats, preprocessors)
+- Generates build tasks for all valid combinations of brand, theme, app, and screen, filtered by CLI options
+- Runs Style Dictionary for each task, producing platform-specific output files
+- Handles file headers, logging, and error reporting
+
+## Example Usage
+
+```sh
+# Build all tokens
+pnpm tokens
+
+# Build only for a specific brand and theme
+pnpm tokens --brand=chassis --theme=dark
+```
+
+## CLI Options
+
+- `--brand`: Filter by brand (e.g., `chassis`, `test`)
+- `--theme`: Filter by theme (e.g., `light`, `dark`)
+- `--app`: Filter by app (e.g., `docs`, `test`)
+- `--screen`: Filter by screen size (e.g., `small`, `large`)
+
+## Task Generation
+
+The `generateTasks` function creates a list of build tasks for all valid combinations, applying any CLI filters. Each task includes the brand, app, platform, theme, and screen.
+
+## Extension Registration
+
+All custom filters, transforms, formats, and preprocessors are registered before running Style Dictionary. This ensures that the build process uses the correct logic for your tokens.
+
+## File Headers
+
+Each output file includes a standard header with version and license information.
+
+## See Also
+
+- [config.js](./config-js)
+- [filters.js](./filters-js)
+- [transforms.js](./transforms-js)
+- [formats.js](./formats-js)
+- [preprocessor.js](./preprocessor-js)
+- [utils.js](./utils-js)

@@ -1,0 +1,31 @@
+---
+title: templates/
+description: Output templates for Style Dictionary formats
+toc: true
+---
+
+# templates/
+
+The `templates/` directory contains template files used by custom formats in the build system. These templates define the structure and syntax of generated files for each platform.
+
+## Key Templates
+
+- `android-resources.template.js`: Template for Android XML resource files
+- `ios-swift-class.template.js`: Template for iOS Swift class files
+- `scss-variables.template.js`: Template for SCSS variable files
+
+## Example Usage
+
+Custom formats in `formats.js` import these templates to generate output files:
+
+```js
+import androidResourcesTemplate from './templates/android-resources.template.js'
+import iosSwiftClassTemplate from './templates/ios-swift-class.template.js'
+import scssVariablesTemplate from './templates/scss-variables.template.js'
+```
+
+Each template receives the token dictionary and formatting options, and returns a string of file contents.
+
+## See Also
+
+- [formats.js](./formats-js)
