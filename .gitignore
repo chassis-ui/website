@@ -1,9 +1,8 @@
 # Site
 _site
-site/dist
-site/node_modules
-site/.astro
-site/public
+packages/website/.astro
+packages/website/dist
+packages/website/public
 
 # OS
 ._*

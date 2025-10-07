@@ -1,0 +1,108 @@
+---
+import type { Page } from 'astro'
+import BlogLayout from '@layouts/BlogLayout.astro'
+import { blogPages } from '@libs/content'
+import { getConfig } from '@libs/config'
+import { formatDate, getReadingTime, getBlogPostUrl } from '@libs/utils'
+import Pagination from '@components/Pagination.astro'
+
+export async function getStaticPaths({ paginate }: any) {
+  const config = getConfig()
+
+  // Sort blog posts by publication date (newest first)
+  const sortedPosts = blogPages.sort((a, b) => {
+    const dateA = new Date(a.data.pubDate || 0)
+    const dateB = new Date(b.data.pubDate || 0)
+    return dateB.getTime() - dateA.getTime()
+  })
+
+  return paginate(sortedPosts, {
+    pageSize: config.blog.pageSize
+  })
+}
+
+type Props = {
+  page: Page<any>
+}
+
+const { page } = Astro.props
+---
+
+<BlogLayout
+  frontmatter={{
+    title: 'Blog - Chassis Design System',
+    description: 'Insights, tutorials, and stories from the Chassis Design System team'
+  }}
+>
+  <header class="mb-xlarge text-center">
+    <h1 class="h1 mb-medium">Blog</h1>
+    <p class="lead text-muted">Insights, tutorials, and stories from the world of design systems</p>
+  </header>
+
+  <div class="row">
+    <div class="col-12 col-lg-8 mx-auto">
+      <!-- Blog posts list -->
+      <div class="mb-xlarge">
+        {
+          page.data.map((post: any) => (
+            <article class="mb-xlarge pb-xlarge border-bottom">
+              <header class="mb-medium">
+                <h2 class="h3 mb-small">
+                  <a href={getBlogPostUrl(post)} class="text-decoration-none">
+                    {post.data.title}
+                  </a>
+                </h2>
+
+                <div class="d-flex align-items-center text-muted small mb-small">
+                  <time datetime={post.data.pubDate?.toISOString()}>
+                    {formatDate(post.data.pubDate || new Date())}
+                  </time>
+                  <span class="mx-small">•</span>
+                  <span>{getReadingTime(post.body || '')}</span>
+                  {post.data.author && (
+                    <>
+                      <span class="mx-small">•</span>
+                      <span>by {post.data.author}</span>
+                    </>
+                  )}
+                </div>
+              </header>
+
+              <div class="mb-medium">
+                <img
+                  src={post.data.image || '/assets/logo/chassis-logo-brand-banner.svg'}
+                  alt={post.data.title}
+                  class="image-fluid w-100"
+                />
+              </div>
+              <div class="mb-medium">
+                <p class="text-muted">{post.data.description}</p>
+              </div>
+
+              <footer>
+                <a href={getBlogPostUrl(post)} class="btn btn-outline-primary btn-sm">
+                  Read more →
+                </a>
+              </footer>
+            </article>
+          ))
+        }
+      </div>
+
+      <!-- Pagination -->
+      <Pagination page={page} baseUrl="/blog" />
+
+      <!-- No posts message -->
+      {
+        page.data.length === 0 && (
+          <div class="text-center py-xlarge">
+            <h3 class="h4 mb-medium text-muted">No blog posts yet</h3>
+            <p class="text-muted">
+              Check back soon for insights and tutorials about design systems!
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</BlogLayout>

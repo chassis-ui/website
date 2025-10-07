@@ -1,5 +1,5 @@
 # Prettier ignore
-site/config.yml
-# site/src/assets
-site/content
+packages/website/config.yml
+# packages/website/src/assets
+packages/website/content
 vendor/

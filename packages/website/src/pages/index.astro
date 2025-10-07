@@ -1,0 +1,37 @@
+---
+import { BaseLayout } from '@ozgurgunes/chassis-docs/layouts'
+import Hero from '@layouts/home/HeroSection.astro'
+import Gallery from '@layouts/home/GallerySection.astro'
+import SingleSource from '@layouts/home/SingleSourceSection.astro'
+import Figma from '@layouts/home/FigmaSection.astro'
+import Modularity from '@layouts/home/ModularitySection.astro'
+import Assets from '@layouts/home/AssetsSection.astro'
+import Tokens from '@layouts/home/TokensSection.astro'
+import Contact from '@layouts/home/ContactSection.astro'
+import Icons from '@layouts/home/HomeIcons.svg?raw'
+import type { LayoutOverridesHTMLAttributes } from '@ozgurgunes/chassis-docs'
+
+const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
+
+bodyProps['class'] = 'home-body'
+---
+
+<BaseLayout {...Astro.props} overrides={{ body: bodyProps }}>
+  <Hero />
+  <Gallery />
+  <SingleSource />
+  <Figma />
+  <Modularity />
+  <Assets />
+  <Tokens />
+  <Contact />
+  <div class="d-none"><Fragment set:html={Icons} /></div>
+</BaseLayout>
+<Fragment slot="scripts">
+  <script src="@assets/home.js"></script>
+</Fragment>
+<Fragment slot="styles">
+  <style is:global lang="scss">
+    @import '../scss/home.scss';
+  </style>
+</Fragment>

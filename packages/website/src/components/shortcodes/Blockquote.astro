@@ -1,0 +1,32 @@
+---
+import { getCalloutByName, type CalloutName } from '@libs/content'
+import { render } from 'astro:content'
+import type { MarkdownInstance } from 'astro'
+
+interface Props {
+  attr?: String
+}
+
+const { attr } = Astro.props
+---
+
+{
+  attr ? (
+    <figure>
+      <blockquote class="blockquote">
+        <p>
+          <slot />
+        </p>
+      </blockquote>
+      <figcaption class="attribution">
+        <Fragment set:html={attr} />
+      </figcaption>
+    </figure>
+  ) : (
+    <blockquote class="blockquote">
+      <p>
+        <slot />
+      </p>
+    </blockquote>
+  )
+}

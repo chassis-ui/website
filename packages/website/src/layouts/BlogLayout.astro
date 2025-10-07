@@ -1,0 +1,42 @@
+---
+import type { MarkdownHeading } from 'astro'
+import type { CollectionEntry } from 'astro:content'
+import type { LayoutOverridesHTMLAttributes } from '@ozgurgunes/chassis-docs'
+import { getSlug } from '@ozgurgunes/chassis-docs'
+import { BaseLayout } from '@ozgurgunes/chassis-docs/layouts'
+import { TableOfContents } from '@ozgurgunes/chassis-docs/components'
+import { blogPages } from '@libs/content'
+import LatestPosts from '../components/LatestPosts.astro'
+
+interface Props {
+  frontmatter: CollectionEntry<'blog'>['data']
+  headings?: MarkdownHeading[]
+  id?: CollectionEntry<'blog'>['id']
+}
+
+const { frontmatter, headings, id } = Astro.props
+
+// Extract the directory/section from the ID (format: "directory/filename.mdx")
+const parentDirectory = id?.includes('/') ? id?.split('/')[0] : ''
+
+const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
+---
+
+<BaseLayout {...Astro.props} layout="blog" overrides={{ body: bodyProps }}>
+  <div class="container-2xlarge py-4xlarge">
+    <div class="row g-4xlarge">
+      <main class="col-large-8">
+        <slot />
+      </main>
+      <aside class="col-large-4">
+        <div class="position-sticky" style="top: 88px;">
+          <section class="latest-posts bg-evident rounded p-medium">
+            <LatestPosts posts={blogPages} currentPostId={id} />
+            <LatestPosts posts={blogPages} currentPostId={id} />
+            <LatestPosts posts={blogPages} currentPostId={id} />
+          </section>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

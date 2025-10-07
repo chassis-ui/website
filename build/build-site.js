@@ -40,9 +40,10 @@ class ChassisBuilder {
   constructor(rootDir = process.cwd()) {
     this.rootDir = rootDir
     this.vendorDir = path.join(rootDir, 'vendor')
-    this.siteDir = path.join(rootDir, 'site')
+    this.siteDir = path.join(rootDir, 'packages/website')
     this.outputDir = path.join(rootDir, '_site')
     this.vendorBranch = process.env.VENDOR_BRANCH || 'app/docs'
+    this.buildCommand = 'pnpm astro:build'
   }
 
   /**
@@ -145,7 +146,7 @@ class ChassisBuilder {
 
     // Build Astro site (outputs directly to _site via outDir config)
     this.log('Building Astro site...', 'info')
-    this.runCommand('pnpm astro:build')
+    this.runCommand(this.buildCommand)
 
     this.log('Astro site built successfully', 'success')
   }

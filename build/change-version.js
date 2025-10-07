@@ -22,7 +22,11 @@ import { promisify } from 'node:util'
 
 // Configuration: Files that contain version references to be updated
 // These files contain hardcoded version numbers that need to be kept in sync
-const FILES = ['README.md', 'site/config.yml', 'site/data/docs-versions.yml']
+const FILES = [
+  'README.md',
+  'packages/website/config.yml',
+  'packages/website/data/docs-versions.yml'
+]
 
 const execFileAsync = promisify(execFile)
 

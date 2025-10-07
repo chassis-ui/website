@@ -1,0 +1,20 @@
+---
+import { getChassisJsProps } from '@libs/chassis'
+import type { Layout } from '../../libs/layout'
+
+interface Props {
+  layout: Layout
+}
+
+const { layout } = Astro.props
+
+console.log('layout in Scripts:', layout)
+---
+
+<script is:inline {...getChassisJsProps()}></script>
+
+<script src="../../js/search.js"></script>
+
+{layout === 'docs' && <script src="../../js/sidebar.js" />}
+
+<slot name="scripts" />

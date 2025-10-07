@@ -10,7 +10,15 @@ import astroPlugin from 'eslint-plugin-astro'
 export default defineConfig([
   // Global ignores
   {
-    ignores: ['**/dist/', '_site/', 'site/.astro/', 'site/public/', '.cache/', 'docs/', 'vendor/']
+    ignores: [
+      '**/dist/',
+      '_site/',
+      'packages/website/.astro/',
+      'packages/website/public/',
+      '.cache/',
+      'docs/',
+      'vendor/'
+    ]
   },
   eslint.configs.recommended,
   tseslint.configs.eslintRecommended,
@@ -28,7 +36,7 @@ export default defineConfig([
   {
     files: ['**/*.js', '**/*.cjs'],
     languageOptions: {
-      globals: globals.node
+      globals: { ...globals.node, ...globals.browser }
     }
   },
   {
@@ -37,7 +45,7 @@ export default defineConfig([
       globals: { ...globals.node, ...globals.browser },
       parser: tseslint.parser,
       parserOptions: {
-        project: './site/tsconfig.json'
+        project: './packages/website/tsconfig.json'
       }
     }
   },
@@ -49,12 +57,34 @@ export default defineConfig([
       parserOptions: {
         parser: tseslint.parser,
         extraFileExtensions: ['.astro'],
-        project: './site/tsconfig.json'
+        project: './packages/website/tsconfig.json'
       }
     }
   },
   {
-    files: ['site/**/*.js', 'site/**/*.cjs'],
+    files: ['packages/docs/**/*.ts', 'packages/docs/**/*.astro/*.js'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser },
+      parser: tseslint.parser,
+      parserOptions: {
+        project: './packages/docs/tsconfig.json'
+      }
+    }
+  },
+  {
+    files: ['packages/docs/**/*.astro'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser },
+      parser: astroPlugin.parser,
+      parserOptions: {
+        parser: tseslint.parser,
+        extraFileExtensions: ['.astro'],
+        project: './packages/docs/tsconfig.json'
+      }
+    }
+  },
+  {
+    files: ['packages/website/**/*.js', 'packages/website/**/*.cjs'],
     languageOptions: {
       globals: globals.browser
     }

@@ -11,9 +11,11 @@
   "ignorePaths": [
     ".cspell.json",
     "**/tests/**",
+    "_site/",
     "dist/",
-    "site/.astro/",
-    "site/public/",
+    "packages/website/.astro/",
+    "packages/website/dist/",
+    "packages/website/public/",
     "vendor/"
   ],
   "useGitignore": true

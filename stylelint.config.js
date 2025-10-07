@@ -7,9 +7,9 @@ export default {
     '**/tests/**',
     '**/coverage/**',
     '_site/**',
-    'site/.astro/**',
-    'site/public/**',
-    'site/static/**',
+    'packages/website/.astro/**',
+    'packages/website/public/**',
+    'packages/website/static/**',
     'vendor/**'
   ],
   reportInvalidScopeDisables: true,
@@ -37,14 +37,7 @@ export default {
       }
     },
     {
-      files: ['scss/**/*.{test,spec}.scss'],
-      rules: {
-        'scss/dollar-variable-default': null,
-        'declaration-no-important': null
-      }
-    },
-    {
-      files: ['site/**/*.scss'],
+      files: ['packages/**/*.scss'],
       rules: {
         'scss/dollar-variable-default': null
       }
