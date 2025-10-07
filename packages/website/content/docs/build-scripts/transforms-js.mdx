@@ -1,0 +1,36 @@
+---
+title: transforms.js
+description: Custom transforms for Style Dictionary
+toc: true
+---
+
+# transforms.js
+
+This script defines and registers custom transforms for Style Dictionary. Transforms convert token values into platform-specific formats (e.g., px, rem, vw, color formats).
+
+## Key Responsibilities
+
+- Register transforms for size (px, rem, vw), shadow, typography, and more
+- Convert token values to the correct units and formats for each platform
+- Enable advanced logic for color, font, and shadow tokens
+
+## Example Transforms
+
+- `cx/size/px`: Converts size tokens to px units
+- `cx/size/rem`: Converts size tokens to rem units
+- `cx/size/vw`: Converts size tokens to vw units
+- `cx/shadow/web`: Converts shadow tokens for web
+- `cx/typography/web`: Converts typography tokens for web
+
+## Example Usage
+
+```js
+import registerTransforms from './transforms.js'
+registerTransforms(StyleDictionary)
+```
+
+## See Also
+
+- [utils.js](./utils-js)
+- [build.js](./build-js)
+- [config.js](./config-js)

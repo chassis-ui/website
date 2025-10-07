@@ -1,0 +1,22 @@
+---
+import { getConfig } from '@libs/config'
+const googleId = getConfig().analytics.google_id
+---
+
+<script
+  is:inline
+  defer
+  src="https://cdn.usefathom.com/script.js"
+  data-site={getConfig().analytics.fathom_site}></script>
+<!-- Google tag (gtag.js) -->
+<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${googleId}`}></script>
+<script
+  is:inline
+  set:html={`
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '${googleId}');
+`}
+/>

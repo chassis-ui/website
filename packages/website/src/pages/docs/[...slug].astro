@@ -1,0 +1,25 @@
+---
+import { DocsLayout } from '@ozgurgunes/chassis-docs/layouts'
+import { docsPages } from '@libs/content'
+import { getConfig } from '@libs/config'
+import { Code } from '@ozgurgunes/chassis-docs/components'
+import { render } from 'astro:content'
+
+export async function getStaticPaths() {
+  return docsPages.map((docsPage) => {
+    return {
+      params: { slug: docsPage.id },
+      props: docsPage
+    }
+  })
+}
+
+const docsPage = Astro.props
+const { id, data } = docsPage
+const frontmatter = data
+const { Content, headings } = await render(docsPage)
+---
+
+<DocsLayout frontmatter={frontmatter} headings={headings} id={id}>
+  <Content components={{ pre: Code }} />
+</DocsLayout>

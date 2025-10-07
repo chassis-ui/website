@@ -1,0 +1,79 @@
+---
+import { render } from 'astro:content'
+import BlogLayout from '@layouts/BlogLayout.astro'
+import { getConfig } from '@libs/config'
+import { blogPages } from '@libs/content'
+import { Code } from '@ozgurgunes/chassis-docs/components'
+
+export async function getStaticPaths() {
+  return blogPages.map((blogPage) => {
+    const pubDate = new Date(blogPage.data.pubDate || Date.now())
+    const year = pubDate.getFullYear()
+    const month = String(pubDate.getMonth() + 1).padStart(2, '0')
+    const day = String(pubDate.getDate()).padStart(2, '0')
+
+    // Extract slug from the file path (remove year folder and extension)
+    const slug = blogPage.id.replace(/^\d{4}\//, '').replace(/\.(md|mdx)$/, '')
+
+    return {
+      params: { slug: `${year}/${month}/${day}/${slug}` },
+      props: { blogPage }
+    }
+  })
+}
+
+type Props = {
+  blogPage: any
+}
+
+const { blogPage } = Astro.props as Props
+const { id, data } = blogPage
+
+// Use the render function from astro:content for custom loaders
+const { Content, headings, remarkPluginFrontmatter } = await render(blogPage)
+---
+
+<BlogLayout frontmatter={{ description: data.description, title: data.title }} id={id}>
+  <article>
+    <header class="mb-xlarge text-center">
+      <h1 class="h1 mb-medium">{data.title}</h1>
+
+      <div class="d-flex align-items-center justify-content-center text-muted mb-medium">
+        <time datetime={data.pubDate?.toISOString()}>
+          {
+            data.pubDate
+              ? new Date(data.pubDate).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })
+              : ''
+          }
+        </time>
+        {
+          data.author && (
+            <>
+              <span class="mx-small">•</span>
+              <span>by {data.author}</span>
+            </>
+          )
+        }
+      </div>
+    </header>
+    <div class="mb-medium">
+      <img
+        src={data.image || '/assets/logo/chassis-logo-brand-banner.svg'}
+        alt={data.title}
+        class="image rounded image-fluid w-100"
+      />
+    </div>
+
+    <div class="prose prose-lg mx-auto">
+      <Content components={{ pre: Code }} />
+    </div>
+
+    <footer class="mt-xlarge pt-large border-top text-center">
+      <a href="/blog" class="btn btn-outline-primary"> ← Back to Blog </a>
+    </footer>
+  </article>
+</BlogLayout>

@@ -1,0 +1,13 @@
+---
+/*
+ * Outputs badge to identify the first version something was added
+ */
+
+interface Props {
+  version: string
+}
+
+const { version } = Astro.props
+---
+
+<span class="badge large success smooth mb-medium rounded-medium">Added in v{version}</span>

@@ -1,0 +1,35 @@
+---
+title: formats.js
+description: Custom output formats for Style Dictionary
+toc: true
+---
+
+# formats.js
+
+This script defines and registers custom output formats for Style Dictionary. Formats control how tokens are written to files for each platform (e.g., SCSS, Swift, XML).
+
+## Key Responsibilities
+
+- Register custom formats for SCSS variables, iOS Swift classes, and Android XML resources
+- Use templates for consistent output structure
+- Add file headers and comments to generated files
+
+## Example Formats
+
+- `cx/scss-variables`: Outputs tokens as SCSS variables
+- `cx/ios-swift-class`: Outputs tokens as a Swift class for iOS
+- `cx/android-resources`: Outputs tokens as Android XML resources
+- `cx/test`: Debug/test format for inspecting token output
+
+## Example Usage
+
+```js
+import registerFormats from './formats.js'
+registerFormats(StyleDictionary)
+```
+
+## See Also
+
+- [templates/](./templates)
+- [build.js](./build-js)
+- [config.js](./config-js)

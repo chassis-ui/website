@@ -1,0 +1,15 @@
+---
+import { getChassisCssProps } from '@libs/chassis'
+import { getChassisDocsPath } from '@libs/path'
+import type { Layout } from '@libs/layout'
+
+interface Props {
+  direction?: 'rtl'
+  layout: Layout
+}
+
+const { direction } = Astro.props
+---
+
+<link {...getChassisCssProps(direction)} />
+<link rel="stylesheet" href={`/assets/icons/chassis-icons.min.css`} />

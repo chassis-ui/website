@@ -1,0 +1,89 @@
+---
+import { getData } from '@libs/data'
+import { getConfig } from '@libs/config'
+import { docsPages } from '@libs/content'
+import { getSlug } from '../libs/utils'
+
+const sidebar = getData('sidebar')
+---
+
+<nav class="cxd-links w-100" id="cxd-docs-nav" aria-label="Docs navigation">
+  <ul class="cxd-links-nav bulletless">
+    {
+      sidebar.map((group) => {
+        const groupSlug = getSlug(group.title)
+
+        if (group.pages) {
+          return (
+            <li
+              class:list={[
+                'cxd-links-group',
+                groupSlug === Astro.params.slug?.split('/')[0] ? 'active' : undefined
+              ]}
+            >
+              <strong class="cxd-links-heading">
+                {group.icon && (
+                  <svg
+                    class="icon"
+                    style={group.icon_color && `color: var(--cx-${group.icon_color});`}
+                    aria-hidden="true"
+                  >
+                    <use xlink:href={`#${group.icon}`} />
+                  </svg>
+                )}
+                {group.title}
+              </strong>
+              <ul>
+                {group.pages?.map((page) => {
+                  const docSlug = getSlug(page.title)
+                  const unversionedPageSlug = `${groupSlug}/${docSlug}`
+
+                  const url = `${getConfig().docsPath}/${unversionedPageSlug}`
+                  const active = Astro.params.slug === unversionedPageSlug
+
+                  const generatedPage = docsPages.find((page) => page.id === unversionedPageSlug)
+
+                  // This test should not be necessary, see comments for `getSlug()` in `src/libs/utils.ts`.
+                  if (!generatedPage) {
+                    throw new Error(
+                      `The page '${page.title}' referenced in 'packages/websitedata/sidebar.yml' does not exist at '${url}'.`
+                    )
+                  }
+
+                  return (
+                    <li>
+                      <a
+                        href={url}
+                        class:list={['cxd-links-link', { active }]}
+                        aria-current={active ? 'page' : undefined}
+                      >
+                        {page.title}
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
+            </li>
+          )
+        } else {
+          const active = Astro.params.slug === groupSlug
+
+          return (
+            <>
+              <li class="cxd-links-span-all mt-2xsmall mb-medium mx-large border-top" />
+              <li class="cxd-links-span-all">
+                <a
+                  href={`/docs/${groupSlug}/`}
+                  class:list={['cxd-links-link d-inline-block rounded small', { active }]}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {group.title}
+                </a>
+              </li>
+            </>
+          )
+        }
+      })
+    }
+  </ul>
+</nav>

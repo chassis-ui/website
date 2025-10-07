@@ -1,0 +1,15 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@css/*": ["@ozgurgunes/chassis-css/dist/*"],
+      "@icons/*": ["@ozgurgunes/chassis-icons/dist/*"],
+      "@assets/*": ["src/assets/*"],
+      "@components/*": ["src/components/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@libs/*": ["src/libs/*"],
+      "@shortcodes/*": ["@ozgurgunes/chassis-docs/components/shortcodes/*"]
+    }
+  }
+}

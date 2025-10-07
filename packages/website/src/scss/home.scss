@@ -1,0 +1,393 @@
+// =============================================================================
+// HOME PAGE STYLES
+// =============================================================================
+
+@use "sass:meta";
+@use "sass:math";
+
+// -----------------------------------------------------------------------------
+// DESIGN TOKENS
+// -----------------------------------------------------------------------------
+
+@use "@ozgurgunes/chassis-tokens/dist/web/chassis-docs/number-large" as large;
+@use "@ozgurgunes/chassis-tokens/dist/web/chassis-docs/number-medium" as medium;
+@use "@ozgurgunes/chassis-tokens/dist/web/chassis-docs/number-small" as small;
+
+// -----------------------------------------------------------------------------
+// DEPENDENCIES
+// -----------------------------------------------------------------------------
+
+// @import "settings";
+@import "@ozgurgunes/chassis-tokens/dist/web/chassis-docs/base";
+@import "@ozgurgunes/chassis-docs/scss/settings";
+
+@import "@ozgurgunes/chassis-css/scss/functions";
+@import "@ozgurgunes/chassis-css/scss/tokens";
+@import "@ozgurgunes/chassis-css/scss/variables";
+@import "@ozgurgunes/chassis-css/scss/rfs";
+@import "@ozgurgunes/chassis-css/scss/maps";
+@import "@ozgurgunes/chassis-css/scss/mixins";
+// @import "@ozgurgunes/chassis-css/scss/grid";
+
+// -----------------------------------------------------------------------------
+// UTILITY FUNCTIONS
+// -----------------------------------------------------------------------------
+
+/// Remove the unit from a number
+/// @param {Number} $number - Number to remove unit from
+/// @return {Number} - Unitless number
+@function strip-unit($number) {
+  @if type-of($number) == "number" and not unitless($number) {
+    @return math.div($number, $number * 0 + 1);
+  }
+  @return $number;
+}
+
+/// Convert a number to viewport width units with scaling
+/// @param {Number} $number - Base number value
+/// @param {Number} $multiplier - Scaling multiplier
+/// @return {String} - Value in vw units
+@function unit-vw($number, $multiplier: 1) {
+  @if type-of($number) == "number" and unitless($number) {
+    @return #{$number * $multiplier}vw;
+  } @else if type-of($number) == "number" {
+    @return #{strip-unit($number) * $multiplier}vw;
+  } @else {
+    @return $number; // Return as-is if not a number
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVE VARIABLES
+// -----------------------------------------------------------------------------
+
+// Map of CSS variable names to SCSS variable names that should be converted
+$responsive-variables: (
+  "font-size-hero-title":       "cx-typography-font-size-screen-hero-title",
+  "font-size-hero-body":        "cx-typography-font-size-screen-hero-body",
+  "font-size-section-title":    "cx-typography-font-size-screen-section-title",
+  "font-size-section-body":     "cx-typography-font-size-screen-section-body",
+  "font-size-feature-title":    "cx-typography-font-size-screen-feature-title",
+  "font-size-feature-body":     "cx-typography-font-size-screen-feature-body",
+  "space-context-large":        "cx-space-context-large",
+  "space-context-medium":       "cx-space-context-medium",
+  "space-context-small":        "cx-space-context-small",
+  "section-gap-y":              "cx-space-screen-section-gap-y",
+  "section-gap-x":              "cx-space-screen-section-gap-x",
+  "section-padding-x":          "cx-space-screen-section-padding-x",
+  "section-padding-y":          "cx-space-screen-section-padding-y",
+  "content-gap-y":              "cx-space-screen-content-gap-y",
+  "content-gap-x":              "cx-space-screen-content-gap-x",
+  "content-padding-x":          "cx-space-screen-content-padding-x",
+  "content-padding-y":          "cx-space-screen-content-padding-y",
+  "feature-gap-y":              "cx-space-screen-feature-gap-y",
+  "feature-gap-x":              "cx-space-screen-feature-gap-x",
+  "feature-padding-x":          "cx-space-screen-feature-padding-x",
+  "feature-padding-y":          "cx-space-screen-feature-padding-y",
+  "module-gap-y":               "cx-space-screen-module-gap-y",
+  "module-gap-x":               "cx-space-screen-module-gap-x",
+  "module-padding-x":           "cx-space-screen-module-padding-x",
+  "module-padding-y":           "cx-space-screen-module-padding-y",
+  "size-section-thumb":         "cx-size-screen-section-thumb",
+  "size-section-icon":          "cx-size-screen-section-icon",
+  "size-feature-thumb":         "cx-size-screen-feature-thumb",
+  "size-feature-icon":          "cx-size-screen-feature-icon",
+  "size-section-w":             "cx-size-screen-section-w",
+  "button-padding-y":           "cx-size-base-12",
+  "button-padding-x":           "cx-size-base-32",
+  "button-font-size":           "cx-typography-font-size-screen-section-body",
+  "input-font-size":            "cx-typography-font-size-screen-section-body",
+  // "code-font-size":             "cx-typography-font-size-screen-feature-body",
+  "radius-large":               "cx-border-radius-context-large",
+  "radius-medium":              "cx-border-radius-context-medium"
+);
+
+$large-vars: meta.module-variables("large");
+$medium-vars: meta.module-variables("medium");
+$small-vars: meta.module-variables("small");
+
+.home-body {
+  // Subtract fixed header height (64px) from full viewport height
+  --#{$prefix}vh-full: #{calc(100vh - 64px)};
+  --#{$prefix}code-line-height: 1.5em;
+
+  // Convert selected medium namespace variables to CSS custom properties
+  @each $css-name, $scss-name in $responsive-variables {
+    @if map-has-key($large-vars, $scss-name) {
+      $value: map-get($large-vars, $scss-name);
+      --#{$prefix}#{$css-name}: #{unit-vw($value, 1)};
+    }
+  }
+
+  // Large screens: scale up for better proportion
+  @include media-breakpoint-down(large) {
+    @each $css-name, $scss-name in $responsive-variables {
+      @if map-has-key($medium-vars, $scss-name) {
+        $value: map-get($medium-vars, $scss-name);
+        --#{$prefix}#{$css-name}: #{unit-vw($value, 2)};
+      }
+    }
+  }
+
+  // Small screens: increase scaling for better readability
+  @include media-breakpoint-down(small) {
+    @each $css-name, $scss-name in $responsive-variables {
+      @if map-has-key($small-vars, $scss-name) {
+        $value: map-get($small-vars, $scss-name);
+        --#{$prefix}#{$css-name}: #{unit-vw($value, 4)};
+      }
+    }
+  }
+}
+
+.min-vh-full {
+  min-height: var(--#{$prefix}vh-full);
+}
+.vh-full {
+  height: var(--#{$prefix}vh-full);
+}
+
+// -----------------------------------------------------------------------------
+// TYPOGRAPHY
+// -----------------------------------------------------------------------------
+
+.hero-title {
+  font-family: var(--#{$prefix}font-family-text);
+  @include font-size(var(--#{$prefix}font-size-hero-title));
+  @include line-height(1.25em);
+}
+.hero-body {
+  font-family: var(--#{$prefix}font-family-text);
+  @include font-size(var(--#{$prefix}font-size-hero-body));
+  @include line-height(1.5em);
+}
+.section-title {
+  // margin-bottom: var(--#{$prefix}feature-gap-y);
+  font-family: var(--#{$prefix}font-family-text);
+  @include font-size(var(--#{$prefix}font-size-section-title));
+  @include line-height(1.25em);
+}
+.section-body {
+  font-family: var(--#{$prefix}font-family-text);
+  @include font-size(var(--#{$prefix}font-size-section-body));
+  @include line-height(1.5em);
+}
+.feature-title {
+  font-family: var(--#{$prefix}font-family-text);
+  @include font-size(var(--#{$prefix}font-size-feature-title));
+  @include line-height(1.25em);
+}
+.feature-body {
+  margin-bottom: 0;
+  font-family: var(--#{$prefix}font-family-text);
+  @include font-size(var(--#{$prefix}font-size-feature-body));
+  @include line-height(1.5em);
+}
+.module-title {
+  font-family: var(--#{$prefix}font-family-text);
+  @include font-size(var(--#{$prefix}font-size-module-title));
+  @include line-height(1.5em);
+}
+
+// -----------------------------------------------------------------------------
+// LAYOUT
+// -----------------------------------------------------------------------------
+
+.home-section {
+  @include make-container(var(--#{$prefix}section-gap-x));
+  display: flex;
+  flex-direction: column;
+  gap: var(--#{$prefix}section-gap-y);
+  min-height: var(--#{$prefix}vh-full);
+  padding: var(--#{$prefix}section-padding-y) var(--#{$prefix}section-padding-x);
+  overflow: hidden;
+}
+
+.section-content {
+  @include make-row(var(--#{$prefix}section-gap-x));
+}
+
+.section-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--#{$prefix}content-gap-y);
+  @include make-col-ready();
+  @include media-breakpoint-up(large) {
+    @include make-col(7);
+    .reverse & {
+      @include make-col(5);
+    }
+  }
+}
+
+.section-aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--#{$prefix}content-gap-y);
+  @include make-col-ready();
+  @include media-breakpoint-up(large) {
+    @include make-col(5);
+    .reverse & {
+      @include make-col(7);
+    }
+  }
+}
+
+.section-features {
+  @include make-row(var(--#{$prefix}content-gap-x));
+  > .feature-col {
+    --#{$prefix}gutter-y: var(--#{$prefix}content-gap-y);
+    @include make-col-ready();
+    @include media-breakpoint-up(large) {
+      @include make-col(4);
+    }
+  }
+}
+
+.hero-section {
+  .section-intro,
+  .section-features {
+    @include make-col-ready();
+    @include media-breakpoint-up(large) {
+      @include make-col(10);
+      @include make-col-offset(1);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// COMPONENTS
+// -----------------------------------------------------------------------------
+
+
+.feature-item {
+  display: flex;
+  .section-content & {
+    gap: var(--#{$prefix}feature-gap-x);
+    padding: var(--#{$prefix}feature-padding-y) var(--#{$prefix}feature-padding-x);
+    border-top: var(--#{$prefix}border-width) solid var(--#{$prefix}border-subtle);
+  }
+  .section-features & {
+    flex-direction: column;
+    gap: var(--#{$prefix}feature-gap-y);
+  }
+}
+
+
+.module-item {
+  display: flex;
+  gap: var(--#{$prefix}module-gap-x);
+  align-items: center;
+  padding: var(--#{$prefix}module-padding-y) var(--#{$prefix}module-padding-x);
+  border: 1px solid var(--#{$prefix}border-subtle);
+  .icon-img {
+    width: var(--#{$prefix}size-feature-thumb);
+    height: var(--#{$prefix}size-feature-thumb);
+  }
+}
+
+%thumb {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  background: var(--#{$prefix}primary-bg-main);
+  @include border-radius(8px);
+}
+
+.section-thumb {
+  @extend %thumb;
+  width: var(--#{$prefix}size-section-thumb);
+  height: var(--#{$prefix}size-section-thumb);
+}
+
+.section-icon {
+  --#{$prefix}icon-size: var(--#{$prefix}size-feature-icon);
+}
+
+.feature-thumb {
+  @extend %thumb;
+  width: var(--#{$prefix}size-feature-thumb);
+  height: var(--#{$prefix}size-feature-thumb);
+}
+
+.feature-icon {
+  --#{$prefix}icon-size: var(--#{$prefix}size-feature-icon);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.section-media {
+  position: relative;
+  width: var(--#{$prefix}section-image-w, 40vw);
+  // margin-top: #{calc(var(--#{$prefix}section-gap-x) * -1)};
+  // margin-left: var(--#{$prefix}section-gap-x);
+}
+
+.working-command {
+  display: flex;
+  flex-direction: row;
+  margin: 1em 0;
+
+  .icon {
+    animation: spin 1.5s linear infinite;
+
+  }
+
+  &::before,
+  &::after {
+    flex: 1 1;
+    margin: auto;
+    content: "";
+    border-bottom: 1px solid var(--#{$prefix}border-subtle);
+  }
+  &::before {
+    margin-right: 1rem;
+  }
+  &::after {
+    margin-left: 1rem;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// OVERRIDES
+// -----------------------------------------------------------------------------
+
+.form-field {
+  margin-bottom: var(--#{$prefix}space-medium);
+}
+
+.form-label {
+  --#{$prefix}font-size: var(--#{$prefix}input-font-size);
+}
+
+.home-section .cxd-code-snippet {
+  --#{$prefix}icon-color: var(--#{$prefix}fg-color);
+  // --#{$prefix}icon-size: 1.5em;
+  background-color: var(--#{$prefix}bg-even);
+  border: 0;
+
+  .token.comment {
+    color: var(--#{$prefix}fg-subtle);
+  }
+
+
+  > ul > li:not(:last-child) {
+    margin-bottom: .5em;
+  }
+}
+
+.home-body .navbar,
+.home-body .cxd-footer {
+  padding: 0 var(--#{$prefix}section-padding-x);
+  > .container-fluid {
+    padding: 0;
+  }
+}

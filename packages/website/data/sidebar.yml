@@ -1,0 +1,29 @@
+# This file holds all sidebar menu's entries for Chassis Icons.
+
+- title: Getting Started
+  icon: rocket-solid
+  icon_color: yellow
+  pages:
+    - title: Introduction
+
+- title: Tokens Studio
+  icon: swatchbook-solid
+  icon_color: yellow
+  pages:
+    - title: Figma Tokens
+
+- title: Style Dictionary
+  icon: gear-solid
+  icon_color: indigo
+  pages:
+    - title: Token Transforms
+
+- title: Build Scripts
+  icon: file-solid
+  icon_color: indigo
+  pages:
+    - title: overview
+    - title: build js
+    - title: config js
+    - title: filters js
+    - title: formats js

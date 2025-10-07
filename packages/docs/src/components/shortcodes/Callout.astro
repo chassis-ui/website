@@ -1,0 +1,37 @@
+---
+import { getCalloutByName, type CalloutName } from '@libs/content'
+import { render } from 'astro:content'
+import type { MarkdownInstance } from 'astro'
+
+interface Props {
+  /**
+   * The name of an existing callout to display located in `src/content/callouts`.
+   * This will override any content passed in via the default slot.
+   */
+  name?: CalloutName
+  /**
+   * The type of callout to display. One of `info`, `danger`, or `warning`.
+   * @default 'info'
+   */
+  type?: 'danger' | 'info' | 'warning'
+}
+
+const { name, type = 'info' } = Astro.props
+
+let Content: MarkdownInstance<{}>['Content'] | undefined
+
+if (name) {
+  const callout = await getCalloutByName(name)
+
+  if (!callout) {
+    throw new Error(`Could not find callout with name '${name}'.`)
+  }
+
+  const namedCallout = await render(callout)
+  Content = namedCallout.Content
+}
+---
+
+<div class={`cxd-callout cxd-callout-${type} context ${type}`}>
+  {Content ? <Content /> : <slot />}
+</div>

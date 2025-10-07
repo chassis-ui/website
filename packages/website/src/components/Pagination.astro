@@ -1,0 +1,52 @@
+---
+export interface Props {
+  page: any
+  baseUrl: string
+  ariaLabel?: string
+}
+
+const { page, baseUrl, ariaLabel = 'Blog pagination' } = Astro.props
+
+// Generate URL for a specific page number
+function getPageUrl(pageNum: number): string {
+  return pageNum === 1 ? baseUrl : `${baseUrl}/${pageNum}`
+}
+---
+
+{
+  page.lastPage > 1 && (
+    <nav aria-label={ariaLabel} class="d-flex justify-content-center">
+      <ul class="pagination">
+        {page.url.prev && (
+          <li class="page-item">
+            <a href={page.url.prev} class="page-link" aria-label="Previous page">
+              ← Previous
+            </a>
+          </li>
+        )}
+
+        {Array.from({ length: page.lastPage }, (_, i) => i + 1).map((pageNum) => (
+          <li class={`page-item ${pageNum === page.currentPage ? 'active' : ''}`}>
+            {pageNum === page.currentPage ? (
+              <span class="page-link" aria-current="page">
+                {pageNum}
+              </span>
+            ) : (
+              <a href={getPageUrl(pageNum)} class="page-link" aria-label={`Page ${pageNum}`}>
+                {pageNum}
+              </a>
+            )}
+          </li>
+        ))}
+
+        {page.url.next && (
+          <li class="page-item">
+            <a href={page.url.next} class="page-link" aria-label="Next page">
+              Next →
+            </a>
+          </li>
+        )}
+      </ul>
+    </nav>
+  )
+}
