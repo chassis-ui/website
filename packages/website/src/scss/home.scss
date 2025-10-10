@@ -97,7 +97,7 @@ $responsive-variables: (
   "button-padding-x":           "cx-size-base-32",
   "button-font-size":           "cx-typography-font-size-screen-section-body",
   "input-font-size":            "cx-typography-font-size-screen-section-body",
-  // "code-font-size":             "cx-typography-font-size-screen-feature-body",
+  "code-font-size":             "cx-typography-font-size-screen-feature-body",
   "radius-large":               "cx-border-radius-context-large",
   "radius-medium":              "cx-border-radius-context-medium"
 );
@@ -329,6 +329,10 @@ $small-vars: meta.module-variables("small");
   width: var(--#{$prefix}section-image-w, 40vw);
   // margin-top: #{calc(var(--#{$prefix}section-gap-x) * -1)};
   // margin-left: var(--#{$prefix}section-gap-x);
+  @include media-breakpoint-down(large) {
+    width: 100%;
+  }
+
 }
 
 .working-command {
@@ -389,5 +393,22 @@ $small-vars: meta.module-variables("small");
   padding: 0 var(--#{$prefix}section-padding-x);
   > .container-fluid {
     padding: 0;
+  }
+}
+
+.home-body .cxd-code-snippet {
+  --cx-icon-size: 1em;
+  .highlight {
+    padding: var(--#{$prefix}space-context-large);
+  }
+  pre {
+    padding: 0;
+    margin: 0;
+  }
+  > .cxd-clipboard {
+    display: none;
+  }
+  h5 {
+    @include font-size(var(--#{$prefix}code-font-size));
   }
 }

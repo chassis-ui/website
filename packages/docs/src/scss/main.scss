@@ -88,17 +88,3 @@ $enable-cssgrid: true;
 [data-cx-theme="light"] .display-dark {
   display: none;
 }
-
-.section-main {
-  width: 592px;
-}
-
-.min-vh-full {
-  min-height: #{calc(100vh - 64px)};
-}
-.vh-50 {
-  height: 50vh;
-}
-.vh-75 {
-  height: 75vh;
-}

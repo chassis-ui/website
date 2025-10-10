@@ -10,9 +10,9 @@ import Tokens from '@layouts/home/TokensSection.astro'
 import Contact from '@layouts/home/ContactSection.astro'
 import Icons from '@layouts/home/HomeIcons.svg?raw'
 import type { LayoutOverridesHTMLAttributes } from '@ozgurgunes/chassis-docs'
+import '../scss/home.scss'
 
 const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
-
 bodyProps['class'] = 'home-body'
 ---
 
@@ -26,12 +26,8 @@ bodyProps['class'] = 'home-body'
   <Tokens />
   <Contact />
   <div class="d-none"><Fragment set:html={Icons} /></div>
+
+  <Fragment slot="scripts">
+    <script src="@assets/home-simple.js"></script>
+  </Fragment>
 </BaseLayout>
-<Fragment slot="scripts">
-  <script src="@assets/home.js"></script>
-</Fragment>
-<Fragment slot="styles">
-  <style is:global lang="scss">
-    @import '../scss/home.scss';
-  </style>
-</Fragment>

@@ -4,9 +4,10 @@ import { docsPages } from '@libs/content'
 import { getConfig } from '@libs/config'
 import { Code } from '@ozgurgunes/chassis-docs/components'
 import { render } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
 
 export async function getStaticPaths() {
-  return docsPages.map((docsPage) => {
+  return docsPages.map((docsPage: CollectionEntry<'docs'>) => {
     return {
       params: { slug: docsPage.id },
       props: docsPage

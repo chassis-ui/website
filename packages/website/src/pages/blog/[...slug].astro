@@ -1,19 +1,20 @@
 ---
 import { render } from 'astro:content'
 import BlogLayout from '@layouts/BlogLayout.astro'
-import { getConfig } from '@libs/config'
 import { blogPages } from '@libs/content'
 import { Code } from '@ozgurgunes/chassis-docs/components'
+import type { CollectionEntry } from 'astro:content'
 
 export async function getStaticPaths() {
-  return blogPages.map((blogPage) => {
+  return blogPages.map((blogPage: CollectionEntry<'blog'>) => {
+    // Ensure blogPage is an object, not an array
     const pubDate = new Date(blogPage.data.pubDate || Date.now())
     const year = pubDate.getFullYear()
     const month = String(pubDate.getMonth() + 1).padStart(2, '0')
     const day = String(pubDate.getDate()).padStart(2, '0')
 
     // Extract slug from the file path (remove year folder and extension)
-    const slug = blogPage.id.replace(/^\d{4}\//, '').replace(/\.(md|mdx)$/, '')
+    const slug = blogPage.id.replace(/^\d{4}\//, '')
 
     return {
       params: { slug: `${year}/${month}/${day}/${slug}` },
@@ -23,14 +24,14 @@ export async function getStaticPaths() {
 }
 
 type Props = {
-  blogPage: any
+  blogPage: CollectionEntry<'blog'>
 }
 
 const { blogPage } = Astro.props as Props
 const { id, data } = blogPage
 
 // Use the render function from astro:content for custom loaders
-const { Content, headings, remarkPluginFrontmatter } = await render(blogPage)
+const { Content } = await render(blogPage)
 ---
 
 <BlogLayout frontmatter={{ description: data.description, title: data.title }} id={id}>
@@ -62,8 +63,8 @@ const { Content, headings, remarkPluginFrontmatter } = await render(blogPage)
     </header>
     <div class="mb-medium">
       <img
-        src={data.image || '/assets/logo/chassis-logo-brand-banner.svg'}
-        alt={data.title}
+        src={data.image?.url || '/assets/logo/chassis-logo-brand-banner.svg'}
+        alt={data.image?.alt || data.title}
         class="image rounded image-fluid w-100"
       />
     </div>

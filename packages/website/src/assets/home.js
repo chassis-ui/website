@@ -133,7 +133,7 @@ class HomeAnimations {
 
   createSectionAnimation(section) {
     const features = section.querySelectorAll('.features > .feature-item')
-    const asideItems = section.querySelectorAll('.section-aside > .media-stack > *')
+    const asideItems = section.querySelectorAll('.section-aside > .aside-contents > *')
 
     if (features.length === 0) {
       return // Skip sections without features
@@ -189,7 +189,7 @@ class HomeAnimations {
   }
 
   setupAsideItems(section, asideItems) {
-    const asideContainer = section.querySelectorAll('.section-aside > .media-stack')
+    const asideContainer = section.querySelectorAll('.section-aside > .aside-contents')
 
     if (asideContainer) {
       gsap.set(asideContainer, { position: 'relative' })
