@@ -40,7 +40,15 @@ interface Props {
   nestedInExample?: boolean
 }
 
-const { class: className, code, containerClass, fileMatch, filePath, lang, nestedInExample } = Astro.props
+const {
+  class: className,
+  code,
+  containerClass,
+  fileMatch,
+  filePath,
+  lang,
+  nestedInExample
+} = Astro.props
 
 let codeToDisplay = filePath
   ? fs.readFileSync(path.join(process.cwd(), filePath), 'utf8')
@@ -150,13 +158,9 @@ if (filePath && fileMatch && codeToDisplay) {
 
 <div class:list={[{ 'cxd-code-snippet': !nestedInExample }, containerClass]}>
   {
-    nestedInExample
-      ? (<></>)
-      : Astro.slots.has('pre')
-        ? (
-          <slot name="pre" />
-        )
-        : (
+    nestedInExample ? null : Astro.slots.has('pre') ? (
+      <slot name="pre" />
+    ) : (
       <div class="cxd-clipboard">
         <button type="button" class="button-clipboard">
           <svg class="icon" role="img" aria-label="Copy">
@@ -164,7 +168,7 @@ if (filePath && fileMatch && codeToDisplay) {
           </svg>
         </button>
       </div>
-        )
+    )
   }
   <div class="highlight">
     {

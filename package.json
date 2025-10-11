@@ -1,31 +1,42 @@
 {
-  "name": "chassis",
+  "name": "chassis-website-monorepo",
   "version": "1.0.0",
   "description": "Central documentation and showcase website for Chassis Design System",
   "type": "module",
   "scripts": {
     "build": "node build/build-site.js all",
     "clean": "node build/build-site.js clean",
-    "dev": "pnpm --filter chassis-website dev",
-    "dev:docs": "pnpm --filter @ozgurgunes/chassis-docs dev",
+    "dev": "pnpm astro:dev",
+    "preview": "pnpm astro:preview",
+    "validate": "node build/build-site.js validate",
+
     "build:website": "pnpm --filter chassis-website build",
     "build:docs": "pnpm --filter @ozgurgunes/chassis-docs build",
-    "preview": "pnpm --filter chassis-website preview",
-    "test": "echo \"No tests specified\" && exit 0",
-    "validate": "node build/build.js validate",
-    "site": "pnpm site:build && pnpm site:lint",
+
+    "site": "pnpm site:build && pnpm site:lint:vnu",
     "site:build": "node build/build-site.js",
-    "site:format": "prettier --write --cache packages/website/",
-    "site:lint": "pnpm site:lint:prettier && pnpm site:lint:vnu",
-    "site:lint:prettier": "prettier -c --cache packages/website/",
+    "site:lint": "pnpm site:lint:eslint && pnpm site:lint:stylelint && pnpm site:lint:prettier && pnpm site:lint:vnu",
+    "site:lint:eslint": "eslint --cache --cache-location .cache/.eslintcache --report-unused-disable-directives packages/website",
+    "site:lint:stylelint": "stylelint --cache --cache-location .cache/.stylelintcache packages/website/\"**/*.{css,scss}\"",
+    "site:lint:prettier": "prettier -c --cache packages/website",
     "site:lint:vnu": "node build/vnu-jar.js",
+    "site:format": "prettier --write --cache packages/website/",
+
+    "docs:lint": "pnpm docs:lint:eslint && pnpm docs:lint:stylelint && pnpm docs:lint:prettier",
+    "docs:lint:eslint": "eslint --cache --cache-location .cache/.eslintcache --report-unused-disable-directives packages/docs",
+    "docs:lint:stylelint": "stylelint --cache --cache-location .cache/.stylelintcache packages/docs/\"**/*.{css,scss}\"",
+    "docs:lint:prettier": "prettier -c --cache packages/docs",
+    "docs:format": "prettier --write --cache packages/docs/",
+
     "astro:dev": "pnpm --filter chassis-website astro dev --port 4321",
     "astro:build": "pnpm --filter chassis-website astro build",
     "astro:preview": "pnpm --filter chassis-website astro preview",
+
     "check": "pnpm check:code & pnpm check:lockfile & pnpm check:pnpm & wait",
-    "check:code": "pnpm site:lint",
+    "check:code": "pnpm docs:lint && pnpm site:lint",
     "check:lockfile": "lockfile-lint --allowed-hosts npm --allowed-schemes https: --empty-hostname false --type npm --path package-lock.json",
     "check:pnpm": "pnpm audit --audit-level moderate",
+
     "release:version": "node build/change-version.js",
     "sync:submodules": "node build/sync-submodules.js"
   },

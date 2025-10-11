@@ -2,7 +2,7 @@ import type { HTMLAttributes } from 'astro/types'
 import { getConfig } from '@libs/config'
 
 export function getChassisCssProps(direction: 'rtl' | undefined) {
-  let cxCssLinkHref = '/assets/css/chassis'
+  let cxCssLinkHref = '/static/css/chassis'
 
   if (direction === 'rtl') {
     cxCssLinkHref = `${cxCssLinkHref}.rtl`
@@ -29,7 +29,7 @@ export function getChassisCssProps(direction: 'rtl' | undefined) {
 }
 
 export function getChassisJsProps() {
-  let cxJsScriptSrc = '/assets/js/chassis.bundle'
+  let cxJsScriptSrc = '/static/js/chassis.bundle'
 
   if (import.meta.env.PROD) {
     cxJsScriptSrc = `${cxJsScriptSrc}.min`

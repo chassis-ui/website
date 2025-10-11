@@ -10,8 +10,7 @@
  */
 
 import docsearch from '@docsearch/js'
-
-(() => {
+;(() => {
   // These values will be replaced by Astro's Vite plugin
   const CONFIG = {
     apiKey: '__API_KEY__',
@@ -36,15 +35,15 @@ import docsearch from '@docsearch/js'
       facetFilters: [`version:${siteDocsVersion}`]
     },
     transformItems(items) {
-      return items.map(item => {
+      return items.map((item) => {
         const liveUrl = 'https://chassis-ui.com/'
 
-        item.url = window.location.origin.startsWith(liveUrl) ?
-          // On production, return the result as is
-          item.url :
-          // On development or Netlify, replace `item.url` with a trailing slash,
-          // so that the result link is relative to the server root
-          item.url.replace(liveUrl, '/')
+        item.url = window.location.origin.startsWith(liveUrl)
+          ? // On production, return the result as is
+            item.url
+          : // On development or Netlify, replace `item.url` with a trailing slash,
+            // so that the result link is relative to the server root
+            item.url.replace(liveUrl, '/')
 
         // Prevent jumping to first header
         if (item.anchor === 'content') {

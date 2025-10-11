@@ -196,7 +196,7 @@ export interface PlaceholderOptions {
    */
   background: string
   /**
-   * CSS classes to append to `cxd-placeholder-img` for the `svg` or `img` elements.
+   * CSS classes to append to `cxd-placeholder-image` for the `svg` or `img` elements.
    */
   class?: string
   /**
@@ -215,13 +215,13 @@ export interface PlaceholderOptions {
    */
   markup: 'img' | 'svg'
   /**
-   * The text to show in the image. You can explicitely pass the `false` boolean value (and not the string "false") to
+   * The text to show in the image. You can explicitly pass the `false` boolean value (and not the string "false") to
    * hide the text.
    * @default "${width}x{$height)"
    */
   text: string | false
   /**
-   * Used in the SVG `title` tag. You can explicitely pass the `false` boolean value (and not the string "false") to
+   * Used in the SVG `title` tag. You can explicitly pass the `false` boolean value (and not the string "false") to
    * hide the title.
    * @default "Placeholder"
    */

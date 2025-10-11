@@ -1,4 +1,6 @@
 # Prettier ignore
+*.css
+*.scss
 packages/website/config.yml
 # packages/website/src/assets
 packages/website/content

@@ -4,7 +4,7 @@ import sizeOf from 'image-size'
 import { getDocsStaticFsPath, getDocsPublicFsPath } from './path'
 
 export async function getStaticImageSize(imagePath: string) {
-  const fullPath = path.join(getDocsPublicFsPath(), 'assets', imagePath)
+  const fullPath = path.join(getDocsPublicFsPath(), 'static', imagePath)
   const buffer = await fs.readFile(fullPath)
   const size = await sizeOf(buffer)
 

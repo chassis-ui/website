@@ -18,7 +18,7 @@
   const CACHE_KEY = 'chassis-icons-sprite'
   const VERSION_KEY = 'chassis-icons-version'
   const CURRENT_VERSION = '1.0.0' // Update when icons change
-  const SVG_URL = '/assets/icons/chassis-icons.svg' // Icons SVG sprite path
+  const SVG_URL = '/static/icons/chassis-icons.svg' // Icons SVG sprite path
 
   // State management
   let loadPromise = null

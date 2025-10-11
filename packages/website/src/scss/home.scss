@@ -62,6 +62,8 @@
 // -----------------------------------------------------------------------------
 
 // Map of CSS variable names to SCSS variable names that should be converted
+
+/* prettier-ignore */
 $responsive-variables: (
   "font-size-hero-title":       "cx-typography-font-size-screen-hero-title",
   "font-size-hero-body":        "cx-typography-font-size-screen-hero-body",
@@ -259,7 +261,6 @@ $small-vars: meta.module-variables("small");
 // COMPONENTS
 // -----------------------------------------------------------------------------
 
-
 .feature-item {
   display: flex;
   .section-content & {
@@ -272,7 +273,6 @@ $small-vars: meta.module-variables("small");
     gap: var(--#{$prefix}feature-gap-y);
   }
 }
-
 
 .module-item {
   display: flex;
@@ -332,7 +332,6 @@ $small-vars: meta.module-variables("small");
   @include media-breakpoint-down(large) {
     width: 100%;
   }
-
 }
 
 .working-command {
@@ -342,7 +341,6 @@ $small-vars: meta.module-variables("small");
 
   .icon {
     animation: spin 1.5s linear infinite;
-
   }
 
   &::before,
@@ -381,7 +379,6 @@ $small-vars: meta.module-variables("small");
   .token.comment {
     color: var(--#{$prefix}fg-subtle);
   }
-
 
   > ul > li:not(:last-child) {
     margin-bottom: .5em;

@@ -92,7 +92,7 @@ function cleanPublicDirectory() {
 
 function copyChassisAssets() {
   const source = getChassisAssetsFsPath()
-  const destination = path.join(getDocsPublicFsPath(), 'assets')
+  const destination = path.join(getDocsPublicFsPath(), 'static')
 
   // fs.mkdirSync(destination, { recursive: true })
   // copyStaticRecursively(source, destination)
@@ -102,7 +102,7 @@ function copyChassisAssets() {
 
 function copyChassisCSS() {
   const source = getChassisCSSFsPath()
-  const destination = path.join(getDocsPublicFsPath(), 'assets')
+  const destination = path.join(getDocsPublicFsPath(), 'static')
 
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(source, destination, { recursive: true })
@@ -110,13 +110,13 @@ function copyChassisCSS() {
 
 // Copy the `icons` folder from the chassis-tokens repo to make it available from the `/icons` URL.
 function copyChassisIcons() {
-  const svgs_source = path.join(getChassisIconsFsPath(), 'svgs')
+  // const svgs_source = path.join(getChassisIconsFsPath(), 'svgs')
   const font_source = path.join(getChassisIconsFsPath(), 'font')
-  const destination = path.join(getDocsPublicFsPath(), 'assets', 'icons')
+  const destination = path.join(getDocsPublicFsPath(), 'static', 'icons')
 
   fs.mkdirSync(destination, { recursive: true })
+  // fs.cpSync(svgs_source, destination, { recursive: true })
   fs.cpSync(font_source, destination, { recursive: true })
-  fs.cpSync(svgs_source, destination, { recursive: true })
 }
 
 // Copy the content as-is of the `static` folder to make it available from the `/` URL.

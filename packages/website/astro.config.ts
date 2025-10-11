@@ -52,7 +52,7 @@ const site = getSiteUrl()
 export default defineConfig({
   outDir: '../../_site',
   build: {
-    assets: `assets`
+    assets: `static`
   },
   integrations: [chassis()],
   markdown: {
@@ -66,12 +66,12 @@ export default defineConfig({
       rollupOptions: {
         output: {
           // entryFileNames: 'js/[name]-[hash].js',
-          // chunkFileNames: 'assets/js/[name].[hash].js',
+          // chunkFileNames: 'static/js/[name].[hash].js',
           assetFileNames: (assetInfo) => {
             if (assetInfo.name?.endsWith('.css')) {
-              return 'assets/css/docs-[hash].css'
+              return 'static/css/docs-[hash].css'
             }
-            return 'assets/docs-[hash][extname]'
+            return 'static/docs-[hash][extname]'
           }
         }
       }
