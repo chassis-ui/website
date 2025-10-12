@@ -11,7 +11,7 @@ authors:                "Ozgur Gunes and Bootstrap contributors"
 current_version:        "0.1.0"
 docs_version:           "0.1"
 github_org:             "https://github.com/ozgurgunes"
-repo:                   "https://github.com/ozgurgunes/chassis-docs"
+repo:                   "https://github.com/chassis-ui/docs"
 x:                      "chassisui"
 
 analytics:
@@ -23,9 +23,9 @@ algolia:
   index_name:           "chassis-docs"
 
 download:
-  source:               "https://github.com/ozgurgunes/chassis-docs/archive/v0.1.0.zip"
-  dist:                 "https://github.com/ozgurgunes/chassis-docs/releases/download/v0.1.0/chassis-docs-0.1.0-dist.zip"
-  dist_examples:        "https://github.com/ozgurgunes/chassis-docs/releases/download/v0.1.0/chassis-docs-0.1.0-examples.zip"
+  source:               "https://github.com/chassis-ui/docs/archive/v0.1.0.zip"
+  dist:                 "https://github.com/chassis-ui/docs/releases/download/v0.1.0/chassis-docs-0.1.0-dist.zip"
+  dist_examples:        "https://github.com/chassis-ui/docs/releases/download/v0.1.0/chassis-docs-0.1.0-examples.zip"
 
 cdn:
   # See https://www.srihash.org for info on how to generate the hashes

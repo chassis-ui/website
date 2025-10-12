@@ -7,7 +7,7 @@ import type { AstroIntegration } from 'astro'
 import type { Element } from 'hast'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import { getConfig } from './config'
-import { configurePrism, rehypeCxTable } from '@ozgurgunes/chassis-docs'
+import { configurePrism, rehypeCxTable } from '@chassis-ui/docs'
 import { remarkCxConfig, remarkCxDocsref } from './remark'
 import {
   getDocsFsPath,

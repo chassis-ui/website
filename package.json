@@ -1,17 +1,37 @@
 {
   "name": "chassis-website-monorepo",
-  "version": "1.0.0",
-  "description": "Central documentation and showcase website for Chassis Design System",
+  "description": "Central documentation and showcase website for Chassis UI",
+  "private": true,
   "type": "module",
+  "workspaces": ["packages/*"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chassis-ui/website.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chassis-ui/website/issues"
+  },
+  "homepage": "https://chassis-ui.com",
+  "author": "Ozgur Gunes <o.gunes@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "design-system",
+    "chassis",
+    "documentation",
+    "css-framework",
+    "design-tokens",
+    "asset-distributor",
+    "icon-generator",
+    "figma",
+    "figma-components",
+    "multi-platform"
+  ],
   "scripts": {
     "build": "node build/build-site.js all",
     "clean": "node build/build-site.js clean",
     "dev": "pnpm astro:dev",
     "preview": "pnpm astro:preview",
     "validate": "node build/build-site.js validate",
-
-    "build:website": "pnpm --filter chassis-website build",
-    "build:docs": "pnpm --filter @ozgurgunes/chassis-docs build",
 
     "site": "pnpm site:build && pnpm site:lint:vnu",
     "site:build": "node build/build-site.js",
@@ -40,25 +60,6 @@
     "release:version": "node build/change-version.js",
     "sync:submodules": "node build/sync-submodules.js"
   },
-  "keywords": [
-    "design-system",
-    "chassis",
-    "documentation",
-    "css-framework",
-    "design-tokens",
-    "figma",
-    "multi-platform"
-  ],
-  "author": "Chassis Design System",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ozgurgunes/chassis-docs.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ozgurgunes/chassis-docs/issues"
-  },
-  "homepage": "https://chassis.design",
   "devDependencies": {
     "@eslint/js": "^9.36.0",
     "eslint": "^9.36.0",

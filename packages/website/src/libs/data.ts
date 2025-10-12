@@ -9,7 +9,7 @@ import {
   zVersionMajorMinor,
   zVersionSemver,
   capitalizeFirstLetter
-} from '@ozgurgunes/chassis-docs'
+} from '@chassis-ui/docs'
 
 // An object containing all the data types and their associated schema. The key should match the name of the data file
 // in the `./packages/website/data/` directory.

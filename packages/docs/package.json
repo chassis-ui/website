@@ -1,8 +1,32 @@
 {
-  "name": "@ozgurgunes/chassis-docs",
-  "version": "1.0.0",
-  "description": "Reusable Astro components and layouts for Chassis documentation sites",
+  "name": "@chassis-ui/docs",
+  "description": "Shared Astro components and layouts for Chassis documentation sites.",
+  "version": "0.1.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chassis-ui/website.git",
+    "directory": "packages/docs"
+  },
+  "bugs": {
+    "url": "https://github.com/chassis-ui/website/issues"
+  },
+  "homepage": "https://chassis-ui.com",
+  "author": "Ozgur Gunes <o.gunes@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "chassis",
+    "documentation",
+    "components",
+    "layouts",
+    "design-system"
+  ],
+  "files": [
+    "src",
+    "index.ts",
+    "README.md"
+  ],
   "main": "index.ts",
   "exports": {
     ".": "./index.ts",
@@ -14,35 +38,11 @@
     "./scss": "./src/scss/*",
     "./scss/settings": "./src/scss/_settings.scss"
   },
-  "files": [
-    "src",
-    "index.ts",
-    "README.md"
-  ],
-  "keywords": [
-    "astro",
-    "chassis",
-    "documentation",
-    "components",
-    "layouts",
-    "design-system"
-  ],
-  "author": "Chassis Design System",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ozgurgunes/chassis-docs.git",
-    "directory": "apps/docs"
-  },
-  "bugs": {
-    "url": "https://github.com/ozgurgunes/chassis-docs/issues"
-  },
-  "homepage": "https://chassisui.com",
   "peerDependencies": {
     "@astrojs/markdown-remark": "^4.0.0 || ^5.0.0",
-    "@ozgurgunes/chassis-css": "*",
-    "@ozgurgunes/chassis-icons": "*",
-    "@ozgurgunes/chassis-tokens": "*",
+    "@chassis-ui/css": "*",
+    "@chassis-ui/icons": "*",
+    "@chassis-ui/tokens": "*",
     "astro": "^4.0.0 || ^5.0.0",
     "clipboard": "^2.0.0",
     "prismjs": "^1.29.0"
@@ -53,9 +53,9 @@
     "@astrojs/prism": "^3.3.0",
     "@docsearch/css": "^3.9.0",
     "@docsearch/js": "^3.9.0",
-    "@ozgurgunes/chassis-css": "github:ozgurgunes/chassis-css#app/docs",
-    "@ozgurgunes/chassis-icons": "github:ozgurgunes/chassis-icons#staging",
-    "@ozgurgunes/chassis-tokens": "github:ozgurgunes/chassis-tokens#app/docs",
+    "@chassis-ui/css": "github:chassis-ui/css#app/docs",
+    "@chassis-ui/icons": "github:chassis-ui/icons#staging",
+    "@chassis-ui/tokens": "github:chassis-ui/tokens#app/docs",
     "@types/hast": "^3.0.4",
     "@types/prismjs": "^1.26.0",
     "astro": "^5.13.9",

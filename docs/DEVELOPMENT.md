@@ -28,7 +28,7 @@ This guide provides detailed information for developers working on the Chassis D
 
 2. **Clone with submodules**:
    ```bash
-   git clone --recursive git@github.com:ozgurgunes/chassis-docs.git
+   git clone --recursive git@github.com:chassis-ui/docs.git
    cd chassis-docs
    ```
 

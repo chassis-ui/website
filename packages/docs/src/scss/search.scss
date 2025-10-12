@@ -10,15 +10,15 @@ $prefix: cx- !default;
 //@import "../../../chassis-tokens/dist/tokens/web/chassis_docs_light";
 
 @import "settings";
-@import "@ozgurgunes/chassis-tokens/dist/web/chassis-docs/base";
+@import "@chassis-ui/tokens/dist/web/chassis-docs/base";
 
-@import "@ozgurgunes/chassis-css/scss/functions";
-@import "@ozgurgunes/chassis-css/scss/tokens";
-@import "@ozgurgunes/chassis-css/scss/variables";
-@import "@ozgurgunes/chassis-css/scss/rfs";
-@import "@ozgurgunes/chassis-css/scss/maps";
-@import "@ozgurgunes/chassis-css/scss/mixins";
-@import "@ozgurgunes/chassis-css/scss/grid";
+@import "@chassis-ui/css/scss/functions";
+@import "@chassis-ui/css/scss/tokens";
+@import "@chassis-ui/css/scss/variables";
+@import "@chassis-ui/css/scss/rfs";
+@import "@chassis-ui/css/scss/maps";
+@import "@chassis-ui/css/scss/mixins";
+@import "@chassis-ui/css/scss/grid";
 
 @import "variables";
 

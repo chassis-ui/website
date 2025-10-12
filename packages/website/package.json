@@ -1,8 +1,19 @@
 {
   "name": "chassis-website",
-  "version": "1.0.0",
   "description": "Chassis Design System documentation website",
+  "private": true,
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chassis-ui/website.git",
+    "directory": "packages/website"
+  },
+  "bugs": {
+    "url": "https://github.com/chassis-ui/website/issues"
+  },
+  "homepage": "https://chassis-ui.com",
+  "author": "Ozgur Gunes <o.gunes@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -18,10 +29,10 @@
     "@astrojs/sitemap": "^3.6.0",
     "@docsearch/css": "^3.9.0",
     "@docsearch/js": "^3.9.0",
-    "@ozgurgunes/chassis-docs": "workspace:*",
-    "@ozgurgunes/chassis-css": "github:ozgurgunes/chassis-css#app/docs",
-    "@ozgurgunes/chassis-tokens": "github:ozgurgunes/chassis-tokens#app/docs",
-    "@ozgurgunes/chassis-icons": "github:ozgurgunes/chassis-icons#staging",
+    "@chassis-ui/docs": "workspace:*",
+    "@chassis-ui/css": "github:chassis-ui/css#app/docs",
+    "@chassis-ui/tokens": "github:chassis-ui/tokens#app/docs",
+    "@chassis-ui/icons": "github:chassis-ui/icons#staging",
     "@stackblitz/sdk": "^1.11.0",
     "@types/google.analytics": "^0.0.46",
     "@types/hast": "^3.0.4",

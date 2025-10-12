@@ -56,7 +56,7 @@ sync_submodule() {
   # Initialize and update submodule
   if [ ! -d "$SUBMODULE_PATH" ]; then
     log "info" "Initializing submodule..."
-    git submodule add -b "$SUBMODULE_BRANCH" https://github.com/ozgurgunes/chassis-assets.git "$SUBMODULE_PATH" 2>/dev/null || true
+    git submodule add -b "$SUBMODULE_BRANCH" https://github.com/chassis-ui/assets.git "$SUBMODULE_PATH" 2>/dev/null || true
   fi
 
   git submodule update --init --remote "$SUBMODULE_PATH"

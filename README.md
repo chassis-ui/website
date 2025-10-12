@@ -2,8 +2,8 @@
 
 > Enterprise-grade, multi-platform design system documentation and showcase website
 
-[![Deploy Status](https://github.com/ozgurgunes/chassis-docs/workflows/Deploy%20Documentation/badge.svg)](https://github.com/ozgurgunes/chassis-docs/actions)
-[![Lighthouse CI](https://github.com/ozgurgunes/chassis-docs/workflows/Lighthouse%20CI/badge.svg)](https://github.com/ozgurgunes/chassis-docs/actions)
+[![Deploy Status](https://github.com/chassis-ui/docs/workflows/Deploy%20Documentation/badge.svg)](https://github.com/chassis-ui/docs/actions)
+[![Lighthouse CI](https://github.com/chassis-ui/docs/workflows/Lighthouse%20CI/badge.svg)](https://github.com/chassis-ui/docs/actions)
 
 ## Overview
 
@@ -30,7 +30,7 @@ Chassis Documentation is the central hub for the Chassis Design System, providin
 
 1. **Clone the repository with submodules:**
    ```bash
-   git clone --recursive https://github.com/ozgurgunes/chassis-docs.git
+   git clone --recursive https://github.com/chassis-ui/docs.git
    cd chassis-docs
    ```
 
@@ -230,7 +230,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 - 📖 **Documentation**: [https://chassis.design](https://chassis.design)
-- 🐛 **Issues**: [GitHub Issues](https://github.com/ozgurgunes/chassis-docs/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/ozgurgunes/chassis-docs/discussions)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/chassis-ui/docs/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/chassis-ui/docs/discussions)
 - 📧 **Email**: [support@chassis.design](mailto:support@chassis.design)
 # Force staging deployment
