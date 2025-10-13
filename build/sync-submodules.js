@@ -41,7 +41,7 @@ class SubmoduleSync {
         name: 'chassis-assets',
         path: 'vendor/assets',
         expectedBranch: this.submoduleBranch,
-        buildCommands: ['pnpm install', 'pnpm build'],
+        buildCommands: ['pnpm install --ignore-workspace', 'pnpm build'],
         buildOutputPath: 'dist/web/chassis-docs'
       }
     ]

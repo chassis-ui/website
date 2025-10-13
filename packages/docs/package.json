@@ -54,7 +54,7 @@
     "@docsearch/css": "^3.9.0",
     "@docsearch/js": "^3.9.0",
     "@chassis-ui/css": "github:chassis-ui/css#app/docs",
-    "@chassis-ui/icons": "github:chassis-ui/icons#staging",
+    "@chassis-ui/icons": "github:chassis-ui/icons#app/docs",
     "@chassis-ui/tokens": "github:chassis-ui/tokens#app/docs",
     "@types/hast": "^3.0.4",
     "@types/prismjs": "^1.26.0",
