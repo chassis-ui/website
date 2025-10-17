@@ -7,10 +7,16 @@ import type { AstroIntegration } from 'astro'
 import type { Element } from 'hast'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import { getConfig } from './config'
-import { configurePrism, rehypeCxTable } from '@chassis-ui/docs'
-import { remarkCxConfig, remarkCxDocsref } from './remark'
+import {
+  configurePrism,
+  rehypeCxTable,
+  registerRemarkFunctions,
+  remarkCxConfig,
+  remarkCxDocsref
+} from '@chassis-ui/docs'
 import {
   getDocsFsPath,
+  getChassisDocsPath,
   getChassisAssetsFsPath,
   getChassisCSSFsPath,
   getChassisIconsFsPath,
@@ -33,6 +39,9 @@ const headingsRangeRegex = new RegExp(`^h[${getConfig().anchors.min}-${getConfig
 
 export function chassis(): AstroIntegration[] {
   const sitemapExcludedUrls = sitemapExcludes.map((url) => `${getConfig().baseURL}${url}/`)
+
+  // Register remark functions for shared plugins
+  registerRemarkFunctions(getConfig, getChassisDocsPath)
 
   configurePrism()
 

@@ -1,4 +1,6 @@
 import Prism, { type hooks } from 'prismjs'
+import 'prismjs/components/prism-bash.js'
+import 'prismjs/components/prism-powershell.js'
 const { Token } = Prism
 
 let isPrismConfigured = false

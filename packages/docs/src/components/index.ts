@@ -1,5 +1,5 @@
 // Common reusable components for documentation sites
-export { default as NavDocsMenu } from './NavDocsMenu.astro'
+export { default as NavDocsMenu } from './common/NavDocsMenu.astro'
 export { default as TableOfContents } from './TableOfContents.astro'
 export { default as LinkItem } from './common/LinkItem.astro'
 export { default as ResponsiveImage } from './common/ResponsiveImage.astro'

@@ -2,8 +2,12 @@
 import type { InferGetStaticPropsType } from 'astro'
 import { RedirectLayout } from '@chassis-ui/docs/layouts'
 import { getChassisDocsPath } from '@libs/path'
-import { trimLeadingAndTrailingSlashes } from '@chassis-ui/docs'
-import { replaceConfigInText, replaceDocsrefInText } from '@libs/remark'
+import {
+  trimLeadingAndTrailingSlashes,
+  replaceConfigInText,
+  replaceDocsrefInText
+} from '@chassis-ui/docs'
+// import { replaceConfigInText, replaceDocsrefInText } from '@libs/remark'
 import { aliasedDocsPages } from '@libs/content'
 
 export async function getStaticPaths() {

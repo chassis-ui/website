@@ -1,13 +1,34 @@
 import type { MarkdownHeading } from 'astro'
+import { existsSync } from 'fs'
 
 // Dynamically import config from consuming project
-const configPath = process.cwd() + '/src/libs/config.js'
-let configModule: any
+// Try multiple possible locations for the config file
+const possiblePaths = [
+  '/src/libs/config.ts', // workspace project
+  '/site/src/libs/config.ts', // consuming project with site folder
+  '/config.ts' // root level fallback
+]
 
-try {
-  configModule = await import(/* @vite-ignore */ configPath)
-} catch (error) {
-  console.warn('Failed to load config from consuming project:', error)
+let configModule: any
+let configFound = false
+
+for (const relativePath of possiblePaths) {
+  const configPath = process.cwd() + relativePath
+
+  if (existsSync(configPath)) {
+    try {
+      configModule = await import(/* @vite-ignore */ configPath)
+      configFound = true
+      break
+    } catch (error) {
+      console.warn(`Failed to load config from ${configPath}:`, error)
+      continue
+    }
+  }
+}
+
+if (!configFound) {
+  console.warn('No config file found in any expected location, using fallback')
   // Fallback - this should not happen in a properly set up consuming project
   configModule = { getConfig: () => ({ toc: { min: 2, max: 6 } }) }
 }

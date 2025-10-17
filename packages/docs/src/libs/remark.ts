@@ -2,15 +2,26 @@ import type { Root } from 'mdast'
 import type { MdxJsxAttribute, MdxJsxExpressionAttribute } from 'mdast-util-mdx-jsx'
 import type { Plugin } from 'unified'
 import { visit } from 'unist-util-visit'
-import { getConfig } from './config'
-import { getChassisDocsPath } from './path'
+
+// Global registry for config and path functions
+let globalConfigGetter: (() => any) | null = null
+let globalPathGetter: ((path: string) => string) | null = null
+
+// Registration function for consuming sites to provide their config and path functions
+export function registerRemarkFunctions(
+  getConfig: () => any,
+  getChassisDocsPath: (path: string) => string
+) {
+  globalConfigGetter = getConfig
+  globalPathGetter = getChassisDocsPath
+}
 
 // [[config:foo]]
 // [[config:foo.bar]]
-const configRegExp = /\[\[config:(?<name>[\w\.]+)]]/g
+const configRegExp = /\[\[config:(?<name>[\w.]+)]]/g
 // [[docsref:/foo]]
 // [[docsref:/foo/bar#baz]]
-const docsrefRegExp = /\[\[docsref:(?<path>[\w\.\/#-]+)]]/g
+const docsrefRegExp = /\[\[docsref:(?<path>[\w./#-]+)]]/g
 
 // A remark plugin to replace config values embedded in markdown (or MDX) files.
 // For example, [[config:foo]] will be replaced with the value of the `foo` key in the `config.yml` file.
@@ -133,8 +144,11 @@ function replaceConfigInAttributes(attributes: (MdxJsxAttribute | MdxJsxExpressi
 }
 
 export function replaceDocsrefInText(text: string) {
+  if (!globalPathGetter) {
+    throw new Error('remark functions not registered. Call registerRemarkFunctions() first.')
+  }
   return text.replace(docsrefRegExp, (_match, path) => {
-    return getChassisDocsPath(path)
+    return globalPathGetter!(path)
   })
 }
 
@@ -149,7 +163,10 @@ function replaceDocsrefInAttributes(attributes: (MdxJsxAttribute | MdxJsxExpress
 }
 
 function getConfigValueAtPath(path: string) {
-  const config = getConfig()
+  if (!globalConfigGetter) {
+    throw new Error('remark functions not registered. Call registerRemarkFunctions() first.')
+  }
+  const config = globalConfigGetter()
 
   const value = path.split('.').reduce((values, part) => {
     if (!values || typeof values !== 'object') {
