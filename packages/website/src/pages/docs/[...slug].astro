@@ -21,6 +21,6 @@ const frontmatter = data
 const { Content, headings } = await render(docsPage)
 ---
 
-<DocsLayout frontmatter={frontmatter} headings={headings} id={id}>
+<DocsLayout frontmatter={frontmatter} headings={headings} id={id} config={getConfig()}>
   <Content components={{ pre: Code }} />
 </DocsLayout>

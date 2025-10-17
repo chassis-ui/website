@@ -1,44 +1,25 @@
 import type { MarkdownHeading } from 'astro'
-import { existsSync } from 'fs'
 
-// Dynamically import config from consuming project
-// Try multiple possible locations for the config file
-const possiblePaths = [
-  '/src/libs/config.ts', // workspace project
-  '/site/src/libs/config.ts', // consuming project with site folder
-  '/config.ts' // root level fallback
-]
+// Global registry for config getter
+let globalConfigGetter: (() => any) | null = null
 
-let configModule: any
-let configFound = false
-
-for (const relativePath of possiblePaths) {
-  const configPath = process.cwd() + relativePath
-
-  if (existsSync(configPath)) {
-    try {
-      configModule = await import(/* @vite-ignore */ configPath)
-      configFound = true
-      break
-    } catch (error) {
-      console.warn(`Failed to load config from ${configPath}:`, error)
-      continue
-    }
-  }
-}
-
-if (!configFound) {
-  console.warn('No config file found in any expected location, using fallback')
-  // Fallback - this should not happen in a properly set up consuming project
-  configModule = { getConfig: () => ({ toc: { min: 2, max: 6 } }) }
+// Registration function for consuming sites to provide their config function
+export function registerTocConfig(getConfig: () => any) {
+  globalConfigGetter = getConfig
 }
 
 // Generate a tree like structure from a list of headings.
-export function generateToc(allHeadings: MarkdownHeading[]) {
+export function generateToc(allHeadings: MarkdownHeading[], config?: any) {
+  const tocConfig = config || (globalConfigGetter ? globalConfigGetter() : null)
+
+  if (!tocConfig) {
+    throw new Error(
+      'TOC config not provided and not registered. Pass config as parameter or call registerTocConfig() first.'
+    )
+  }
+
   const headings = allHeadings.filter(
-    (heading) =>
-      heading.depth >= configModule.getConfig().toc.min &&
-      heading.depth <= configModule.getConfig().toc.max
+    (heading) => heading.depth >= tocConfig.toc.min && heading.depth <= tocConfig.toc.max
   )
 
   const toc: TocEntry[] = []
