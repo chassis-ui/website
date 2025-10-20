@@ -2,7 +2,7 @@
 import { render } from 'astro:content'
 import BlogLayout from '@layouts/BlogLayout.astro'
 import { blogPages } from '@libs/content'
-import { Code } from '@chassis-ui/docs/components'
+import Code from '@shortcodes/Code.astro'
 import type { CollectionEntry } from 'astro:content'
 
 export async function getStaticPaths() {

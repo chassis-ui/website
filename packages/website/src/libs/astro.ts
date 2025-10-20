@@ -4,16 +4,11 @@ import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import type { AstroIntegration } from 'astro'
-import type { Element } from 'hast'
+import type { Element, Text } from 'hast'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import { getConfig } from './config'
-import {
-  configurePrism,
-  rehypeCxTable,
-  registerRemarkFunctions,
-  remarkCxConfig,
-  remarkCxDocsref
-} from '@chassis-ui/docs'
+import { rehypeCxTable } from '@chassis-ui/docs'
+import { remarkCxConfig, remarkCxDocsref } from './remark'
 import {
   getDocsFsPath,
   getChassisDocsPath,
@@ -25,6 +20,7 @@ import {
   validateChassisDocsPaths
 } from './path'
 import chassisAutoImport from './shortcode'
+import { configurePrism } from './prism'
 
 // A list of static file paths that will be aliased to a different path.
 const staticFileAliases = {
@@ -39,9 +35,6 @@ const headingsRangeRegex = new RegExp(`^h[${getConfig().anchors.min}-${getConfig
 
 export function chassis(): AstroIntegration[] {
   const sitemapExcludedUrls = sitemapExcludes.map((url) => `${getConfig().baseURL}${url}/`)
-
-  // Register remark functions for shared plugins
-  registerRemarkFunctions(getConfig, getChassisDocsPath)
 
   configurePrism()
 
@@ -64,7 +57,10 @@ export function chassis(): AstroIntegration[] {
                   {
                     behavior: 'append',
                     content: [{ type: 'text', value: ' ' }],
-                    properties: { class: 'anchor-link' },
+                    properties: (element: Element) => ({
+                      class: 'anchor-link',
+                      ariaLabel: `Link to this section: ${(element.children[0] as Text).value}`
+                    }),
                     test: (element: Element) => element.tagName.match(headingsRangeRegex)
                   }
                 ],

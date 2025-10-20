@@ -8,9 +8,9 @@
 export declare global {
   export const AddedIn: typeof import('@chassis-ui/docs/shortcodes/AddedIn.astro').default
   export const Callout: typeof import('@chassis-ui/docs/shortcodes/Callout.astro').default
-  export const Code: typeof import('@chassis-ui/docs/shortcodes/Code.astro').default
   export const CxTable: typeof import('@chassis-ui/docs/shortcodes/CxTable.astro').default
-  export const Example: typeof import('@chassis-ui/docs/shortcodes/Example.astro').default
-  export const Placeholder: typeof import('@chassis-ui/docs/shortcodes/Placeholder.astro').default
   export const Blockquote: typeof import('@shortcodes/Blockquote.astro').default
+  export const Code: typeof import('@shortcodes/Code.astro').default
+  export const Example: typeof import('@shortcodes/Example.astro').default
+  export const Placeholder: typeof import('@shortcodes/Placeholder.astro').default
 }

@@ -1,25 +1,10 @@
 import type { MarkdownHeading } from 'astro'
-
-// Global registry for config getter
-let globalConfigGetter: (() => any) | null = null
-
-// Registration function for consuming sites to provide their config function
-export function registerTocConfig(getConfig: () => any) {
-  globalConfigGetter = getConfig
-}
+// import { getConfig } from './config'
 
 // Generate a tree like structure from a list of headings.
-export function generateToc(allHeadings: MarkdownHeading[], config?: any) {
-  const tocConfig = config || (globalConfigGetter ? globalConfigGetter() : null)
-
-  if (!tocConfig) {
-    throw new Error(
-      'TOC config not provided and not registered. Pass config as parameter or call registerTocConfig() first.'
-    )
-  }
-
+export function generateToc(allHeadings: MarkdownHeading[], config: any) {
   const headings = allHeadings.filter(
-    (heading) => heading.depth >= tocConfig.toc.min && heading.depth <= tocConfig.toc.max
+    (heading) => heading.depth >= config.toc.min && heading.depth <= config.toc.max
   )
 
   const toc: TocEntry[] = []

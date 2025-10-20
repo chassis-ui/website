@@ -9,7 +9,7 @@
       "@components/*": ["src/components/*"],
       "@layouts/*": ["src/layouts/*"],
       "@libs/*": ["src/libs/*"],
-      "@shortcodes/*": ["@chassis-ui/docs/components/shortcodes/*"]
+      "@shortcodes/*": ["src/components/shortcodes/*"]
     }
   }
 }

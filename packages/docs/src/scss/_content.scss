@@ -139,34 +139,3 @@
 }
 // stylelint-enable selector-no-qualifying-type
 
-// scss-docs-start custom-color-mode
-[data-cx-theme="primary"] {
-  --cx-fg-color: var(--cx-white);
-  --cx-fg-color-rgb: #{to-rgb($white)};
-  --cx-bg-color: var(--cx-primary);
-  --cx-bg-color-rgb: #{to-rgb($primary)};
-  --cx-border-subtle: var(--cx-primary-30);
-
-  .dropdown-menu {
-    --cx-dropdown-bg-color: var(--cx-primary);
-    --cx-dropdown-fg-color: var(--cx-primary-contrast);
-    --cx-dropdown-link-fg-color: var(--cx-primary-contrast);
-    --cx-dropdown-link-hover-fg-color: var(--cx-primary-contrast);
-    --cx-dropdown-link-hover-bg-color: var(--cx-primary-40);
-    --cx-dropdown-link-active-bg-color: var(--cx-primary-60);
-    --cx-dropdown-separator-color: var(--cx-primary-40);
-  }
-
-  .button.secondary {
-    --cx-button-idle-bg-color: transparent;
-    --cx-button-idle-fg-color: var(--cx-primary-contrast);
-    --cx-button-idle-border-color: var(--cx-primary-contrast);
-    --cx-button-hover-bg-color: var(--cx-primary-bg-hover);
-    --cx-button-hover-fg-color: var(--cx-primary-fg-hover);
-    --cx-button-hover-border-color: var(--cx-primary-contrast);
-    --cx-button-press-bg-color: var(--cx-primary-bg-press);
-    --cx-button-press-fg-color: var(--cx-primary-fg-press);
-    --cx-button-press-border-color: var(--cx-primary-contrast);
-  }
-}
-// scss-docs-end custom-color-mode

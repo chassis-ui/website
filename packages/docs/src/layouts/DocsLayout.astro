@@ -2,9 +2,9 @@
 import type { MarkdownHeading } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 import { getConfig } from '@libs/config'
+import { getChassisDocsPath } from '@libs/path'
 import type { LayoutOverridesHTMLAttributes } from '../libs/layout'
 import { getSlug, processMarkdownToHtml } from '../libs/utils'
-import { getChassisDocsPath } from '@libs/path'
 import BaseLayout from './BaseLayout.astro'
 import DocsSidebar from '../components/DocsSidebar.astro'
 import TableOfContents from '../components/TableOfContents.astro'
@@ -13,10 +13,9 @@ interface Props {
   frontmatter: CollectionEntry<'docs'>['data']
   headings?: MarkdownHeading[]
   id: CollectionEntry<'docs'>['id']
-  config?: any
 }
 
-const { frontmatter, headings, id, config } = Astro.props
+const { frontmatter, headings, id } = Astro.props
 
 // Extract the directory/section from the ID (format: "directory/filename.mdx")
 const parentDirectory = id.includes('/') ? id.split('/')[0] : ''
@@ -73,7 +72,7 @@ if (frontmatter.toc) {
             }
             <a
               class="button default small"
-              href={`${getConfig().repo}/blob/v${getConfig().current_version}/packages/websitesrc/content/${id}`}
+              href={`${getConfig().repo}/blob/${id}.mdx`}
               title="View and edit this file on GitHub"
               target="_blank"
               rel="noopener"
@@ -112,7 +111,7 @@ if (frontmatter.toc) {
             <hr class="d-none d-medium-block my-xsmall" />
             <div class="collapse cxd-toc-collapse" id="tocContents">
               <nav id="TableOfContents">
-                <TableOfContents headings={headings} config={config} />
+                <TableOfContents headings={headings} config={getConfig()} />
               </nav>
             </div>
           </div>
@@ -144,4 +143,5 @@ if (frontmatter.toc) {
       </div>
     </main>
   </div>
+  <slot name="scripts" slot="scripts" />
 </BaseLayout>

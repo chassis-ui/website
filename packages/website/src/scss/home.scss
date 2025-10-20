@@ -140,6 +140,15 @@ $small-vars: meta.module-variables("small");
       }
     }
   }
+
+  .cxd-search {
+    @include media-breakpoint-up(large) {
+      right: var(--cx-section-padding-x);
+      z-index: -1;
+      box-sizing: content-box;
+      padding-right: 12rem;
+    }
+  }
 }
 
 .min-vh-full {

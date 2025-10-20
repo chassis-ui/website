@@ -1,9 +1,9 @@
 ---
 import { getConfig } from '@libs/config'
 import type { Layout } from '../../libs/layout'
-import LinkItem from '../../components/common/LinkItem.astro'
-import ThemeToggler from '../../components/common/ThemeToggler.astro'
-import NavDocsMenu from '../../components/common/NavDocsMenu.astro'
+import NavLink from '../../components/NavLink.astro'
+import ThemeToggler from '../../components/ThemeToggler.astro'
+import NavDocsMenu from '../../components/NavDocsMenu.astro'
 
 interface Props {
   layout: Layout
@@ -75,37 +75,37 @@ const { pathname } = Astro.url
       <div class="offcanvas-body p-large pt-0 p-large-0">
         <hr class="d-large-none text-white-50" />
         <ul class="navbar-nav flex-row flex-wrap cxd-navbar-nav mx-0 mx-large-medium">
-          <LinkItem active={pathname.slice(1) === ''} href="/" track>Home</LinkItem>
+          <NavLink active={pathname.slice(1) === ''} href="/" track>Home</NavLink>
           <li class="nav-item dropdown">
             <NavDocsMenu layout={layout} />
           </li>
-          <LinkItem active={layout === 'icons'} href="/icons" track>Icons</LinkItem>
-          <LinkItem active={title === 'Tokens'} href="/tokens" track>Tokens</LinkItem>
-          <LinkItem active={title === 'Examples'} href={'/examples/'} track>Examples</LinkItem>
-          <LinkItem active={layout === 'blog'} href={'/blog/'} track>Blog</LinkItem>
+          <NavLink active={layout === 'icons'} href="/icons" track>Icons</NavLink>
+          <NavLink active={title === 'Tokens'} href="/tokens" track>Tokens</NavLink>
+          <NavLink active={title === 'Examples'} href={'/examples/'} track>Examples</NavLink>
+          <NavLink active={layout === 'blog'} href={'/blog/'} track>Blog</NavLink>
         </ul>
 
         <hr class="d-large-none" />
 
         <ul class="navbar-nav flex-row flex-wrap ms-medium-auto align-items-center">
-          <LinkItem
+          <NavLink
             class="nav-link px-0 px-large-2"
             href={getConfig().github_org}
             target="_blank"
             rel="noopener"
           >
-            <svg class="icon" aria-hidden="true"><use href="#github-brand"></use></svg>
+            <svg class="icon"><title>GitHub</title><use href="#github-brand"></use></svg>
             <small class="d-large-none ms-xsmall">GitHub</small>
-          </LinkItem>
-          <LinkItem
+          </NavLink>
+          <NavLink
             class="nav-link px-0 px-large-2"
             href={`https://x.com/${getConfig().x}`}
             target="_blank"
             rel="noopener"
           >
-            <svg class="icon" aria-hidden="true"><use href="#x-twitter-brand"></use></svg>
+            <svg class="icon"><title>X</title><use href="#x-twitter-brand"></use></svg>
             <small class="d-large-none ms-xsmall">X</small>
-          </LinkItem>
+          </NavLink>
           <li class="nav-item col-12 col-large-auto">
             <div class="vr d-none d-large-flex h-100 mx-large-2 text-white"></div>
             <hr class="d-large-none" />

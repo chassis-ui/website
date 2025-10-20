@@ -73,8 +73,8 @@ const sidebar = getData('sidebar')
               <li class="cxd-links-span-all mt-2xsmall mb-medium mx-large border-top" />
               <li class="cxd-links-span-all">
                 <a
-                  href={`/docs/${groupSlug}/`}
-                  class:list={['cxd-links-link d-inline-block rounded small', { active }]}
+                  href={`${getConfig().docsPath}/${groupSlug}/`}
+                  class:list={['cxd-links-link', { active }]}
                   aria-current={active ? 'page' : undefined}
                 >
                   {group.title}

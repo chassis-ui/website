@@ -18,6 +18,6 @@ const url = new URL(path, Astro.site)
     <title>{getConfig().title}</title>
     <link rel="canonical" href={url} />
     <meta name="robots" content="noindex" />
-    <meta http-equiv="refresh" content={`0; url=${url}`} />
+    <meta http-equiv="refresh" content={`0; url=${path}`} />
   </head>
 </html>

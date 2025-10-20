@@ -1,53 +1,11 @@
 import fs from 'node:fs'
 import yaml from 'js-yaml'
 import { z } from 'zod'
-import {
-  zHexColor,
-  zLanguageCode,
-  zNamedHexColors,
-  zPxSizeOrEmpty,
-  zVersionMajorMinor,
-  zVersionSemver,
-  capitalizeFirstLetter
-} from '@chassis-ui/docs'
+import { zVersionMajorMinor, zVersionSemver, zLanguageCode } from './validation'
 
 // An object containing all the data types and their associated schema. The key should match the name of the data file
 // in the `./packages/website/data/` directory.
 const dataDefinitions = {
-  breakpoints: z
-    .object({
-      breakpoint: z.string(),
-      abbr: z.string(),
-      name: z.string(),
-      'min-width': zPxSizeOrEmpty,
-      container: zPxSizeOrEmpty
-    })
-    .array(),
-  'basic-opacities': z
-    .object({
-      name: z.string()
-    })
-    .array(),
-  colors: zNamedHexColors(7),
-  'color-values': z
-    .object({
-      name: z.string()
-    })
-    .array(),
-  'context-colors': z
-    .object({
-      name: z.string(),
-      hex: zHexColor,
-      contrast_color: z.union([z.literal('black'), z.literal('white')]).optional()
-    })
-    .array()
-    .transform((val) => {
-      // Add a `title` property to each theme color object being the capitalized version of the `name` property.
-      return val.map((contextColor) => ({
-        ...contextColor,
-        title: capitalizeFirstLetter(contextColor.name)
-      }))
-    }),
   'core-team': z
     .object({
       name: z.string(),
@@ -62,43 +20,6 @@ const dataDefinitions = {
       versions: z.union([zVersionSemver, zVersionMajorMinor]).array()
     })
     .array(),
-  examples: z
-    .object({
-      category: z.string(),
-      external: z.boolean().optional(),
-      description: z.string(),
-      examples: z
-        .object({
-          description: z.string(),
-          indexPath: z.string().optional(),
-          name: z.string(),
-          url: z.string().optional()
-        })
-        .array()
-    })
-    .array(),
-  grays: zNamedHexColors(11),
-  icons: z.object({
-    preferred: z
-      .object({
-        name: z.string(),
-        website: z.string().url()
-      })
-      .array(),
-    more: z
-      .object({
-        name: z.string(),
-        website: z.string().url()
-      })
-      .array()
-  }),
-  plugins: z
-    .object({
-      description: z.string(),
-      link: z.string().startsWith('components/'),
-      name: z.string()
-    })
-    .array(),
   sidebar: z
     .object({
       title: z.string(),
@@ -110,11 +31,6 @@ const dataDefinitions = {
         })
         .array()
         .optional()
-    })
-    .array(),
-  'token-opacities': z
-    .object({
-      name: z.string()
     })
     .array(),
   translations: z

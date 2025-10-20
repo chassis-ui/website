@@ -27,3 +27,7 @@
     - title: config js
     - title: filters js
     - title: formats js
+
+- title: Testing
+  icon: file-solid
+  icon_color: indigo
