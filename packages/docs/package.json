@@ -30,10 +30,10 @@
   "main": "index.ts",
   "exports": {
     ".": "./index.ts",
-    "./components": "./src/components/index.ts",
-    "./shortcodes": "./src/components/shortcodes/*",
-    "./layouts": "./src/layouts/index.ts",
-    "./libs": "./src/libs/index.ts",
+    "./components/*": "./src/components/*",
+    "./shortcodes/*": "./src/components/shortcodes/*",
+    "./layouts/*": "./src/layouts/*",
+    "./libs/*": "./src/libs/*",
     "./js/*": "./src/js/*",
     "./scss/*": "./src/scss/*"
   },
