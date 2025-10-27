@@ -58,6 +58,7 @@ const mainProps = overrides?.main ?? {}
       thumbnail={thumbnail}
       title={title}
     />
+    <slot name="styles" slot="styles" />
   </head>
   <body {...bodyProps}>
     <Header layout={layout} title={title} />

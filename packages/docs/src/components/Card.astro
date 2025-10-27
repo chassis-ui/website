@@ -1,0 +1,19 @@
+---
+const { title, body, icon } = Astro.props
+---
+
+<div class="card large border-0">
+  <div class="card-content">
+    {
+      icon && (
+        <svg class="icon card-icon icon-4xlarge mb-medium">
+          <use xlink:href={`#${icon}`} />
+        </svg>
+      )
+    }
+    <h4 class="card-title">{title}</h4>
+    <p class="card-body">
+      {body}
+    </p>
+  </div>
+</div>

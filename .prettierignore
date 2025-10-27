@@ -3,5 +3,5 @@
 *.scss
 packages/website/config.yml
 # packages/website/src/assets
-packages/website/content
+# packages/website/content
 vendor/

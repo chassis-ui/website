@@ -1,63 +1,9 @@
-@use "@chassis-ui/tokens/dist/web/chassis-docs/number-large" as large;
-@use "@chassis-ui/tokens/dist/web/chassis-docs/number-medium" as medium;
-@use "@chassis-ui/tokens/dist/web/chassis-docs/number-small" as small;
-// $prefix: cx- !default;
-
-/*!
- * Chassis - CSS Docs (https://ozgurgunes.github.io/chassis-css//)
- * Copyright 2025 Chassis
- * Licensed under the Creative Commons Attribution 3.0 Unported License.
- * For details, see https://creativecommons.org/licenses/by/3.0/.
- */
-
-// Dev notes
-//
-// Background information on nomenclature and architecture decisions here.
-//
-// - Chassis - CSS functions, variables, and mixins are included for easy reuse.
-//   Doing so gives us access to the same core utilities provided by Chassis - CSS.
-//   For example, consistent media queries through those mixins.
-//
-// - Chassis - CSS's **docs variables** are prefixed with `$cxd-`.
-//   These custom colors avoid collision with the components Chassis - CSS provides.
-//
-// - Classes are prefixed with `.cxd-`.
-//   These classes indicate custom-built or modified components for the design
-//   and layout of the Chassis - CSS docs. They are not included in our builds.
-//
-// Happy Chassis - CSSing!
-
-// Load Chassis - CSS variables and mixins
-//@import "chassis-css/scss/functions";
-// fusv-disable
-$enable-grid-classes: true;
-$enable-cssgrid: true;
-//@import "colors";
-// @import "../../../chassis-tokens/dist/tokens/web/chassis_docs_light";
-
 @import "settings";
-@import "@chassis-ui/tokens/dist/web/chassis-docs/main";
-
-@import "@chassis-ui/css/scss/functions";
-@import "@chassis-ui/css/scss/tokens";
-@import "@chassis-ui/css/scss/variables";
-@import "@chassis-ui/css/scss/rfs";
-@import "@chassis-ui/css/scss/maps";
-@import "@chassis-ui/css/scss/mixins";
-@import "@chassis-ui/css/scss/grid";
-
-
-// fusv-enable
-
 
 @import "colors";
 @import "variables";
 @import "fonts";
 
-// @import "@chassis-ui/css/scss/core";
-
-// Load docs components
-//@import "colors";
 @import "navbar";
 @import "masthead";
 @import "content";
@@ -74,10 +20,11 @@ $enable-cssgrid: true;
 @import "placeholder-img";
 @import "scrolling";
 
-// Load docs dependencies
 @import "syntax";
 @import "anchor";
 
+@import "@docsearch/css/dist/style";
+@import "docsearch";
 
 /* Hide light-mode things when in dark mode */
 [data-cx-theme="dark"] .display-light {
