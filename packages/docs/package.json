@@ -1,7 +1,7 @@
 {
   "name": "@chassis-ui/docs",
   "description": "Shared Astro components and layouts for Chassis documentation sites.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "repository": {
     "type": "git",
@@ -36,6 +36,9 @@
     "./libs/*": "./src/libs/*",
     "./js/*": "./src/js/*",
     "./scss/*": "./src/scss/*"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "peerDependencies": {
     "astro": "^5.0.0"

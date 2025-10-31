@@ -41,7 +41,6 @@
     "astro": "^5.13.9",
     "astro-auto-import": "^0.4.4",
     "autoprefixer": "^10.4.21",
-    "chassis-css": "link:../chassis-css",
     "clipboard": "^2.0.11",
     "gsap": "^3.13.0",
     "htmlparser2": "^10.0.0",

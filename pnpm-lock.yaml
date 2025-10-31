@@ -176,9 +176,6 @@ importers:
       autoprefixer:
         specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.6)
-      chassis-css:
-        specifier: link:../chassis-css
-        version: link:../chassis-css
       clipboard:
         specifier: ^2.0.11
         version: 2.0.11
