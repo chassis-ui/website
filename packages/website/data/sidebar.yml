@@ -5,6 +5,7 @@
   icon_color: yellow
   pages:
     - title: Introduction
+    - title: Design Tokens
 
 - title: Tokens Studio
   icon: swatchbook-solid
