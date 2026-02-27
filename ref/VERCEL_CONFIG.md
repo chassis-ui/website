@@ -1,17 +1,23 @@
-# Vercel Environment Configuration
+# Vercel Configuration Guide
 
-This document describes how we handle environment-specific URL routing for the Chassis documentation site.
+> **Document Purpose:** Technical reference for Vercel proxy routing configuration  
+> **Last Updated:** February 2026  
+> **Audience:** Developers working on chassis-website deployment
 
-## Problem
+This document describes how environment-specific URL routing works for the Chassis ecosystem using Vercel rewrites.
 
-The Chassis documentation needs to route requests to different microservices depending on the environment:
+## 🎯 Problem Statement
 
-- **Production**: `chassis-ui.com/docs/icons` → `chassis-icons.vercel.app/docs/icons`
-- **Staging**: `staging.chassis-ui.com/docs/icons` → `chassis-icons-staging.vercel.app/docs/icons`
+The Chassis ecosystem consists of multiple independent repositories, each with its own documentation site. We need to:
 
-## Solution: Host Header Conditional Rewrites
+1. Present a unified website at `chassis-ui.com`
+2. Route requests to appropriate project sites (e.g., `/docs/css/` → `chassis-css.vercel.app`)
+3. Support both production and staging environments
+4. Avoid manual configuration changes when merging staging → main
 
-We use Vercel's conditional rewrite functionality to detect the requesting domain and route to the appropriate services. This approach works seamlessly with git merge workflows without requiring manual intervention.
+## ✅ Solution: Host Header Conditional Rewrites
+
+We use Vercel's conditional rewrite functionality to detect the requesting domain and route to the appropriate environment automatically.
 
 ### How It Works
 

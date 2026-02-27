@@ -80,7 +80,7 @@ if (frontmatter.toc) {
               View on GitHub
             </a>
           </div>
-          <h1 class="cxd-title mb-0" id="content">{frontmatter.title}</h1>
+          <h1 class="cxd-title mb-small" id="content">{frontmatter.title}</h1>
         </div>
         <div class="cxd-subtitle">
           {
@@ -127,7 +127,7 @@ if (frontmatter.toc) {
                   <a
                     class="d-block text-decoration-none"
                     href={getChassisDocsPath(
-                      `${parentDirectory ? parentDirectory + '/' : ''}${getSlug(section.title)}/`
+                      `${parentDirectory ? parentDirectory + '/' : ''}${section.slug ? section.slug :getSlug(section.title)}/`
                     )}
                   >
                     <strong class="d-block h5 mb-2xsmall">{section.title}</strong>
