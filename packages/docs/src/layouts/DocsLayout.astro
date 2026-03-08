@@ -13,9 +13,11 @@ interface Props {
   frontmatter: CollectionEntry<'docs'>['data']
   headings?: MarkdownHeading[]
   id: CollectionEntry<'docs'>['id']
+  SidebarComponent?: typeof DocsSidebar
 }
 
-const { frontmatter, headings, id } = Astro.props
+const { frontmatter, headings, id, SidebarComponent } = Astro.props
+const Sidebar = SidebarComponent || DocsSidebar
 
 // Extract the directory/section from the ID (format: "directory/filename.mdx")
 const parentDirectory = id.includes('/') ? id.split('/')[0] : ''
@@ -48,7 +50,7 @@ if (frontmatter.toc) {
         </div>
 
         <div class="offcanvas-body">
-          <DocsSidebar />
+          <Sidebar />
         </div>
       </div>
     </aside>
@@ -127,7 +129,7 @@ if (frontmatter.toc) {
                   <a
                     class="d-block text-decoration-none"
                     href={getChassisDocsPath(
-                      `${parentDirectory ? parentDirectory + '/' : ''}${section.slug ? section.slug :getSlug(section.title)}/`
+                      `${parentDirectory ? parentDirectory + '/' : ''}${section.slug ? section.slug : getSlug(section.title)}/`
                     )}
                   >
                     <strong class="d-block h5 mb-2xsmall">{section.title}</strong>
