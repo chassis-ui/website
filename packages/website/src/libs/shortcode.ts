@@ -7,7 +7,7 @@ import { getDocsFsPath } from './path'
 // convenience.
 // Note: adding a new component to one of the existing directories requires a restart of the dev server.
 const autoImportedComponentDirectories = [
-  path.join(getDocsFsPath(), 'node_modules/@ozgurgunes/chassis-docs/src/components/shortcodes'),
+  path.join(getDocsFsPath(), 'node_modules/@chassis-ui/docs/src/components/shortcodes'),
   path.join(getDocsFsPath(), 'src/components/shortcodes')
 ]
 
@@ -28,8 +28,8 @@ export default function () {
         autoImportedComponents.push(`${autoImportedComponentDirectory}/${component.name}`)
 
         if (component.name.endsWith('.astro')) {
-          const importPath = autoImportedComponentDirectory.includes('@ozgurgunes/chassis-docs')
-            ? `@ozgurgunes/chassis-docs/shortcodes`
+          const importPath = autoImportedComponentDirectory.includes('@chassis-ui/docs')
+            ? `@chassis-ui/docs/shortcodes`
             : `@shortcodes`
           autoImportedComponentDefinitions.push(
             `export const ${component.name.replace('.astro', '')}: typeof import('${importPath}/${component.name}').default`

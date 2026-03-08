@@ -1,7 +1,9 @@
 .cxd-sidebar {
   --#{$prefix}cue-main: var(--cx-secondary-cue-main);
-  --#{$prefix}bg-highlight: var(--cx-secondary-cue-main);
-  --#{$prefix}fg-highlight: var(--cx-secondary-contrast-color);
+  --#{$prefix}bg-active: var(--cx-secondary-bg-solid);
+  --#{$prefix}fg-active: var(--cx-secondary-fg-solid);
+  --#{$prefix}bg-highlight: var(--cx-default-bg-highlight);
+  --#{$prefix}fg-highlight: var(--cx-fg-main);
 
   @include media-breakpoint-up(large) {
     position: sticky;
@@ -42,7 +44,7 @@
     padding-right: .5rem;
     margin-right: -.5rem;
     // background-color: var(--cx-secondary-bg-main);
-    border-right: var(--cx-indicator-size) var(--cx-border-style) var(--cx-cue-main);
+    // border-right: var(--cx-indicator-size) var(--cx-border-style) var(--cx-cue-main);
   }
 
   ul {
@@ -58,8 +60,8 @@
     li::before {
       position: absolute;
       width: 1px;
-      height: 2rem;
-      margin-top: -.25rem;
+      height: 2em;
+      // margin-top: -.25rem;
       margin-left: .4rem;
       // content: "\F1AB";
       font-family: var(--cx-font-family-icon);
@@ -68,17 +70,17 @@
     }
 
     li:first-child::before {
-      height: 2rem;
-      margin-top: .5rem;
+      height: 2em;
+      margin-top: .8em;
     }
 
     li:last-child::before {
-      height: 2rem;
+      height: .8em;
     }
 
     li:only-child::before {
-      height: 1.25rem;
-      margin-top: .5rem;
+      height: .8em;
+      margin-top: .4em;
     }
 
     li::after {
@@ -87,7 +89,7 @@
       left: 0;
       width: .5rem;
       height: 1px;
-      margin-top: 1rem;
+      margin-top: .8em;
       content: " ";
       background-color: var(--cx-cue-main);
       @include border-radius(50%);
@@ -129,11 +131,11 @@
   width: 100%;
   padding: .15rem .5rem;
   padding-left: 1.5rem;
-  margin-top: .125rem;
   margin-left: 0;
   //margin-left: 1.125rem;
   color: var(--cx-fg-color);
   text-decoration: if($link-decoration == none, null, none);
+  @include font-size(var(--cx-font-size-small));
   @include border-radius(var(--cx-border-radius));
 
   &:hover,
@@ -145,12 +147,13 @@
 
   &.active {
     font-weight: 600;
-    color: var(--cx-fg-highlight);
-    background-color: var(--cx-bg-highlight);
+    color: var(--cx-fg-active);
+    background-color: var(--cx-bg-active);
   }
-  .active &:not(.active):hover {
-    background-color: var(--cx-dim-slight);
-  }
+  // .active &:not(.active):hover {
+  //   color: var(--cx-fg-color);
+  //   background-color: var(--cx-dim-slight);
+  // }
 
   &:visited:not(.active):not(:hover):not(:focus) {
     color: var(--cx-fg-color);

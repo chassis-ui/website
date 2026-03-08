@@ -1,14 +1,20 @@
 #!/bin/bash
 
 # Git Submodule Sync - Cross-Platform Shell Version
-# Synchronizes chassis-assets submodule for any project type
+# Synchronizes git submodules for any project type
 
 set -e  # Exit on any error
 
-# Configuration
+# Default configuration
 SUBMODULE_BRANCH="${SUBMODULE_BRANCH:-app/docs}"
-SUBMODULE_PATH="vendor/assets"
-SUBMODULE_NAME="chassis-assets"
+
+# Submodule configurations
+# Format: "name|path|branch|build_commands|build_output_path"
+declare -a SUBMODULES=(
+  "chassis-assets|vendor/assets|${SUBMODULE_BRANCH}|pnpm install --ignore-workspace && pnpm assets:site|dist/web/chassis-docs"
+  # Add more submodules here:
+  # "another-submodule|vendor/other|main|npm install && npm run build|dist"
+)
 
 # Colors for output
 RED='\033[0;31m'
@@ -37,69 +43,125 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
-# Main sync function
+# Parse submodule configuration
+parse_submodule_config() {
+  local config=$1
+  IFS='|' read -r name path branch build_commands build_output <<< "$config"
+
+  echo "$name"
+  echo "$path"
+  echo "$branch"
+  echo "$build_commands"
+  echo "$build_output"
+}
+
+# Main sync function for a single submodule
 sync_submodule() {
-  log "info" "Syncing $SUBMODULE_NAME..."
+  local submodule_name=$1
+  local submodule_path=$2
+  local submodule_branch=$3
 
-  # Check if git is available
-  if ! command_exists git; then
-    log "error" "Git is not installed or not in PATH"
-    exit 1
+  log "info" "Syncing $submodule_name..."
+
+  # Check if submodule exists
+  if [ ! -d "$submodule_path" ]; then
+    log "warning" "$submodule_name not found at $submodule_path, skipping..."
+    return 0
   fi
 
-  # Check if we're in a git repository
-  if ! git rev-parse --git-dir >/dev/null 2>&1; then
-    log "error" "Not in a git repository"
-    exit 1
+  # Check for uncommitted changes
+  if [ -n "$(git -C "$submodule_path" status --porcelain 2>/dev/null)" ]; then
+    log "warning" "$submodule_name has uncommitted changes, skipping..."
+    return 0
   fi
 
-  # Initialize and update submodule
-  if [ ! -d "$SUBMODULE_PATH" ]; then
-    log "info" "Initializing submodule..."
-    git submodule add -b "$SUBMODULE_BRANCH" https://github.com/ozgurgunes/chassis-assets.git "$SUBMODULE_PATH" 2>/dev/null || true
-  fi
-
-  git submodule update --init --remote "$SUBMODULE_PATH"
+  # Get current branch
+  local current_branch
+  current_branch=$(git -C "$submodule_path" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
 
   # Switch to correct branch if needed
-  local current_branch
-  current_branch=$(git -C "$SUBMODULE_PATH" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
-
-  if [ "$current_branch" != "$SUBMODULE_BRANCH" ]; then
-    log "info" "Switching $SUBMODULE_NAME to $SUBMODULE_BRANCH branch..."
-    git -C "$SUBMODULE_PATH" checkout "$SUBMODULE_BRANCH"
-    git -C "$SUBMODULE_PATH" pull origin "$SUBMODULE_BRANCH"
+  if [ -n "$submodule_branch" ] && [ "$current_branch" != "$submodule_branch" ]; then
+    log "info" "Switching $submodule_name to $submodule_branch branch..."
+    git -C "$submodule_path" checkout "$submodule_branch" 2>/dev/null || true
+    git -C "$submodule_path" pull origin "$submodule_branch" 2>/dev/null || true
+  else
+    git submodule update --init --remote "$submodule_path" 2>/dev/null || true
   fi
 
-  log "success" "$SUBMODULE_NAME synced successfully"
+  log "success" "$submodule_name synced successfully"
+}
+
+# Build submodule with custom commands or auto-detect
+build_submodule() {
+  local submodule_name=$1
+  local submodule_path=$2
+  local build_commands=$3
+  local build_output=$4
+
+  if [ ! -d "$submodule_path" ]; then
+    return 0
+  fi
+
+  log "info" "Building $submodule_name..."
+
+  # If custom build commands are provided, use them
+  if [ -n "$build_commands" ]; then
+    log "info" "Running custom build commands..."
+    (
+      cd "$submodule_path"
+      eval "$build_commands"
+    ) || {
+      log "error" "Build commands failed for $submodule_name"
+      return 1
+    }
+
+    # Verify build output if specified
+    if [ -n "$build_output" ]; then
+      local output_path="$submodule_path/$build_output"
+      if [ -d "$output_path" ]; then
+        local file_count=$(find "$output_path" -type f 2>/dev/null | wc -l | tr -d ' ')
+        log "success" "$submodule_name built successfully ($file_count files)"
+      else
+        log "warning" "Build output not found at expected location: $build_output"
+      fi
+    else
+      log "success" "$submodule_name build completed"
+    fi
+
+    return 0
+  fi
+
+  # Otherwise, auto-detect project type
+  detect_and_build "$submodule_path"
 }
 
 # Detect project type and run appropriate build
 detect_and_build() {
+  local target_path=$1
   local project_type="unknown"
 
   # iOS/macOS project detection
-  if [ -f "Package.swift" ] || [ -d "*.xcodeproj" ] || [ -f "*.xcworkspace" ]; then
+  if [ -f "$target_path/Package.swift" ] || ls "$target_path"/*.xcodeproj >/dev/null 2>&1 || ls "$target_path"/*.xcworkspace >/dev/null 2>&1; then
     project_type="swift"
     log "info" "Detected Swift/iOS project"
 
   # Android project detection
-  elif [ -f "build.gradle" ] || [ -f "build.gradle.kts" ] || [ -d "app/src" ]; then
+  elif [ -f "$target_path/build.gradle" ] || [ -f "$target_path/build.gradle.kts" ] || [ -d "$target_path/app/src" ]; then
     project_type="android"
     log "info" "Detected Android project"
 
   # React Native detection
-  elif [ -f "package.json" ] && grep -q "react-native" package.json 2>/dev/null; then
+  elif [ -f "$target_path/package.json" ] && grep -q "react-native" "$target_path/package.json" 2>/dev/null; then
     project_type="react-native"
     log "info" "Detected React Native project"
 
   # Flutter detection
-  elif [ -f "pubspec.yaml" ] && grep -q "flutter" pubspec.yaml 2>/dev/null; then
+  elif [ -f "$target_path/pubspec.yaml" ] && grep -q "flutter" "$target_path/pubspec.yaml" 2>/dev/null; then
     project_type="flutter"
     log "info" "Detected Flutter project"
 
   # Node.js project detection
-  elif [ -f "package.json" ]; then
+  elif [ -f "$target_path/package.json" ]; then
     project_type="node"
     log "info" "Detected Node.js project"
   fi
@@ -109,19 +171,19 @@ detect_and_build() {
     "node")
       if command_exists pnpm; then
         log "info" "Building with pnpm..."
-        (cd "$SUBMODULE_PATH" && pnpm install && pnpm build)
+        (cd "$target_path" && pnpm install && pnpm build)
       elif command_exists npm; then
         log "info" "Building with npm..."
-        (cd "$SUBMODULE_PATH" && npm install && npm run build)
+        (cd "$target_path" && npm install && npm run build)
       else
         log "warning" "No package manager found, skipping build"
       fi
       ;;
 
     "android")
-      if command_exists ./gradlew; then
+      if [ -f "$target_path/gradlew" ]; then
         log "info" "Building Android project..."
-        ./gradlew build
+        (cd "$target_path" && ./gradlew build)
       else
         log "warning" "Gradle wrapper not found"
       fi
@@ -130,10 +192,10 @@ detect_and_build() {
     "swift")
       if command_exists swift; then
         log "info" "Building Swift project..."
-        swift build
+        (cd "$target_path" && swift build)
       elif command_exists xcodebuild; then
         log "info" "Building with xcodebuild..."
-        xcodebuild -scheme YourScheme build
+        (cd "$target_path" && xcodebuild -scheme YourScheme build)
       else
         log "warning" "No Swift build tools found"
       fi
@@ -142,8 +204,7 @@ detect_and_build() {
     "flutter")
       if command_exists flutter; then
         log "info" "Building Flutter project..."
-        flutter pub get
-        flutter build
+        (cd "$target_path" && flutter pub get && flutter build)
       else
         log "warning" "Flutter not found"
       fi
@@ -165,15 +226,57 @@ check_changes() {
   fi
 }
 
+# Initialize submodules
+initialize_submodules() {
+  log "info" "Initializing submodules..."
+  git submodule update --init --recursive 2>/dev/null || {
+    log "warning" "Some submodules may not be available"
+  }
+}
+
+# Process all configured submodules
+process_all_submodules() {
+  log "info" "Processing ${#SUBMODULES[@]} submodule(s)..."
+
+  for submodule_config in "${SUBMODULES[@]}"; do
+    # Parse configuration
+    IFS='|' read -r name path branch build_commands build_output <<< "$submodule_config"
+
+    echo ""
+    log "info" "━━━ Processing: $name ━━━"
+
+    # Sync the submodule
+    sync_submodule "$name" "$path" "$branch"
+
+    # Build if not skipped
+    if [ "$SKIP_BUILD" = false ]; then
+      build_submodule "$name" "$path" "$build_commands" "$build_output"
+    fi
+  done
+}
+
 # Main execution
 main() {
+  # Check if git is available
+  if ! command_exists git; then
+    log "error" "Git is not installed or not in PATH"
+    exit 1
+  fi
+
+  # Check if we're in a git repository
+  if ! git rev-parse --git-dir >/dev/null 2>&1; then
+    log "error" "Not in a git repository"
+    exit 1
+  fi
+
   log "info" "Starting submodule sync..."
 
-  sync_submodule
-  detect_and_build
+  initialize_submodules
+  process_all_submodules
   check_changes
 
-  log "success" "Submodule sync completed!"
+  echo ""
+  log "success" "All submodules synced successfully!"
 }
 
 # Help function
@@ -181,7 +284,7 @@ show_help() {
   cat << EOF
 Git Submodule Sync - Cross-Platform Version
 
-Synchronizes chassis-assets submodule for any project type.
+Synchronizes git submodules for any project type.
 
 USAGE:
   ./sync-submodules.sh [options]

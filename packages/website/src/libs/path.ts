@@ -19,15 +19,15 @@ export function getChassisAssetsFsPath() {
 }
 
 export function getChassisTokensFsPath() {
-  return path.join('../../node_modules/@ozgurgunes/chassis-tokens/dist/tokens/web/chassis-docs')
+  return path.join('../../node_modules/@chassis-ui/tokens/dist/tokens/web/chassis-docs')
 }
 
 export function getChassisCSSFsPath() {
-  return path.join('node_modules/@ozgurgunes/chassis-css/dist')
+  return path.join('node_modules/@chassis-ui/css/dist')
 }
 
 export function getChassisIconsFsPath() {
-  return path.join('node_modules/@ozgurgunes/chassis-icons')
+  return path.join('node_modules/@chassis-ui/icons')
 }
 
 export function getDocsStaticFsPath() {

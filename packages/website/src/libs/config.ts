@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import yaml from 'js-yaml'
 import { z } from 'zod'
-import { zVersionMajorMinor, zVersionSemver } from '@ozgurgunes/chassis-docs'
+import { zVersionMajorMinor, zVersionSemver } from './validation'
 
 // The config schema used to validate the config file content and ensure all values required by the site are valid.
 const configSchema = z.object({
@@ -20,31 +20,13 @@ const configSchema = z.object({
   authors: z.string(),
   baseURL: z.string().url(),
   blog: z.object({
-    pageSize: z.number().min(1).max(50).default(10)
-  }),
-  cdn: z.object({
-    css: z.string().url(),
-    css_rtl: z.string().url(),
-    css_hash: z.string(),
-    css_rtl_hash: z.string(),
-    js: z.string().url(),
-    js_hash: z.string(),
-    js_bundle: z.string().url(),
-    js_bundle_hash: z.string(),
-    popper: z.string().url(),
-    popper_esm: z.string().url(),
-    popper_hash: z.string()
+    pageSize: z.number()
   }),
   current_version: zVersionSemver,
   description: z.string(),
   docs_version: zVersionMajorMinor,
   docsDir: z.string(),
   docsPath: z.string(),
-  download: z.object({
-    dist: z.string().url(),
-    dist_examples: z.string().url(),
-    source: z.string().url()
-  }),
   github_org: z.string().url(),
   repo: z.string().url(),
   subtitle: z.string(),

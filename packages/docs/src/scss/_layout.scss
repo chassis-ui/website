@@ -60,7 +60,7 @@
 
 .cxd-content {
   grid-area: content;
-  min-width: 1px; // Fix width when cxd-content contains a `<pre>` https://github.com/ozgurgunes/chassis-css/issues/25410
+  min-width: 1px; // Fix width when cxd-content contains a `<pre>` https://github.com/chassis-ui/css/issues/25410
 }
 
 .cxd-content,

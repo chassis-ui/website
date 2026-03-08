@@ -4,13 +4,14 @@ import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import type { AstroIntegration } from 'astro'
-import type { Element } from 'hast'
+import type { Element, Text } from 'hast'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import { getConfig } from './config'
-import { configurePrism, rehypeCxTable } from '@ozgurgunes/chassis-docs'
+import { rehypeCxTable } from '@chassis-ui/docs'
 import { remarkCxConfig, remarkCxDocsref } from './remark'
 import {
   getDocsFsPath,
+  getChassisDocsPath,
   getChassisAssetsFsPath,
   getChassisCSSFsPath,
   getChassisIconsFsPath,
@@ -19,6 +20,7 @@ import {
   validateChassisDocsPaths
 } from './path'
 import chassisAutoImport from './shortcode'
+import { configurePrism } from './prism'
 
 // A list of static file paths that will be aliased to a different path.
 const staticFileAliases = {
@@ -55,7 +57,10 @@ export function chassis(): AstroIntegration[] {
                   {
                     behavior: 'append',
                     content: [{ type: 'text', value: ' ' }],
-                    properties: { class: 'anchor-link' },
+                    properties: (element: Element) => ({
+                      class: 'anchor-link',
+                      ariaLabel: `Link to this section: ${(element.children[0] as Text).value}`
+                    }),
                     test: (element: Element) => element.tagName.match(headingsRangeRegex)
                   }
                 ],
@@ -92,7 +97,7 @@ function cleanPublicDirectory() {
 
 function copyChassisAssets() {
   const source = getChassisAssetsFsPath()
-  const destination = path.join(getDocsPublicFsPath(), 'assets')
+  const destination = path.join(getDocsPublicFsPath(), 'static')
 
   // fs.mkdirSync(destination, { recursive: true })
   // copyStaticRecursively(source, destination)
@@ -102,7 +107,7 @@ function copyChassisAssets() {
 
 function copyChassisCSS() {
   const source = getChassisCSSFsPath()
-  const destination = path.join(getDocsPublicFsPath(), 'assets')
+  const destination = path.join(getDocsPublicFsPath(), 'static')
 
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(source, destination, { recursive: true })
@@ -110,13 +115,13 @@ function copyChassisCSS() {
 
 // Copy the `icons` folder from the chassis-tokens repo to make it available from the `/icons` URL.
 function copyChassisIcons() {
-  const svgs_source = path.join(getChassisIconsFsPath(), 'svgs')
+  // const svgs_source = path.join(getChassisIconsFsPath(), 'svgs')
   const font_source = path.join(getChassisIconsFsPath(), 'font')
-  const destination = path.join(getDocsPublicFsPath(), 'assets', 'icons')
+  const destination = path.join(getDocsPublicFsPath(), 'static', 'icons')
 
   fs.mkdirSync(destination, { recursive: true })
+  // fs.cpSync(svgs_source, destination, { recursive: true })
   fs.cpSync(font_source, destination, { recursive: true })
-  fs.cpSync(svgs_source, destination, { recursive: true })
 }
 
 // Copy the content as-is of the `static` folder to make it available from the `/` URL.

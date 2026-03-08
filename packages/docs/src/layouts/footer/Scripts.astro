@@ -1,5 +1,5 @@
 ---
-import { getChassisJsProps } from '@libs/chassis'
+import { getChassisJsProps } from '../../libs/chassis'
 import type { Layout } from '../../libs/layout'
 
 interface Props {
@@ -16,5 +16,7 @@ console.log('layout in Scripts:', layout)
 <script src="../../js/search.js"></script>
 
 {layout === 'docs' && <script src="../../js/sidebar.js" />}
+
+<script src="../../js/icon-loader.js"></script>
 
 <slot name="scripts" />

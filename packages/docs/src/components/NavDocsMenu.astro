@@ -1,5 +1,5 @@
 ---
-import type { Layout } from '@libs/layout'
+import type { Layout } from '../libs/layout'
 
 interface Props {
   layout: Layout
@@ -16,11 +16,11 @@ const { layout } = Astro.props
   aria-expanded="false">Docs</a
 >
 <ul class="dropdown-menu">
-  <li><a class="dropdown-item" href="/docs/css">CSS</a></li>
-  <li><a class="dropdown-item" href="/docs/tokens">Tokens</a></li>
-  <li><a class="dropdown-item" href="/docs/icons">Icons</a></li>
-  <li><a class="dropdown-item" href="/docs/figma">Figma</a></li>
-  <li><a class="dropdown-item" href="/docs/assets">Assets</a></li>
+  <li><a class="dropdown-item" href="/css">CSS</a></li>
+  <li><a class="dropdown-item" href="/tokens">Tokens</a></li>
+  <li><a class="dropdown-item" href="/icons">Icons</a></li>
+  <li><a class="dropdown-item" href="/figma">Figma</a></li>
+  <li><a class="dropdown-item" href="/assets">Assets</a></li>
   <li><hr class="dropdown-separator" /></li>
   <li><a class="dropdown-item" href="/docs">Docs Index</a></li>
 </ul>

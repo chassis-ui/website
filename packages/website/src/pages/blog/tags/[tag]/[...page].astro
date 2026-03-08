@@ -1,36 +1,39 @@
 ---
-import type { Page } from 'astro'
+import type { Page, GetStaticPathsOptions } from 'astro'
 import BlogLayout from '@layouts/BlogLayout.astro'
 import { getConfig } from '@libs/config'
 import { blogPages } from '@libs/content'
 import { getBlogPostUrl } from '@libs/utils'
 import Pagination from '@components/Pagination.astro'
+import type { CollectionEntry } from 'astro:content'
 
-export async function getStaticPaths({ paginate }: any) {
+type BlogPost = CollectionEntry<'blog'>
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const config = await getConfig()
 
   const tags = new Set()
 
-  blogPages.forEach((page) => {
+  blogPages.forEach((page: BlogPost) => {
     if (page.data.tags) {
       const blogTags = Array.isArray(page.data.tags)
         ? page.data.tags
-        : page.data.tags.split(',').map((tag) => tag.trim())
-      blogTags.forEach((tag) => tags.add(tag))
+        : page.data.tags.split(',').map((tag: string) => tag.trim())
+      blogTags.forEach((tag: string) => tags.add(tag))
     }
   })
 
   const paths = []
   for (const tag of tags) {
     const tagPosts = blogPages
-      .filter((page) => {
+      .filter((page: BlogPost) => {
         if (!page.data.tags) return false
         const blogTags = Array.isArray(page.data.tags)
           ? page.data.tags
-          : page.data.tags.split(',').map((t) => t.trim())
+          : page.data.tags.split(',').map((t: string) => t.trim())
         return blogTags.includes(String(tag))
       })
-      .sort((a, b) => {
+      .sort((a: BlogPost, b: BlogPost) => {
         const dateA = new Date(a.data.pubDate || 0)
         const dateB = new Date(b.data.pubDate || 0)
         return dateB.getTime() - dateA.getTime()
@@ -39,17 +42,13 @@ export async function getStaticPaths({ paginate }: any) {
     if (tagPosts.length > 0) {
       const paginatedPaths = paginate(tagPosts, {
         pageSize: config.blog.pageSize,
-        params: { tag }
+        params: { tag: String(tag) }
       })
       paths.push(...paginatedPaths)
     }
   }
 
   return paths
-}
-
-type Props = {
-  page: Page<any>
 }
 
 const { page } = Astro.props
@@ -79,7 +78,7 @@ const frontmatter = {
     {
       page.data.length > 0 ? (
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 my-4">
-          {page.data.map((post: any) => (
+          {page.data.map((post: BlogPost) => (
             <article class="col">
               <h2 class="h4">
                 <a href={getBlogPostUrl(post)}>{post.data.title}</a>

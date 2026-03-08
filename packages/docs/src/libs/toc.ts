@@ -1,23 +1,10 @@
 import type { MarkdownHeading } from 'astro'
-
-// Dynamically import config from consuming project
-const configPath = process.cwd() + '/src/libs/config.js'
-let configModule: any
-
-try {
-  configModule = await import(/* @vite-ignore */ configPath)
-} catch (error) {
-  console.warn('Failed to load config from consuming project:', error)
-  // Fallback - this should not happen in a properly set up consuming project
-  configModule = { getConfig: () => ({ toc: { min: 2, max: 6 } }) }
-}
+// import { getConfig } from './config'
 
 // Generate a tree like structure from a list of headings.
-export function generateToc(allHeadings: MarkdownHeading[]) {
+export function generateToc(allHeadings: MarkdownHeading[], config: any) {
   const headings = allHeadings.filter(
-    (heading) =>
-      heading.depth >= configModule.getConfig().toc.min &&
-      heading.depth <= configModule.getConfig().toc.max
+    (heading) => heading.depth >= config.toc.min && heading.depth <= config.toc.max
   )
 
   const toc: TocEntry[] = []

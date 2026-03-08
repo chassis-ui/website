@@ -1,7 +1,7 @@
 ---
-import { ResponsiveImage } from '@ozgurgunes/chassis-docs/components'
+import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
 import FeatureItem from '@components/FeatureItem.astro'
-import { Code } from '@ozgurgunes/chassis-docs/components'
+import Code from '@shortcodes/Code.astro'
 ---
 
 <section id="single-source-section" class="home-section">
@@ -39,7 +39,7 @@ import { Code } from '@ozgurgunes/chassis-docs/components'
       </div>
     </div>
     <div class="section-aside">
-      <div class="media-stack">
+      <div class="aside-contents">
         <div>
           <Code
             lang="json"
@@ -61,7 +61,7 @@ import { Code } from '@ozgurgunes/chassis-docs/components'
         </div>
         <div class="section-image">
           <ResponsiveImage
-            imgPath="/assets/images/home/platforms.png"
+            imgPath="/static/images/home/platforms.png"
             alt="Chassis UI"
             classes="section-media"
           />

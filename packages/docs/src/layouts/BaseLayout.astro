@@ -7,7 +7,6 @@ import Header from './header/Header.astro'
 import Scripts from './footer/Scripts.astro'
 import Footer from './footer/Footer.astro'
 import { stripMarkdown } from '../libs/utils'
-import cxIcons from '@ozgurgunes/chassis-icons/font/chassis-icons.svg?raw'
 
 // The following props can be directly passed to the base layout component from any page or layout extending it,
 // e.g. <BaseLayout layout="docs" robots="noindex" />.
@@ -43,7 +42,7 @@ const description = frontmatter?.description
   : getConfig().description
 const thumbnail = frontmatter?.thumbnail
   ? `img/${frontmatter.thumbnail}`
-  : 'logo/chassis-logo-default.svg'
+  : 'images/logo/chassis-logo-brand.svg'
 
 const bodyProps = overrides?.body ?? {}
 const mainProps = overrides?.main ?? {}
@@ -59,6 +58,7 @@ const mainProps = overrides?.main ?? {}
       thumbnail={thumbnail}
       title={title}
     />
+    <slot name="styles" slot="styles" />
   </head>
   <body {...bodyProps}>
     <Header layout={layout} title={title} />
@@ -75,7 +75,9 @@ const mainProps = overrides?.main ?? {}
 
     <Footer />
 
-    <Scripts layout={layout} />
+    <Scripts layout={layout}>
+      <slot name="scripts" slot="scripts" />
+    </Scripts>
 
     {
       frontmatter?.extra_js &&
@@ -89,6 +91,5 @@ const mainProps = overrides?.main ?? {}
         </div>
       )
     }
-    <div class="d-none"><Fragment set:html={cxIcons} /></div>
   </body>
 </html>

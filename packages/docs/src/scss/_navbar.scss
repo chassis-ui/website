@@ -63,6 +63,7 @@
     .icon {
       --cx-icon-color: var(--cx-fg-color);
       height: 24px;
+      vertical-align: -.275em;
     }
 
     @include media-breakpoint-up(large) {
@@ -116,7 +117,7 @@
       @include border-radius(.25rem);
 
       &:active {
-        .bi {
+        .icon {
           color: inherit !important; // stylelint-disable-line declaration-no-important
         }
       }
@@ -125,7 +126,7 @@
     .active {
       font-weight: 600;
 
-      .bi {
+      .icon {
         display: block !important; // stylelint-disable-line declaration-no-important
       }
     }

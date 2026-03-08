@@ -4,12 +4,12 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@libs/*": ["../website/src/libs/*"]  // Development-only: allows VSCode to resolve @libs/* imports
+      "@libs/*": ["../website/src/libs/*"] // Development-only: allows VSCode to resolve @libs/* imports
     }
   },
   "include": [
     "src/**/*",
-    "../website/src/**/*",  // Development-only: allows VSCode to see website types
+    "../website/src/**/*", // Development-only: allows VSCode to see website types
     "index.ts"
   ],
   "exclude": [

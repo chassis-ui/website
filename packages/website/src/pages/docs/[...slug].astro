@@ -1,12 +1,13 @@
 ---
-import { DocsLayout } from '@ozgurgunes/chassis-docs/layouts'
+import DocsLayout from '@chassis-ui/docs/layouts/DocsLayout.astro'
 import { docsPages } from '@libs/content'
-import { getConfig } from '@libs/config'
-import { Code } from '@ozgurgunes/chassis-docs/components'
+import Code from '@shortcodes/Code.astro'
 import { render } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+import '../../scss/docs.scss'
 
 export async function getStaticPaths() {
-  return docsPages.map((docsPage) => {
+  return docsPages.map((docsPage: CollectionEntry<'docs'>) => {
     return {
       params: { slug: docsPage.id },
       props: docsPage

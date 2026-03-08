@@ -3,13 +3,14 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@css/*": ["@ozgurgunes/chassis-css/dist/*"],
-      "@icons/*": ["@ozgurgunes/chassis-icons/dist/*"],
+      "@css/*": ["@chassis-ui/css/dist/*"],
+      "@icons/*": ["@chassis-ui/icons/dist/*"],
       "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],
       "@layouts/*": ["src/layouts/*"],
       "@libs/*": ["src/libs/*"],
-      "@shortcodes/*": ["@ozgurgunes/chassis-docs/components/shortcodes/*"]
+      "@scss/*": ["src/scss/*"],
+      "@shortcodes/*": ["src/components/shortcodes/*"]
     }
   }
 }

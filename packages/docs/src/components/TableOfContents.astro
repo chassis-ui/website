@@ -1,16 +1,17 @@
 ---
 import type { MarkdownHeading } from 'astro'
-import { generateToc, type TocEntry } from '@libs/toc'
+import { generateToc, type TocEntry } from '../libs/toc'
 
 interface Props {
   headings?: MarkdownHeading[]
   entries?: TocEntry[]
   level?: number
+  config?: any
 }
 
-const { entries, headings, level } = Astro.props
+const { entries, headings, level, config } = Astro.props
 
-const toc = entries ? entries : generateToc(headings ?? [])
+const toc = entries ? entries : generateToc(headings ?? [], config)
 let entryLevel = level ? level + 1 : 1
 ---
 

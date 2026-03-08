@@ -9,25 +9,30 @@
 // DESIGN TOKENS
 // -----------------------------------------------------------------------------
 
-@use "@ozgurgunes/chassis-tokens/dist/web/chassis-docs/number-large" as large;
-@use "@ozgurgunes/chassis-tokens/dist/web/chassis-docs/number-medium" as medium;
-@use "@ozgurgunes/chassis-tokens/dist/web/chassis-docs/number-small" as small;
+@use "@chassis-ui/tokens/dist/web/chassis-docs/number-large" as large;
+@use "@chassis-ui/tokens/dist/web/chassis-docs/number-medium" as medium;
+@use "@chassis-ui/tokens/dist/web/chassis-docs/number-small" as small;
 
 // -----------------------------------------------------------------------------
 // DEPENDENCIES
 // -----------------------------------------------------------------------------
 
 // @import "settings";
-@import "@ozgurgunes/chassis-tokens/dist/web/chassis-docs/base";
-@import "@ozgurgunes/chassis-docs/scss/settings";
+@import "@chassis-ui/tokens/dist/web/chassis-docs/main";
+@import "@chassis-ui/docs/scss/settings";
 
-@import "@ozgurgunes/chassis-css/scss/functions";
-@import "@ozgurgunes/chassis-css/scss/tokens";
-@import "@ozgurgunes/chassis-css/scss/variables";
-@import "@ozgurgunes/chassis-css/scss/rfs";
-@import "@ozgurgunes/chassis-css/scss/maps";
-@import "@ozgurgunes/chassis-css/scss/mixins";
-// @import "@ozgurgunes/chassis-css/scss/grid";
+@import "@chassis-ui/css/scss/functions";
+@import "@chassis-ui/css/scss/tokens";
+@import "@chassis-ui/css/scss/variables";
+@import "@chassis-ui/css/scss/rfs";
+@import "@chassis-ui/css/scss/maps";
+@import "@chassis-ui/css/scss/mixins";
+@import "@chassis-ui/css/scss/placeholders";
+
+@import "@chassis-ui/docs/scss/main";
+
+
+// @import "@chassis-ui/css/scss/grid";
 
 // -----------------------------------------------------------------------------
 // UTILITY FUNCTIONS
@@ -62,6 +67,8 @@
 // -----------------------------------------------------------------------------
 
 // Map of CSS variable names to SCSS variable names that should be converted
+
+/* prettier-ignore */
 $responsive-variables: (
   "font-size-hero-title":       "cx-typography-font-size-screen-hero-title",
   "font-size-hero-body":        "cx-typography-font-size-screen-hero-body",
@@ -97,7 +104,7 @@ $responsive-variables: (
   "button-padding-x":           "cx-size-base-32",
   "button-font-size":           "cx-typography-font-size-screen-section-body",
   "input-font-size":            "cx-typography-font-size-screen-section-body",
-  // "code-font-size":             "cx-typography-font-size-screen-feature-body",
+  "code-font-size":             "cx-typography-font-size-screen-feature-body",
   "radius-large":               "cx-border-radius-context-large",
   "radius-medium":              "cx-border-radius-context-medium"
 );
@@ -136,6 +143,15 @@ $small-vars: meta.module-variables("small");
         $value: map-get($small-vars, $scss-name);
         --#{$prefix}#{$css-name}: #{unit-vw($value, 4)};
       }
+    }
+  }
+
+  .cxd-search {
+    @include media-breakpoint-up(large) {
+      right: var(--cx-section-padding-x);
+      z-index: -1;
+      box-sizing: content-box;
+      padding-right: 12rem;
     }
   }
 }
@@ -259,7 +275,6 @@ $small-vars: meta.module-variables("small");
 // COMPONENTS
 // -----------------------------------------------------------------------------
 
-
 .feature-item {
   display: flex;
   .section-content & {
@@ -272,7 +287,6 @@ $small-vars: meta.module-variables("small");
     gap: var(--#{$prefix}feature-gap-y);
   }
 }
-
 
 .module-item {
   display: flex;
@@ -329,6 +343,9 @@ $small-vars: meta.module-variables("small");
   width: var(--#{$prefix}section-image-w, 40vw);
   // margin-top: #{calc(var(--#{$prefix}section-gap-x) * -1)};
   // margin-left: var(--#{$prefix}section-gap-x);
+  @include media-breakpoint-down(large) {
+    width: 100%;
+  }
 }
 
 .working-command {
@@ -338,7 +355,6 @@ $small-vars: meta.module-variables("small");
 
   .icon {
     animation: spin 1.5s linear infinite;
-
   }
 
   &::before,
@@ -378,7 +394,6 @@ $small-vars: meta.module-variables("small");
     color: var(--#{$prefix}fg-subtle);
   }
 
-
   > ul > li:not(:last-child) {
     margin-bottom: .5em;
   }
@@ -389,5 +404,22 @@ $small-vars: meta.module-variables("small");
   padding: 0 var(--#{$prefix}section-padding-x);
   > .container-fluid {
     padding: 0;
+  }
+}
+
+.home-body .cxd-code-snippet {
+  --cx-icon-size: 1em;
+  .highlight {
+    padding: var(--#{$prefix}space-context-large);
+  }
+  pre {
+    padding: 0;
+    margin: 0;
+  }
+  > .cxd-clipboard {
+    display: none;
+  }
+  h5 {
+    @include font-size(var(--#{$prefix}code-font-size));
   }
 }

@@ -1,5 +1,6 @@
 ---
-import { Code, ResponsiveImage } from '@ozgurgunes/chassis-docs/components'
+import Code from '@shortcodes/Code.astro'
+import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
 ---
 
 <section id="contact-section" class="home-section">
@@ -78,7 +79,7 @@ import { Code, ResponsiveImage } from '@ozgurgunes/chassis-docs/components'
       </div>
     </div>
     <div class="section-aside">
-      <div class="media-stack">
+      <div class="aside-contents">
         <Code
           lang="json"
           code={`// JSON
@@ -98,7 +99,7 @@ import { Code, ResponsiveImage } from '@ozgurgunes/chassis-docs/components'
         />
         <div class="text-center">
           <ResponsiveImage
-            imgPath="/assets/images/home/lego-chassis.png"
+            imgPath="/static/images/home/lego-chassis.png"
             alt="Chassis UI"
             classes="section-media"
           />
