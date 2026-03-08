@@ -38,8 +38,7 @@
       "source": "/tokens/:path*",
       "has": [
         {
-          "type": "header",
-          "key": "host",
+          "type": "host",
           "value": "staging.chassis-ui.com"
         }
       ],
