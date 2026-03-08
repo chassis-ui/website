@@ -172,8 +172,8 @@ class ChassisBuilder {
       // Install dependencies in vendor/assets
       this.runCommand('pnpm install', vendorAssetsPath)
 
-      // Build the assets
-      this.runCommand('pnpm build', vendorAssetsPath)
+      // Build only the assets (not the Astro documentation site)
+      this.runCommand('pnpm assets:site', vendorAssetsPath)
 
       // Verify the build succeeded
       this.log('Verifying vendor/assets build output...', 'info')
