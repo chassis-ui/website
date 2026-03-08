@@ -43,11 +43,11 @@
           "value": "staging.chassis-ui.com"
         }
       ],
-      "destination": "https://chassis-tokens-staging.vercel.app/:path*"
+      "destination": "https://chassis-tokens-staging.vercel.app/tokens/:path*"
     },
     {
       "source": "/tokens/:path*",
-      "destination": "https://chassis-tokens.vercel.app/:path*"
+      "destination": "https://chassis-tokens.vercel.app/tokens/:path*"
     },
     {
       "source": "/figma/:path*",
