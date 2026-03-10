@@ -13,11 +13,9 @@ interface Props {
   frontmatter: CollectionEntry<'docs'>['data']
   headings?: MarkdownHeading[]
   id: CollectionEntry<'docs'>['id']
-  SidebarComponent?: typeof DocsSidebar
 }
 
-const { frontmatter, headings, id, SidebarComponent } = Astro.props
-const Sidebar = SidebarComponent || DocsSidebar
+const { frontmatter, headings, id } = Astro.props
 
 // Extract the directory/section from the ID (format: "directory/filename.mdx")
 const parentDirectory = id.includes('/') ? id.split('/')[0] : ''
@@ -50,47 +48,51 @@ if (frontmatter.toc) {
         </div>
 
         <div class="offcanvas-body">
-          <Sidebar />
+          <slot name="sidebar">
+            <DocsSidebar />
+          </slot>
         </div>
       </div>
     </aside>
 
     <main class="cxd-main">
       <div class="cxd-intro">
-        <div
-          class="d-medium-flex flex-medium-row-reverse justify-content-between align-items-start"
-        >
-          <div class="mb-medium mb-medium-0 d-flex text-nowrap">
-            {
-              // This is needed because we want to show the badge if show_badge isn't present or is set to false
-              frontmatter.added &&
-                ((frontmatter.added.show_badge !== undefined &&
-                  frontmatter.added.show_badge === true) ||
-                  frontmatter.added.show_badge === undefined) && (
-                  <span class="badge success smooth rounded-medium me-xsmall">
-                    Added in v{frontmatter.added.version}
-                  </span>
-                )
-            }
-            <a
-              class="button default small"
-              href={`${getConfig().repo}/blob/${id}.mdx`}
-              title="View and edit this file on GitHub"
-              target="_blank"
-              rel="noopener"
-            >
-              View on GitHub
-            </a>
+        <slot name="intro">
+          <div
+            class="d-medium-flex flex-medium-row-reverse justify-content-between align-items-start"
+          >
+            <div class="mb-medium mb-medium-0 d-flex text-nowrap">
+              {
+                // This is needed because we want to show the badge if show_badge isn't present or is set to false
+                frontmatter.added &&
+                  ((frontmatter.added.show_badge !== undefined &&
+                    frontmatter.added.show_badge === true) ||
+                    frontmatter.added.show_badge === undefined) && (
+                    <span class="badge success smooth rounded-medium me-xsmall">
+                      Added in v{frontmatter.added.version}
+                    </span>
+                  )
+              }
+              <a
+                class="button default small"
+                href={`${getConfig().repo}/blob/${id}.mdx`}
+                title="View and edit this file on GitHub"
+                target="_blank"
+                rel="noopener"
+              >
+                View on GitHub
+              </a>
+            </div>
+            <h1 class="cxd-title mb-small" id="content">{frontmatter.title}</h1>
           </div>
-          <h1 class="cxd-title mb-small" id="content">{frontmatter.title}</h1>
-        </div>
-        <div class="cxd-subtitle">
-          {
-            frontmatter.description && (
-              <Fragment set:html={processMarkdownToHtml(frontmatter.description)} />
-            )
-          }
-        </div>
+          <div class="cxd-subtitle">
+            {
+              frontmatter.description && (
+                <Fragment set:html={processMarkdownToHtml(frontmatter.description)} />
+              )
+            }
+          </div>
+        </slot>
       </div>
 
       {
@@ -113,7 +115,9 @@ if (frontmatter.toc) {
             <hr class="d-none d-medium-block my-xsmall" />
             <div class="collapse cxd-toc-collapse" id="tocContents">
               <nav id="TableOfContents">
-                <TableOfContents headings={headings} config={getConfig()} />
+                <slot name="toc">
+                  <TableOfContents headings={headings} config={getConfig()} />
+                </slot>
               </nav>
             </div>
           </div>

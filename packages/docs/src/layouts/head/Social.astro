@@ -1,7 +1,7 @@
 ---
 import path from 'node:path'
 import { getConfig } from '@libs/config'
-import { getChassisDocsPath, getDocsPublicFsPath } from '@libs/path'
+import { getDocsPublicFsPath } from '@libs/path'
 import { getStaticImageSize } from '../../libs/image'
 import type { Layout } from '../../libs/layout'
 
@@ -14,8 +14,7 @@ interface Props {
 
 const { description, layout, thumbnail, title } = Astro.props
 
-const socialImageUrl = new URL(getChassisDocsPath(`logo/${thumbnail}`), Astro.site)
-// const socialImageSize = await getStaticImageSize(`/${thumbnail}`)
+const socialImageUrl = new URL(`static/${thumbnail}`, Astro.site)
 const socialImageSize = await getStaticImageSize(
   path.join(getDocsPublicFsPath(), 'static', thumbnail)
 )

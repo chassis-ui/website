@@ -104,8 +104,8 @@
     container.setAttribute('aria-hidden', 'true')
     container.innerHTML = spriteContent
 
-    // Insert at the beginning of body
-    document.body.insertBefore(container, document.body.firstChild)
+    // Insert at the end of body
+    document.body.appendChild(container)
   }
 
   /**
