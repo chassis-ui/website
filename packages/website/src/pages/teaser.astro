@@ -8,17 +8,13 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
   description={getConfig().description}
   layout={'single'}
   robots={'noindex, nofollow'}
-  thumbnail={'images/logo/chassis-logo-brand.svg'}
+  thumbnail={'static/images/site-logo.svg'}
   title={getConfig().title}
 />
 <div class="container d-flex vh-100 align-items-center py-6xlarge">
-  <div class="row py-6xlarge mt-n6xlarge">
-    <div class="col-8 offset-2 text-center py-6xlarge mt-n6xlarge">
-      <ResponsiveImage
-        imgPath="/static/images/logo/chassis-logo-brand.png"
-        alt="Chassis UI"
-        classes="mb-6xlarge  mt-n6xlarge"
-      />
+  <div class="row py-6xlarge">
+    <div class="col-8 offset-2 text-center py-6xlarge">
+      <img src="/static/images/site-logo.svg" alt="Chassis UI" height="96" />
       <h1 class="font-hero mb-4xlarge mt-4xlarge">
         <span class="text-nowrap">Build Better Design Systems.</span> In Sync. At Scale.
       </h1>

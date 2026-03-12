@@ -14,10 +14,8 @@ interface Props {
 
 const { description, layout, thumbnail, title } = Astro.props
 
-const socialImageUrl = new URL(`static/${thumbnail}`, Astro.site)
-const socialImageSize = await getStaticImageSize(
-  path.join(getDocsPublicFsPath(), 'static', thumbnail)
-)
+const socialImageUrl = new URL(thumbnail, Astro.site)
+const socialImageSize = await getStaticImageSize(path.join(getDocsPublicFsPath(), thumbnail))
 ---
 
 <meta name="twitter:card" content="summary_large_image" />
