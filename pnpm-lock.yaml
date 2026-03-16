@@ -142,7 +142,7 @@ importers:
         version: https://codeload.github.com/chassis-ui/icons/tar.gz/c887bda2aecbc96e6fc20cb9564463651fdede31
       '@chassis-ui/tokens':
         specifier: github:chassis-ui/tokens#app/docs
-        version: https://codeload.github.com/chassis-ui/tokens/tar.gz/53157feb413d3d273d23c33b9b4ea72d161bc8f7
+        version: https://codeload.github.com/chassis-ui/tokens/tar.gz/d37521e8dbd9c40e042b4bbe4c2712c77612df78
       '@docsearch/css':
         specifier: ^3.9.0
         version: 3.9.0
@@ -392,8 +392,8 @@ packages:
     version: 0.1.0
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
-  '@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/53157feb413d3d273d23c33b9b4ea72d161bc8f7':
-    resolution: {tarball: https://codeload.github.com/chassis-ui/tokens/tar.gz/53157feb413d3d273d23c33b9b4ea72d161bc8f7}
+  '@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/d37521e8dbd9c40e042b4bbe4c2712c77612df78':
+    resolution: {tarball: https://codeload.github.com/chassis-ui/tokens/tar.gz/d37521e8dbd9c40e042b4bbe4c2712c77612df78}
     version: 0.1.0
 
   '@csstools/css-parser-algorithms@3.0.5':
@@ -4254,7 +4254,7 @@ snapshots:
 
   '@chassis-ui/icons@https://codeload.github.com/chassis-ui/icons/tar.gz/c887bda2aecbc96e6fc20cb9564463651fdede31': {}
 
-  '@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/53157feb413d3d273d23c33b9b4ea72d161bc8f7': {}
+  '@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/d37521e8dbd9c40e042b4bbe4c2712c77612df78': {}
 
   '@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4)':
     dependencies:

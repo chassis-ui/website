@@ -15,11 +15,11 @@ export function getDocsRelativePath(inputPath: string) {
 }
 
 export function getChassisAssetsFsPath() {
-  return path.join('../../vendor/assets/dist/web/chassis-docs/')
+  return path.join('../../vendor/assets/dist/web/docs', 'chassis')
 }
 
 export function getChassisTokensFsPath() {
-  return path.join('../../node_modules/@chassis-ui/tokens/dist/tokens/web/chassis-docs')
+  return path.join('../../node_modules/@chassis-ui/tokens/dist/tokens/web/docs', 'chassis')
 }
 
 export function getChassisCSSFsPath() {

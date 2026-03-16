@@ -4,6 +4,7 @@ import { getConfig } from './src/libs/config'
 import { getSiteUrl } from '@chassis-ui/docs'
 import { algoliaPlugin } from './src/plugins/algolia-plugin'
 import { stackblitzPlugin } from './src/plugins/stackblitz-plugin'
+import { rehypeStripIsRaw } from '@chassis-ui/docs'
 
 const site = getSiteUrl(getConfig())
 
@@ -16,7 +17,8 @@ export default defineConfig({
   integrations: [chassis()],
   markdown: {
     smartypants: false,
-    syntaxHighlight: 'prism'
+    syntaxHighlight: 'prism',
+    rehypePlugins: [rehypeStripIsRaw]
   },
   site,
   vite: {

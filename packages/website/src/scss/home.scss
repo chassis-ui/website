@@ -9,16 +9,16 @@
 // DESIGN TOKENS
 // -----------------------------------------------------------------------------
 
-@use "@chassis-ui/tokens/dist/web/chassis-docs/number-large" as large;
-@use "@chassis-ui/tokens/dist/web/chassis-docs/number-medium" as medium;
-@use "@chassis-ui/tokens/dist/web/chassis-docs/number-small" as small;
+@use "@chassis-ui/tokens/dist/web/docs/chassis/number-large" as large;
+@use "@chassis-ui/tokens/dist/web/docs/chassis/number-medium" as medium;
+@use "@chassis-ui/tokens/dist/web/docs/chassis/number-small" as small;
 
 // -----------------------------------------------------------------------------
 // DEPENDENCIES
 // -----------------------------------------------------------------------------
 
 // @import "settings";
-@import "@chassis-ui/tokens/dist/web/chassis-docs/main";
+@import "@chassis-ui/tokens/dist/web/docs/chassis/main";
 @import "@chassis-ui/docs/scss/settings";
 
 @import "@chassis-ui/css/scss/functions";

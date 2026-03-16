@@ -29,14 +29,12 @@
     "multi-platform"
   ],
   "scripts": {
-    "build": "node build/build-site.js all",
-    "clean": "node build/build-site.js clean",
-    "dev": "pnpm astro:dev",
+    "build": "pnpm site:build",
+    "dev": "pnpm sync-submodules && pnpm astro:dev",
     "preview": "pnpm astro:preview",
-    "validate": "node build/build-site.js validate",
 
     "site": "pnpm site:build && pnpm site:lint:vnu",
-    "site:build": "node build/build-site.js",
+    "site:build": "pnpm sync-submodules && pnpm astro:build",
     "site:lint": "pnpm site:lint:eslint && pnpm site:lint:stylelint && pnpm site:lint:prettier && pnpm site:lint:vnu",
     "site:lint:eslint": "eslint --cache --cache-location .cache/.eslintcache --report-unused-disable-directives packages/website",
     "site:lint:stylelint": "stylelint --cache --cache-location .cache/.stylelintcache packages/website/\"**/*.{css,scss}\"",
@@ -59,8 +57,8 @@
     "check:lockfile": "lockfile-lint --allowed-hosts npm --allowed-schemes https: --empty-hostname false --type npm --path package-lock.json",
     "check:pnpm": "pnpm audit --audit-level moderate",
 
-    "release:version": "node build/change-version.js",
-    "sync:submodules": "node build/sync-submodules.js"
+    "change-version": "node build/change-version.js",
+    "sync-submodules": "node build/sync-submodules.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

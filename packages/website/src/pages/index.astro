@@ -1,16 +1,16 @@
 ---
 import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
-import Hero from '@layouts/home/HeroSection.astro'
-import Gallery from '@layouts/home/GallerySection.astro'
-import SingleSource from '@layouts/home/SingleSourceSection.astro'
-import Figma from '@layouts/home/FigmaSection.astro'
-import Modularity from '@layouts/home/ModularitySection.astro'
-import Assets from '@layouts/home/AssetsSection.astro'
-import Tokens from '@layouts/home/TokensSection.astro'
-import Contact from '@layouts/home/ContactSection.astro'
-import Icons from '@layouts/home/HomeIcons.svg?raw'
+import Hero from '@layouts/landing/HeroSection.astro'
+import Tokens from '@layouts/landing/TokensSection.astro'
+import Assets from '@layouts/landing/AssetsSection.astro'
+import Figma from '@layouts/landing/FigmaSection.astro'
+import CSS from '@layouts/landing/CSSSection.astro'
+import Icons from '@layouts/landing/IconsSection.astro'
+import HomeIcons from '@layouts/home/HomeIcons.svg?raw'
+import LandingIcons from '@layouts/landing/LandingIcons.svg?raw'
 import type { LayoutOverridesHTMLAttributes } from '@chassis-ui/docs'
 import '@scss/home.scss'
+import '@scss/landing.scss'
 
 const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
 bodyProps['class'] = 'home-body'
@@ -18,16 +18,13 @@ bodyProps['class'] = 'home-body'
 
 <BaseLayout {...Astro.props} overrides={{ body: bodyProps }}>
   <Hero />
-  <Gallery />
-  <SingleSource />
-  <Figma />
-  <Modularity />
   <Tokens />
   <Assets />
-  <Contact />
-  <div class="d-none"><Fragment set:html={Icons} /></div>
-
-  <Fragment slot="scripts">
-    <script src="@assets/home-simple.js"></script>
-  </Fragment>
+  <Figma />
+  <CSS />
+  <Icons />
+  <div class="d-none">
+    <Fragment set:html={HomeIcons} />
+    <Fragment set:html={LandingIcons} />
+  </div>
 </BaseLayout>

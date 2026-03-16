@@ -1,0 +1,96 @@
+---
+import FeatureItem from '@components/FeatureItem.astro'
+---
+
+<section id="assets-section" class="home-section reverse">
+  <div class="section-content">
+    <div class="section-main">
+      <article class="section-intro">
+        <p class="section-label fg-primary">Chassis Assets</p>
+        <h2 class="section-title">
+          <span class="font-normal d-block">Structured assets.</span> No more scavenger hunts.
+        </h2>
+        <p class="section-body">
+          Logos in a shared drive. Icons in a Git repo. Illustrations in someone's Figma file.
+          When assets are scattered, teams waste time finding, verifying, and updating the right
+          files. Chassis Assets gives you a single pipeline to organize and distribute every visual
+          resource your products depend on.
+        </p>
+      </article>
+      <div class="features">
+        <FeatureItem
+          icon="home-number-one"
+          title={`<span class="font-normal d-block">Standardized</span> asset structure`}
+          body="A predictable folder and naming convention means every team knows exactly where to find and place assets."
+        />
+        <FeatureItem
+          icon="home-number-two"
+          title={`<span class="font-normal d-block">Versioned</span> distribution`}
+          body="Track changes, roll back when needed, and ship assets with the same rigor you apply to code releases."
+        />
+        <FeatureItem
+          icon="home-number-three"
+          title={`<span class="font-normal d-block">Multi-platform</span> output`}
+          body="Transform and distribute assets for web, iOS, and Android from a single source — no manual re-exporting required."
+        />
+      </div>
+    </div>
+    <div class="section-aside">
+      <div class="aside-contents">
+        <div class="section-image">
+          <img
+            src="/static/images/home/assets-visual-light.svg"
+            alt="Asset distribution pipeline showing how source files become platform-specific outputs"
+            class="image-fluid w-100 display-light"
+          />
+          <img
+            src="/static/images/home/assets-visual-dark.svg"
+            alt="Asset distribution pipeline showing how source files become platform-specific outputs"
+            class="image-fluid w-100 display-dark"
+          />
+        </div>
+        <section>
+          <div class="cxd-code-snippet feature-body">
+            <div class="highlight">
+              <h5 class="font-normal token comment">// Source files</h5>
+              <ul class="bulletless mb-0">
+                <li>
+                  <span class="icon icon-file-outline"></span> Assets / default / App A / logo.svg
+                </li>
+                <li>
+                  <span class="icon icon-file-outline"></span> Assets / Brand A / App A / hero.png
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="working-command"><svg class="icon" aria-hidden="true"><use href="#gear-solid"></use></svg></div>
+          <div class="cxd-code-snippet feature-body">
+            <div class="highlight">
+              <h5 class="font-normal token comment">// Distributed files</h5>
+              <ul class="bulletless mb-0">
+                <li>
+                  <span class="icon icon-file-outline"></span> dist / web / brandA-appA / logo.svg
+                </li>
+                <li>
+                  <span class="icon icon-file-outline"></span> dist / web / brandA-appA / hero.webp
+                </li>
+                <li>
+                  <span class="icon icon-file-outline"></span> dist / ios / brandA-appA / Logo.pdf
+                </li>
+                <li>
+                  <span class="icon icon-file-outline"></span> dist / ios / brandA-appA / Hero.png
+                </li>
+                <li>
+                  <span class="icon icon-file-outline"></span> dist / android / brandA-appA / logo.xml
+                </li>
+                <li>
+                  <span class="icon icon-file-outline"></span> dist / android / brandA-appA / hero.webp
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>

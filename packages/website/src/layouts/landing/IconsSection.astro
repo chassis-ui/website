@@ -1,0 +1,94 @@
+---
+import FeatureItem from '@components/FeatureItem.astro'
+---
+
+<section id="icons-section" class="home-section">
+  <div class="section-content">
+    <div class="section-main">
+      <article class="section-intro">
+        <p class="section-label fg-primary">Chassis Icons</p>
+        <h2 class="section-title">
+          <span class="font-normal d-block">Icons that ship</span> with your system.
+        </h2>
+        <p class="section-body">
+          Icon libraries tend to grow organically — different naming conventions, inconsistent
+          sizing, no clear ownership. Chassis Icons gives you a structured way to create,
+          name, and distribute icons that stay consistent across design tools and codebases.
+        </p>
+      </article>
+      <div class="features">
+        <FeatureItem
+          icon="home-shapes"
+          title={`<span class="font-normal d-block">Structured</span> icon library`}
+          body="A clear system for organizing icons by category, size, and variant — so every icon has a predictable location and name."
+        />
+        <FeatureItem
+          icon="home-link"
+          title={`<span class="font-normal d-block">Design-to-code</span> compatibility`}
+          body="Icons flow from design tools into code as optimized SVGs with consistent markup. No manual cleanup needed."
+        />
+        <FeatureItem
+          icon="home-solar-system"
+          title={`<span class="font-normal d-block">Easy</span> team distribution`}
+          body="Distribute icons as a versioned package. Every team gets the same set, with the same names, at the same version."
+        />
+      </div>
+    </div>
+    <div class="section-aside">
+      <div class="aside-contents">
+        <div class="icon-grid-showcase">
+          <div class="icon-grid">
+            <div class="icon-cell">
+              <svg class="icon" aria-hidden="true"><use href="#home-chess-horse"></use></svg>
+              <span class="fg-subtle font-small">chess-horse</span>
+            </div>
+            <div class="icon-cell">
+              <svg class="icon" aria-hidden="true"><use href="#home-ruler"></use></svg>
+              <span class="fg-subtle font-small">ruler</span>
+            </div>
+            <div class="icon-cell">
+              <svg class="icon" aria-hidden="true"><use href="#home-thumbs-up"></use></svg>
+              <span class="fg-subtle font-small">thumbs-up</span>
+            </div>
+            <div class="icon-cell">
+              <svg class="icon" aria-hidden="true"><use href="#home-swatchbook"></use></svg>
+              <span class="fg-subtle font-small">swatchbook</span>
+            </div>
+            <div class="icon-cell">
+              <svg class="icon" aria-hidden="true"><use href="#home-bullseye-arrow"></use></svg>
+              <span class="fg-subtle font-small">bullseye</span>
+            </div>
+            <div class="icon-cell">
+              <svg class="icon" aria-hidden="true"><use href="#home-link"></use></svg>
+              <span class="fg-subtle font-small">link</span>
+            </div>
+            <div class="icon-cell">
+              <svg class="icon" aria-hidden="true"><use href="#home-font-case"></use></svg>
+              <span class="fg-subtle font-small">font-case</span>
+            </div>
+            <div class="icon-cell">
+              <svg class="icon" aria-hidden="true"><use href="#home-folder-tree"></use></svg>
+              <span class="fg-subtle font-small">folder-tree</span>
+            </div>
+            <div class="icon-cell">
+              <svg class="icon" aria-hidden="true"><use href="#home-shapes"></use></svg>
+              <span class="fg-subtle font-small">shapes</span>
+            </div>
+            <div class="icon-cell">
+              <svg class="icon" aria-hidden="true"><use href="#home-cubes"></use></svg>
+              <span class="fg-subtle font-small">cubes</span>
+            </div>
+            <div class="icon-cell">
+              <svg class="icon" aria-hidden="true"><use href="#home-hand-fist"></use></svg>
+              <span class="fg-subtle font-small">hand-fist</span>
+            </div>
+            <div class="icon-cell">
+              <svg class="icon" aria-hidden="true"><use href="#home-solar-system"></use></svg>
+              <span class="fg-subtle font-small">solar-system</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

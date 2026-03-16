@@ -1,0 +1,76 @@
+---
+import Code from '@shortcodes/Code.astro'
+import FeatureItem from '@components/FeatureItem.astro'
+---
+
+<section id="css-section" class="home-section reverse">
+  <div class="section-content">
+    <div class="section-main">
+      <article class="section-intro">
+        <p class="section-label fg-primary">Chassis CSS</p>
+        <h2 class="section-title">
+          <span class="font-normal d-block">Code with tokens,</span> not translation layers.
+        </h2>
+        <p class="section-body">
+          Design systems often require engineers to manually interpret design specs and translate
+          them into CSS. That translation introduces errors and creates maintenance overhead.
+          Chassis CSS generates its variables and utility classes directly from the token system,
+          so design decisions arrive in code already implemented.
+        </p>
+      </article>
+      <div class="features">
+        <FeatureItem
+          icon="home-link"
+          title={`<span class="font-normal d-block">Token-generated</span> CSS variables`}
+          body="Design tokens become CSS custom properties automatically. Change a token, and every component that uses it updates."
+        />
+        <FeatureItem
+          icon="home-cubes"
+          title={`<span class="font-normal d-block">Scalable</span> CSS architecture`}
+          body="Semantic utility classes, contextual color variants, and responsive spacing scales — built for real product complexity."
+        />
+        <FeatureItem
+          icon="home-bullseye-arrow"
+          title={`<span class="font-normal d-block">Faster</span> frontend development`}
+          body="Stop re-implementing design decisions. Use a framework that already speaks your design system's language."
+        />
+      </div>
+    </div>
+    <div class="section-aside">
+      <div class="aside-contents">
+        <section>
+          <Code
+            lang="css"
+            code={`/* Token-generated CSS variables */
+:root {
+  --cx-color-primary: #0066FF;
+  --cx-color-surface: #FFFFFF;
+  --cx-space-medium: 1rem;
+  --cx-space-large: 1.5rem;
+  --cx-font-size-body: 1rem;
+  --cx-font-size-heading: 2rem;
+  --cx-radius-medium: 0.5rem;
+}`}
+          />
+          <div class="working-command"><svg class="icon" aria-hidden="true"><use href="#gear-solid"></use></svg></div>
+          <Code
+            lang="html"
+            code={`<!-- Chassis CSS in action -->
+<button class="button primary large">
+  Submit
+</button>
+
+<div class="card">
+  <div class="card-content p-large">
+    <h3 class="fg-primary font-strong">
+      Card title
+    </h3>
+    <p class="fg-subtle">Card content</p>
+  </div>
+</div>`}
+          />
+        </section>
+      </div>
+    </div>
+  </div>
+</section>
