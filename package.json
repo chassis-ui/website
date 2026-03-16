@@ -29,12 +29,14 @@
     "multi-platform"
   ],
   "scripts": {
-    "build": "pnpm site:build",
-    "dev": "pnpm sync-submodules && pnpm astro:dev",
+    "build": "node build/build-site.js all",
+    "clean": "node build/build-site.js clean",
+    "dev": "pnpm astro:dev",
     "preview": "pnpm astro:preview",
+    "validate": "node build/build-site.js validate",
 
     "site": "pnpm site:build && pnpm site:lint:vnu",
-    "site:build": "pnpm sync-submodules && pnpm astro:build",
+    "site:build": "node build/build-site.js",
     "site:lint": "pnpm site:lint:eslint && pnpm site:lint:stylelint && pnpm site:lint:prettier && pnpm site:lint:vnu",
     "site:lint:eslint": "eslint --cache --cache-location .cache/.eslintcache --report-unused-disable-directives packages/website",
     "site:lint:stylelint": "stylelint --cache --cache-location .cache/.stylelintcache packages/website/\"**/*.{css,scss}\"",
