@@ -158,14 +158,21 @@ class SubmoduleSync {
           const status = this.runCommand('git status --porcelain', submodulePath, true).trim()
           if (status) {
             this.log(`${submodule.name} has uncommitted changes, skipping branch switch`, 'warning')
-            return
+          } else {
+            this.log(`Switching ${submodule.name} to ${submodule.expectedBranch} branch...`, 'info')
+            this.runCommand(`git checkout ${submodule.expectedBranch}`, submodulePath, true)
           }
-
-          this.log(`Switching ${submodule.name} to ${submodule.expectedBranch} branch...`, 'info')
-          this.runCommand(`git checkout ${submodule.expectedBranch}`, submodulePath, true)
         }
 
-        this.runCommand(`git pull origin ${submodule.expectedBranch}`, submodulePath, true)
+        // Pull latest only if we're on the expected branch
+        const activeBranch = this.runCommand(
+          'git rev-parse --abbrev-ref HEAD',
+          submodulePath,
+          true
+        ).trim()
+        if (activeBranch === submodule.expectedBranch) {
+          this.runCommand(`git pull origin ${submodule.expectedBranch}`, submodulePath, true)
+        }
       }
 
       this.log(`${submodule.name} synced successfully`, 'success')
