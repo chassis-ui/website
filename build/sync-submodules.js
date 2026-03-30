@@ -41,7 +41,7 @@ class SubmoduleSync {
         name: 'chassis-assets',
         path: 'vendor/assets',
         expectedBranch: this.submoduleBranch,
-        buildCommands: ['pnpm install', 'pnpm assets:site'],
+        buildCommands: ['npm install --legacy-peer-deps', 'npm run assets:site'],
         buildOutputPath: 'dist/web/chassis-docs'
       }
     ]

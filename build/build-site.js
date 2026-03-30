@@ -135,10 +135,6 @@ class ChassisBuilder {
       throw new Error('Site directory not found')
     }
 
-    // Install dependencies (needed after vendor sync may have changed files)
-    this.log('Installing dependencies...', 'info')
-    this.runCommand('pnpm install')
-
     // Build Astro site (outputs directly to _site via outDir config)
     this.log('Building Astro site...', 'info')
     this.runCommand(this.buildCommand)
