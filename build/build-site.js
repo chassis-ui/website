@@ -1,17 +1,13 @@
 #!/usr/bin/env node
 
 /*!
- * Site Builder Script for Chassis Icons
+ * Site Builder Script for Chassis Website
  *
  * Comprehensive build tool for managing Chassis documentation site.
  * Handles vendor asset synchronization, Astro site building, and deployment validation.
  *
- * Configuration:
- *   VENDOR_BRANCH - Branch to use for vendor assets (default: app/docs)
- *
  * Usage:
  *   node build-site.js [command]
- *   VENDOR_BRANCH=main node build-site.js vendor
  *
  * Commands:
  *   (none)    Full build process (default)
@@ -42,7 +38,6 @@ class ChassisBuilder {
     this.vendorDir = path.join(rootDir, 'vendor')
     this.siteDir = path.join(rootDir, 'packages/website')
     this.outputDir = path.join(rootDir, '_site')
-    this.vendorBranch = process.env.VENDOR_BRANCH || 'app/docs'
     this.buildCommand = 'pnpm astro:build'
   }
 
@@ -140,10 +135,6 @@ class ChassisBuilder {
       throw new Error('Site directory not found')
     }
 
-    // Install dependencies using pnpm
-    this.log('Installing dependencies...', 'info')
-    this.runCommand('pnpm install')
-
     // Build Astro site (outputs directly to _site via outDir config)
     this.log('Building Astro site...', 'info')
     this.runCommand(this.buildCommand)
@@ -154,58 +145,9 @@ class ChassisBuilder {
   /**
    * Update and build vendor assets from submodules
    */
-  updateVendorAssets() {
-    this.log('Updating vendor/assets submodule...', 'info')
-
-    try {
-      // Initialize and update the vendor/assets submodule
-      this.runCommand('git submodule update --init --remote vendor/assets')
-
-      // Ensure we're on the correct branch
-      this.runCommand(`git -C vendor/assets checkout ${this.vendorBranch}`, '.', true)
-      this.runCommand(`git -C vendor/assets pull origin ${this.vendorBranch}`, '.', true)
-
-      // Build the vendor/assets project to generate dist files
-      this.log('Building vendor/assets project...', 'info')
-      const vendorAssetsPath = path.join(this.rootDir, 'vendor/assets')
-
-      // Install dependencies in vendor/assets
-      this.runCommand('pnpm install', vendorAssetsPath)
-
-      // Build only the assets (not the Astro documentation site)
-      this.runCommand('pnpm assets:site', vendorAssetsPath)
-
-      // Verify the build succeeded
-      this.log('Verifying vendor/assets build output...', 'info')
-      const expectedPath = path.join(vendorAssetsPath, 'dist/web/chassis-docs')
-
-      if (fs.existsSync(expectedPath)) {
-        const contents = fs.readdirSync(expectedPath)
-        this.log(`✓ Found chassis-docs assets: ${contents.join(', ')}`, 'success')
-      } else {
-        this.log('⚠️  Build output location may have changed', 'warning')
-      }
-
-      this.log('Vendor assets updated and built successfully', 'success')
-    } catch (primaryError) {
-      this.log(`Primary vendor update failed: ${primaryError.message}`, 'warning')
-      this.log('Trying alternative sync script...', 'info')
-
-      try {
-        this.runCommand('pnpm sync:submodules')
-        this.log('Vendor assets synced and built via alternative method', 'success')
-      } catch (syncError) {
-        this.log(`Alternative sync also failed: ${syncError.message}`, 'error')
-        this.log('Please check:', 'error')
-        this.log('  1. Git submodule configuration', 'error')
-        this.log('  2. Network connectivity', 'error')
-        this.log('  3. Branch availability: ' + this.vendorBranch, 'error')
-        this.log('  4. pnpm installation', 'error')
-        throw new Error(
-          `Vendor assets update failed. Primary: ${primaryError.message}, Alternative: ${syncError.message}`
-        )
-      }
-    }
+  updateVendor() {
+    this.log('Updating vendor assets via sync-submodules...', 'build')
+    this.runCommand('pnpm sync-submodules')
   }
 
   /**
@@ -300,7 +242,7 @@ class ChassisBuilder {
 
     try {
       this.checkDependencies()
-      this.updateVendorAssets()
+      this.updateVendor()
       this.buildSite()
       this.validateBuild()
 
@@ -329,7 +271,7 @@ function main() {
       }
 
       case 'vendor': {
-        builder.updateVendorAssets()
+        builder.updateVendor()
         break
       }
 
@@ -352,13 +294,10 @@ ChassisBuilder - Chassis Site Builder
 Usage:
   node build-site.js [command]
 
-Environment Variables:
-  VENDOR_BRANCH    Branch for vendor assets (default: app/docs)
-
 Commands:
   (none)    Full build process (default)
   site      Build Astro documentation site only
-  vendor    Update and build vendor assets
+  vendor    Sync and build vendor files from submodules
   clean     Remove build artifacts and node_modules
   validate  Validate build output
   help      Show this help message

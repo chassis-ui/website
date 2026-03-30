@@ -108,9 +108,18 @@ class SubmoduleSync {
 
     const submodulePath = path.join(this.rootDir, submodule.path)
 
-    if (!fs.existsSync(submodulePath)) {
-      this.log(`${submodule.name} not found at ${submodule.path}`, 'warning')
-      return
+    if (!fs.existsSync(submodulePath) || !fs.existsSync(path.join(submodulePath, '.git'))) {
+      this.log(`${submodule.name} not found at ${submodule.path}, initializing...`, 'info')
+      try {
+        this.runCommand(
+          `git submodule update --init --remote ${submodule.path}`,
+          this.rootDir,
+          true
+        )
+      } catch (initError) {
+        this.log(`Failed to initialize ${submodule.name}: ${initError.message}`, 'error')
+        throw initError
+      }
     }
 
     try {
@@ -127,12 +136,11 @@ class SubmoduleSync {
           const status = this.runCommand('git status --porcelain', submodulePath, true).trim()
           if (status) {
             this.log(`${submodule.name} has uncommitted changes, skipping branch switch`, 'warning')
-            return
+          } else {
+            this.log(`Switching ${submodule.name} to ${submodule.expectedBranch} branch...`, 'info')
+            this.runCommand(`git checkout ${submodule.expectedBranch}`, submodulePath, true)
+            this.runCommand(`git pull origin ${submodule.expectedBranch}`, submodulePath, true)
           }
-
-          this.log(`Switching ${submodule.name} to ${submodule.expectedBranch} branch...`, 'info')
-          this.runCommand(`git checkout ${submodule.expectedBranch}`, submodulePath, true)
-          this.runCommand(`git pull origin ${submodule.expectedBranch}`, submodulePath, true)
         } else {
           this.runCommand(
             `git submodule update --remote --merge ${submodule.path}`,
@@ -226,7 +234,8 @@ class SubmoduleSync {
   checkSubmoduleChanges() {
     try {
       const submoduleStatus = this.runCommand('git submodule status', this.rootDir, true)
-      if (submoduleStatus.trim()) {
+      const hasChanges = submoduleStatus.split('\n').some((line) => /^[+-]/.test(line.trim()))
+      if (hasChanges) {
         console.log('')
         this.log('Submodule changes detected', 'info')
         this.log(
