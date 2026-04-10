@@ -220,11 +220,7 @@ class SubmoduleSync {
       const outputPath = path.join(submodulePath, submodule.buildOutputPath)
       if (fs.existsSync(outputPath)) {
         try {
-          const result = this.runCommand(
-            `find "${outputPath}" -type f | wc -l`,
-            this.rootDir,
-            true
-          )
+          const result = this.runCommand(`find "${outputPath}" -type f | wc -l`, this.rootDir, true)
           const fileCount = parseInt(result.trim())
           this.log(`${submodule.name} built successfully (${fileCount} files)`, 'success')
         } catch {

@@ -76,6 +76,7 @@ $responsive-variables: (
   "font-size-section-body":     "cx-typography-font-size-website-section-body",
   "font-size-feature-title":    "cx-typography-font-size-website-feature-title",
   "font-size-feature-body":     "cx-typography-font-size-website-feature-body",
+  "font-size-module-title":     "cx-typography-font-size-website-module-title",
   "space-context-large":        "cx-space-context-large",
   "space-context-medium":       "cx-space-context-medium",
   "space-context-small":        "cx-space-context-small",
@@ -95,9 +96,7 @@ $responsive-variables: (
   "size-feature-thumb":         "cx-size-website-feature-thumb",
   "size-feature-icon":          "cx-size-website-feature-icon",
   "size-module-thumb":          "cx-size-website-module-thumb",
-  "size-module-icon":           "cx-size-website-module-icon",
-  "radius-large":               "cx-border-radius-context-large",
-  "radius-medium":              "cx-border-radius-context-medium"
+  "size-module-icon":           "cx-size-website-module-icon"
 );
 
 $large-vars: meta.module-variables("large");
@@ -314,6 +313,10 @@ $small-vars: meta.module-variables("small");
     zoom: 1.5;
     transform: rotate(30deg) skewX(-30deg) scaleY(.866);
   }
+}
+
+.feature-body > .image {
+  box-shadow: var(--#{$prefix}box-shadow-large);
 }
 
 

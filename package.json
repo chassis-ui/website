@@ -31,7 +31,7 @@
   "scripts": {
     "build": "node build/build-site.js all",
     "clean": "node build/build-site.js clean",
-    "dev": "pnpm astro:dev",
+    "dev": "pnpm sync-submodules && pnpm astro:dev",
     "preview": "pnpm astro:preview",
     "validate": "node build/build-site.js validate",
 

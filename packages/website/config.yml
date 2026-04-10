@@ -1,18 +1,18 @@
-title:                  "Chassis - Docs"
+title:                  "Chassis UI"
 baseURL:                "https://chassis-ui.com"
 
 docsDir:                "."
 docsPath:                "/docs"
 
-subtitle:               "Documentation for the Chassis design system."
-description:            "Comprehensive documentation for Chassis CSS framework, design tokens, and Figma components."
-authors:                "Ozgur Gunes and Bootstrap contributors"
+subtitle:               "Design System for Scale & Sync"
+description:            "Open-source design system with design tokens, semantic CSS, and Figma integration. Build consistent, accessible web experiences faster."
+authors:                "Ozgur Gunes and Chassis UI contributors"
 
 current_version:        "0.1.0"
 docs_version:           "0.1"
-github_org:             "https://github.com/ozgurgunes"
+github_org:             "https://github.com/chassis-ui"
 repo:                   "https://github.com/chassis-ui/docs"
-x:                      "chassisui"
+x:                      "chassis_ui"
 
 analytics:
   google_id:            "G-QGR8C28VYN"

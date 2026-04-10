@@ -110,13 +110,13 @@ class HomeAnimations {
       gallery,
       {
         // x: '-10%',
-        y: '-60%',
-        scale: 1.5
+        y: '-75%',
+        scale: 1.25
       },
       {
         // x: '20%',
-        y: '-20%',
-        scale: 1.5,
+        y: '-25%',
+        scale: 1.25,
         scrollTrigger: {
           trigger: gallery.parentElement,
           start: `top bottom`,
