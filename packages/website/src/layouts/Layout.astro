@@ -2,11 +2,7 @@
 import type { MarkdownHeading } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 import type { LayoutOverridesHTMLAttributes } from '@chassis-ui/docs'
-import { getSlug } from '@chassis-ui/docs'
 import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
-import TableOfContents from '@chassis-ui/docs/components/TableOfContents.astro'
-import { blogPages } from '@libs/content'
-import LatestPosts from '../components/LatestPosts.astro'
 
 import '../scss/docs.scss'
 import '../scss/home.scss'
@@ -16,11 +12,6 @@ interface Props {
   headings?: MarkdownHeading[]
   id?: CollectionEntry<'blog'>['id']
 }
-
-const { frontmatter, headings, id } = Astro.props
-
-// Extract the directory/section from the ID (format: "directory/filename.mdx")
-const parentDirectory = id?.includes('/') ? id?.split('/')[0] : ''
 
 const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
 ---

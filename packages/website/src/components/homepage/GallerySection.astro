@@ -1,0 +1,23 @@
+---
+import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
+---
+
+<div id="gallery-section" class="home-section">
+  <div
+    class="container-2xlarge gallery-content section-content rounded overflow-hidden bg-evident"
+    style="height: 256px;"
+  >
+    <div class="gallery-image">
+      <ResponsiveImage
+        imgPath="/static/images/home/comp-gallery-light.png"
+        alt="Chassis UI"
+        classes="mb-5xlarge image-fluid w-100 display-light"
+      />
+      <ResponsiveImage
+        imgPath="/static/images/home/comp-gallery-dark.png"
+        alt="Chassis UI"
+        classes="mb-5xlarge image-fluid w-100 display-dark"
+      />
+    </div>
+  </div>
+</div>

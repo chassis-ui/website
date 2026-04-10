@@ -1,0 +1,93 @@
+---
+import FeatureItem from '@components/FeatureItem.astro'
+import FeatureSlider from '@components/FeatureSlider.astro'
+import Code from '@shortcodes/Code.astro'
+import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
+---
+
+<section id="icons-section" class="home-section">
+  <div class="container-2xlarge section-content">
+    <div class="section-header">
+      <p class="module-title">Chassis Icons</p>
+      <h2 class="section-title">
+        <span class="font-normal d-block">Icons that ship</span> with your system.
+      </h2>
+      <p class="section-body">
+        Icon libraries tend to grow organically — different naming conventions, inconsistent sizing,
+        no clear ownership. Chassis Icons gives you a structured way to create, name, and distribute
+        icons that stay consistent across design tools and codebases.
+      </p>
+    </div>
+    <div class="section-features">
+      <FeatureSlider>
+        <!-- Item 1: Structured icon library -->
+        <FeatureItem icon="cx-book" className="swiper-slide">
+            <Fragment slot="title">Structured icon library</Fragment>
+            <Fragment slot="body">
+              A clear system for organizing icons by category, size, and variant — so every icon has
+              a predictable location and name.
+            </Fragment>
+            <ResponsiveImage
+              imgPath="/static/images/home/figma-docs-light.png"
+              alt="Structured icon library"
+              classes="image-fluid w-100"
+            />
+          </FeatureItem>
+
+        <!-- Item 2: Easy team distribution -->
+        <FeatureItem icon="cx-folders" className="swiper-slide">
+            <Fragment slot="title">Easy team distribution</Fragment>
+            <Fragment slot="body">
+              Distribute icons as a versioned package. Every team gets the same set, with the same
+              names, at the same version.
+            </Fragment>
+            <Code
+              lang="text"
+              code={`dist/
+├── icons/
+│   ├── chassis-icons.css
+│   ├── chassis-icons.scss
+│   ├── chassis-icons.svg
+│   ├── chassis-icons.woff
+│   └── chassis-icons.woff2
+└── svgs/
+    ├── icon-file.svg
+    ├── icon-file.svg
+    └── ...`}
+            />
+          </FeatureItem>
+
+        <!-- Item 3: Design-to-code compatibility -->
+        <FeatureItem icon="cx-laptop-code" className="swiper-slide">
+            <Fragment slot="title">Design-to-code compatibility</Fragment>
+            <Fragment slot="body">
+              Icons flow from design tools into code as optimized SVGs with consistent markup. No
+              manual cleanup needed.
+            </Fragment>
+            <div>
+              <Code
+                lang="html"
+                code={`@import "icons/chassis-icons.svg"
+@import "icons/chassis-icons.css
+---
+<svg><use xlink:href="#info-circle-solid"/></svg>
+
+<img src="/svgs/info-circle-solid.svg" alt="Info" width="24" height="24">
+
+<span class="icon-info-circle-solid"></span>`}
+              />
+              <div class="d-flex gap-medium align-items-center justify-content-center">
+                <span class="icon icon-cx-circle-info"></span>
+                <span class="icon icon-cx-circle-info"></span>
+                <span class="icon icon-cx-circle-info"></span>
+              </div>
+            </div>
+          </FeatureItem>
+      </FeatureSlider>
+    </div>
+  </div>
+  <div class="d-flex gap-medium justify-content-center flex-wrap">
+    <a href="/icons/" class="button primary large">Go to Chassis Icons</a>
+    <a href="/icons/docs/" class="button default large">View Documentation</a>
+  </div>
+</section>

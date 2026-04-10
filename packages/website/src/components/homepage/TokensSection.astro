@@ -1,0 +1,80 @@
+---
+import FeatureItem from '@components/FeatureItem.astro'
+import FeatureSlider from '@components/FeatureSlider.astro'
+import Code from '@shortcodes/Code.astro'
+---
+
+<section id="tokens-section" class="home-section">
+  <div class="container-2xlarge section-content">
+    <div class="row">
+      <div class="section-header col col-large-8">
+        <p class="module-title">Chassis Tokens</p>
+        <h2 class="section-title">
+          <span class="font-normal d-block">Enterprise-Grade</span> Token Management
+        </h2>
+        <p class="section-body">
+          Chassis provides robust token architecture to manage themes, colors, spacing, and
+          typography at scale. Define, transform, and sync tokens across mobile, web, embedded, and
+          headless platforms.
+        </p>
+      </div>
+    </div>
+    <div class="section-features">
+      <FeatureSlider>
+        <!-- Item -->
+        <FeatureItem icon="cx-folder-tree" className="swiper-slide">
+          <Fragment slot="title">Centralized token definitions</Fragment>
+          <Fragment slot="body">
+            Create and manage design tokens directly in Figma using Variables. Sync changes
+            automatically with your codebase.
+          </Fragment>
+          <img
+            src="/static/images/home/tokens-visual.svg"
+            alt="Chassis UI"
+            class="image-fluid w-100"
+          />
+        </FeatureItem>
+        <!-- Item -->
+        <FeatureItem icon="cx-link" className="swiper-slide">
+          <Fragment slot="title">Intelligent references</Fragment>
+          <Fragment slot="body">
+            Build tokens that reference other tokens, enabling cascading updates across your entire
+            system
+          </Fragment>
+          <img
+            src="/static/images/home/tokens-scheme.svg"
+            alt="Chassis UI"
+            class="image-fluid w-100"
+          />
+        </FeatureItem>
+        <!-- Item -->
+        <FeatureItem icon="cx-shapes" className="swiper-slide">
+          <Fragment slot="title">Cross-platform transformation</Fragment>
+          <Fragment slot="body">
+            Convert tokens automatically for different platforms while preserving relationships and
+            hierarchy
+          </Fragment>
+          <Code
+            lang="scss"
+            code={`// dist/tokens/web/app-a/brand-a/
+$cx-color-button: #000000`}
+          />
+          <Code
+            lang="swift"
+            code={`// dist/tokens/ios/app-a/brand-a/
+@objc public static let CxColorButton = UIColor(red: 1.000, green: 1.000, blue: 1.000, alpha: 0.9)`}
+          />
+          <Code
+            lang="xml"
+            code={`<!-- dist/tokens/android/app-a/brand-a/ -->
+<color name="cx_color_button">#ffffffff</color>`}
+          />
+        </FeatureItem>
+      </FeatureSlider>
+    </div>
+  </div>
+  <div class="d-flex gap-medium justify-content-center flex-wrap">
+    <a href="/tokens/" class="button primary large">Go to Chassis Tokens</a>
+    <a href="/tokens/docs/" class="button default large">View Documentation</a>
+  </div>
+</section>

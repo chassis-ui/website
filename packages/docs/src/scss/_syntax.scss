@@ -1,40 +1,42 @@
 :root,
 [data-cx-theme="light"] {
-  // --base00: #fff;
-  // --base01: #f5f5f5;
-  --base02: #c8c8fa;
-  --base03: #565c64;
-  --base04: #666;
-  --base05: #333;
-  --base06: #fff;
-  --base07: #{$teal-700}; // #9a6700
-  --base08: #{mix($red-500, $red-600, 50%)}; // #bc4c00
-  --base09: #{$cyan-700}; // #087990
-  --base0A: #{$purple-500}; // #795da3
-  --base0B: #{$blue-700}; // #183691
-  --base0C: #{$blue-700}; // #183691
-  --base0D: #{$purple-500}; // #795da3
-  --base0E: #{$pink-600}; // #a71d5d
-  --base0F: #333;
+  // GitHub Light Theme
+  --base00: #fff;
+  --base01: #f6f8fa;
+  --base02: #e1e4e8;
+  --base03: #6a737d; // Comments
+  --base04: #586069;
+  --base05: #24292e; // Default text
+  --base06: #24292e;
+  --base07: #22863a; // Tags/Classes
+  --base08: #d73a49; // Keywords/Important
+  --base09: #005cc5; // Numbers/Properties
+  --base0A: #005cc5; // Variables
+  --base0B: #6f42c1; // Functions
+  --base0C: #032f62; // Strings
+  --base0D: #6f42c1; // Attributes
+  --base0E: #d73a49; // Keywords
+  --base0F: #e36209; // References
 }
 
 @include color-mode(dark, true) {
-  // --base00: #282c34;
-  // --base01: #353b45;
-  --base02: #3e4451;
-  --base03: #868e96;
-  --base04: #868e96;
-  --base05: #abb2bf;
-  --base06: #b6bdca;
-  --base07: #{$orange-300}; // #d19a66
-  --base08: #{$cyan-300};
-  --base09: #{$orange-300}; // #d19a66
-  --base0A: #{$yellow-200}; // #e5c07b
-  --base0B: #{$teal-300}; // #98c379
-  --base0C: #{$teal-300}; // #56b6c2
-  --base0D: #{$blue-300}; // #61afef
-  --base0E: #{$indigo-200}; // #c678dd
-  --base0F: #{$red-300}; // #be5046
+  // GitHub Dark Theme
+  --base00: #0d1117;
+  --base01: #161b22;
+  --base02: #21262d;
+  --base03: #8b949e; // Comments
+  --base04: #6e7681;
+  --base05: #c9d1d9; // Default text
+  --base06: #c9d1d9;
+  --base07: #7ee787; // Tags/Classes
+  --base08: #ff7b72; // Keywords/Important
+  --base09: #79c0ff; // Numbers/Properties
+  --base0A: #79c0ff; // Variables
+  --base0B: #d2a8ff; // Functions
+  --base0C: #a5d6ff; // Strings
+  --base0D: #d2a8ff; // Attributes
+  --base0E: #ff7b72; // Keywords
+  --base0F: #ffa657; // References
 }
 
 // Shell prompts

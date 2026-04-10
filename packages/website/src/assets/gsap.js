@@ -77,7 +77,7 @@ class HomeAnimations {
     })
 
     // Create gallery animation and store its ScrollTrigger
-    const gallery = document.querySelector('#gallery-section > .gallery-content')
+    const gallery = document.querySelector('#gallery-section .gallery-image')
     if (gallery) {
       const galleryTrigger = this.createGalleryAnimation(gallery)
       if (galleryTrigger) {
@@ -109,14 +109,18 @@ class HomeAnimations {
     const animation = gsap.fromTo(
       gallery,
       {
-        y: '-50%'
+        // x: '-10%',
+        y: '-60%',
+        scale: 1.5
       },
       {
-        y: '0',
+        // x: '20%',
+        y: '-20%',
+        scale: 1.5,
         scrollTrigger: {
           trigger: gallery.parentElement,
           start: `top bottom`,
-          end: `bottom top`,
+          end: `bottom top+${this.headerHeight}`,
           // end: () => `+=${gallery.offsetHeight}`,
           // pin: true,
           pinSpacing: false,
@@ -132,8 +136,7 @@ class HomeAnimations {
   }
 
   createSectionAnimation(section) {
-    const features = section.querySelectorAll('.features > .feature-item')
-    const asideItems = section.querySelectorAll('.section-aside > .aside-contents > *')
+    const features = section.querySelectorAll('.section-features > .feature-slider')
 
     if (features.length === 0) {
       return // Skip sections without features
@@ -143,12 +146,13 @@ class HomeAnimations {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
-        start: `top ${this.headerHeight}px`,
-        end: () => `+=${section.offsetHeight}`,
-        pin: true,
-        anticipatePin: 1,
-        scrub: true,
-        markers: false // Set to true for debugging
+        start: `top 75%`,
+        // end: () => `+=${section.offsetHeight}`,
+        end: () => `bottom bottom`,
+        // pin: true,
+        // anticipatePin: 1,
+        // markers: true, // Set to true for debugging
+        scrub: true
       }
     })
 
@@ -158,18 +162,12 @@ class HomeAnimations {
     // Set up features container and initial states
     this.setupFeaturesContainer(section, features)
 
-    // Set up aside items initial states
-    this.setupAsideItems(section, asideItems)
-
     // Create feature animations (appear then disappear)
     this.createFeatureAnimations(tl, features)
-
-    // Create aside item animations (appear then disappear)
-    this.createAsideAnimations(tl, asideItems)
   }
 
   setupFeaturesContainer(section, features) {
-    const featuresContainer = section.querySelectorAll('.features')
+    const featuresContainer = section.querySelectorAll('.section-features')
 
     if (featuresContainer) {
       gsap.set(featuresContainer, { position: 'relative' })
@@ -178,33 +176,13 @@ class HomeAnimations {
 
     // Set initial states for all features
     gsap.set(features, {
-      opacity: 0,
-      y: 100,
-      position: 'absolute',
-      top: '100%',
+      opacity: 1,
+      x: '25%',
+      // position: 'absolute',
+      // top: '100%',
       // left: 0,
       // right: 0,
       zIndex: 1
-    })
-  }
-
-  setupAsideItems(section, asideItems) {
-    const asideContainer = section.querySelectorAll('.section-aside > .aside-contents')
-
-    if (asideContainer) {
-      gsap.set(asideContainer, { position: 'relative' })
-    }
-    // gsap.set(aside.querySelectorAll('.aside-stack'), { position: 'relative' })
-
-    // Set initial states for all aside items
-    gsap.set(asideItems, {
-      position: 'absolute',
-      opacity: 0,
-      y: 50,
-      left: 0,
-      right: 0,
-      zIndex: 1
-      // scale: 0.95
     })
   }
 
@@ -215,12 +193,12 @@ class HomeAnimations {
         feature,
         {
           opacity: 1,
-          y: 0,
+          x: 0,
           scale: 1,
           duration: 1,
           ease: 'power2.out'
         },
-        index * 1.2
+        index
       )
 
       console.log(feature.parentNode.parentNode.className)
@@ -237,46 +215,6 @@ class HomeAnimations {
         opacity: 0
       })
     })
-  }
-
-  createAsideAnimations(timeline, asideItems) {
-    asideItems.forEach((item, index) => {
-      // Aside item appears - start after first feature but with different timing
-      timeline.to(
-        item,
-        {
-          opacity: 1,
-          y: 0,
-          ease: 'power2.out'
-        },
-        index * 1.5 // Stagger every 1.5s
-      )
-
-      if (item.nextElementSibling == undefined) {
-        return // Skip disappearance for aside features
-      }
-
-      timeline.to(
-        item,
-        {
-          opacity: 0,
-          y: -30
-        },
-        1.5 + index * 1.5 // Start disappearing at 1.5s, stagger every 2s
-      )
-    })
-
-    // Add disappearances separately with staggered timing
-    // asideItems.forEach((item, index) => {
-    //   timeline.to(
-    //     item,
-    //     {
-    //       opacity: 0,
-    //       y: -30
-    //     },
-    //     1.5 + index * 1.5 // Start disappearing at 1.5s, stagger every 2s
-    //   )
-    // })
   }
 }
 

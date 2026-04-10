@@ -2,10 +2,9 @@
 const { icon, title, url } = Astro.props
 ---
 
-<div class="feature-col">
-  <div class="module-item">
-    <img src={`/static/images/home/${icon}.svg`} alt="" class="icon-img" />
-
-    <div><h5 class="feature-body">{title}</h5></div>
-  </div>
+<div class="module-item">
+  <a href={url} class="d-flex flex-column align-items-center h-100">
+    <svg class="icon module-icon"><use href={`#${icon}`}></use></svg>
+    <p class="feature-body font-mass">{title}</p>
+  </a>
 </div>

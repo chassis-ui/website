@@ -1,13 +1,18 @@
 ---
-const { icon, title, body } = Astro.props
+const { icon, title, body, className } = Astro.props
 ---
 
-<div class="feature-item">
-  <div class="feature-thumb">
-    <svg class="icon feature-icon"><use href={`#${icon}`}></use></svg>
+<div class={`feature-item${className ? ` ${className}` : ''}`}>
+  <div class="feature-header">
+    <div>
+      <svg class="icon feature-icon"><use href={`#${icon}`}></use></svg>
+    </div>
+    <div>
+      <h2 class="feature-title mb-xsmall"><slot name="title" /></h2>
+      <p class="feature-body mb-xsmall"><slot name="body" /></p>
+    </div>
   </div>
-  <div>
-    <h2 class="feature-title"><Fragment set:html={title} /></h2>
-    <p class="feature-body">{body}</p>
+  <div class="feature-body">
+    <slot />
   </div>
 </div>

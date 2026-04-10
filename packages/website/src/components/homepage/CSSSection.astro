@@ -1,0 +1,108 @@
+---
+import FeatureItem from '@components/FeatureItem.astro'
+import FeatureSlider from '@components/FeatureSlider.astro'
+import Code from '@shortcodes/Code.astro'
+---
+
+<section id="css-section" class="home-section">
+  <div class="container-2xlarge section-content">
+    <div class="section-header">
+      <p class="module-title">Chassis Styles</p>
+      <h2 class="section-title">
+        <span class="font-normal d-block">Code with tokens,</span> not translation layers.
+      </h2>
+      <p class="section-body">
+        Design systems often require engineers to manually interpret design specs and translate them
+        into CSS. That translation introduces errors and creates maintenance overhead. Chassis CSS
+        generates its variables and utility classes directly from the token system, so design
+        decisions arrive in code already implemented.
+      </p>
+    </div>
+    <div class="section-features">
+      <FeatureSlider>
+        <!-- Item 1: Token-generated CSS variables -->
+        <FeatureItem icon="cx-brackets-curly" className="swiper-slide">
+            <Fragment slot="title">Token-generated CSS variables</Fragment>
+            <Fragment slot="body">
+              Design tokens become CSS custom properties automatically. Change a token, and every
+              component that uses it updates.
+            </Fragment>
+            <Code
+              lang="css"
+              code={`/* Token-generated CSS variables */
+:root {
+  --cx-font-family-text: Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  --cx-font-size-text-medium: 1rem;
+  --cx-font-size: var(--cx-font-size-text-medium);
+  --cx-default-fg-main: #1c2021;
+  --cx-default-fg-main-rgb: 28, 32, 33;
+  --cx-fg-main: var(--cx-default-fg-main);
+  --cx-space-medium: 1rem;
+  --cx-border-radius-medium: 0.375rem;
+  --cx-opacity-fg-subtle: 0.5;
+  --cx-separator-size: 0.0625rem;
+}`}
+            />
+          </FeatureItem>
+
+        <!-- Item 2: Perfectly align with Figma -->
+        <FeatureItem icon="cx-figma" className="swiper-slide">
+            <Fragment slot="title">Perfectly align with Figma</Fragment>
+            <Fragment slot="body">
+              Chassis CSS utility classes mirror Figma styles and variables for streamlined design
+              to code implementation.
+            </Fragment>
+            <div>
+              <Code
+                lang="html"
+                code={`<!-- Utility classes in action -->
+<div class="primary-bg-main border primary-border-subtle p-medium">
+  <h6 class="primary-fg-main">
+    Hello World!
+  </h6>
+  <p class="primary-fg-subtle">
+    I'm a demonstration of Chassis Styles
+  </p>
+</div>`}
+              />
+              <div class="primary-bg-main border primary-border-main p-medium">
+                <h5 class="primary-fg-main mb-0">Hello World!</h5>
+                <p class="primary-fg-subtle mb-0">I'm a demonstration of Chassis Styles</p>
+              </div>
+            </div>
+          </FeatureItem>
+
+        <!-- Item 3: Faster frontend development -->
+        <FeatureItem icon="cx-code" className="swiper-slide">
+            <Fragment slot="title">Faster frontend development</Fragment>
+            <Fragment slot="body">
+              Stop re-implementing design decisions. Use a framework that already speaks your design
+              system's language.
+            </Fragment>
+            <div>
+              <Code
+                lang="html"
+                code={`<!-- Context class in action -->
+<div class="context info border p-medium">
+  <h6>
+    Hello World!
+  </h6>
+  <p class="fg-subtle">
+    I'm a demonstration of Chassis Styles
+  </p>
+</div>`}
+              />
+              <div class="context info border border-main p-medium">
+                <h5 class="mb-0">Hello World!</h5>
+                <p class="fg-subtle mb-0">I'm a demonstration of Chassis Styles</p>
+              </div>
+            </div>
+          </FeatureItem>
+      </FeatureSlider>
+    </div>
+  </div>
+  <div class="d-flex gap-medium justify-content-center flex-wrap">
+    <a href="/css/" class="button primary large">Go to Chassis Styles</a>
+    <a href="/css/docs/" class="button default large">View Documentation</a>
+  </div>
+</section>

@@ -1,0 +1,91 @@
+---
+import FeatureItem from '@components/FeatureItem.astro'
+import FeatureSlider from '@components/FeatureSlider.astro'
+import Code from '@shortcodes/Code.astro'
+---
+
+<section id="tokens-section" class="home-section">
+  <div class="container-2xlarge section-content">
+    <div class="section-header">
+      <p class="module-title">Chassis Assets</p>
+      <h2 class="section-title">
+        <span class="font-normal d-block">Asset Management</span> for Multi-Brand Design
+      </h2>
+      <p class="section-body">
+        Eliminate asset duplication and disorganization. Chassis lets you store, manage, and
+        distribute icons, logos, fonts, and illustrations across brands and platforms with ease.
+      </p>
+    </div>
+    <div class="section-features">
+      <FeatureSlider>
+        <!-- Item -->
+        <FeatureItem icon="cx-number-one" className="swiper-slide">
+          <Fragment slot="title">Store Files</Fragment>
+          <Fragment slot="body"
+            >Organize brand- and app-specific assets in structured, predictable folders.
+          </Fragment>
+          <Code
+            lang="text"
+            code={`source/
+├── default/
+│   └── demo/
+│       ├── Hero Img.png
+│       └── Hero Img@2x.png
+├── chassis/
+│   └── demo/
+│       └── Brand Logo.svg
+└── example/
+    └── demo/
+        └── Brand Logo.svg`}
+          />
+        </FeatureItem>
+        <!-- Item -->
+        <FeatureItem icon="cx-number-two" className="swiper-slide">
+          <Fragment slot="title">Distribute Assets</Fragment>
+          <Fragment slot="body"
+            >Automatically generate platform-optimized assets with a single script.
+          </Fragment>
+          <Code
+            lang="shell"
+            code={`# Build all platforms
+pnpm assets
+
+# Build specific brand
+pnpm assets --brand chassis
+
+# Build specific app
+pnpm assets --app demo
+
+# Build with filters
+pnpm assets --brand chassis --app demo`}
+          />
+        </FeatureItem>
+        <!-- Item -->
+        <FeatureItem icon="cx-number-three" className="swiper-slide">
+          <Fragment slot="title">Build Confidently</Fragment>
+          <Fragment slot="body"
+            >Build with assets that are clean, versioned, and deployment-ready.
+          </Fragment>
+          <Code
+            lang="text"
+            code={`dist/
+├── ios/chassis-demo/
+│   ├── brand_logo.svg
+│   ├── hero_img.png
+│   └── hero_img@2x.png
+└── android/chassis-demo/
+    ├── drawable/
+    │   ├── brand_logo.svg
+    │   └── hero_img.png
+    └── drawable_xhdpi/
+        └── hero_img.png`}
+          />
+        </FeatureItem>
+      </FeatureSlider>
+    </div>
+  </div>
+  <div class="d-flex gap-medium justify-content-center flex-wrap">
+    <a href="/assets/" class="button primary large">Go to Chassis Assets</a>
+    <a href="/assets/docs/" class="button default large">View Documentation</a>
+  </div>
+</section>
