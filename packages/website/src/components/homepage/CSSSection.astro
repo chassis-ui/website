@@ -22,14 +22,14 @@ import Code from '@shortcodes/Code.astro'
       <FeatureSlider>
         <!-- Item 1: Token-generated CSS variables -->
         <FeatureItem icon="cx-brackets-curly" className="swiper-slide">
-            <Fragment slot="title">Token-generated CSS variables</Fragment>
-            <Fragment slot="body">
-              Design tokens become CSS custom properties automatically. Change a token, and every
-              component that uses it updates.
-            </Fragment>
-            <Code
-              lang="css"
-              code={`/* Token-generated CSS variables */
+          <Fragment slot="title">Token-generated CSS variables</Fragment>
+          <Fragment slot="body">
+            Design tokens become CSS custom properties automatically. Change a token, and every
+            component that uses it updates.
+          </Fragment>
+          <Code
+            lang="css"
+            code={`/* Token-generated CSS variables */
 :root {
   --cx-font-family-text: Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif;
   --cx-font-size-text-medium: 1rem;
@@ -42,20 +42,20 @@ import Code from '@shortcodes/Code.astro'
   --cx-opacity-fg-subtle: 0.5;
   --cx-separator-size: 0.0625rem;
 }`}
-            />
-          </FeatureItem>
+          />
+        </FeatureItem>
 
         <!-- Item 2: Perfectly align with Figma -->
         <FeatureItem icon="cx-figma" className="swiper-slide">
-            <Fragment slot="title">Perfectly align with Figma</Fragment>
-            <Fragment slot="body">
-              Chassis CSS utility classes mirror Figma styles and variables for streamlined design
-              to code implementation.
-            </Fragment>
-            <div>
-              <Code
-                lang="html"
-                code={`<!-- Utility classes in action -->
+          <Fragment slot="title">Perfectly align with Figma</Fragment>
+          <Fragment slot="body">
+            Chassis CSS utility classes mirror Figma styles and variables for streamlined design to
+            code implementation.
+          </Fragment>
+          <div>
+            <Code
+              lang="html"
+              code={`<!-- Utility classes in action -->
 <div class="primary-bg-main border primary-border-subtle p-medium">
   <h6 class="primary-fg-main">
     Hello World!
@@ -64,25 +64,25 @@ import Code from '@shortcodes/Code.astro'
     I'm a demonstration of Chassis Styles
   </p>
 </div>`}
-              />
-              <div class="primary-bg-main border primary-border-main p-medium">
-                <h5 class="primary-fg-main mb-0">Hello World!</h5>
-                <p class="primary-fg-subtle mb-0">I'm a demonstration of Chassis Styles</p>
-              </div>
+            />
+            <div class="primary-bg-main border primary-border-main p-medium">
+              <h5 class="primary-fg-main mb-0">Hello World!</h5>
+              <p class="primary-fg-subtle mb-0">I'm a demonstration of Chassis Styles</p>
             </div>
-          </FeatureItem>
+          </div>
+        </FeatureItem>
 
         <!-- Item 3: Faster frontend development -->
         <FeatureItem icon="cx-code" className="swiper-slide">
-            <Fragment slot="title">Faster frontend development</Fragment>
-            <Fragment slot="body">
-              Stop re-implementing design decisions. Use a framework that already speaks your design
-              system's language.
-            </Fragment>
-            <div>
-              <Code
-                lang="html"
-                code={`<!-- Context class in action -->
+          <Fragment slot="title">Faster frontend development</Fragment>
+          <Fragment slot="body">
+            Stop re-implementing design decisions. Use a framework that already speaks your design
+            system's language.
+          </Fragment>
+          <div>
+            <Code
+              lang="html"
+              code={`<!-- Context class in action -->
 <div class="context info border p-medium">
   <h6>
     Hello World!
@@ -91,17 +91,17 @@ import Code from '@shortcodes/Code.astro'
     I'm a demonstration of Chassis Styles
   </p>
 </div>`}
-              />
-              <div class="context info border border-main p-medium">
-                <h5 class="mb-0">Hello World!</h5>
-                <p class="fg-subtle mb-0">I'm a demonstration of Chassis Styles</p>
-              </div>
+            />
+            <div class="context info border border-main p-medium">
+              <h5 class="mb-0">Hello World!</h5>
+              <p class="fg-subtle mb-0">I'm a demonstration of Chassis Styles</p>
             </div>
-          </FeatureItem>
+          </div>
+        </FeatureItem>
       </FeatureSlider>
     </div>
   </div>
-  <div class="d-flex gap-medium justify-content-center flex-wrap">
+  <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
     <a href="/css/" class="button primary large">Go to Chassis Styles</a>
     <a href="/css/docs/" class="button default large">View Documentation</a>
   </div>

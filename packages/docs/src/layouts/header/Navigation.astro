@@ -15,7 +15,7 @@ const { pathname } = Astro.url
 ---
 
 <header class="navbar navbar-expand-large cxd-navbar sticky-top">
-  <nav class="container-fluid" aria-label="Main navigation">
+  <nav class="container-2xlarge" aria-label="Main navigation">
     {
       layout === 'docs' && (
         <div class="cxd-navbar-toggle">
@@ -75,14 +75,25 @@ const { pathname } = Astro.url
       <div class="offcanvas-body p-large pt-0 p-large-0">
         <hr class="d-large-none text-white-50" />
         <ul class="navbar-nav flex-row flex-wrap cxd-navbar-nav mx-0 mx-large-medium">
-          <NavLink active={pathname.slice(1) === ''} href="/" track>Home</NavLink>
-          <li class="nav-item dropdown">
-            <NavDocsMenu layout={layout} />
-          </li>
-          <NavLink active={layout === 'icons'} href="/icons" track>Icons</NavLink>
+          <NavLink active={layout === 'docs'} href="/docs" track>Docs</NavLink>
           <NavLink active={title === 'Tokens'} href="/tokens" track>Tokens</NavLink>
-          <NavLink active={title === 'Examples'} href={'/examples/'} track>Examples</NavLink>
-          <NavLink active={layout === 'blog'} href={'/blog/'} track>Blog</NavLink>
+          <NavLink active={title === 'Assets'} href="/assets" track>Assets</NavLink>
+          <NavLink active={title === 'Figma'} href="/figma" track>Figma</NavLink>
+          <NavLink active={layout === 'icons'} href="/icons" track>Icons</NavLink>
+          <NavLink active={title === 'CSS'} href="/css" track>CSS</NavLink>
+          <li class="nav-item dropdown ms-medium">
+            <a
+              class="nav-link dropdown-toggle"
+              href="/#"
+              role="button"
+              data-cx-toggle="dropdown"
+              aria-expanded="false">More</a
+            >
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/examples">Examples</a></li>
+              <li><a class="dropdown-item" href="/blog">Blog</a></li>
+            </ul>
+          </li>
         </ul>
 
         <hr class="d-large-none" />

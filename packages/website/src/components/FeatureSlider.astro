@@ -3,14 +3,14 @@
 ---
 
 <div class="feature-slider">
-  <div class="swiper-navigation">
-    <div class="swiper-button-prev button"></div>
-    <div class="swiper-button-next button"></div>
+  <div class="swiper-navigation d-none d-medium-block" role="group" aria-label="Slider navigation">
+    <button class="swiper-button-prev button" aria-label="Previous slide"></button>
+    <button class="swiper-button-next button" aria-label="Next slide"></button>
   </div>
-  <div class="slider-swiper overflow-visible swiper">
-    <div class="swiper-wrapper">
+  <div class="slider-swiper overflow-visible swiper" role="region" aria-label="Feature carousel">
+    <div class="swiper-wrapper flex-column flex-medium-row">
       <slot />
     </div>
   </div>
-  <div class="swiper-pagination"></div>
+  <div class="swiper-pagination" role="group" aria-label="Slide pagination"></div>
 </div>

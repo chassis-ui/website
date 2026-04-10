@@ -35,10 +35,10 @@
     right: 12rem;
     width: 200px;
   }
-  @include media-breakpoint-up(xlarge) {
-    // left: 50%;
+  @include media-breakpoint-up(2xlarge) {
+    left: 50%;
     width: 280px;
-    // margin-left: 12rem;
+    margin-left: 12rem;
   }
 
 

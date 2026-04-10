@@ -35,3 +35,16 @@
 [data-cx-theme="light"] .display-dark {
   display: none;
 }
+
+.docs-body .navbar,
+.docs-body .cxd-footer {
+  .container-2xlarge {
+    max-width: 100%;
+  }
+  .cxd-search {
+    @include media-breakpoint-up(2xlarge) {
+      right: 12rem;
+      left: auto;
+    }
+  }
+}

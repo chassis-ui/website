@@ -23,6 +23,7 @@ const parentDirectory = id.includes('/') ? id.split('/')[0] : ''
 const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
 
 if (frontmatter.toc) {
+  bodyProps['class'] = 'docs-body'
   bodyProps['data-cx-spy'] = 'scroll'
   bodyProps['data-cx-target'] = '#TableOfContents'
 }
