@@ -279,8 +279,9 @@ class ChassisBuilder {
 
     const cleanPaths = [
       this.outputDir,
-      path.join(this.rootDir, 'node_modules'),
-      path.join(this.siteDir, 'node_modules')
+      path.join(this.siteDir, '.astro'),
+      path.join(this.siteDir, 'node_modules'),
+      path.join(this.siteDir, 'public')
     ]
 
     for (const cleanPath of cleanPaths) {

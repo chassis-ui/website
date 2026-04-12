@@ -49,7 +49,7 @@ chassis-website/                 # Main monorepo
 Each Chassis project is an independent repository with:
 - Its own npm package for distribution
 - A `site/` folder for documentation (Astro-based)
-- Dependency on `@chassis-ui/docs@^0.1.3`
+- Dependency on `@chassis-ui/docs@^0.1.7`
 - Independent Vercel deployment
 
 ```
@@ -95,11 +95,11 @@ chassis-figma/                   # Figma component documentation
 ```
 chassis-ui.com (Main Domain)
 ├── /                            → chassis-website (Main hub)
-├── /docs/css/*                  → chassis-css.vercel.app
-├── /docs/assets/*               → chassis-assets.vercel.app  
-├── /docs/icons/*                → chassis-icons.vercel.app
-├── /docs/tokens/*               → chassis-tokens.vercel.app
-└── /docs/figma/*                → chassis-figma.vercel.app
+├── /css/*                       → chassis-css.vercel.app
+├── /assets/*                    → chassis-assets.vercel.app
+├── /icons/*                     → chassis-icons.vercel.app
+├── /tokens/*                    → chassis-tokens.vercel.app
+└── /figma/*                     → chassis-figma.vercel.app
 ```
 
 ### Deployment Targets
@@ -116,7 +116,7 @@ Each repository deploys independently to Vercel:
 **Staging:**
 Same structure with `-staging` suffix (e.g., `chassis-css-staging.vercel.app`)
 
-The main website uses Vercel rewrites to proxy `/docs/*` paths to project-specific sites (see [VERCEL_CONFIG.md](VERCEL_CONFIG.md)).
+The main website uses Vercel rewrites to proxy project paths to project-specific sites (see [VERCEL_CONFIG.md](VERCEL_CONFIG.md)).
 
 
 ## 📦 Shared Package: @chassis-ui/docs
@@ -140,7 +140,7 @@ export * from './src/libs/utils'      // General utilities
 ```json
 {
   "name": "@chassis-ui/docs",
-  "version": "0.1.3",
+  "version": "0.1.7",
   "exports": {
     ".": "./index.ts",
     "./components/*": "./src/components/*",

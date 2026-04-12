@@ -11,7 +11,6 @@ import { rehypeCxTable } from '@chassis-ui/docs'
 import { remarkCxConfig, remarkCxDocsref } from './remark'
 import {
   getDocsFsPath,
-  getChassisDocsPath,
   getChassisAssetsFsPath,
   getChassisCSSFsPath,
   getChassisIconsFsPath,

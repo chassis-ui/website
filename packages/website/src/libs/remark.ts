@@ -7,10 +7,10 @@ import { getChassisDocsPath } from './path'
 
 // [[config:foo]]
 // [[config:foo.bar]]
-const configRegExp = /\[\[config:(?<name>[\w\.]+)]]/g
+const configRegExp = /\[\[config:(?<name>[\w.]+)\]\]/g
 // [[docsref:/foo]]
 // [[docsref:/foo/bar#baz]]
-const docsrefRegExp = /\[\[docsref:(?<path>[\w\.\/#-]+)]]/g
+const docsrefRegExp = /\[\[docsref:(?<path>[\w./#-]+)\]\]/g
 
 // A remark plugin to replace config values embedded in markdown (or MDX) files.
 // For example, [[config:foo]] will be replaced with the value of the `foo` key in the `config.yml` file.
@@ -164,7 +164,7 @@ function getConfigValueAtPath(path: string) {
 
 function replaceInFrontmatter(
   record: Record<string, unknown>,
-  replacer: (value: string) => string
+  replacer: (value: string) => string // eslint-disable-line no-unused-vars
 ) {
   for (const [key, value] of Object.entries(record)) {
     if (typeof value === 'string') {

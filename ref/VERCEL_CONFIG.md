@@ -34,7 +34,7 @@ Each service has two rewrite rules in `vercel.json`:
 {
   "rewrites": [
     {
-      "source": "/docs/icons/:path*",
+      "source": "/icons/:path*",
       "has": [
         {
           "type": "header",
@@ -42,11 +42,11 @@ Each service has two rewrite rules in `vercel.json`:
           "value": "staging.chassis-ui.com"
         }
       ],
-      "destination": "https://chassis-icons-staging.vercel.app/docs/icons/:path*"
+      "destination": "https://chassis-icons-staging.vercel.app/:path*"
     },
     {
-      "source": "/docs/icons/:path*",
-      "destination": "https://chassis-icons.vercel.app/docs/icons/:path*"
+      "source": "/icons/:path*",
+      "destination": "https://chassis-icons.vercel.app/:path*"
     }
   ]
 }
@@ -60,12 +60,13 @@ Each service has two rewrite rules in `vercel.json`:
 
 | Path | Staging Domain | Production Domain |
 |------|----------------|-------------------|
-| `/docs/assets/:path*` | `chassis-assets-staging.vercel.app` | `chassis-assets.vercel.app` |
-| `/docs/css/:path*` | `chassis-css-staging.vercel.app` | `chassis-css.vercel.app` |
-| `/docs/tokens/:path*` | `chassis-tokens-staging.vercel.app` | `chassis-tokens.vercel.app` |
-| `/docs/figma/:path*` | `chassis-figma-staging.vercel.app` | `chassis-figma.vercel.app` |
-| `/docs/icons/:path*` | `chassis-icons-staging.vercel.app/docs/icons/` | `chassis-icons.vercel.app/docs/icons/` |
-| `/assets/icons/:path*` | `chassis-icons-staging.vercel.app/assets/` | `chassis-icons.vercel.app/assets/` |
+| `/assets/:path*` | `chassis-assets-staging.vercel.app` | `chassis-assets.vercel.app` |
+| `/css/:path*` | `chassis-css-staging.vercel.app` | `chassis-css.vercel.app` |
+| `/tokens/:path*` | `chassis-tokens-staging.vercel.app` | `chassis-tokens.vercel.app` |
+| `/figma/:path*` | `chassis-figma-staging.vercel.app` | `chassis-figma.vercel.app` |
+| `/icons/:path*` | `chassis-icons-staging.vercel.app` | `chassis-icons.vercel.app` |
+| `/icons-assets/:path*` | `chassis-icons-staging.vercel.app/icons-assets/` | `chassis-icons.vercel.app/icons-assets/` |
+| `/tokens-assets/:path*` | `chassis-tokens-staging.vercel.app/tokens-assets/` | `chassis-tokens.vercel.app/tokens-assets/` |
 
 ## Development Workflow
 
@@ -102,21 +103,19 @@ Each service has two rewrite rules in `vercel.json`:
 
 Test staging environment:
 ```bash
-curl -I https://staging.chassis-ui.com/docs/icons/
+curl -I https://staging.chassis-ui.com/icons/
 # Should show 401/404 from chassis-icons-staging.vercel.app
 ```
 
 Test production environment:
 ```bash
-curl -I https://chassis-ui.com/docs/icons/
+curl -I https://chassis-ui.com/icons/
 # Should show 401/404 from chassis-icons.vercel.app  
 ```
 
 ## Configuration Files Reference
 
-- **`vercel.json`** - Main configuration with conditional rewrites
-- **`vercel.staging.json`** - Template/backup for staging-specific config
-- **`vercel.production.json`** - Template/backup for production-specific config
+- **`vercel.json`** - Main configuration with conditional rewrites (single file works for both environments)
 
 ## Development Workflow
 
@@ -127,28 +126,9 @@ curl -I https://chassis-ui.com/docs/icons/
 
 ### For Production Release
 1. Merge `staging` branch to `main` 
-2. **Important**: Update `vercel.json` on `main` branch to use production URLs
-3. Push to `main` → Automatically deploys with production URLs
-4. Test on `chassis-ui.com`
-
-## Configuration Files
-
-- `vercel.json` - The active configuration (different per branch)
-- `vercel.staging.json` - Template for staging configuration  
-- `vercel.production.json` - Template for production configuration
-- `build/generate-vercel-urls.cjs` - Helper script (not used in current solution)
-
-## Branch Switching Command
-
-When switching from staging to production (or vice versa), you can use:
-
-```bash
-# Switch to staging URLs
-cp vercel.staging.json vercel.json
-
-# Switch to production URLs  
-cp vercel.production.json vercel.json
-```
+2. Push to `main` → Automatically deploys with production URLs
+3. Test on `chassis-ui.com`
+4. **No manual configuration changes needed** — host-header detection handles environment routing automatically
 
 ## Verification
 
@@ -156,33 +136,32 @@ To verify the configuration is working:
 
 ```bash
 # Test staging routing (should return 401 - means routing works)
-curl -I "https://staging.chassis-ui.com/docs/icons"
+curl -I "https://staging.chassis-ui.com/icons"
 
 # Test production routing (should return 401 - means routing works)  
-curl -I "https://chassis-ui.com/docs/icons"
+curl -I "https://chassis-ui.com/icons"
 
 # Test direct staging service access
-curl -I "https://chassis-icons-staging.vercel.app/docs/icons"
+curl -I "https://chassis-icons-staging.vercel.app/icons"
 
 # Test direct production service access
-curl -I "https://chassis-icons.vercel.app/docs/icons"
+curl -I "https://chassis-icons.vercel.app/icons"
 ```
 
 ## Troubleshooting
 
 If the wrong URLs are being used:
 
-1. **Check Current Branch**: Ensure you're on the correct branch (`staging` vs `main`)
-2. **Verify vercel.json**: Check that `vercel.json` contains the expected URLs for your branch
-3. **Compare with Templates**: Ensure `vercel.json` matches `vercel.staging.json` or `vercel.production.json`
-4. **Test Direct URLs**: Verify the target services are accessible
-5. **Check Deployment**: Ensure the latest commit is deployed on Vercel
+1. **Verify vercel.json**: Check that `vercel.json` contains the correct conditional rewrites
+2. **Test Direct URLs**: Verify the target services are accessible
+3. **Check Deployment**: Ensure the latest commit is deployed on Vercel
 
 ## Migration Notes
 
-This solution replaced a previous approach that attempted to generate `vercel.json` during build time. The current branch-based approach is more reliable because:
+This solution replaced a previous approach that attempted to generate `vercel.json` during build time. The current host-header conditional rewrite approach is more reliable because:
 
+- ✅ Single `vercel.json` works for both staging and production
+- ✅ No manual configuration changes needed when merging staging → main
 - ✅ Vercel reads `vercel.json` directly from git (no build-time dependencies)
-- ✅ Simple and predictable behavior per branch
 - ✅ No environment variable detection issues
 - ✅ Works consistently across all deployment types

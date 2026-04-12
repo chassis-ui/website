@@ -1,13 +1,13 @@
 # Chassis Website
 
-> Official website and documentation for the Chassis design system
+> Official website and documentation hub for the Chassis Design System.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Deploy Status](https://github.com/chassis-ui/website/workflows/Deploy%20Website/badge.svg)](https://github.com/chassis-ui/website/actions)
-[![Lighthouse CI](https://github.com/chassis-ui/website/workflows/Lighthouse%20CI/badge.svg)](https://github.com/chassis-ui/website/actions)
 
 ## Overview
 
-Chassis Website is the official showcase for the Chassis Design System, featuring comprehensive documentation, interactive examples, and resources for building design systems with modern web technologies.
+Chassis Website is the main hub for the Chassis Design System, featuring comprehensive documentation, interactive examples, and resources for building design systems with modern web technologies. It also contains the shared `@chassis-ui/docs` package used by all Chassis documentation sites.
 
 ## Features
 
@@ -24,7 +24,7 @@ Chassis Website is the official showcase for the Chassis Design System, featurin
 ### Prerequisites
 
 - Node.js 18.0.0 or higher
-- pnpm 8.0.0 or higher
+- pnpm 10.0.0 or higher
 - Git with SSH access to GitHub (for submodules)
 
 ### Installation
@@ -137,26 +137,20 @@ git submodule status
 4. **Styles**: Extend styles in `packages/website/src/styles/`
 5. **Examples**: Add new integration examples in `examples/`
 
-## Architecture
+## Chassis Ecosystem
 
-### Hybrid Monorepo Structure
+This project is part of the Chassis Design System's multi-repository architecture:
 
-This project uses a **hybrid approach**:
+| Project | Description |
+|---------|-------------|
+| **chassis-website** | **Main website and shared documentation package (this repository)** |
+| [chassis-css](https://github.com/chassis-ui/css) | CSS framework and component library |
+| [chassis-tokens](https://github.com/chassis-ui/tokens) | Design token generation and management |
+| [chassis-icons](https://github.com/chassis-ui/icons) | Icon library and build toolkit |
+| [chassis-assets](https://github.com/chassis-ui/assets) | Multi-platform asset management |
+| [chassis-figma](https://github.com/chassis-ui/figma) | Figma component documentation |
 
-- **chassis-tokens**: Design tokens and theme definitions
-- **chassis-css**: CSS framework and components
-- **chassis-figma**: Figma design resources and documentation
-- **chassis-assets**: Shared assets and resources
-
-### Build System
-
-The build system orchestrates:
-
-1. **Submodule Synchronization**: Updates all dependencies
-2. **Documentation Building**: Generates static site with Astro
-3. **Example Building**: Builds all integration examples
-4. **Asset Optimization**: Optimizes images, fonts, and other assets
-5. **Validation**: Ensures build integrity
+All documentation sites share the `@chassis-ui/docs` package for consistent layouts, components, and styling.
 
 ### Deployment
 
@@ -164,38 +158,19 @@ The build system orchestrates:
 - **Repository**: `chassis-ui/website`
 - **Production URL**: `chassis-ui.com`
 - **Trigger**: Push to `main` branch
-- **Build Command**: `pnpm build`
+- **Build Command**: `pnpm site:build`
 - **Output Directory**: `_site`
 - **Performance**: Monitored with Lighthouse CI
 
 ## Contributing
 
-### Getting Started
-
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
+2. Create a feature branch: `git checkout -b feature/my-feature`
 3. Make your changes
-4. Test thoroughly: `pnpm build && pnpm validate`
-5. Commit changes: `git commit -m "Add amazing feature"`
-6. Push to branch: `git push origin feature/amazing-feature`
+4. Test the build: `pnpm build && pnpm validate`
+5. Commit your changes: `git commit -m "feat: add my feature"`
+6. Push to the branch: `git push origin feature/my-feature`
 7. Open a Pull Request
-
-### Guidelines
-
-- Follow existing code style and conventions
-- Add tests for new functionality
-- Update documentation for any changes
-- Ensure all builds pass before submitting PR
-- Keep commits focused and descriptive
-
-### Submodule Updates
-
-When updating submodules:
-
-1. Test changes thoroughly in isolation
-2. Update submodule references in this repository
-3. Verify all examples still work
-4. Update documentation if APIs changed
 
 ## Troubleshooting
 
@@ -239,11 +214,4 @@ pnpm build
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-- 📖 **Documentation**: [https://chassis-ui.com](https://chassis-ui.com)
-- 🐛 **Issues**: [GitHub Issues](https://github.com/chassis-ui/website/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/chassis-ui/website/discussions)
-- 📧 **Email**: [support@chassis-ui.com](mailto:support@chassis-ui.com)
+MIT License — see [LICENSE](LICENSE) file for details.

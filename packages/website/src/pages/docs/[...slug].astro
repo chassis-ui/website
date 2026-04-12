@@ -23,4 +23,7 @@ const { Content, headings } = await render(docsPage)
 
 <DocsLayout frontmatter={frontmatter} headings={headings} id={id}>
   <Content components={{ pre: Code }} />
+  <Fragment slot="scripts">
+    <script is:inline src="/static/js/example-mode.js"></script>
+  </Fragment>
 </DocsLayout>

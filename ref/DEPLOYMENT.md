@@ -52,11 +52,11 @@ Each Chassis project deploys independently:
 The main website (`chassis-ui.com`) proxies requests to project sites via Vercel rewrites:
 
 ```
-/docs/css/*      → chassis-css.vercel.app
-/docs/tokens/*   → chassis-tokens.vercel.app
-/docs/assets/*   → chassis-assets.vercel.app
-/docs/icons/*    → chassis-icons.vercel.app
-/docs/figma/*    → chassis-figma.vercel.app
+/css/*           → chassis-css.vercel.app
+/tokens/*        → chassis-tokens.vercel.app
+/assets/*        → chassis-assets.vercel.app
+/icons/*         → chassis-icons.vercel.app
+/figma/*         → chassis-figma.vercel.app
 ```
 
 See [VERCEL_CONFIG.md](VERCEL_CONFIG.md) for details on request routing.
@@ -130,7 +130,7 @@ jobs:
           
       - uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 10
           
       - uses: actions/setup-node@v4
         with:
@@ -196,13 +196,12 @@ The main site's `vercel.json` handles:
 Example:
 ```json
 {
-  "buildCommand": "pnpm build",
+  "buildCommand": "pnpm site:build",
   "outputDirectory": "_site",
-  "installCommand": "pnpm install",
-  "framework": null,
+  "trailingSlash": true,
   "rewrites": [
     {
-      "source": "/docs/css/:path*",
+      "source": "/css/:path*",
       "has": [
         {
           "type": "header",
@@ -210,11 +209,11 @@ Example:
           "value": "staging.chassis-ui.com"
         }
       ],
-      "destination": "https://chassis-css-staging.vercel.app/docs/css/:path*"
+      "destination": "https://chassis-css-staging.vercel.app/:path*"
     },
     {
-      "source": "/docs/css/:path*",
-      "destination": "https://chassis-css.vercel.app/docs/css/:path*"
+      "source": "/css/:path*",
+      "destination": "https://chassis-css.vercel.app/:path*"
     }
   ]
 }
@@ -383,7 +382,7 @@ jobs:
         with:
           urls: |
             https://chassis-ui.com
-            https://chassis-ui.com/docs/css/
+            https://chassis-ui.com/css/
           uploadArtifacts: true
 ```
 
@@ -392,11 +391,11 @@ jobs:
 ### Production URLs
 
 - **Main Site:** https://chassis-ui.com
-- **CSS Docs:** https://chassis-ui.com/docs/css/
-- **Tokens Docs:** https://chassis-ui.com/docs/tokens/
-- **Assets Docs:** https://chassis-ui.com/docs/assets/
-- **Icons Docs:** https://chassis-ui.com/docs/icons/
-- **Figma Docs:** https://chassis-ui.com/docs/figma/
+- **CSS Docs:** https://chassis-ui.com/css/
+- **Tokens Docs:** https://chassis-ui.com/tokens/
+- **Assets Docs:** https://chassis-ui.com/assets/
+- **Icons Docs:** https://chassis-ui.com/icons/
+- **Figma Docs:** https://chassis-ui.com/figma/
 
 ### Staging URLs
 

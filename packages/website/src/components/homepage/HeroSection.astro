@@ -8,10 +8,10 @@
 import ModuleLink from '@components/ModuleLink.astro'
 ---
 
-<section id="hero-section" class="home-section py-3xlarge py-medium-6xlarge">
+<div id="hero-section" class="home-section py-3xlarge py-medium-6xlarge">
   <div class="container-2xlarge section-content">
     <div class="row mb-3xlarge mb-medium-6xlarge py-medium-6xlarge">
-      <div class="section-header text-center col col-large-10 offset-large-1">
+      <header class="section-header text-center col col-large-10 offset-large-1">
         <h1 class="font-hero">
           <span class="font-normal">Build Better Design Systems.</span>
           <span class="text-nowrap">In Sync, At Scale.</span>
@@ -22,7 +22,7 @@ import ModuleLink from '@components/ModuleLink.astro'
           transformers, asset libraries, and a fully token-synced CSS framework — all working in
           harmony across brands, platforms, and products.
         </p>
-      </div>
+      </header>
     </div>
     <div class="section-features d-flex flex-column flex-medium-row align-content-stretch">
       <ModuleLink icon="cx-figma" title="Figma Components" url="/figma" />
@@ -32,4 +32,4 @@ import ModuleLink from '@components/ModuleLink.astro'
       <ModuleLink icon="cx-folder-tree" title="Asset Distributor" url="/assets" />
     </div>
   </div>
-</section>
+</div>

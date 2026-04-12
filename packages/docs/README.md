@@ -23,7 +23,7 @@ pnpm add @chassis-ui/docs
 This package requires the following peer dependencies:
 
 - `@chassis-ui/css`: Chassis CSS framework
-- `@chassis-ui/icons`: Chassis icon library  
+- `@chassis-ui/icons`: Chassis icon library
 - `@chassis-ui/tokens`: Chassis design tokens
 - `astro`: ^4.0.0 || ^5.0.0
 

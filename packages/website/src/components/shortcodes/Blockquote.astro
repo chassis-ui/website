@@ -17,9 +17,7 @@ const { attr } = Astro.props
   attr ? (
     <figure>
       <blockquote class="blockquote">
-        <p>
-          <slot />
-        </p>
+        <slot />
       </blockquote>
       <figcaption class="attribution">
         <Fragment set:html={attr} />
@@ -27,9 +25,7 @@ const { attr } = Astro.props
     </figure>
   ) : (
     <blockquote class="blockquote">
-      <p>
-        <slot />
-      </p>
+      <slot />
     </blockquote>
   )
 }

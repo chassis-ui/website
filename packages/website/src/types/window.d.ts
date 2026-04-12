@@ -18,6 +18,7 @@ export declare global {
   export const chassis: typeof import('chassis')
   // export const chassis: any
 
+  // eslint-disable-next-line no-unused-vars
   interface Window {
     chassis: typeof import('chassis')
     // chassis: any

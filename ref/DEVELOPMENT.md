@@ -17,7 +17,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the complete ecosystem structure.
 
 - **macOS, Linux, or Windows** with WSL2
 - **Node.js** 18.0.0 or higher (recommend using nvm/fnm)
-- **pnpm** 8.0.0 or higher
+- **pnpm** 10.0.0 or higher
 - **Git** with SSH keys for GitHub access (for submodules)
 
 ### Initial Setup
@@ -137,7 +137,7 @@ Shared documentation infrastructure used by all Chassis projects.
 **Location:** `packages/docs/`  
 **Purpose:** Reusable Astro components, layouts, and utilities  
 **Published:** Yes, to npm registry  
-**Version:** 0.1.3  
+**Version:** 0.1.7  
 
 **Development:**
 ```bash

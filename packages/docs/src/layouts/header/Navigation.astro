@@ -9,7 +9,6 @@ import { getConfig } from '@libs/config'
 import type { Layout } from '../../libs/layout'
 import NavLink from '../../components/NavLink.astro'
 import ThemeToggler from '../../components/ThemeToggler.astro'
-import NavDocsMenu from '../../components/NavDocsMenu.astro'
 
 interface Props {
   /** Current layout context */
@@ -19,7 +18,6 @@ interface Props {
 }
 
 const { layout, title } = Astro.props
-const { pathname } = Astro.url
 ---
 
 <header class="navbar navbar-expand-large cxd-navbar sticky-top">
@@ -83,12 +81,12 @@ const { pathname } = Astro.url
       <div class="offcanvas-body p-large pt-0 p-large-0">
         <hr class="d-large-none text-white-50" />
         <ul class="navbar-nav flex-row flex-wrap cxd-navbar-nav mx-0 mx-large-medium">
-          <NavLink active={layout === 'docs'} href="/docs" track>Docs</NavLink>
-          <NavLink active={title === 'Tokens'} href="/tokens" track>Tokens</NavLink>
-          <NavLink active={title === 'Assets'} href="/assets" track>Assets</NavLink>
-          <NavLink active={title === 'Figma'} href="/figma" track>Figma</NavLink>
-          <NavLink active={layout === 'icons'} href="/icons" track>Icons</NavLink>
-          <NavLink active={title === 'CSS'} href="/css" track>CSS</NavLink>
+          <NavLink active={layout === 'docs'} href="/docs">Docs</NavLink>
+          <NavLink active={title === 'Tokens'} href="/tokens">Tokens</NavLink>
+          <NavLink active={title === 'Assets'} href="/assets">Assets</NavLink>
+          <NavLink active={title === 'Figma'} href="/figma">Figma</NavLink>
+          <NavLink active={layout === 'icons'} href="/icons">Icons</NavLink>
+          <NavLink active={title === 'CSS'} href="/css">CSS</NavLink>
           <li class="nav-item dropdown ms-medium">
             <a
               class="nav-link dropdown-toggle"

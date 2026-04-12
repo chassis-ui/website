@@ -19,7 +19,8 @@
   align-items: center;
   text-decoration: if($link-decoration == none, null, none);
 
-  @extend %button, %solid-button, %component, %box-padding;
+  @extend %button, %solid-button, %component;
+  // @include exclude-strokes(button);
 
   &.large {
     --#{$prefix}font-size: var(--#{$prefix}font-size-xlarge);

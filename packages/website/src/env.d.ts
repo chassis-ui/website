@@ -5,6 +5,7 @@ interface ImportMetaEnv {
   readonly VERCEL?: string
 }
 
+// eslint-disable-next-line no-unused-vars
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
