@@ -34,25 +34,28 @@ const { page } = Astro.props
   }}
 >
   <header class="mb-xlarge text-center">
-    <h1 class="h1 mb-medium">Blog</h1>
-    <p class="lead text-muted">Insights, tutorials, and stories from the world of design systems</p>
+    <h1 class="font-5xlarge mb-medium">Blog</h1>
+    <p class="font-lead fg-subtle">
+      Insights, tutorials, and stories from Chassis UI's team of designers and developers building
+      design systems in the open.
+    </p>
   </header>
-
+  <hr />
   <div class="row">
-    <div class="col-12 col-lg-8 mx-auto">
+    <div class="col">
       <!-- Blog posts list -->
       <div class="mb-xlarge">
         {
           page.data.map((post: BlogPost) => (
             <article class="mb-xlarge pb-xlarge border-bottom">
               <header class="mb-medium">
-                <h2 class="h3 mb-small">
-                  <a href={getBlogPostUrl(post)} class="text-decoration-none">
+                <h2 class="font-4xlarge mb-small">
+                  <a href={getBlogPostUrl(post)} class="fg-main text-decoration-none">
                     {post.data.title}
                   </a>
                 </h2>
 
-                <div class="d-flex align-items-center text-muted small mb-small">
+                <div class="d-flex align-items-center fg-subtle small mb-small">
                   <time datetime={post.data.pubDate?.toISOString()}>
                     {formatDate(post.data.pubDate || new Date())}
                   </time>
@@ -71,15 +74,13 @@ const { page } = Astro.props
                 <img
                   src={post.data.image?.url || '/static/images/logo/chassis-logo-brand-banner.svg'}
                   alt={post.data.image?.alt || post.data.title}
-                  class="image-fluid w-100"
+                  class="image rounded image-fluid w-100"
                 />
               </div>
-              <div class="mb-medium">
-                <p class="text-muted">{post.data.description}</p>
-              </div>
+              <p>{post.data.description}</p>
 
-              <footer>
-                <a href={getBlogPostUrl(post)} class="btn btn-outline-primary btn-sm">
+              <footer class="text-center">
+                <a href={getBlogPostUrl(post)} class="button smooth default small">
                   Read more →
                 </a>
               </footer>
@@ -95,8 +96,8 @@ const { page } = Astro.props
       {
         page.data.length === 0 && (
           <div class="text-center py-xlarge">
-            <h3 class="h4 mb-medium text-muted">No blog posts yet</h3>
-            <p class="text-muted">
+            <h3 class="h4 mb-medium fg-subtle">No blog posts yet</h3>
+            <p class="fg-subtle">
               Check back soon for insights and tutorials about design systems!
             </p>
           </div>

@@ -34,7 +34,6 @@
     "dev": "pnpm sync-submodules && pnpm astro:dev",
     "preview": "pnpm astro:preview",
     "validate": "node build/build-site.js validate",
-
     "site": "pnpm site:build && pnpm site:lint:vnu",
     "site:build": "node build/build-site.js",
     "site:lint": "pnpm site:lint:eslint && pnpm site:lint:stylelint && pnpm site:lint:prettier && pnpm site:lint:vnu",
@@ -43,22 +42,18 @@
     "site:lint:prettier": "prettier -c --cache packages/website",
     "site:lint:vnu": "node build/vnu-jar.js",
     "site:format": "prettier --write --cache packages/website/",
-
     "docs:lint": "pnpm docs:lint:eslint && pnpm docs:lint:stylelint && pnpm docs:lint:prettier",
     "docs:lint:eslint": "eslint --cache --cache-location .cache/.eslintcache --report-unused-disable-directives packages/docs",
     "docs:lint:stylelint": "stylelint --cache --cache-location .cache/.stylelintcache packages/docs/\"**/*.{css,scss}\"",
     "docs:lint:prettier": "prettier -c --cache packages/docs",
     "docs:format": "prettier --write --cache packages/docs/",
-
     "astro:dev": "pnpm --filter chassis-website astro dev --port 4321",
     "astro:build": "pnpm --filter chassis-website astro build",
     "astro:preview": "pnpm --filter chassis-website astro preview",
-
     "check": "pnpm check:code & pnpm check:lockfile & pnpm check:pnpm & wait",
     "check:code": "pnpm docs:lint && pnpm site:lint",
     "check:lockfile": "lockfile-lint --allowed-hosts npm --allowed-schemes https: --empty-hostname false --type npm --path package-lock.json",
     "check:pnpm": "pnpm audit --audit-level moderate",
-
     "change-version": "node build/change-version.js",
     "sync-submodules": "node build/sync-submodules.js"
   },
@@ -83,5 +78,13 @@
     "vnu-jar": "24.10.17",
     "zod": "^4.1.11"
   },
-  "packageManager": "pnpm@10.7.0+sha512.6b865ad4b62a1d9842b61d674a393903b871d9244954f652b8842c2b553c72176b278f64c463e52d40fff8aba385c235c8c9ecf5cc7de4fd78b8bb6d49633ab6"
+  "packageManager": "pnpm@10.7.0+sha512.6b865ad4b62a1d9842b61d674a393903b871d9244954f652b8842c2b553c72176b278f64c463e52d40fff8aba385c235c8c9ecf5cc7de4fd78b8bb6d49633ab6",
+  "pnpm": {
+    "overrides": {
+      "@chassis-ui/css": "link:../chassis-css"
+    }
+  },
+  "dependencies": {
+    "@chassis-ui/css": "link:../chassis-css"
+  }
 }

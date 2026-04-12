@@ -26,12 +26,3 @@ $enable-table-font-tokens:      true !default;
 $enable-transitions:            true !default;
 $enable-validation-icons:       true !default;
 $enable-visited-links:          false !default;
-
-//
-// Icons
-//
-$icon-url-prefix:                "/icons/svgs/" !default;
-$icon-url-suffix:                ".svg" !default;
-
-// Import tokens from the Chassis Tokens package
-// @import "../node_modules/@chassis-ui/tokens/dist/tokens/web/chassis-docs/allTokens";

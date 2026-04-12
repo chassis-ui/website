@@ -2,22 +2,19 @@
 import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
 ---
 
-<div id="gallery-section" class="home-section">
-  <div
-    class="container-2xlarge gallery-content section-content rounded overflow-hidden bg-evident"
-    style="height: 256px;"
-  >
-    <div class="gallery-image">
+<section id="gallery-section" class="home-section py-6xlarge">
+  <div class="container-2xlarge section-content rounded overflow-hidden bg-evident">
+    <div class="gallery-image bg-evident">
       <ResponsiveImage
         imgPath="/static/images/home/comp-gallery-light.png"
         alt="Chassis UI"
-        classes="mb-5xlarge image-fluid w-100 display-light"
+        classes="mb-5xlarge image-fluid w-100 visible-light"
       />
       <ResponsiveImage
         imgPath="/static/images/home/comp-gallery-dark.png"
         alt="Chassis UI"
-        classes="mb-5xlarge image-fluid w-100 display-dark"
+        classes="mb-5xlarge image-fluid w-100 visible-dark"
       />
     </div>
   </div>
-</div>
+</section>

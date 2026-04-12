@@ -1,32 +1,38 @@
 ---
-import FeatureItem from '@components/FeatureItem.astro'
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 import FeatureSlider from '@components/FeatureSlider.astro'
 import Code from '@shortcodes/Code.astro'
+import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
 ---
 
-<section id="tokens-section" class="home-section">
+<section id="assets-section" class="home-section py-3xlarge py-medium-6xlarge">
   <div class="container-2xlarge section-content">
-    <div class="section-header col col-large-10 col-xlarge-8">
-      <p class="module-title">Chassis Assets</p>
-      <h2 class="section-title">
-        <span class="font-normal d-block">Asset Management</span> for Multi-Brand Design
-      </h2>
-      <p class="section-body">
-        Eliminate asset duplication and disorganization. Chassis lets you store, manage, and
-        distribute icons, logos, fonts, and illustrations across brands and platforms with ease.
-      </p>
+    <div class="row mb-3xlarge mb-medium-6xlarge">
+      <div class="section-header col col-large-10 col-2xlarge-8">
+        <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Assets</p>
+        <h2 class="font-5xlarge mb-xsmall mb-medium-small mb-large-medium">
+          <span class="font-normal d-block">Asset Management</span> for Multi-Brand Design
+        </h2>
+        <p class="font-lead m-0">
+          Eliminate asset duplication and disorganization. Chassis lets you store, manage, and
+          distribute icons, logos, fonts, and illustrations across brands and platforms with ease.
+        </p>
+      </div>
     </div>
-    <div class="section-features">
+    <div
+      class="section-features gap-xlarge flex-column flex-medium-row mb-medium mb-medium-6xlarge"
+    >
       <FeatureSlider>
         <!-- Item -->
-        <FeatureItem icon="cx-number-one" className="swiper-slide">
+        <FeatureCard icon="cx-number-one" classes="swiper-slide" horizontal>
           <Fragment slot="title">Store Files</Fragment>
           <Fragment slot="body"
             >Organize brand- and app-specific assets in structured, predictable folders.
           </Fragment>
-          <Code
-            lang="text"
-            code={`source/
+          <div class="pt-medium border-top border-subtle">
+            <Code
+              lang="text"
+              code={`source/
 ├── default/
 │   └── demo/
 │       ├── Hero Img.png
@@ -37,17 +43,19 @@ import Code from '@shortcodes/Code.astro'
 └── example/
     └── demo/
         └── Brand Logo.svg`}
-          />
-        </FeatureItem>
+            />
+          </div>
+        </FeatureCard>
         <!-- Item -->
-        <FeatureItem icon="cx-number-two" className="swiper-slide">
+        <FeatureCard icon="cx-number-two" classes="swiper-slide" horizontal>
           <Fragment slot="title">Distribute Assets</Fragment>
           <Fragment slot="body"
             >Automatically generate platform-optimized assets with a single script.
           </Fragment>
-          <Code
-            lang="shell"
-            code={`# Build all platforms
+          <div class="pt-medium border-top border-subtle">
+            <Code
+              lang="shell"
+              code={`# Build all platforms
 pnpm assets
 
 # Build specific brand
@@ -58,17 +66,19 @@ pnpm assets --app demo
 
 # Build with filters
 pnpm assets --brand chassis --app demo`}
-          />
-        </FeatureItem>
+            />
+          </div>
+        </FeatureCard>
         <!-- Item -->
-        <FeatureItem icon="cx-number-three" className="swiper-slide">
+        <FeatureCard icon="cx-number-three" classes="swiper-slide" horizontal>
           <Fragment slot="title">Build Confidently</Fragment>
           <Fragment slot="body"
             >Build with assets that are clean, versioned, and deployment-ready.
           </Fragment>
-          <Code
-            lang="text"
-            code={`dist/
+          <div class="pt-medium border-top border-subtle">
+            <Code
+              lang="text"
+              code={`dist/
 ├── ios/chassis-demo/
 │   ├── brand_logo.svg
 │   ├── hero_img.png
@@ -79,13 +89,14 @@ pnpm assets --brand chassis --app demo`}
     │   └── hero_img.png
     └── drawable_xhdpi/
         └── hero_img.png`}
-          />
-        </FeatureItem>
+            />
+          </div>
+        </FeatureCard>
       </FeatureSlider>
     </div>
-  </div>
-  <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
-    <a href="/assets/" class="button primary large">Go to Chassis Assets</a>
-    <a href="/assets/docs/" class="button default large">View Documentation</a>
+    <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
+      <a href="/assets/" class="button primary large">Go to Chassis Assets</a>
+      <a href="/assets/docs/" class="button default large">View Documentation</a>
+    </div>
   </div>
 </section>

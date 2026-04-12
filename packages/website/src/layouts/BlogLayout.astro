@@ -29,12 +29,8 @@ const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
         <slot />
       </main>
       <aside class="col-large-4">
-        <div class="position-sticky" style="top: 88px;">
-          <section class="latest-posts bg-evident rounded p-medium">
-            <LatestPosts posts={blogPages} currentPostId={id} />
-            <LatestPosts posts={blogPages} currentPostId={id} />
-            <LatestPosts posts={blogPages} currentPostId={id} />
-          </section>
+        <div class="position-sticky" style="top: 96px;">
+          <LatestPosts posts={blogPages} currentPostId={id} />
         </div>
       </aside>
     </div>

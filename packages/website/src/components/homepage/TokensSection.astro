@@ -1,28 +1,31 @@
 ---
-import FeatureItem from '@components/FeatureItem.astro'
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 import FeatureSlider from '@components/FeatureSlider.astro'
 import Code from '@shortcodes/Code.astro'
+import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
 ---
 
-<section id="tokens-section" class="home-section">
+<section id="tokens-section" class="home-section py-3xlarge py-medium-6xlarge">
   <div class="container-2xlarge section-content">
-    <div class="row">
-      <div class="section-header col col-large-10 col-xlarge-8">
-        <p class="module-title">Chassis Tokens</p>
-        <h2 class="section-title">
+    <div class="row mb-3xlarge mb-medium-6xlarge">
+      <div class="section-header col col-large-10 col-2xlarge-8">
+        <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Tokens</p>
+        <h2 class="font-5xlarge mb-xsmall mb-medium-small mb-large-medium">
           <span class="font-normal d-block">Enterprise-Grade</span> Token Management
         </h2>
-        <p class="section-body">
+        <p class="font-lead m-0">
           Chassis provides robust token architecture to manage themes, colors, spacing, and
           typography at scale. Define, transform, and sync tokens across mobile, web, embedded, and
           headless platforms.
         </p>
       </div>
     </div>
-    <div class="section-features">
+    <div
+      class="section-features gap-xlarge flex-column flex-medium-row mb-medium mb-medium-6xlarge"
+    >
       <FeatureSlider>
         <!-- Item -->
-        <FeatureItem icon="cx-folder-tree" className="swiper-slide">
+        <FeatureCard icon="cx-folder-tree" classes="swiper-slide" horizontal>
           <Fragment slot="title">Centralized token definitions</Fragment>
           <Fragment slot="body">
             Create and manage design tokens directly in Figma using Variables. Sync changes
@@ -33,9 +36,9 @@ import Code from '@shortcodes/Code.astro'
             alt="Visual representation of centralized token definitions in Figma"
             class="image-fluid w-100"
           />
-        </FeatureItem>
+        </FeatureCard>
         <!-- Item -->
-        <FeatureItem icon="cx-link" className="swiper-slide">
+        <FeatureCard icon="cx-link" classes="swiper-slide" horizontal>
           <Fragment slot="title">Intelligent references</Fragment>
           <Fragment slot="body">
             Build tokens that reference other tokens, enabling cascading updates across your entire
@@ -46,35 +49,37 @@ import Code from '@shortcodes/Code.astro'
             alt="Diagram showing token reference relationships and cascading updates"
             class="image-fluid w-100"
           />
-        </FeatureItem>
+        </FeatureCard>
         <!-- Item -->
-        <FeatureItem icon="cx-shapes" className="swiper-slide">
+        <FeatureCard icon="cx-shapes" classes="swiper-slide" horizontal>
           <Fragment slot="title">Cross-platform transformation</Fragment>
           <Fragment slot="body">
             Convert tokens automatically for different platforms while preserving relationships and
             hierarchy
           </Fragment>
-          <Code
-            lang="scss"
-            code={`// dist/tokens/web/app-a/brand-a/
+          <div class="pt-medium border-top border-subtle">
+            <Code
+              lang="scss"
+              code={`// dist/tokens/web/app-a/brand-a/main.scss
 $cx-color-button: #000000`}
-          />
-          <Code
-            lang="swift"
-            code={`// dist/tokens/ios/app-a/brand-a/
+            />
+            <Code
+              lang="swift"
+              code={`// dist/tokens/ios/app-a/brand-a/main.swift
 @objc public static let CxColorButton = UIColor(red: 1.000, green: 1.000, blue: 1.000, alpha: 0.9)`}
-          />
-          <Code
-            lang="xml"
-            code={`<!-- dist/tokens/android/app-a/brand-a/ -->
+            />
+            <Code
+              lang="xml"
+              code={`<!-- dist/tokens/android/app-a/brand-a/main.xml -->
 <color name="cx_color_button">#ffffffff</color>`}
-          />
-        </FeatureItem>
+            />
+          </div>
+        </FeatureCard>
       </FeatureSlider>
     </div>
-  </div>
-  <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
-    <a href="/tokens/" class="button primary large">Go to Chassis Tokens</a>
-    <a href="/tokens/docs/" class="button default large">View Documentation</a>
+    <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
+      <a href="/tokens/" class="button primary large">Go to Chassis Tokens</a>
+      <a href="/tokens/docs/" class="button default large">View Documentation</a>
+    </div>
   </div>
 </section>

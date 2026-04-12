@@ -1,27 +1,31 @@
 ---
-import FeatureItem from '@components/FeatureItem.astro'
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 import FeatureSlider from '@components/FeatureSlider.astro'
 import Code from '@shortcodes/Code.astro'
 import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
 ---
 
-<section id="tokens-section" class="home-section">
+<section id="figma-section" class="home-section py-3xlarge py-medium-6xlarge">
   <div class="container-2xlarge section-content">
-    <div class="section-header col col-large-10 col-xlarge-8">
-      <p class="module-title">Chassis Tokens</p>
-      <h2 class="section-title">
-        <span class="font-normal d-block">Design for the Future</span> in Modularity
-      </h2>
-      <p class="section-body">
-        Chassis brings a modular, token-first approach to designing in Figma — built to scale and
-        adapt over time. Every component is powered by tokens for color, spacing, typography, and
-        sizing, ensuring future-proof flexibility across brands and platforms.
-      </p>
+    <div class="row mb-3xlarge mb-medium-6xlarge">
+      <div class="section-header col col-large-10 col-2xlarge-8">
+        <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Figma</p>
+        <h2 class="font-5xlarge mb-xsmall mb-medium-small mb-large-medium">
+          <span class="font-normal d-block">Design for the Future</span> in Modularity
+        </h2>
+        <p class="font-lead m-0">
+          Chassis brings a modular, token-first approach to designing in Figma — built to scale and
+          adapt over time. Every component is powered by tokens for color, spacing, typography, and
+          sizing, ensuring future-proof flexibility across brands and platforms.
+        </p>
+      </div>
     </div>
-    <div class="section-features">
+    <div
+      class="section-features gap-xlarge flex-column flex-medium-row mb-medium mb-medium-6xlarge"
+    >
       <FeatureSlider>
         <!-- Item -->
-        <FeatureItem icon="cx-swatchbook" className="swiper-slide">
+        <FeatureCard icon="cx-swatchbook" classes="swiper-slide" horizontal>
           <Fragment slot="title">Token-driven components</Fragment>
           <Fragment slot="body">
             Every color, spacing value, and type style in the library comes from the token system.
@@ -29,16 +33,16 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
           <ResponsiveImage
             imgPath="/static/images/home/figma-docs-light.png"
             alt="Chassis UI"
-            classes="image-fluid w-100 display-light"
+            classes="image-fluid w-100 visible-light shadow-large"
           />
           <ResponsiveImage
             imgPath="/static/images/home/figma-docs-dark.png"
             alt="Chassis UI"
-            classes="image-fluid w-100 display-dark"
+            classes="image-fluid w-100 visible-dark shadow-large"
           />
-        </FeatureItem>
+        </FeatureCard>
         <!-- Item -->
-        <FeatureItem icon="cx-compass-drafting" className="swiper-slide">
+        <FeatureCard icon="cx-compass-drafting" classes="swiper-slide" horizontal>
           <Fragment slot="title">Consistent design language</Fragment>
           <Fragment slot="body">
             Spacing, typography, and color scales match exactly across Figma and production code.
@@ -46,16 +50,16 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
           <ResponsiveImage
             imgPath="/static/images/home/figma-docs-light.png"
             alt="Example of consistent design language across Figma and code"
-            classes="image-fluid w-100 display-light"
+            classes="image-fluid w-100 visible-light shadow-large"
           />
           <ResponsiveImage
             imgPath="/static/images/home/figma-docs-dark.png"
             alt="Example of consistent design language across Figma and code"
-            classes="image-fluid w-100 display-dark"
+            classes="image-fluid w-100 visible-dark shadow-large"
           />
-        </FeatureItem>
+        </FeatureCard>
         <!-- Item -->
-        <FeatureItem icon="cx-rectangles-mixed" className="swiper-slide">
+        <FeatureCard icon="cx-rectangles-mixed" classes="swiper-slide" horizontal>
           <Fragment slot="title">Scalable component architecture</Fragment>
           <Fragment slot="body">
             Components are structured to support multiple brands and themes without duplicating
@@ -64,19 +68,19 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
           <ResponsiveImage
             imgPath="/static/images/home/figma-docs-light.png"
             alt="Scalable component architecture supporting multiple brands and themes"
-            classes="image-fluid w-100 display-light"
+            classes="image-fluid w-100 visible-light shadow-large"
           />
           <ResponsiveImage
             imgPath="/static/images/home/figma-docs-dark.png"
             alt="Scalable component architecture supporting multiple brands and themes"
-            classes="image-fluid w-100 display-dark"
+            classes="image-fluid w-100 visible-dark shadow-large"
           />
-        </FeatureItem>
+        </FeatureCard>
       </FeatureSlider>
     </div>
-  </div>
-  <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
-    <a href="/figma/" class="button primary large">Go to Chassis Figma</a>
-    <a href="/figma/docs/" class="button default large">View Documentation</a>
+    <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
+      <a href="/figma/" class="button primary large">Go to Chassis Figma</a>
+      <a href="/figma/docs/" class="button default large">View Documentation</a>
+    </div>
   </div>
 </section>

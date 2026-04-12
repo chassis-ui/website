@@ -19,7 +19,7 @@ function getBlogPostUrl(post: any): string {
 }
 ---
 
-<div class="latest-posts">
+<div class="bg-even p-medium rounded-large mb-medium">
   <h4>Latest Posts</h4>
   <ul class="list-group list-plain">
     {
@@ -32,10 +32,10 @@ function getBlogPostUrl(post: any): string {
         )
         .slice(0, 5) // Show latest 5 posts
         .map((post: any) => (
-          <li class="list-item">
+          <li class="list-item bg-even py-small">
             <a href={getBlogPostUrl(post)} class="fg-main text-decoration-none">
               <article>
-                <h5 class="font-medium">{post.data.title}</h5>
+                <h5 class="font-medium mb-0">{post.data.title}</h5>
                 <time datetime={post.data.pubDate!.toISOString()}>
                   {post.data.pubDate!.toLocaleDateString('en-US', {
                     year: 'numeric',

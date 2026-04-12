@@ -63,9 +63,7 @@ class HomeAnimations {
   }
 
   setupAnimations() {
-    const sections = gsap.utils.toArray(
-      '.home-section:not(.hero-section):not(#gallery-section):not(#figma-section)'
-    )
+    const sections = gsap.utils.toArray('.home-section:not(.hero-section):not(#gallery-section)')
 
     if (sections.length === 0) {
       console.warn('No home sections found for animation')

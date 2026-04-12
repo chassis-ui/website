@@ -1,27 +1,31 @@
 ---
-import FeatureItem from '@components/FeatureItem.astro'
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 import FeatureSlider from '@components/FeatureSlider.astro'
 import Code from '@shortcodes/Code.astro'
 import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
 ---
 
-<section id="icons-section" class="home-section">
+<section id="icons-section" class="home-section py-3xlarge py-medium-6xlarge">
   <div class="container-2xlarge section-content">
-    <div class="section-header col col-large-10 col-xlarge-8">
-      <p class="module-title">Chassis Icons</p>
-      <h2 class="section-title">
-        <span class="font-normal d-block">Icons that ship</span> with your system.
-      </h2>
-      <p class="section-body">
-        Icon libraries tend to grow organically — different naming conventions, inconsistent sizing,
-        no clear ownership. Chassis Icons gives you a structured way to create, name, and distribute
-        icons that stay consistent across design tools and codebases.
-      </p>
+    <div class="row mb-3xlarge mb-medium-6xlarge">
+      <div class="section-header col col-large-10 col-2xlarge-8">
+        <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Icons</p>
+        <h2 class="font-5xlarge mb-xsmall mb-medium-small mb-large-medium">
+          <span class="font-normal d-block">Icons that ship</span> with your system.
+        </h2>
+        <p class="font-lead m-0">
+          Icon libraries tend to grow organically — different naming conventions, inconsistent
+          sizing, no clear ownership. Chassis Icons gives you a structured way to create, name, and
+          distribute icons that stay consistent across design tools and codebases.
+        </p>
+      </div>
     </div>
-    <div class="section-features">
+    <div
+      class="section-features gap-xlarge flex-column flex-medium-row mb-medium mb-medium-6xlarge"
+    >
       <FeatureSlider>
         <!-- Item 1: Structured icon library -->
-        <FeatureItem icon="cx-book" className="swiper-slide">
+        <FeatureCard icon="cx-book" classes="swiper-slide" horizontal>
           <Fragment slot="title">Structured icon library</Fragment>
           <Fragment slot="body">
             A clear system for organizing icons by category, size, and variant — so every icon has a
@@ -31,25 +35,26 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
           <img
             src="/static/images/home/icon-library-light.svg"
             alt="Structured icon library"
-            class="image-fluid w-100 display-light"
+            class="image-fluid w-100 visible-light"
           />
           <img
             src="/static/images/home/icon-library-dark.svg"
             alt="Structured icon library"
-            class="image-fluid w-100 display-dark"
+            class="image-fluid w-100 visible-dark"
           />
-        </FeatureItem>
+        </FeatureCard>
 
         <!-- Item 2: Easy team distribution -->
-        <FeatureItem icon="cx-folders" className="swiper-slide">
+        <FeatureCard icon="cx-folders" classes="swiper-slide" horizontal>
           <Fragment slot="title">Easy team distribution</Fragment>
           <Fragment slot="body">
             Distribute icons as a versioned package. Every team gets the same set, with the same
             names, at the same version.
           </Fragment>
-          <Code
-            lang="text"
-            code={`dist/
+          <div class="pt-medium border-top border-subtle">
+            <Code
+              lang="text"
+              code={`dist/
 ├── icons/
 │   ├── chassis-icons.css
 │   ├── chassis-icons.scss
@@ -60,40 +65,44 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
     ├── icon-file.svg
     ├── icon-file.svg
     └── ...`}
-          />
-        </FeatureItem>
+            />
+          </div>
+        </FeatureCard>
 
         <!-- Item 3: Design-to-code compatibility -->
-        <FeatureItem icon="cx-laptop-code" className="swiper-slide">
+        <FeatureCard icon="cx-laptop-code" classes="swiper-slide" horizontal>
           <Fragment slot="title">Design-to-code compatibility</Fragment>
           <Fragment slot="body">
             Icons flow from design tools into code as optimized SVGs with consistent markup. No
             manual cleanup needed.
           </Fragment>
-          <div>
+          <div class="pt-medium border-top border-subtle">
             <Code
               lang="html"
               code={`@import "icons/chassis-icons.svg"
 @import "icons/chassis-icons.css
 ---
+
 <svg><use xlink:href="#info-circle-solid"/></svg>
 
 <img src="/svgs/info-circle-solid.svg" alt="Info" width="24" height="24">
 
 <span class="icon-info-circle-solid"></span>`}
             />
-            <div class="d-flex gap-medium align-items-center justify-content-center">
-              <span class="icon icon-cx-circle-info"></span>
-              <span class="icon icon-cx-circle-info"></span>
-              <span class="icon icon-cx-circle-info"></span>
+            <div
+              class="icon-default pt-xlarge mt-medium border-top border-subtle d-flex gap-medium align-items-center justify-content-center"
+            >
+              <span class="icon icon-info-circle-solid"></span>
+              <span class="icon icon-info-circle-solid"></span>
+              <span class="icon icon-info-circle-solid"></span>
             </div>
           </div>
-        </FeatureItem>
+        </FeatureCard>
       </FeatureSlider>
     </div>
-  </div>
-  <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
-    <a href="/icons/" class="button primary large">Go to Chassis Icons</a>
-    <a href="/icons/docs/" class="button default large">View Documentation</a>
+    <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
+      <a href="/icons/" class="button primary large">Go to Chassis Icons</a>
+      <a href="/icons/docs/" class="button default large">View Documentation</a>
+    </div>
   </div>
 </section>

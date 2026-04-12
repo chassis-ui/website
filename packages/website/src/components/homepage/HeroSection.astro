@@ -2,15 +2,15 @@
 import ModuleItem from '@components/ModuleItem.astro'
 ---
 
-<section id="hero-section" class="home-section hero-section">
-  <div class="container-2xlarge section-content">
-    <div class="row py-6xlarge">
+<section id="hero-section" class="home-section py-3xlarge py-medium-6xlarge">
+  <div class="container-2xlarge section-content py-3xlarge py-medium-6xlarge">
+    <div class="row py-3xlarge py-medium-6xlarge">
       <div class="section-header text-center col col-large-10 offset-large-1">
-        <h1 class="hero-title">
+        <h1 class="font-hero">
           <span class="font-normal">Build Better Design Systems.</span>
           <span class="text-nowrap">In Sync, At Scale.</span>
         </h1>
-        <p class="hero-body">
+        <p class="font-lead">
           Chassis is the backbone of scalable design systems built for complex, evolving product
           ecosystems. It unifies Figma components, advanced design tokens, multi-platform
           transformers, asset libraries, and a fully token-synced CSS framework — all working in
@@ -18,7 +18,7 @@ import ModuleItem from '@components/ModuleItem.astro'
         </p>
       </div>
     </div>
-    <div class="section-features align-content-stretch">
+    <div class="section-features d-flex flex-column flex-medium-row align-content-stretch">
       <ModuleItem icon="cx-figma" title="Figma Components" url="/figma" />
       <ModuleItem icon="cx-swatchbook" title="Token Library" url="/tokens" />
       <ModuleItem icon="cx-css3" title="CSS Framework" url="/css" />
