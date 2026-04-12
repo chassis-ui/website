@@ -2,8 +2,8 @@
 title: Chassis Tokens
 description: Comprehensive design token system for multi-platform theming and asset generation.
 toc: true
-
 ---
+
 import { getConfig } from '@libs/config'
 
 ## Overview
@@ -11,6 +11,7 @@ import { getConfig } from '@libs/config'
 Chassis Tokens is a design token system built with **Tokens Studio** that ensures visual consistency across web, mobile, and other platforms. Instead of hardcoding colors, typography, spacing, and other design values throughout your codebase, tokens allow you to define these values once and reference them everywhere.
 
 **Why use design tokens?**
+
 - **Single source of truth**: Update your entire design system by changing one value
 - **Consistency**: Ensure designers and developers use the same values across all platforms
 - **Scalability**: Easily add new platforms, themes, or brand variations
@@ -43,20 +44,21 @@ Chassis Tokens are organized into **3 main collections**, each serving a distinc
 The **Brand Collection** contains the foundational tokens that define your brand's visual identity. These are the base values that inform all other tokens in the system.
 
 **What it includes:**
+
 - **Colors**: Brand color palette (primary, secondary, accent colors, neutrals)
 - **Typography**: Font families, font sizes, font weights, and line heights
 - **Spacing**: Margin and padding scale
 - **Sizing**: Width and height values
 - **Border Styles**: Border radius, border width
 
-**Key concept**: Brand tokens are typically *not used directly* in components. Instead, they serve as the source values referenced by tokens in higher layers. This separation ensures you can change your color palette or typography in one place, and all dependent tokens automatically update.
+**Key concept**: Brand tokens are typically _not used directly_ in components. Instead, they serve as the source values referenced by tokens in higher layers. This separation ensures you can change your color palette or typography in one place, and all dependent tokens automatically update.
 
 #### Brand Modes
 
 Brand Modes represent different brand identities (Brand A, Brand B, Brand C, etc.). Each mode contains the complete color palette for that brand across all theme variations.
 
-**How it works:**
-Within each brand mode, tokens include both light and dark theme colors. For example, Brand A mode contains:
+**How it works:** Within each brand mode, tokens include both light and dark theme colors. For example, Brand A mode contains:
+
 - `color.base.palette.light.primary.base` - Primary color for light theme
 - `color.base.palette.dark.primary.base` - Primary color for dark theme
 - `color.base.palette.light.neutral.50` - Light neutral for light theme
@@ -69,18 +71,20 @@ This structure allows you to **switch brands independently** from theme selectio
 The **Theme Collection** contains semantic tokens organized by theme modes (light, dark, high contrast, etc.). These tokens represent how brand colors should be applied in different visual contexts, independent of which brand is selected.
 
 **Purpose:**
+
 - Create semantic token names that map to different brand colors based on theme mode
 - Enable seamless theme switching without changing brand identity
 - Provide a stable interface that works with any brand
 
-**Relationship to Brand Collection:**
-Each token in the Theme Collection *must reference* tokens in the Brand Collection based on the active theme mode. Tokens are defined separately for each theme mode, and they reference the corresponding brand mode colors:
+**Relationship to Brand Collection:** Each token in the Theme Collection _must reference_ tokens in the Brand Collection based on the active theme mode. Tokens are defined separately for each theme mode, and they reference the corresponding brand mode colors:
 
 **Light Mode** example:
+
 - `color.palette.primary.base-color` → references `color.base.palette.light.primary.base`
 - `color.context.primary.fg-main` → references `color.base.context.light.primary.60`
 
 **Dark Mode** example:
+
 - `color.palette.primary.base-color` → references `color.base.palette.dark.primary.base`
 - `color.context.primary.fg-main` → references `color.base.context.dark.primary.60`
 
@@ -91,29 +95,34 @@ This architecture allows you to **switch both brands and themes independently**.
 The **App Collection** contains tokens specifically designed for use in components and application interfaces. These are the tokens you'll reference when building UI components and layouts.
 
 **What it includes:**
+
 - **Component colors**: Button colors, text colors, border colors, background colors
 - **Component spacing**: Padding for buttons, gaps between elements, component margins
 - **Component sizing**: Icon sizes, button heights, component dimensions
 - **Other semantically-named tokens**: e.g., `color.success`, `color.error`, `color.warning`
 
 **How it references other collections:**
+
 - **Semantic tokens** (e.g., `color.success`) typically reference theme collection tokens
 - This ensures components automatically adapt when you switch themes
 - Some tokens may directly reference brand collection for values that don't change across themes (like brand accent colors)
 
 **Example Chain:**
 
-*Light mode, Brand A:*
+_Light mode, Brand A:_
+
 ```
 button.primary.background → color.palette.primary → color.base.palette.light.primary (Brand A) → #0066FF
 ```
 
-*Dark mode, Brand A:*
+_Dark mode, Brand A:_
+
 ```
 button.primary.background → color.palette.primary → color.base.palette.dark.primary (Brand A) → #4D99FF
 ```
 
-*Light mode, Brand B:*
+_Light mode, Brand B:_
+
 ```
 button.primary.background → color.palette.primary → color.base.palette.light.primary (Brand B) → #FF6600
 ```
@@ -127,6 +136,7 @@ When you switch themes or brands in Figma, the entire chain updates automaticall
 ### What is Tokens Studio?
 
 Tokens Studio is a comprehensive platform for:
+
 - **Creating and managing** design tokens visually
 - **Syncing tokens** between Figma and your codebase
 - **Generating outputs** for multiple platforms (CSS, JSON, Sass, iOS, Android, etc.)
@@ -145,6 +155,7 @@ Chassis Tokens leverages Tokens Studio to:
 ### Tokens Studio in Figma
 
 When working with Chassis Tokens in Figma:
+
 - Open the **Tokens Studio plugin** in your design file
 - Browse tokens organized by collection and type
 - Apply tokens to design elements (colors, typography, spacing)
@@ -160,6 +171,7 @@ Chassis Tokens uses **Figma Variables** as the source of truth for design tokens
 ### What are Figma Variables?
 
 Figma Variables are design values that can be:
+
 - **Created and edited** directly in Figma
 - **Applied** to design elements (colors, typography, spacing, etc.)
 - **Organized** into collections and groups
@@ -169,14 +181,12 @@ Figma Variables are design values that can be:
 ### How Figma Variables Map to Chassis Collections
 
 <CxTable>
-| Figma Variables | Chassis Tokens |
-|---|---|
-| Variable Collection | Token Collection (Brand, Theme, App) |
-| Variable Group | Token Group (e.g., color, typography) |
-| Variable Name | Token Name (e.g., `primary`, `heading-xl`) |
-| Variable Modes (Brand) | Brand Modes (Brand A, Brand B, etc.) |
-| Variable Modes (Theme) | Theme Modes (light, dark, etc.) |
-| Variable Value | Token Value (e.g., `#0066FF`) |
+  | Figma Variables | Chassis Tokens | |---|---| | Variable Collection | Token
+  Collection (Brand, Theme, App) | | Variable Group | Token Group (e.g., color,
+  typography) | | Variable Name | Token Name (e.g., `primary`, `heading-xl`) | |
+  Variable Modes (Brand) | Brand Modes (Brand A, Brand B, etc.) | | Variable
+  Modes (Theme) | Theme Modes (light, dark, etc.) | | Variable Value | Token
+  Value (e.g., `#0066FF`) |
 </CxTable>
 
 ### Workflow: Designers to Developers
@@ -206,16 +216,19 @@ Figma Variables are design values that can be:
 When a token references another token (e.g., `color.palette.primary` → `color.base.palette.light.primary`), Figma Variables automatically resolve these relationships based on the active brand and theme modes:
 
 **Brand A, Light Mode:**
+
 ```
 App Token: color.success → Theme Token: color.palette.success → Brand Token: color.base.palette.light.green (Brand A) → #22C55E
 ```
 
 **Brand A, Dark Mode (same token, different theme mode):**
+
 ```
 App Token: color.success → Theme Token: color.palette.success → Brand Token: color.base.palette.dark.green (Brand A) → #15803D
 ```
 
 **Brand B, Light Mode (same token, different brand mode):**
+
 ```
 App Token: color.success → Theme Token: color.palette.success → Brand Token: color.base.palette.light.green (Brand B) → #20A74A
 ```
@@ -231,6 +244,7 @@ Chassis Tokens follow a hierarchical naming structure to ensure consistency and 
 ```
 
 **Examples:**
+
 - `color.brand.primary` - Primary brand color
 - `color.theme.surface` - Themed surface color
 - `color.app.button.primary` - Button primary color
@@ -238,6 +252,7 @@ Chassis Tokens follow a hierarchical naming structure to ensure consistency and 
 - `typography.app.body.regular` - Body text regular weight
 
 **Conventions:**
+
 - Use **lowercase** with dots as separators
 - Use **descriptive names** (prefer `primary` over `color1`)
 - Avoid **overly nested** names (max 4-5 levels)
@@ -246,18 +261,21 @@ Chassis Tokens follow a hierarchical naming structure to ensure consistency and 
 ## Best Practices
 
 ### For Designers
+
 1. **Use Tokens Studio in Figma** to apply variables to design elements
 2. **Keep the token structure clean** - don't create unnecessary tokens
 3. **Use modes** instead of creating duplicate tokens for different themes
 4. **Communicate changes** with developers when updating tokens
 
 ### For Developers
+
 1. **Reference App Collection tokens** in component code
 2. **Avoid hardcoding** values - always use tokens
 3. **Understand token relationships** to debug theme switching issues
 4. **Keep generated outputs updated** after design changes
 
 ### For Both
+
 1. **Use consistent naming** across collections
 2. **Document custom tokens** if you create them
 3. **Review token changes** before merging to production

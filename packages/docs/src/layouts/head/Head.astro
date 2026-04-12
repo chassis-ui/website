@@ -1,4 +1,10 @@
 ---
+/**
+ * Head
+ *
+ * HTML head section with meta tags, stylesheets, and SEO configuration.
+ */
+
 import { getConfig } from '@libs/config'
 import type { Layout } from '../../libs/layout'
 import Stylesheet from './Stylesheet.astro'
@@ -8,11 +14,17 @@ import Analytics from './Analytics.astro'
 import '@scss/docs.scss'
 
 interface Props {
+  /** Page description for meta tags */
   description: string
+  /** Text direction (for RTL languages) */
   direction?: 'rtl'
+  /** Current layout context */
   layout: Layout
+  /** Robots meta tag value */
   robots: string | undefined
+  /** Social media thumbnail image */
   thumbnail: string
+  /** Page title */
   title: string
 }
 

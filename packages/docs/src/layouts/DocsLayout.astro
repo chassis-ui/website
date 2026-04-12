@@ -1,4 +1,10 @@
 ---
+/**
+ * Docs Layout
+ *
+ * Layout for documentation pages with sidebar navigation and table of contents.
+ */
+
 import type { MarkdownHeading } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 import { getConfig } from '@libs/config'
@@ -10,8 +16,11 @@ import DocsSidebar from '../components/DocsSidebar.astro'
 import TableOfContents from '../components/TableOfContents.astro'
 
 interface Props {
+  /** Frontmatter data from the docs collection */
   frontmatter: CollectionEntry<'docs'>['data']
+  /** Markdown headings for table of contents */
   headings?: MarkdownHeading[]
+  /** Document ID from the docs collection */
   id: CollectionEntry<'docs'>['id']
 }
 

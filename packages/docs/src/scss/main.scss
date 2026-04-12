@@ -57,7 +57,7 @@
   overflow: hidden;
 }
 
-.section-content:has(.gallery-image) {
+.section-content:has(.gallery-image) > div {
   height: var(--gallery-image-height, 256px);
   border: var(--#{$prefix}border-width-medium) solid var(--#{$prefix}bg-evident);
 }
@@ -65,6 +65,10 @@
 .gallery-image {
   display: flex;
   align-items: center;
+
+  @include media-breakpoint-down(medium) {
+    margin-top: -25%;
+  }
 
   > img {
     vertical-align: middle;

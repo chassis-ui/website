@@ -19,10 +19,10 @@ sections:
   - title: AI Integration
     description: AI-assisted design in Figma using Chassis Components.
 aliases:
- - "/getting-started"
- - "[[docsref:/getting-started]]"
-
+  - '/getting-started'
+  - '[[docsref:/getting-started]]'
 ---
+
 import { getConfig } from '@libs/config'
 
 ## Overview
@@ -49,7 +49,10 @@ Chassis Tokens uses a robust build system to transform design tokens (from JSON 
 pnpm tokens --brand=chassis --theme=light --app=docs --screen=large
 ```
 
-<Code lang="sh" code={`pnpm tokens --brand=chassis --theme=light --app=docs --screen=large`} />
+<Code
+  lang="sh"
+  code={`pnpm tokens --brand=chassis --theme=light --app=docs --screen=large`}
+/>
 
 ### Task Generation
 
@@ -65,16 +68,11 @@ pnpm tokens --brand=chassis --theme=light --app=docs --screen=large
 
 ### Transformation Steps
 
-1. **Preprocessing**
-   Custom preprocessors (e.g., `cx/global`) can modify tokens before transformation.
-2. **Filtering**
-   Only relevant tokens for the current brand/theme/app/screen are included.
-3. **Transforms**
-   Custom and standard transforms (e.g., color conversion, size scaling) are applied.
-4. **Formatting**
-   Output files are generated in the required format (SCSS variables, CSS custom properties, Swift, XML, etc.).
-5. **File Headers**
-   Each output file includes a standard header with version and license info.
+1. **Preprocessing** Custom preprocessors (e.g., `cx/global`) can modify tokens before transformation.
+2. **Filtering** Only relevant tokens for the current brand/theme/app/screen are included.
+3. **Transforms** Custom and standard transforms (e.g., color conversion, size scaling) are applied.
+4. **Formatting** Output files are generated in the required format (SCSS variables, CSS custom properties, Swift, XML, etc.).
+5. **File Headers** Each output file includes a standard header with version and license info.
 
 ### Output
 
@@ -113,10 +111,8 @@ sdjf alskjdfhl askjdflas
 
 ### CLI Usage
 
-- **Build all tokens:**
-  `pnpm tokens`
-- **Build for a specific brand/theme/app/screen:**
-  `pnpm tokens --brand=chassis --theme=dark --app=docs --screen=large`
+- **Build all tokens:** `pnpm tokens`
+- **Build for a specific brand/theme/app/screen:** `pnpm tokens --brand=chassis --theme=dark --app=docs --screen=large`
 
 ### Extending the System
 

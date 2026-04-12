@@ -1,10 +1,16 @@
 ---
-import ModuleItem from '@components/ModuleItem.astro'
+/**
+ * Hero Section
+ *
+ * Homepage hero section with main heading and module navigation links.
+ */
+
+import ModuleLink from '@components/ModuleLink.astro'
 ---
 
 <section id="hero-section" class="home-section py-3xlarge py-medium-6xlarge">
-  <div class="container-2xlarge section-content py-3xlarge py-medium-6xlarge">
-    <div class="row py-3xlarge py-medium-6xlarge">
+  <div class="container-2xlarge section-content">
+    <div class="row mb-3xlarge mb-medium-6xlarge py-medium-6xlarge">
       <div class="section-header text-center col col-large-10 offset-large-1">
         <h1 class="font-hero">
           <span class="font-normal">Build Better Design Systems.</span>
@@ -19,11 +25,11 @@ import ModuleItem from '@components/ModuleItem.astro'
       </div>
     </div>
     <div class="section-features d-flex flex-column flex-medium-row align-content-stretch">
-      <ModuleItem icon="cx-figma" title="Figma Components" url="/figma" />
-      <ModuleItem icon="cx-swatchbook" title="Token Library" url="/tokens" />
-      <ModuleItem icon="cx-css3" title="CSS Framework" url="/css" />
-      <ModuleItem icon="cx-icons" title="Icon Generator" url="/icons" />
-      <ModuleItem icon="cx-folder-tree" title="Asset Distributor" url="/assets" />
+      <ModuleLink icon="cx-figma" title="Figma Components" url="/figma" />
+      <ModuleLink icon="cx-swatchbook" title="Token Library" url="/tokens" />
+      <ModuleLink icon="cx-css3" title="CSS Framework" url="/css" />
+      <ModuleLink icon="cx-icons" title="Icon Generator" url="/icons" />
+      <ModuleLink icon="cx-folder-tree" title="Asset Distributor" url="/assets" />
     </div>
   </div>
 </section>

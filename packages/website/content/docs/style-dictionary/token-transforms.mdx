@@ -37,16 +37,11 @@ Chassis Tokens uses a robust build system to transform design tokens (from JSON 
 
 ## 4. Transformation Steps
 
-1. **Preprocessing**
-   Custom preprocessors (e.g., `cx/global`) can modify tokens before transformation.
-2. **Filtering**
-   Only relevant tokens for the current brand/theme/app/screen are included.
-3. **Transforms**
-   Custom and standard transforms (e.g., color conversion, size scaling) are applied.
-4. **Formatting**
-   Output files are generated in the required format (SCSS variables, CSS custom properties, Swift, XML, etc.).
-5. **File Headers**
-   Each output file includes a standard header with version and license info.
+1. **Preprocessing** Custom preprocessors (e.g., `cx/global`) can modify tokens before transformation.
+2. **Filtering** Only relevant tokens for the current brand/theme/app/screen are included.
+3. **Transforms** Custom and standard transforms (e.g., color conversion, size scaling) are applied.
+4. **Formatting** Output files are generated in the required format (SCSS variables, CSS custom properties, Swift, XML, etc.).
+5. **File Headers** Each output file includes a standard header with version and license info.
 
 ## 5. Output
 
@@ -73,10 +68,8 @@ Chassis Tokens uses a robust build system to transform design tokens (from JSON 
 
 ## 8. CLI Usage
 
-- **Build all tokens:**
-  `pnpm tokens`
-- **Build for a specific brand/theme/app/screen:**
-  `pnpm tokens --brand=chassis --theme=dark --app=docs --screen=large`
+- **Build all tokens:** `pnpm tokens`
+- **Build for a specific brand/theme/app/screen:** `pnpm tokens --brand=chassis --theme=dark --app=docs --screen=large`
 
 ## 9. Extending the System
 

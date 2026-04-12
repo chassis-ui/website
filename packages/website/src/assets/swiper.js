@@ -90,7 +90,7 @@ class FeatureSliders {
 
       const swiperInstance = new Swiper(swiperContainer, {
         slidesPerView: 'auto',
-        spaceBetween: parseFloat(gapValue) || 96,
+        spaceBetween: parseFloat(gapValue) || 24,
         speed: 500,
         initialSlide: 0,
         grabCursor: true,

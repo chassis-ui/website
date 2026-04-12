@@ -1,9 +1,12 @@
 ---
-import { getCalloutByName, type CalloutName } from '@libs/content'
-import { render } from 'astro:content'
-import type { MarkdownInstance } from 'astro'
+/**
+ * Blockquote
+ *
+ * Render a blockquote with optional attribution.
+ */
 
 interface Props {
+  /** Attribution text or HTML for the quote */
   attr?: String
 }
 

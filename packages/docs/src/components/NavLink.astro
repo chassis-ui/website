@@ -1,10 +1,22 @@
 ---
+/**
+ * Nav Link
+ *
+ * Navigation link component with active state support.
+ */
+
 interface Props {
+  /** Whether the link is currently active */
   active?: boolean
+  /** Additional CSS classes */
   class?: string
+  /** Link destination URL */
   href: string
+  /** Link relationship attribute */
   rel?: HTMLAnchorElement['rel']
+  /** Link target attribute */
   target?: HTMLAnchorElement['target']
+  /** Enable analytics tracking */
   track?: boolean
 }
 

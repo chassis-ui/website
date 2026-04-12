@@ -1,7 +1,16 @@
 ---
+/**
+ * Pagination
+ *
+ * Navigation component for paginated content like blog posts.
+ */
+
 export interface Props {
+  /** Page object containing pagination data */
   page: any
+  /** Base URL for pagination links */
   baseUrl: string
+  /** Accessible label for the navigation element */
   ariaLabel?: string
 }
 

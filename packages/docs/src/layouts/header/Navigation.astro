@@ -1,4 +1,10 @@
 ---
+/**
+ * Navigation
+ *
+ * Main site navigation bar with menu items and theme toggler.
+ */
+
 import { getConfig } from '@libs/config'
 import type { Layout } from '../../libs/layout'
 import NavLink from '../../components/NavLink.astro'
@@ -6,7 +12,9 @@ import ThemeToggler from '../../components/ThemeToggler.astro'
 import NavDocsMenu from '../../components/NavDocsMenu.astro'
 
 interface Props {
+  /** Current layout context */
   layout: Layout
+  /** Page title for the navbar */
   title: string
 }
 

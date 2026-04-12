@@ -1,4 +1,10 @@
 ---
+/**
+ * Social
+ *
+ * Social media meta tags (Open Graph, Twitter Cards).
+ */
+
 import path from 'node:path'
 import { getConfig } from '@libs/config'
 import { getDocsPublicFsPath } from '@libs/path'
@@ -6,9 +12,13 @@ import { getStaticImageSize } from '../../libs/image'
 import type { Layout } from '../../libs/layout'
 
 interface Props {
+  /** Page description */
   description: string
+  /** Current layout context */
   layout: Layout
+  /** Social media thumbnail image */
   thumbnail: string
+  /** Page title */
   title: string
 }
 

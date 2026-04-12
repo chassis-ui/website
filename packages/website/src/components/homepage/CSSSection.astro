@@ -1,8 +1,13 @@
 ---
+/**
+ * CSS Section
+ *
+ * Homepage section showcasing Chassis CSS framework features.
+ */
+
 import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 import FeatureSlider from '@components/FeatureSlider.astro'
 import Code from '@shortcodes/Code.astro'
-import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
 ---
 
 <section id="css-section" class="home-section py-3xlarge py-medium-6xlarge">
@@ -103,6 +108,31 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
               <h5 class="mb-0">Hello World!</h5>
               <p class="fg-subtle mb-0">I'm a demonstration of Chassis Styles</p>
             </div>
+          </div>
+        </FeatureCard>
+
+        <!-- Item 4: Responsive by design -->
+        <FeatureCard icon="cx-mobile-alt" classes="swiper-slide" horizontal>
+          <Fragment slot="title">Responsive by design</Fragment>
+          <Fragment slot="body">
+            Built-in responsive utilities that adapt to your breakpoints. Write once, work
+            everywhere.
+          </Fragment>
+          <div class="pt-medium border-top border-subtle">
+            <Code
+              lang="html"
+              code={`<!-- Responsive utilities -->
+<div class="d-flex flex-column flex-medium-row gap-small gap-large-medium">
+  <div class="col col-medium-6 p-medium p-large-large">
+    <h5 class="font-medium font-large-large mb-small">
+      Responsive Layout
+    </h5>
+    <p class="font-small font-large-medium mb-0">
+      Automatically adjusts spacing and typography
+    </p>
+  </div>
+</div>`}
+            />
           </div>
         </FeatureCard>
       </FeatureSlider>

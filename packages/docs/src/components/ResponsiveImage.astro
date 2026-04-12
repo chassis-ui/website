@@ -1,10 +1,22 @@
 ---
+/**
+ * Responsive Image
+ *
+ * Render responsive images with 1x and 2x resolution variants.
+ */
+
 interface Props {
+  /** Path to the image file */
   imgPath: string
+  /** Alternative text for the image */
   alt: string
+  /** Additional CSS classes */
   classes?: string
+  /** Enable lazy loading */
   lazyload?: boolean
+  /** Image width in pixels */
   width?: number
+  /** Image height in pixels */
   height?: number
 }
 
