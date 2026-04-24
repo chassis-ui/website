@@ -19,8 +19,9 @@ import Code from '@shortcodes/Code.astro'
           <span class="font-normal d-block">Asset Management</span> for Multi-Brand Design
         </h2>
         <p class="font-lead m-0">
-          Eliminate asset duplication and disorganization. Chassis lets you store, manage, and
-          distribute icons, logos, fonts, and illustrations across brands and platforms with ease.
+          Eliminate scattered assets and duplicated files. Chassis provides a single, structured
+          source to store, manage, and distribute images, icons, and fonts across all your brands
+          and platforms.
         </p>
       </header>
     </div>
@@ -30,7 +31,7 @@ import Code from '@shortcodes/Code.astro'
       <FeatureSlider>
         <!-- Item -->
         <FeatureCard icon="cx-number-one" classes="swiper-slide" horizontal>
-          <Fragment slot="title">Store Files</Fragment>
+          <Fragment slot="title">Store files</Fragment>
           <Fragment slot="body"
             >Organize brand- and app-specific assets in structured, predictable folders.
           </Fragment>
@@ -53,7 +54,7 @@ import Code from '@shortcodes/Code.astro'
         </FeatureCard>
         <!-- Item -->
         <FeatureCard icon="cx-number-two" classes="swiper-slide" horizontal>
-          <Fragment slot="title">Distribute Assets</Fragment>
+          <Fragment slot="title">Distribute assets</Fragment>
           <Fragment slot="body"
             >Automatically generate platform-optimized assets with a single script.
           </Fragment>
@@ -76,19 +77,19 @@ pnpm assets --brand chassis --app demo`}
         </FeatureCard>
         <!-- Item -->
         <FeatureCard icon="cx-number-three" classes="swiper-slide" horizontal>
-          <Fragment slot="title">Build Confidently</Fragment>
+          <Fragment slot="title">Ship confidently</Fragment>
           <Fragment slot="body"
-            >Build with assets that are clean, versioned, and deployment-ready.
+            >Output is organised per platform and brand — correctly named and ready to use.
           </Fragment>
           <div class="pt-medium border-top border-subtle">
             <Code
               lang="text"
               code={`dist/
-├── ios/chassis-demo/
+├── ios/demo/chassis/
 │   ├── brand_logo.svg
 │   ├── hero_img.png
 │   └── hero_img@2x.png
-└── android/chassis-demo/
+└── android/demo/chassis/
     ├── drawable/
     │   ├── brand_logo.svg
     │   └── hero_img.png

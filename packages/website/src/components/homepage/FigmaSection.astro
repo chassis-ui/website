@@ -16,12 +16,11 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
       <header class="section-header col col-large-10 col-2xlarge-8">
         <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Figma</p>
         <h2 class="font-5xlarge mb-xsmall mb-medium-small mb-large-medium">
-          <span class="font-normal d-block">Design for the Future</span> in Modularity
+          <span class="font-normal d-block">One Library for</span> Every Brand, Every App
         </h2>
         <p class="font-lead m-0">
-          Chassis brings a modular, token-first approach to designing in Figma — built to scale and
-          adapt over time. Every component is powered by tokens for color, spacing, typography, and
-          sizing, ensuring future-proof flexibility across brands and platforms.
+          A component library built entirely with design tokens. Swap brand, application, or color
+          mode by switching Figma variable collections. All components adapt automatically.
         </p>
       </header>
     </div>
@@ -31,9 +30,28 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
       <FeatureSlider>
         <!-- Item -->
         <FeatureCard icon="cx-swatchbook" classes="swiper-slide" horizontal>
-          <Fragment slot="title">Token-driven components</Fragment>
+          <Fragment slot="title">Contextual color system</Fragment>
           <Fragment slot="body">
-            Every color, spacing value, and type style in the library comes from the token system.
+            Colors are organised by role — text, backgrounds, icons, indicators, and more — each
+            with defined emphasis levels.
+          </Fragment>
+          <ResponsiveImage
+            imgPath="/static/images/home/figma-tokens-light.png"
+            alt="Scalable component architecture supporting multiple brands and themes"
+            classes="image-fluid w-100 visible-light shadow-large"
+          />
+          <ResponsiveImage
+            imgPath="/static/images/home/figma-tokens-dark.png"
+            alt="Scalable component architecture supporting multiple brands and themes"
+            classes="image-fluid w-100 visible-dark shadow-large"
+          />
+        </FeatureCard>
+        <!-- Item -->
+        <FeatureCard icon="cx-book-open-alt" classes="swiper-slide" horizontal>
+          <Fragment slot="title">Self-documented components</Fragment>
+          <Fragment slot="body">
+            Each component file includes a documentation page covering variants, props, specs, and
+            the design tokens it uses.
           </Fragment>
           <ResponsiveImage
             imgPath="/static/images/home/figma-docs-light.png"
@@ -50,34 +68,17 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
         <FeatureCard icon="cx-compass-drafting" classes="swiper-slide" horizontal>
           <Fragment slot="title">Consistent design language</Fragment>
           <Fragment slot="body">
-            Spacing, typography, and color scales match exactly across Figma and production code.
+            Spacing, typography, and color scales are shared between Figma and production code —
+            what you design is what gets built.
           </Fragment>
           <ResponsiveImage
-            imgPath="/static/images/home/figma-docs-light.png"
+            imgPath="/static/images/home/figma-library-light.png"
             alt="Example of consistent design language across Figma and code"
             classes="image-fluid w-100 visible-light shadow-large"
           />
           <ResponsiveImage
-            imgPath="/static/images/home/figma-docs-dark.png"
+            imgPath="/static/images/home/figma-library-dark.png"
             alt="Example of consistent design language across Figma and code"
-            classes="image-fluid w-100 visible-dark shadow-large"
-          />
-        </FeatureCard>
-        <!-- Item -->
-        <FeatureCard icon="cx-rectangles-mixed" classes="swiper-slide" horizontal>
-          <Fragment slot="title">Scalable component architecture</Fragment>
-          <Fragment slot="body">
-            Components are structured to support multiple brands and themes without duplicating
-            designs.
-          </Fragment>
-          <ResponsiveImage
-            imgPath="/static/images/home/figma-docs-light.png"
-            alt="Scalable component architecture supporting multiple brands and themes"
-            classes="image-fluid w-100 visible-light shadow-large"
-          />
-          <ResponsiveImage
-            imgPath="/static/images/home/figma-docs-dark.png"
-            alt="Scalable component architecture supporting multiple brands and themes"
             classes="image-fluid w-100 visible-dark shadow-large"
           />
         </FeatureCard>

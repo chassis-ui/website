@@ -19,10 +19,8 @@ import Code from '@shortcodes/Code.astro'
           <span class="font-normal d-block">Code with tokens,</span> not translation layers.
         </h2>
         <p class="font-lead m-0">
-          Design systems often require engineers to manually interpret design specs and translate
-          them into CSS. That translation introduces errors and creates maintenance overhead.
-          Chassis CSS generates its variables and utility classes directly from the token system, so
-          design decisions arrive in code already implemented.
+          Chassis CSS generates variables and utility classes directly from the design tokens — no
+          manual translation, no drift between design and code.
         </p>
       </header>
     </div>
@@ -61,8 +59,8 @@ import Code from '@shortcodes/Code.astro'
         <FeatureCard icon="cx-figma" classes="swiper-slide" horizontal>
           <Fragment slot="title">Perfectly align with Figma</Fragment>
           <Fragment slot="body">
-            Chassis CSS utility classes mirror Figma styles and variables for streamlined design to
-            code implementation.
+            Utility classes are named to match Figma styles and variables — there's no guesswork
+            translating a design spec into code.
           </Fragment>
           <div class="pt-medium border-top border-subtle">
             <Code
@@ -86,10 +84,10 @@ import Code from '@shortcodes/Code.astro'
 
         <!-- Item 3: Faster frontend development -->
         <FeatureCard icon="cx-code" classes="swiper-slide" horizontal>
-          <Fragment slot="title">Faster frontend development</Fragment>
+          <Fragment slot="title">Context-aware utility classes</Fragment>
           <Fragment slot="body">
-            Stop re-implementing design decisions. Use a framework that already speaks your design
-            system's language.
+            Use a CSS framework that already speaks your design system's language — no
+            re-implementing decisions that were already made.
           </Fragment>
           <div class="pt-medium border-top border-subtle">
             <Code
@@ -108,31 +106,6 @@ import Code from '@shortcodes/Code.astro'
               <h5 class="mb-0">Hello World!</h5>
               <p class="fg-subtle mb-0">I'm a demonstration of Chassis Styles</p>
             </div>
-          </div>
-        </FeatureCard>
-
-        <!-- Item 4: Responsive by design -->
-        <FeatureCard icon="cx-mobile-alt" classes="swiper-slide" horizontal>
-          <Fragment slot="title">Responsive by design</Fragment>
-          <Fragment slot="body">
-            Built-in responsive utilities that adapt to your breakpoints. Write once, work
-            everywhere.
-          </Fragment>
-          <div class="pt-medium border-top border-subtle">
-            <Code
-              lang="html"
-              code={`<!-- Responsive utilities -->
-<div class="d-flex flex-column flex-medium-row gap-small gap-large-medium">
-  <div class="col col-medium-6 p-medium p-large-large">
-    <h5 class="font-medium font-large-large mb-small">
-      Responsive Layout
-    </h5>
-    <p class="font-small font-large-medium mb-0">
-      Automatically adjusts spacing and typography
-    </p>
-  </div>
-</div>`}
-            />
           </div>
         </FeatureCard>
       </FeatureSlider>

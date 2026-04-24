@@ -53,8 +53,8 @@ import Code from '@shortcodes/Code.astro'
         <FeatureCard icon="cx-folders" classes="swiper-slide" horizontal>
           <Fragment slot="title">Easy team distribution</Fragment>
           <Fragment slot="body">
-            Distribute icons as a versioned package. Every team gets the same set, with the same
-            names, at the same version.
+            Package and distribute icons as a versioned release. Every team gets the same set, with
+            the same names, at the same version.
           </Fragment>
           <div class="pt-medium border-top border-subtle">
             <Code
@@ -76,7 +76,7 @@ import Code from '@shortcodes/Code.astro'
 
         <!-- Item 3: Design-to-code compatibility -->
         <FeatureCard icon="cx-laptop-code" classes="swiper-slide" horizontal>
-          <Fragment slot="title">Design-to-code compatibility</Fragment>
+          <Fragment slot="title">Multiple usage formats</Fragment>
           <Fragment slot="body">
             Icons flow from design tools into code as optimized SVGs with consistent markup. No
             manual cleanup needed.
@@ -101,33 +101,6 @@ import Code from '@shortcodes/Code.astro'
               <span class="icon icon-info-circle-solid"></span>
               <span class="icon icon-info-circle-solid"></span>
             </div>
-          </div>
-        </FeatureCard>
-
-        <!-- Item 4: Accessible by default -->
-        <FeatureCard icon="cx-universal-access" classes="swiper-slide" horizontal>
-          <Fragment slot="title">Accessible by default</Fragment>
-          <Fragment slot="body">
-            Icons include proper aria labels, semantic markup, and screen reader support out of the
-            box.
-          </Fragment>
-          <div class="pt-medium border-top border-subtle">
-            <Code
-              lang="html"
-              code={`<!-- Accessible icon usage -->
-<button aria-label="Close dialog">
-  <svg class="icon" aria-hidden="true">
-    <use xlink:href="#times-circle"/>
-  </svg>
-</button>
-
-<a href="/info" aria-label="More information">
-  <svg class="icon" role="img" aria-labelledby="info-title">
-    <title id="info-title">Information</title>
-    <use xlink:href="#info-circle"/>
-  </svg>
-</a>`}
-            />
           </div>
         </FeatureCard>
       </FeatureSlider>
