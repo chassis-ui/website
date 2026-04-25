@@ -6,9 +6,25 @@
     {
       "source": "/static/(.*)",
       "has": [
+        { "type": "header", "key": "host", "value": "staging.chassis-ui.com" },
+        { "type": "header", "key": "referer", "value": ".*/figma/.*" }
+      ],
+      "destination": "https://chassis-figma-staging.vercel.app/static/$1"
+    },
+    {
+      "source": "/static/(.*)",
+      "has": [
         { "type": "header", "key": "referer", "value": ".*/figma/.*" }
       ],
       "destination": "https://chassis-figma.vercel.app/static/$1"
+    },
+    {
+      "source": "/static/(.*)",
+      "has": [
+        { "type": "header", "key": "host", "value": "staging.chassis-ui.com" },
+        { "type": "header", "key": "referer", "value": ".*/css/.*" }
+      ],
+      "destination": "https://chassis-css-staging.vercel.app/static/$1"
     },
     {
       "source": "/static/(.*)",
@@ -20,9 +36,25 @@
     {
       "source": "/static/(.*)",
       "has": [
+        { "type": "header", "key": "host", "value": "staging.chassis-ui.com" },
+        { "type": "header", "key": "referer", "value": ".*/icons/.*" }
+      ],
+      "destination": "https://chassis-icons-staging.vercel.app/static/$1"
+    },
+    {
+      "source": "/static/(.*)",
+      "has": [
         { "type": "header", "key": "referer", "value": ".*/icons/.*" }
       ],
       "destination": "https://chassis-icons.vercel.app/static/$1"
+    },
+    {
+      "source": "/static/(.*)",
+      "has": [
+        { "type": "header", "key": "host", "value": "staging.chassis-ui.com" },
+        { "type": "header", "key": "referer", "value": ".*/tokens/.*" }
+      ],
+      "destination": "https://chassis-tokens-staging.vercel.app/static/$1"
     },
     {
       "source": "/static/(.*)",
@@ -34,12 +66,20 @@
     {
       "source": "/static/(.*)",
       "has": [
+        { "type": "header", "key": "host", "value": "staging.chassis-ui.com" },
+        { "type": "header", "key": "referer", "value": ".*/assets/.*" }
+      ],
+      "destination": "https://chassis-assets-staging.vercel.app/static/$1"
+    },
+    {
+      "source": "/static/(.*)",
+      "has": [
         { "type": "header", "key": "referer", "value": ".*/assets/.*" }
       ],
       "destination": "https://chassis-assets.vercel.app/static/$1"
     },
     {
-      "source": "/assets/:path*",
+      "source": "/assets/(.*)",
       "has": [
         {
           "type": "header",
@@ -47,14 +87,14 @@
           "value": "staging.chassis-ui.com"
         }
       ],
-      "destination": "https://chassis-assets-staging.vercel.app/assets/:path*"
+      "destination": "https://chassis-assets-staging.vercel.app/assets/$1"
     },
     {
-      "source": "/assets/:path*",
-      "destination": "https://chassis-assets.vercel.app/assets/:path*"
+      "source": "/assets/(.*)",
+      "destination": "https://chassis-assets.vercel.app/assets/$1"
     },
     {
-      "source": "/css/:path*",
+      "source": "/css/(.*)",
       "has": [
         {
           "type": "header",
@@ -62,14 +102,14 @@
           "value": "staging.chassis-ui.com"
         }
       ],
-      "destination": "https://chassis-css-staging.vercel.app/css/:path*"
+      "destination": "https://chassis-css-staging.vercel.app/css/$1"
     },
     {
-      "source": "/css/:path*",
-      "destination": "https://chassis-css.vercel.app/css/:path*"
+      "source": "/css/(.*)",
+      "destination": "https://chassis-css.vercel.app/css/$1"
     },
     {
-      "source": "/tokens/:path*",
+      "source": "/tokens/(.*)",
       "has": [
         {
           "type": "header",
@@ -77,11 +117,11 @@
           "value": "staging.chassis-ui.com"
         }
       ],
-      "destination": "https://chassis-tokens-staging.vercel.app/tokens/:path*"
+      "destination": "https://chassis-tokens-staging.vercel.app/tokens/$1"
     },
     {
-      "source": "/tokens/:path*",
-      "destination": "https://chassis-tokens.vercel.app/tokens/:path*"
+      "source": "/tokens/(.*)",
+      "destination": "https://chassis-tokens.vercel.app/tokens/$1"
     },
     {
       "source": "/figma/(.*)",
@@ -99,7 +139,7 @@
       "destination": "https://chassis-figma.vercel.app/figma/$1"
     },
     {
-      "source": "/icons/:path*",
+      "source": "/icons/(.*)",
       "has": [
         {
           "type": "header",
@@ -107,14 +147,14 @@
           "value": "staging.chassis-ui.com"
         }
       ],
-      "destination": "https://chassis-icons-staging.vercel.app/icons/:path*"
+      "destination": "https://chassis-icons-staging.vercel.app/icons/$1"
     },
     {
-      "source": "/icons/:path*",
-      "destination": "https://chassis-icons.vercel.app/icons/:path*"
+      "source": "/icons/(.*)",
+      "destination": "https://chassis-icons.vercel.app/icons/$1"
     },
     {
-      "source": "/tokens-assets/:path*",
+      "source": "/tokens-assets/(.*)",
       "has": [
         {
           "type": "header",
@@ -122,14 +162,14 @@
           "value": "staging.chassis-ui.com"
         }
       ],
-      "destination": "https://chassis-tokens-staging.vercel.app/tokens-assets/:path*"
+      "destination": "https://chassis-tokens-staging.vercel.app/tokens-assets/$1"
     },
     {
-      "source": "/tokens-assets/:path*",
-      "destination": "https://chassis-tokens.vercel.app/tokens-assets/:path*"
+      "source": "/tokens-assets/(.*)",
+      "destination": "https://chassis-tokens.vercel.app/tokens-assets/$1"
     },
     {
-      "source": "/icons-assets/:path*",
+      "source": "/icons-assets/(.*)",
       "has": [
         {
           "type": "header",
@@ -137,11 +177,11 @@
           "value": "staging.chassis-ui.com"
         }
       ],
-      "destination": "https://chassis-icons-staging.vercel.app/icons-assets/:path*"
+      "destination": "https://chassis-icons-staging.vercel.app/icons-assets/$1"
     },
     {
-      "source": "/icons-assets/:path*",
-      "destination": "https://chassis-icons.vercel.app/icons-assets/:path*"
+      "source": "/icons-assets/(.*)",
+      "destination": "https://chassis-icons.vercel.app/icons-assets/$1"
     }
   ]
 }
