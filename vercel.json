@@ -49,7 +49,7 @@
       "destination": "https://chassis-tokens.vercel.app/tokens/:path*"
     },
     {
-      "source": "/figma/:path*",
+      "source": "/figma/(.*)",
       "has": [
         {
           "type": "header",
@@ -57,11 +57,11 @@
           "value": "staging.chassis-ui.com"
         }
       ],
-      "destination": "https://chassis-figma-staging.vercel.app/figma/:path*"
+      "destination": "https://chassis-figma-staging.vercel.app/figma/$1"
     },
     {
-      "source": "/figma/:path*",
-      "destination": "https://chassis-figma.vercel.app/figma/:path*"
+      "source": "/figma/(.*)",
+      "destination": "https://chassis-figma.vercel.app/figma/$1"
     },
     {
       "source": "/icons/:path*",
