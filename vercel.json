@@ -4,6 +4,41 @@
   "trailingSlash": true,
   "rewrites": [
     {
+      "source": "/static/(.*)",
+      "has": [
+        { "type": "header", "key": "referer", "value": ".*/figma/.*" }
+      ],
+      "destination": "https://chassis-figma.vercel.app/static/$1"
+    },
+    {
+      "source": "/static/(.*)",
+      "has": [
+        { "type": "header", "key": "referer", "value": ".*/css/.*" }
+      ],
+      "destination": "https://chassis-css.vercel.app/static/$1"
+    },
+    {
+      "source": "/static/(.*)",
+      "has": [
+        { "type": "header", "key": "referer", "value": ".*/icons/.*" }
+      ],
+      "destination": "https://chassis-icons.vercel.app/static/$1"
+    },
+    {
+      "source": "/static/(.*)",
+      "has": [
+        { "type": "header", "key": "referer", "value": ".*/tokens/.*" }
+      ],
+      "destination": "https://chassis-tokens.vercel.app/static/$1"
+    },
+    {
+      "source": "/static/(.*)",
+      "has": [
+        { "type": "header", "key": "referer", "value": ".*/assets/.*" }
+      ],
+      "destination": "https://chassis-assets.vercel.app/static/$1"
+    },
+    {
       "source": "/assets/:path*",
       "has": [
         {
