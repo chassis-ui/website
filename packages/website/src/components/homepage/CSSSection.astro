@@ -1,0 +1,118 @@
+---
+/**
+ * CSS Section
+ *
+ * Homepage section showcasing Chassis CSS framework features.
+ */
+
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
+import FeatureSlider from '@components/FeatureSlider.astro'
+import Code from '@shortcodes/Code.astro'
+---
+
+<section id="css-section" class="home-section py-3xlarge py-medium-6xlarge">
+  <div class="container-2xlarge section-content">
+    <div class="row mb-3xlarge mb-medium-6xlarge">
+      <header class="section-header col col-large-10 col-2xlarge-8">
+        <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Styles</p>
+        <h2 class="font-5xlarge mb-xsmall mb-medium-small mb-large-medium">
+          <span class="font-normal d-block">Code with tokens,</span> not translation layers.
+        </h2>
+        <p class="font-lead m-0">
+          Chassis CSS generates variables and utility classes directly from the design tokens — no
+          manual translation, no drift between design and code.
+        </p>
+      </header>
+    </div>
+    <div
+      class="section-features gap-xlarge flex-column flex-medium-row mb-medium mb-medium-6xlarge"
+    >
+      <FeatureSlider>
+        <!-- Item 1: Token-generated CSS variables -->
+        <FeatureCard icon="cx-brackets-curly" classes="swiper-slide" horizontal>
+          <Fragment slot="title">Token-generated CSS variables</Fragment>
+          <Fragment slot="body">
+            Design tokens become CSS custom properties automatically. Change a token, and every
+            component that uses it updates.
+          </Fragment>
+          <div class="pt-medium border-top border-subtle">
+            <Code
+              lang="css"
+              code={`/* Token-generated CSS variables */
+:root {
+  --cx-font-family-text: Inter, system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  --cx-font-size-text-medium: 1rem;
+  --cx-font-size: var(--cx-font-size-text-medium);
+  --cx-default-fg-main: #1c2021;
+  --cx-default-fg-main-rgb: 28, 32, 33;
+  --cx-fg-main: var(--cx-default-fg-main);
+  --cx-space-medium: 1rem;
+  --cx-border-radius-medium: 0.375rem;
+  --cx-opacity-fg-subtle: 0.5;
+  --cx-separator-size: 0.0625rem;
+}`}
+            />
+          </div>
+        </FeatureCard>
+
+        <!-- Item 2: Perfectly align with Figma -->
+        <FeatureCard icon="cx-figma" classes="swiper-slide" horizontal>
+          <Fragment slot="title">Perfectly align with Figma</Fragment>
+          <Fragment slot="body">
+            Utility classes are named to match Figma styles and variables — there's no guesswork
+            translating a design spec into code.
+          </Fragment>
+          <div class="pt-medium border-top border-subtle">
+            <Code
+              lang="html"
+              code={`<!-- Utility classes in action -->
+<div class="primary-bg-main border primary-border-main p-medium">
+  <h5 class="primary-fg-main mb-0">
+    Hello World!
+  </h5>
+  <p class="primary-fg-subtle mb-0">
+    I'm a demonstration of Chassis Styles
+  </p>
+</div>`}
+            />
+            <div class="primary-bg-main border primary-border-main p-medium">
+              <h5 class="primary-fg-main mb-0">Hello World!</h5>
+              <p class="primary-fg-subtle mb-0">I'm a demonstration of Chassis Styles</p>
+            </div>
+          </div>
+        </FeatureCard>
+
+        <!-- Item 3: Faster frontend development -->
+        <FeatureCard icon="cx-code" classes="swiper-slide" horizontal>
+          <Fragment slot="title">Context-aware utility classes</Fragment>
+          <Fragment slot="body">
+            Use a CSS framework that already speaks your design system's language — no
+            re-implementing decisions that were already made.
+          </Fragment>
+          <div class="pt-medium border-top border-subtle">
+            <Code
+              lang="html"
+              code={`<!-- Context class in action -->
+<div class="context info border border-main p-medium">
+  <h5 class="mb-0">
+    Hello World!
+  </h5>
+  <p class="fg-subtle mb-0">
+    I'm a demonstration of Chassis Styles
+  </p>
+</div`}
+            />
+            <div class="context info border border-main p-medium">
+              <h5 class="mb-0">Hello World!</h5>
+              <p class="fg-subtle mb-0">I'm a demonstration of Chassis Styles</p>
+            </div>
+          </div>
+        </FeatureCard>
+      </FeatureSlider>
+    </div>
+    <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
+      <a href="/css/" class="button primary large">Go to Chassis Styles</a>
+      <a href="/css/docs/" class="button default large">View Documentation</a>
+    </div>
+  </div>
+</section>

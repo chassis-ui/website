@@ -1,0 +1,41 @@
+---
+/**
+ * Table of Contents
+ *
+ * Generate and render a hierarchical table of contents from headings.
+ */
+
+import type { MarkdownHeading } from 'astro'
+import { generateToc, type TocEntry } from '../libs/toc'
+
+interface Props {
+  /** Markdown headings to generate TOC from */
+  headings?: MarkdownHeading[]
+  /** Pre-generated TOC entries */
+  entries?: TocEntry[]
+  /** Current nesting level */
+  level?: number
+  /** TOC generation configuration */
+  config?: any
+}
+
+const { entries, headings, level, config } = Astro.props
+
+const toc = entries ? entries : generateToc(headings ?? [], config)
+let entryLevel = level ? level + 1 : 1
+---
+
+<ul>
+  {
+    toc.map(({ children, slug, text }) => {
+      return (
+        <li>
+          <a href={`#${slug}`} class={`level-${entryLevel}`}>
+            {text}
+          </a>
+          {children.length > 0 && <Astro.self entries={children} level={entryLevel} />}
+        </li>
+      )
+    })
+  }
+</ul>

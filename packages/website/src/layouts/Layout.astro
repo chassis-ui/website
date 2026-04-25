@@ -1,0 +1,20 @@
+---
+import type { MarkdownHeading } from 'astro'
+import type { CollectionEntry } from 'astro:content'
+import type { LayoutOverridesHTMLAttributes } from '@chassis-ui/docs'
+import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
+
+import '../scss/docs.scss'
+
+interface Props {
+  frontmatter: CollectionEntry<'blog'>['data']
+  headings?: MarkdownHeading[]
+  id?: CollectionEntry<'blog'>['id']
+}
+
+const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
+---
+
+<BaseLayout {...Astro.props} layout="blog" overrides={{ body: bodyProps }}>
+  <slot />
+</BaseLayout>

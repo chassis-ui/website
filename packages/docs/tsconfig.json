@@ -1,0 +1,20 @@
+{
+  "extends": "astro/tsconfigs/base",
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@libs/*": ["../website/src/libs/*"] // Development-only: allows VSCode to resolve @libs/* imports
+    }
+  },
+  "include": [
+    "src/**/*",
+    "../website/src/**/*", // Development-only: allows VSCode to see website types
+    "index.ts"
+  ],
+  "exclude": [
+    // "src/components/index.ts",  // Exclude index files that export .astro components
+    // "src/layouts/index.ts"      // TypeScript can't resolve .astro imports without Astro's build system
+  ]
+}

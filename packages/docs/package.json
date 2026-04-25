@@ -1,0 +1,63 @@
+{
+  "name": "@chassis-ui/docs",
+  "description": "Shared Astro components and layouts for Chassis documentation sites.",
+  "version": "0.1.7",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chassis-ui/website.git",
+    "directory": "packages/docs"
+  },
+  "bugs": {
+    "url": "https://github.com/chassis-ui/website/issues"
+  },
+  "homepage": "https://chassis-ui.com",
+  "author": "Ozgur Gunes <o.gunes@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "chassis",
+    "documentation",
+    "components",
+    "layouts",
+    "design-system"
+  ],
+  "files": [
+    "src",
+    "index.ts",
+    "README.md"
+  ],
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./components/*": "./src/components/*",
+    "./shortcodes/*": "./src/components/shortcodes/*",
+    "./layouts/*": "./src/layouts/*",
+    "./libs/*": "./src/libs/*",
+    "./js/*": "./src/js/*",
+    "./scss/*": "./src/scss/*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "@docsearch/css": "^3.9.0",
+    "@docsearch/js": "^3.9.0",
+    "@types/hast": "^3.0.4",
+    "@types/mdast": "^4.0.4",
+    "astro": "^5.13.9",
+    "github-slugger": "^2.0.0",
+    "image-size": "^2.0.2",
+    "mdast-util-from-markdown": "^2.0.2",
+    "mdast-util-mdx-jsx": "^3.2.0",
+    "mdast-util-to-string": "^4.0.0",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.0.0",
+    "zod": "^4.1.11"
+  }
+}

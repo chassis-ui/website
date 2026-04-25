@@ -1,0 +1,72 @@
+.cxd-gutter {
+  --cx-gutter-x: #{$cxd-gutter-x};
+}
+
+.cxd-layout {
+  // padding: 1rem !important;
+
+  @include media-breakpoint-up(large) {
+    display: grid;
+    grid-template-areas: "sidebar main";
+    // grid-template-columns: 1.5fr 6.5fr;
+    grid-template-columns: 14rem auto;
+    // gap: $grid-gutter-width;
+    gap: $cxd-gutter-x;
+    padding: 0 1rem !important; // stylelint-disable-line declaration-no-important
+    margin: 0 auto;
+  }
+}
+
+.cxd-sidebar {
+  grid-area: sidebar;
+}
+
+.cxd-intro {
+  grid-area: intro;
+  margin-top: 2rem;
+}
+
+.cxd-main {
+  grid-area: main;
+  order: 1;
+
+  @include media-breakpoint-down(large) {
+    // max-width: 760px;
+    margin-inline: auto;
+  }
+
+  @include media-breakpoint-up(medium) {
+    display: grid;
+    grid-template-areas:
+      "intro"
+      "toc"
+      "content";
+    grid-template-rows: auto auto 1fr;
+    gap: inherit;
+  }
+
+  @include media-breakpoint-up(large) {
+    grid-template-areas:
+      "intro   toc"
+      "content toc";
+    grid-template-rows: auto 1fr;
+    grid-template-columns: auto 14rem;
+  }
+}
+
+.cxd-toc {
+  grid-area: toc;
+}
+
+.cxd-content {
+  grid-area: content;
+  min-width: 1px; // Fix width when cxd-content contains a `<pre>` https://github.com/chassis-ui/css/issues/25410
+}
+
+.cxd-content,
+.cxd-intro {
+  width: 100%;
+  max-width: 960px;
+  margin-right: auto;
+  margin-left: auto;
+}

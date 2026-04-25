@@ -1,0 +1,36 @@
+---
+import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
+import Hero from '@components/homepage/HeroSection.astro'
+import Gallery from '@components/homepage/GallerySection.astro'
+import Tokens from '@components/homepage/TokensSection.astro'
+import Assets from '@components/homepage/AssetsSection.astro'
+import Figma from '@components/homepage/FigmaSection.astro'
+import CSS from '@components/homepage/CSSSection.astro'
+import Support from '@components/homepage/SupportSection.astro'
+import Icons from '@components/homepage/IconsSection.astro'
+import HomeIcons from '/static/icons/cx-sprite.svg?raw'
+import type { LayoutOverridesHTMLAttributes } from '@chassis-ui/docs'
+import '@scss/home.scss'
+
+const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
+bodyProps['class'] = 'home-body'
+---
+
+<BaseLayout {...Astro.props} overrides={{ body: bodyProps }}>
+  <Hero />
+  <Gallery />
+  <Tokens />
+  <Assets />
+  <Figma />
+  <CSS />
+  <Icons />
+  <Support />
+  <div class="d-none">
+    <Fragment set:html={HomeIcons} />
+  </div>
+
+  <Fragment slot="scripts">
+    <script src="@assets/swiper.js"></script>
+    <script src="@assets/gsap.js"></script>
+  </Fragment>
+</BaseLayout>

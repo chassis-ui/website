@@ -1,0 +1,141 @@
+//
+// Chassis - CSS docs content theming
+//
+
+.cxd-content {
+  padding-bottom: 2rem;
+  > h2,
+  > h3,
+  > h4 {
+    --cx-heading-color: var(--cx-fg-main);
+  }
+
+  // Offset content from fixed navbar when jumping to headings
+  > h2:not(:first-child) {
+    margin-top: 3rem;
+  }
+
+  > h3 {
+    margin-top: 2rem;
+  }
+
+  > ul li,
+  > ol li {
+    margin-bottom: .25rem;
+
+    // stylelint-disable selector-max-type, selector-max-compound-selectors
+    > p ~ ul {
+      margin-top: -.5rem;
+      margin-bottom: 1rem;
+    }
+    // stylelint-enable selector-max-type, selector-max-compound-selectors
+  }
+
+  // Override Chassis - CSS defaults
+  > .table,
+  > .table-responsive .table {
+    // --cx-table-border-color: var(--cx-border-color);
+
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+    @include font-size(.875rem);
+
+    @include media-breakpoint-down(large) {
+      &.table-bordered {
+        border: 0;
+      }
+    }
+
+    thead {
+      border-bottom: 2px solid currentcolor;
+    }
+
+    tbody:not(:first-child) {
+      border-top: 2px solid currentcolor;
+    }
+
+    th,
+    td {
+      &:first-child {
+        padding-left: 0;
+      }
+
+      &:not(:last-child) {
+        padding-right: 1.5rem;
+      }
+    }
+
+    th {
+      color: var(--cx-fg-main);
+    }
+
+    strong {
+      color: var(--cx-fg-main);
+    }
+
+    // Prevent breaking of code
+    th,
+    td:first-child > code { // stylelint-disable-line selector-max-compound-selectors
+      white-space: nowrap;
+    }
+  }
+}
+
+.table-options {
+  td:nth-child(2) {
+    min-width: 160px;
+  }
+}
+
+.table-options td:last-child,
+.table-utilities td:last-child {
+  min-width: 280px;
+}
+
+.table-swatches {
+  th {
+    color: var(--cx-fg-main);
+  }
+
+  td code {
+    white-space: nowrap;
+  }
+}
+
+.cxd-title {
+  --cx-heading-color: var(--cx-fg-main);
+  --cx-font-size: 3rem;
+}
+
+.cxd-subtitle {
+  @include map-font($font-context-lead, "blockquote");
+  @include font();
+  // font-size: 1.2rem;
+  // line-height: 1.5em;
+  // font-family: var(--cx-font-family-display) !important;
+}
+
+.bi {
+  width: 1em;
+  height: 1em;
+  vertical-align: -.125em;
+  fill: currentcolor;
+}
+
+.border-large-start {
+  @include media-breakpoint-up(large) {
+    border-left: var(--cx-border-width) solid var(--cx-border-color);
+  }
+}
+
+// stylelint-disable selector-no-qualifying-type
+.cxd-summary-link {
+  color: var(--cx-link-color);
+
+  &:hover,
+  details[open] > & {
+    color: var(--cx-hover-color);
+  }
+}
+// stylelint-enable selector-no-qualifying-type
+

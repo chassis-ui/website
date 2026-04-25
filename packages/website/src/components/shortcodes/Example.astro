@@ -1,0 +1,128 @@
+---
+import { replacePlaceholdersInHtml } from '@libs/placeholder'
+import Code from '@components/shortcodes/Code.astro'
+
+interface Props {
+  /**
+   * Defines if extra JS snippet should be added to StackBlitz or not.
+   * @default false
+   */
+  addStackblitzJs?: boolean
+  /**
+   * The example code.
+   * If an array is passed, elements will be joined with a new line.
+   */
+  code: string | string[]
+  /**
+   * The CSS class(es) to be added to the preview wrapping `div` element.
+   */
+  class?: string
+  /**
+   * The preview wrapping `div` element ID.
+   */
+  id?: string
+  /**
+   * Language used to display the code.
+   * @default 'html'
+   */
+  lang?: string
+  /**
+   * Defines if the markup should be visible or not.
+   * @default true
+   */
+  showMarkup?: boolean
+  /**
+   * Defines if the preview should be visible or not.
+   * @default true
+   */
+  showPreview?: boolean
+}
+
+const {
+  addStackblitzJs = false,
+  code,
+  class: className,
+  id,
+  lang = 'html',
+  showMarkup = true,
+  showPreview = true
+} = Astro.props
+
+let markup = Array.isArray(code) ? code.join('\n') : code
+markup = replacePlaceholdersInHtml(markup)
+
+const simplifiedMarkup = markup
+  .replace(
+    /<svg.*class="cxd-placeholder-image(?:-large)?(?: *?cxd-placeholder-image-large)? ?(.*?)".*?<\/svg>/g,
+    (match, classes) => `<img src="..."${classes ? ` class="${classes}"` : ''} alt="...">`
+  )
+  .replace(
+    /<img.*class="cxd-placeholder-image(?:-large)?(?: *?cxd-placeholder-image-large)? ?(.*?)".*?>/g,
+    (match, classes) => `<img src="..."${classes ? ` class="${classes}"` : ''} alt="...">`
+  )
+---
+
+<div class="cxd-example-snippet cxd-code-snippet">
+  {
+    showPreview && (
+      <div id={id} class:list={['cxd-example m-0 border-0 context', className]}>
+        {!showMarkup && (
+          <div class="cxd-mode">
+            <button
+              type="button"
+              class="button-mode mt-0 me-0 text-nowrap"
+              title="Toggle color mode"
+              onclick="toggleTheme(this)"
+            >
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#swatchbook-solid" />
+              </svg>
+            </button>
+          </div>
+        )}
+        <Fragment set:html={markup} />
+      </div>
+    )
+  }
+
+  {
+    showMarkup && (
+      <>
+        {showPreview && (
+          <div class="d-flex align-items-center highlight-toolbar ps-medium pe-xsmall py-2xsmall border-0 border-top border-bottom border-subtle">
+            <small class="font-monospace fg-subtle text-uppercase">{lang}</small>
+            <div class="d-flex ms-auto">
+              <button
+                type="button"
+                class="button-mode mt-0 me-0 text-nowrap"
+                title="Toggle color mode"
+                onclick="toggleTheme(this)"
+              >
+                <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#swatchbook-solid" />
+                </svg>
+              </button>
+              <span class="vr mx-xsmall" />
+              <button
+                type="button"
+                class="button-edit text-nowrap"
+                title="Try it on StackBlitz"
+                data-sb-js-snippet={addStackblitzJs ? true : undefined}
+              >
+                <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#lightning-solid" />
+                </svg>
+              </button>
+              <button type="button" class="button-clipboard mt-0 me-0" title="Copy to clipboard">
+                <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#clipboard-outline" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
+        <Code code={simplifiedMarkup} lang={lang} nestedInExample={true} />
+      </>
+    )
+  }
+</div>

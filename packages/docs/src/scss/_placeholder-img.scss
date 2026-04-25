@@ -1,0 +1,15 @@
+//
+// Placeholder svg used in the docs.
+//
+
+// Remember to update `site/_layouts/examples.html` too if this changes!
+
+.cxd-placeholder-image {
+  @include font-size(1.125rem);
+  user-select: none;
+  text-anchor: middle;
+}
+
+.cxd-placeholder-image-large {
+  @include font-size(3.5rem);
+}

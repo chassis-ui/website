@@ -1,0 +1,122 @@
+---
+import type { GetStaticPathsOptions } from 'astro'
+import BlogLayout from '@layouts/BlogLayout.astro'
+import { getConfig } from '@libs/config'
+import { blogPages } from '@libs/content'
+import { getBlogPostUrl } from '@libs/utils'
+import Pagination from '@components/Pagination.astro'
+import type { CollectionEntry } from 'astro:content'
+
+type BlogPost = CollectionEntry<'blog'>
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  const config = await getConfig()
+
+  const tags = new Set()
+
+  blogPages.forEach((page: BlogPost) => {
+    if (page.data.tags) {
+      const blogTags = Array.isArray(page.data.tags)
+        ? page.data.tags
+        : page.data.tags.split(',').map((tag: string) => tag.trim())
+      blogTags.forEach((tag: string) => tags.add(tag))
+    }
+  })
+
+  const paths = []
+  for (const tag of tags) {
+    const tagPosts = blogPages
+      .filter((page: BlogPost) => {
+        if (!page.data.tags) return false
+        const blogTags = Array.isArray(page.data.tags)
+          ? page.data.tags
+          : page.data.tags.split(',').map((t: string) => t.trim())
+        return blogTags.includes(String(tag))
+      })
+      .sort((a: BlogPost, b: BlogPost) => {
+        const dateA = new Date(a.data.pubDate || 0)
+        const dateB = new Date(b.data.pubDate || 0)
+        return dateB.getTime() - dateA.getTime()
+      })
+
+    if (tagPosts.length > 0) {
+      const paginatedPaths = paginate(tagPosts, {
+        pageSize: config.blog.pageSize,
+        params: { tag: String(tag) }
+      })
+      paths.push(...paginatedPaths)
+    }
+  }
+
+  return paths
+}
+
+const { page } = Astro.props
+const tag = Astro.params.tag as string
+
+const frontmatter = {
+  title: `${String(tag).charAt(0).toUpperCase() + String(tag).slice(1)} blog posts`,
+  description: `Browse blog posts tagged with "${tag}"`
+}
+---
+
+<BlogLayout frontmatter={frontmatter}>
+  <nav aria-label="breadcrumb">
+    <div class="border-bottom border-subtle mb-medium">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-page"><a href="/blog">Blog</a></li>
+        <li class="breadcrumb-page"><a href="/blog/tags">Tags</a></li>
+        <li class="breadcrumb-page active" aria-current="page">{tag}</li>
+      </ol>
+    </div>
+  </nav>
+  <div class="border-bottom border-subtle">
+    <h1>{frontmatter.title}</h1>
+    <p>{frontmatter.description}</p>
+  </div>
+  <div>
+    {
+      page.data.length > 0 ? (
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 my-4">
+          {page.data.map((post: BlogPost) => (
+            <article class="col">
+              <h2 class="h4">
+                <a href={getBlogPostUrl(post)}>{post.data.title}</a>
+              </h2>
+
+              <div class="d-flex align-items-center text-muted mb-small">
+                <time datetime={post.data.pubDate?.toISOString()}>
+                  {post.data.pubDate
+                    ? new Date(post.data.pubDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })
+                    : ''}
+                </time>
+                {post.data.author && (
+                  <>
+                    <span class="mx-small">•</span>
+                    <span>by {post.data.author}</span>
+                  </>
+                )}
+              </div>
+
+              <div class="mb-medium">
+                <p class="text-muted">{post.data.description}</p>
+                <a href={getBlogPostUrl(post)} class="button outline border-subtle">
+                  Read More
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p>No posts found.</p>
+      )
+    }
+
+    <!-- Pagination -->
+    <Pagination page={page} baseUrl={`/blog/tags/${tag}`} />
+  </div>
+</BlogLayout>

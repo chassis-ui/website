@@ -1,0 +1,113 @@
+---
+/**
+ * Icons Section
+ *
+ * Homepage section showcasing Chassis icon system features.
+ */
+
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
+import FeatureSlider from '@components/FeatureSlider.astro'
+import Code from '@shortcodes/Code.astro'
+---
+
+<section id="icons-section" class="home-section py-3xlarge py-medium-6xlarge">
+  <div class="container-2xlarge section-content">
+    <div class="row mb-3xlarge mb-medium-6xlarge">
+      <header class="section-header col col-large-10 col-2xlarge-8">
+        <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Icons</p>
+        <h2 class="font-5xlarge mb-xsmall mb-medium-small mb-large-medium">
+          <span class="font-normal d-block">Icons that ship</span> with your system.
+        </h2>
+        <p class="font-lead m-0">
+          Icon libraries tend to grow organically — different naming conventions, inconsistent
+          sizing, no clear ownership. Chassis Icons gives you a structured way to create, name, and
+          distribute icons that stay consistent across design tools and codebases.
+        </p>
+      </header>
+    </div>
+    <div
+      class="section-features gap-xlarge flex-column flex-medium-row mb-medium mb-medium-6xlarge"
+    >
+      <FeatureSlider>
+        <!-- Item 1: Structured icon library -->
+        <FeatureCard icon="cx-book" classes="swiper-slide" horizontal>
+          <Fragment slot="title">Structured icon library</Fragment>
+          <Fragment slot="body">
+            A clear system for organizing icons by category, size, and variant — so every icon has a
+            predictable location and name.
+          </Fragment>
+
+          <img
+            src="/static/images/home/icon-library-light.svg"
+            alt="Structured icon library"
+            class="image-fluid w-100 visible-light"
+          />
+          <img
+            src="/static/images/home/icon-library-dark.svg"
+            alt="Structured icon library"
+            class="image-fluid w-100 visible-dark"
+          />
+        </FeatureCard>
+
+        <!-- Item 2: Easy team distribution -->
+        <FeatureCard icon="cx-folders" classes="swiper-slide" horizontal>
+          <Fragment slot="title">Easy team distribution</Fragment>
+          <Fragment slot="body">
+            Package and distribute icons as a versioned release. Every team gets the same set, with
+            the same names, at the same version.
+          </Fragment>
+          <div class="pt-medium border-top border-subtle">
+            <Code
+              lang="text"
+              code={`dist/
+├── icons/
+│   ├── chassis-icons.css
+│   ├── chassis-icons.scss
+│   ├── chassis-icons.svg
+│   ├── chassis-icons.woff
+│   └── chassis-icons.woff2
+└── svgs/
+    ├── icon-file.svg
+    ├── icon-file.svg
+    └── ...`}
+            />
+          </div>
+        </FeatureCard>
+
+        <!-- Item 3: Design-to-code compatibility -->
+        <FeatureCard icon="cx-laptop-code" classes="swiper-slide" horizontal>
+          <Fragment slot="title">Multiple usage formats</Fragment>
+          <Fragment slot="body">
+            Icons flow from design tools into code as optimized SVGs with consistent markup. No
+            manual cleanup needed.
+          </Fragment>
+          <div class="pt-medium border-top border-subtle">
+            <Code
+              lang="html"
+              code={`@import "icons/chassis-icons.svg"
+@import "icons/chassis-icons.css
+---
+
+<svg><use xlink:href="#info-circle-solid"/></svg>
+
+<img src="/svgs/info-circle-solid.svg" alt="Info" width="24" height="24">
+
+<span class="icon-info-circle-solid"></span>`}
+            />
+            <div
+              class="icon-default pt-xlarge mt-medium border-top border-subtle d-flex gap-medium align-items-center justify-content-center"
+            >
+              <span class="icon icon-info-circle-solid"></span>
+              <span class="icon icon-info-circle-solid"></span>
+              <span class="icon icon-info-circle-solid"></span>
+            </div>
+          </div>
+        </FeatureCard>
+      </FeatureSlider>
+    </div>
+    <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
+      <a href="/icons/" class="button primary large">Go to Chassis Icons</a>
+      <a href="/icons/docs/" class="button default large">View Documentation</a>
+    </div>
+  </div>
+</section>

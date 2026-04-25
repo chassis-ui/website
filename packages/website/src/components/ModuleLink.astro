@@ -1,0 +1,28 @@
+---
+/**
+ * Module Item
+ *
+ * Display a module link with icon and title for the hero section.
+ */
+
+interface Props {
+  /** Icon identifier from the icon sprite */
+  icon: string
+  /** Module title text */
+  title: string
+  /** URL destination for the module */
+  url: string
+}
+
+const { icon, title, url } = Astro.props
+---
+
+<div class="module-item col">
+  <a
+    href={url}
+    class="d-flex button p-medium p-large-xlarge gap-medium gap-large-small flex-medium-column justify-content-start justify-content-large-center m-xsmall my-medium-0 h-100"
+  >
+    <svg class="icon icon-2xlarge icon-medium-4xlarge"><use href={`#${icon}`}></use></svg>
+    <p class="font-strong font-large m-0">{title}</p>
+  </a>
+</div>

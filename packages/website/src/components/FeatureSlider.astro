@@ -1,0 +1,23 @@
+---
+/**
+ * Feature Slider
+ *
+ * Swiper-based carousel wrapper with navigation and pagination controls.
+ * Displays feature cards in a responsive slider layout.
+ *
+ * @slot default - Feature cards to display in the slider
+ */
+---
+
+<div class="feature-slider">
+  <div class="swiper-navigation d-none d-medium-block" role="group" aria-label="Slider navigation">
+    <button class="swiper-button-prev button" aria-label="Previous slide"></button>
+    <button class="swiper-button-next button" aria-label="Next slide"></button>
+  </div>
+  <div class="slider-swiper overflow-visible swiper" role="region" aria-label="Feature carousel">
+    <div class="swiper-wrapper flex-column flex-medium-row gap-medium gap-medium-0">
+      <slot />
+    </div>
+  </div>
+  <div class="swiper-pagination" role="group" aria-label="Slide pagination"></div>
+</div>
