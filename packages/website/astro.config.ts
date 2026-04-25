@@ -3,7 +3,6 @@ import { chassis } from './src/libs/astro'
 import { getConfig } from './src/libs/config'
 import { getSiteUrl } from '@chassis-ui/docs'
 import { algoliaPlugin } from './src/plugins/algolia-plugin'
-import { stackblitzPlugin } from './src/plugins/stackblitz-plugin'
 import { rehypeStripIsRaw } from '@chassis-ui/docs'
 
 const site = getSiteUrl(getConfig())
@@ -22,7 +21,7 @@ export default defineConfig({
   },
   site,
   vite: {
-    plugins: [algoliaPlugin(), stackblitzPlugin()],
+    plugins: [algoliaPlugin()],
     build: {
       rollupOptions: {
         output: {

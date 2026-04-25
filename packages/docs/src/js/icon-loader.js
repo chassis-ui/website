@@ -102,7 +102,16 @@
     container.id = 'chassis-icons-sprite'
     container.style.display = 'none'
     container.setAttribute('aria-hidden', 'true')
-    container.innerHTML = spriteContent
+
+    // Use DOMParser to safely parse SVG content instead of innerHTML
+    const parsed = new DOMParser().parseFromString(spriteContent, 'image/svg+xml')
+    const svgEl = parsed.querySelector('svg')
+    if (svgEl) {
+      container.appendChild(svgEl)
+    } else {
+      // Fallback: should not happen given fetchSprite validation
+      container.innerHTML = spriteContent
+    }
 
     // Insert at the end of body
     document.body.appendChild(container)

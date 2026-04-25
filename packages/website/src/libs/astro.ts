@@ -28,12 +28,16 @@ const staticFileAliases = {
 }
 
 // A list of pages that will be excluded from the sitemap.
-const sitemapExcludes = ['/404', '/docs', `/docs/${getConfig().docs_version}`]
+const sitemapExcludes = ['/404', '/docs']
+
+// Proxied sub-sites that are not pages in this Astro project but should appear in the sitemap.
+const sitemapProxiedPaths = ['/tokens', '/assets', '/css', '/figma', '/icons']
 
 const headingsRangeRegex = new RegExp(`^h[${getConfig().anchors.min}-${getConfig().anchors.max}]$`)
 
 export function chassis(): AstroIntegration[] {
   const sitemapExcludedUrls = sitemapExcludes.map((url) => `${getConfig().baseURL}${url}/`)
+  const sitemapCustomPages = sitemapProxiedPaths.map((url) => `${getConfig().baseURL}${url}/`)
 
   configurePrism()
 
@@ -85,6 +89,7 @@ export function chassis(): AstroIntegration[] {
     // https://github.com/withastro/astro/issues/6475
     mdx() as AstroIntegration,
     sitemap({
+      customPages: sitemapCustomPages,
       filter: (page) => sitemapFilter(page, sitemapExcludedUrls)
     })
   ]

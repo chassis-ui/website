@@ -4,12 +4,11 @@ baseURL:                "https://chassis-ui.com"
 docsDir:                "."
 docsPath:                "/docs"
 
-subtitle:               "Design System for Scale & Sync"
-description:            "Open-source design system with design tokens, semantic CSS, and Figma integration. Build consistent, accessible web experiences faster."
+subtitle:               "Design Systems that Scale & Sync"
+description:            "Build and scale multi-brand products with an open-source design system featuring design tokens, Figma libraries, semantic CSS, and asset management tools."
 authors:                "Ozgur Gunes and Chassis UI contributors"
 
 current_version:        "0.1.0"
-docs_version:           "0.1"
 github_org:             "https://github.com/chassis-ui"
 repo:                   "https://github.com/chassis-ui/docs"
 x:                      "chassis_ui"
@@ -18,8 +17,8 @@ analytics:
   google_id:            "G-QGR8C28VYN"
 
 algolia:
-  app_id:               "MEJ97SH293"
-  api_key:              "df6a517a37c3973122cfc40042055f9c"
+  app_id:               "TMI5N9J6TZ"
+  api_key:              "e318e0636b0a951e4f82c8283345df13"
   index_name:           "chassis-docs"
 
 anchors:

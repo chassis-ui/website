@@ -24,16 +24,11 @@ import docsearch from '@docsearch/js'
     return
   }
 
-  const siteDocsVersion = searchElement.getAttribute('data-cxd-docs-version')
-
   docsearch({
     apiKey: CONFIG.apiKey,
     indexName: CONFIG.indexName,
     appId: CONFIG.appId,
     container: searchElement,
-    searchParameters: {
-      facetFilters: [`version:${siteDocsVersion}`]
-    },
     transformItems(items) {
       return items.map((item) => {
         const liveUrl = 'https://chassis-ui.com/'
@@ -41,7 +36,7 @@ import docsearch from '@docsearch/js'
         item.url = window.location.origin.startsWith(liveUrl)
           ? // On production, return the result as is
             item.url
-          : // On development or Netlify, replace `item.url` with a trailing slash,
+          : // On development or Vercel, replace `item.url` with a trailing slash,
             // so that the result link is relative to the server root
             item.url.replace(liveUrl, '/')
 

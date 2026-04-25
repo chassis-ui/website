@@ -1,7 +1,3 @@
-// NOTICE!! DO NOT USE ANY OF THIS JAVASCRIPT
-// IT'S ALL JUST JUNK FOR OUR DOCS!
-// ++++++++++++++++++++++++++++++++++++++++++
-
 /*
  * JavaScript for Chassis's docs (https://chassis-ui.com/)
  * Copyright 2011-2025 The Chassis Authors

@@ -23,7 +23,6 @@
 import { execSync } from 'node:child_process'
 import path from 'node:path'
 import fs from 'node:fs'
-import { fileURLToPath } from 'node:url'
 import picocolors from 'picocolors'
 
 /**
@@ -57,6 +56,7 @@ class SubmoduleSync {
       {
         name: 'chassis-assets',
         path: 'vendor/assets',
+        lfs: true,
         expectedBranch: this.submoduleBranch,
         buildCommands: ['pnpm install --ignore-workspace', 'pnpm assets:site'],
         buildOutputPath: 'dist/web/chassis-docs'
@@ -122,6 +122,10 @@ class SubmoduleSync {
   initSubmodule(submodule) {
     this.log(`Initializing ${submodule.name}...`, 'info')
     this.runCommand(`git submodule update --init --remote ${submodule.path}`, this.rootDir, true)
+    const submodulePath = path.join(this.rootDir, submodule.path)
+    if (submodule.lfs) {
+      this.runCommand('git lfs pull', submodulePath, true)
+    }
   }
 
   /**
@@ -165,6 +169,9 @@ class SubmoduleSync {
         }
 
         this.runCommand(`git pull origin ${submodule.expectedBranch}`, submodulePath, true)
+        if (submodule.lfs) {
+          this.runCommand('git lfs pull', submodulePath, true)
+        }
       } else {
         this.runCommand(
           `git submodule update --remote --merge ${submodule.path}`,
@@ -174,6 +181,9 @@ class SubmoduleSync {
       }
 
       this.log(`${submodule.name} synced successfully`, 'success')
+
+      // Build the submodule if build commands are defined
+      this.buildSubmodule(submodule)
     } catch (error) {
       if (
         error.message.includes('conflict') ||
@@ -187,9 +197,6 @@ class SubmoduleSync {
         throw error
       }
     }
-
-    // Build the submodule if build commands are defined
-    this.buildSubmodule(submodule)
   }
 
   /**
@@ -315,9 +322,6 @@ Commands:
   }
 }
 
-// Execute main function if this file is run directly
-if (fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
-  main()
-}
+main()
 
 export default SubmoduleSync

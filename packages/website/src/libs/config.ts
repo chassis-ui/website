@@ -24,7 +24,7 @@ const configSchema = z.object({
   }),
   current_version: zVersionSemver,
   description: z.string(),
-  docs_version: zVersionMajorMinor,
+  // docs_version: zVersionMajorMinor,
   docsDir: z.string(),
   docsPath: z.string(),
   github_org: z.string().url(),
