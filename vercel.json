@@ -1,5 +1,4 @@
 {
-  "version": 2,
   "buildCommand": "pnpm site:build",
   "outputDirectory": "_site",
   "trailingSlash": true,
