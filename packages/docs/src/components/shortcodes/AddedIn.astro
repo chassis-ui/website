@@ -1,0 +1,16 @@
+---
+/**
+ * Added In
+ *
+ * Display a badge showing the version when a feature was added.
+ */
+
+interface Props {
+  /** Version number when the feature was added */
+  version: string
+}
+
+const { version } = Astro.props
+---
+
+<span class="badge large success smooth mb-medium rounded-medium">Added in v{version}</span>

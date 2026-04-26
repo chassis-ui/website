@@ -1,47 +1,48 @@
-# Chassis Documentation
+# Chassis Website
 
-> Enterprise-grade, multi-platform design system documentation and showcase website
+> Official website and documentation hub for the Chassis Design System.
 
-[![Deploy Status](https://github.com/ozgurgunes/chassis-docs/workflows/Deploy%20Documentation/badge.svg)](https://github.com/ozgurgunes/chassis-docs/actions)
-[![Lighthouse CI](https://github.com/ozgurgunes/chassis-docs/workflows/Lighthouse%20CI/badge.svg)](https://github.com/ozgurgunes/chassis-docs/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Deploy Status](https://github.com/chassis-ui/website/workflows/Deploy%20Website/badge.svg)](https://github.com/chassis-ui/website/actions)
 
 ## Overview
 
-Chassis Documentation is the central hub for the Chassis Design System, providing comprehensive documentation, examples, and resources for teams building consistent, multi-platform experiences across web, iOS, and Android.
+Chassis Website is the main hub for the Chassis Design System, featuring comprehensive documentation, interactive examples, and resources for building design systems with modern web technologies. It also contains the shared `@chassis-ui/docs` package used by all Chassis documentation sites.
 
 ## Features
 
 - 📚 **Comprehensive Documentation** - Complete design system guidelines and specifications
-- 🎨 **Live Component Examples** - Interactive showcase of all Chassis components
-- 🔧 **Implementation Guides** - Step-by-step integration tutorials for different platforms
-- 🎯 **Multi-Platform Support** - Consistent documentation for web, iOS, and Android
+- 🎨 **Design Tokens** - Token-based design system with JavaScript and CSS output
+- 🖼️ **Assets** - Icon library, images, and design resources
+- 🎭 **CSS Framework** - Semantic HTML with customizable styling
+- 🔧 **Implementation Guides** - Step-by-step integration tutorials
 - 🚀 **Performance Optimized** - Built with Astro for lightning-fast static generation
-- 📱 **Responsive Design** - Perfect experience across all device sizes
+- 📱 **Responsive Design** - Mobile-first approach across all pages
 
 ## Quick Start
 
 ### Prerequisites
 
 - Node.js 18.0.0 or higher
-- npm 8.0.0 or higher
+- pnpm 10.0.0 or higher
 - Git with SSH access to GitHub (for submodules)
 
 ### Installation
 
 1. **Clone the repository with submodules:**
    ```bash
-   git clone --recursive https://github.com/ozgurgunes/chassis-docs.git
-   cd chassis-docs
+   git clone --recursive https://github.com/chassis-ui/website.git
+   cd chassis-website
    ```
 
 2. **Install dependencies:**
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. **Start development server:**
    ```bash
-   npm run dev
+   pnpm dev
    ```
 
 4. **Open your browser:**
@@ -50,138 +51,126 @@ Chassis Documentation is the central hub for the Chassis Design System, providin
 ### Build for Production
 
 ```bash
-# Build everything (website + examples)
-npm run build
-
-# Build only website
-npm run build:website
-
-# Build only examples
-npm run build:examples
+# Build the website
+pnpm build
 
 # Preview production build
-npm run preview
+pnpm preview
 ```
+
+## Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `pnpm dev` | Start development server at localhost:4321 |
+| `pnpm build` | Build the production site |
+| `pnpm preview` | Preview the production build locally |
+| `pnpm astro:check` | Run Astro diagnostics |
+| `pnpm format` | Format code with Prettier |
+| `pnpm lint` | Lint code with ESLint and Stylelint |
+| `pnpm validate` | Run all validation checks |
 
 ## Project Structure
 
+This repository is a **pnpm workspace monorepo**:
+
 ```
-chassis-docs/
-├── apps/
-│   └── website/           # Main Astro documentation site
-│       ├── src/
-│       │   ├── components/
-│       │   ├── layouts/
-│       │   ├── pages/
-│       │   └── styles/
-│       └── package.json
-├── examples/
-│   ├── react-app/         # React + Vite integration example
-│   └── vanilla-html/      # Pure HTML/CSS integration example
-├── vendor/                # Git submodules (auto-managed)
-│   ├── assets/           # Chassis Assets
-│   ├── css/              # Chassis CSS Framework
-│   ├── figma/            # Figma Design Resources
-│   └── tokens/           # Design Tokens
-├── scripts/
-│   ├── sync-all.js       # Submodule synchronization
-│   └── deploy.js         # Deployment coordination
-└── tools/
-    └── build.js          # Build orchestration
+chassis-website/
+├── packages/
+│   ├── website/          # Main Astro website
+│   │   ├── src/
+│   │   │   ├── components/   # Astro components
+│   │   │   ├── content/      # Content collections (blog, docs)
+│   │   │   ├── layouts/      # Page layouts
+│   │   │   ├── libs/         # Utilities and helpers
+│   │   │   ├── pages/        # Route pages
+│   │   │   ├── plugins/      # Vite plugins
+│   │   │   └── styles/       # Global styles
+│   │   ├── public/           # Static assets
+│   │   ├── static/           # Additional static files
+│   │   └── astro.config.ts   # Astro configuration
+│   │
+│   └── docs/             # Shared documentation utilities
+│       └── src/          # TypeScript utilities for docs
+│
+├── examples/             # Example implementations
+│   ├── react-app/       # React + Vite + Chassis
+│   └── vanilla-html/    # Vanilla HTML + Chassis
+│
+├── vendor/              # Git submodules for Chassis libraries
+│   └── assets/          # Chassis Assets (icons, images)
+│
+├── build/               # Build and deployment scripts
+├── ref/                 # Architecture documentation
+└── _site/               # Build output (generated)
 ```
+
+### Key Directories
+
+- **`packages/website/`** - The main Astro application
+- **`packages/docs/`** - Shared documentation components and utilities
+- **`examples/`** - Working examples showcasing Chassis integration
+- **`vendor/`** - Git submodules containing Chassis libraries
+- **`build/`** - Build scripts and CI/CD tools
+- **`ref/`** - Architecture and development reference documentation
 
 ## Development
 
 ### Working with Submodules
 
-The project uses Git submodules to include other Chassis repositories:
+The project uses Git submodules for Chassis library dependencies:
 
 ```bash
 # Sync all submodules to latest versions
-npm run sync:all
+pnpm sync:submodules
 
 # Manual submodule operations
 git submodule update --remote --merge
 git submodule status
 ```
 
-### Available Commands
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build everything for production |
-| `npm run build:website` | Build only the documentation website |
-| `npm run build:examples` | Build only the example projects |
-| `npm run preview` | Preview production build locally |
-| `npm run sync:all` | Update all submodules to latest versions |
-| `npm run deploy` | Deploy to production (CI/CD) |
-| `npm run clean` | Clean all build artifacts |
-| `npm run validate` | Validate build output |
-
 ### Adding New Content
 
-1. **Documentation Pages**: Add `.astro` files to `apps/website/src/pages/`
-2. **Components**: Create reusable components in `apps/website/src/components/`
-3. **Styles**: Extend styles in `apps/website/src/styles/`
-4. **Examples**: Add new integration examples in `examples/`
+1. **Documentation Pages**: Add `.astro` files to `packages/website/src/pages/`
+2. **Components**: Create reusable components in `packages/website/src/components/`
+3. **Blog Posts**: Add markdown files to `packages/website/src/content/blog/`
+4. **Styles**: Extend styles in `packages/website/src/styles/`
+5. **Examples**: Add new integration examples in `examples/`
 
-## Architecture
+## Chassis Ecosystem
 
-### Multi-Repository Structure
+This project is part of the Chassis Design System's multi-repository architecture:
 
-Chassis Documentation coordinates multiple repositories:
+| Project | Description |
+|---------|-------------|
+| **chassis-website** | **Main website and shared documentation package (this repository)** |
+| [chassis-css](https://github.com/chassis-ui/css) | CSS framework and component library |
+| [chassis-tokens](https://github.com/chassis-ui/tokens) | Design token generation and management |
+| [chassis-icons](https://github.com/chassis-ui/icons) | Icon library and build toolkit |
+| [chassis-assets](https://github.com/chassis-ui/assets) | Multi-platform asset management |
+| [chassis-figma](https://github.com/chassis-ui/figma) | Figma component documentation |
 
-- **chassis-tokens**: Design tokens and theme definitions
-- **chassis-css**: CSS framework and components
-- **chassis-figma**: Figma design resources and documentation
-- **chassis-assets**: Shared assets and resources
-
-### Build System
-
-The build system orchestrates:
-
-1. **Submodule Synchronization**: Updates all dependencies
-2. **Documentation Building**: Generates static site with Astro
-3. **Example Building**: Builds all integration examples
-4. **Asset Optimization**: Optimizes images, fonts, and other assets
-5. **Validation**: Ensures build integrity
+All documentation sites share the `@chassis-ui/docs` package for consistent layouts, components, and styling.
 
 ### Deployment
 
 - **Platform**: Vercel
+- **Repository**: `chassis-ui/website`
+- **Production URL**: `chassis-ui.com`
 - **Trigger**: Push to `main` branch
-- **Process**: Automated via GitHub Actions
+- **Build Command**: `pnpm site:build`
+- **Output Directory**: `_site`
 - **Performance**: Monitored with Lighthouse CI
 
 ## Contributing
 
-### Getting Started
-
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
+2. Create a feature branch: `git checkout -b feature/my-feature`
 3. Make your changes
-4. Test thoroughly: `npm run build && npm run validate`
-5. Commit changes: `git commit -m "Add amazing feature"`
-6. Push to branch: `git push origin feature/amazing-feature`
+4. Test the build: `pnpm build && pnpm validate`
+5. Commit your changes: `git commit -m "feat: add my feature"`
+6. Push to the branch: `git push origin feature/my-feature`
 7. Open a Pull Request
-
-### Guidelines
-
-- Follow existing code style and conventions
-- Add tests for new functionality
-- Update documentation for any changes
-- Ensure all builds pass before submitting PR
-- Keep commits focused and descriptive
-
-### Submodule Updates
-
-When updating submodules:
-
-1. Test changes thoroughly in isolation
-2. Update submodule references in this repository
-3. Verify all examples still work
-4. Update documentation if APIs changed
 
 ## Troubleshooting
 
@@ -199,8 +188,8 @@ git submodule update --recursive
 **Build fails with missing dependencies:**
 ```bash
 # Clean install
-rm -rf node_modules apps/website/node_modules examples/*/node_modules
-npm install
+rm -rf node_modules packages/website/node_modules packages/docs/node_modules
+pnpm install
 ```
 
 **Permission errors with vendor directory:**
@@ -212,25 +201,17 @@ sudo chown -R $(whoami) vendor/
 **Astro build errors:**
 ```bash
 # Clear Astro cache
-rm -rf apps/website/.astro apps/website/dist
-npm run build:website
+rm -rf packages/website/.astro _site/
+pnpm build
 ```
 
 ### Performance Issues
 
-- Run `npm audit` to check for security vulnerabilities
-- Use `npm run validate` to check build integrity
+- Run `pnpm audit` to check for security vulnerabilities
+- Use `pnpm validate` to check build integrity
 - Monitor bundle sizes in build output
 - Test with Lighthouse CI for performance regressions
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-- 📖 **Documentation**: [https://chassis.design](https://chassis.design)
-- 🐛 **Issues**: [GitHub Issues](https://github.com/ozgurgunes/chassis-docs/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/ozgurgunes/chassis-docs/discussions)
-- 📧 **Email**: [support@chassis.design](mailto:support@chassis.design)
-# Force staging deployment
+MIT License — see [LICENSE](LICENSE) file for details.

@@ -1,0 +1,92 @@
+---
+/**
+ * Figma Section
+ *
+ * Homepage section showcasing Figma integration features.
+ */
+
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
+import FeatureSlider from '@components/FeatureSlider.astro'
+import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
+---
+
+<section id="figma-section" class="home-section py-3xlarge py-medium-6xlarge">
+  <div class="container-2xlarge section-content">
+    <div class="row mb-3xlarge mb-medium-6xlarge">
+      <header class="section-header col col-large-10 col-2xlarge-8">
+        <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Figma</p>
+        <h2 class="font-5xlarge mb-xsmall mb-medium-small mb-large-medium">
+          <span class="font-normal d-block">One Library for</span> Every Brand, Every App
+        </h2>
+        <p class="font-lead m-0">
+          A component library built entirely with design tokens. Swap brand, application, or color
+          mode by switching Figma variable collections. All components adapt automatically.
+        </p>
+      </header>
+    </div>
+    <div
+      class="section-features gap-xlarge flex-column flex-medium-row mb-medium mb-medium-6xlarge"
+    >
+      <FeatureSlider>
+        <!-- Item -->
+        <FeatureCard icon="cx-swatchbook" classes="swiper-slide" horizontal>
+          <Fragment slot="title">Contextual color system</Fragment>
+          <Fragment slot="body">
+            Colors are organised by role — text, backgrounds, icons, indicators, and more — each
+            with defined emphasis levels.
+          </Fragment>
+          <ResponsiveImage
+            imgPath="/static/images/home/figma-tokens-light.png"
+            alt="Scalable component architecture supporting multiple brands and themes"
+            classes="image-fluid w-100 visible-light shadow-large"
+          />
+          <ResponsiveImage
+            imgPath="/static/images/home/figma-tokens-dark.png"
+            alt="Scalable component architecture supporting multiple brands and themes"
+            classes="image-fluid w-100 visible-dark shadow-large"
+          />
+        </FeatureCard>
+        <!-- Item -->
+        <FeatureCard icon="cx-book-open-alt" classes="swiper-slide" horizontal>
+          <Fragment slot="title">Self-documented components</Fragment>
+          <Fragment slot="body">
+            Each component file includes a documentation page covering variants, props, specs, and
+            the design tokens it uses.
+          </Fragment>
+          <ResponsiveImage
+            imgPath="/static/images/home/figma-docs-light.png"
+            alt="Chassis UI"
+            classes="image-fluid w-100 visible-light shadow-large"
+          />
+          <ResponsiveImage
+            imgPath="/static/images/home/figma-docs-dark.png"
+            alt="Chassis UI"
+            classes="image-fluid w-100 visible-dark shadow-large"
+          />
+        </FeatureCard>
+        <!-- Item -->
+        <FeatureCard icon="cx-compass-drafting" classes="swiper-slide" horizontal>
+          <Fragment slot="title">Consistent design language</Fragment>
+          <Fragment slot="body">
+            Spacing, typography, and color scales are shared between Figma and production code —
+            what you design is what gets built.
+          </Fragment>
+          <ResponsiveImage
+            imgPath="/static/images/home/figma-library-light.png"
+            alt="Example of consistent design language across Figma and code"
+            classes="image-fluid w-100 visible-light shadow-large"
+          />
+          <ResponsiveImage
+            imgPath="/static/images/home/figma-library-dark.png"
+            alt="Example of consistent design language across Figma and code"
+            classes="image-fluid w-100 visible-dark shadow-large"
+          />
+        </FeatureCard>
+      </FeatureSlider>
+    </div>
+    <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
+      <a href="/figma/" class="button primary large">Go to Chassis Figma</a>
+      <a href="/figma/docs/" class="button default large">View Documentation</a>
+    </div>
+  </div>
+</section>

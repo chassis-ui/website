@@ -1,0 +1,68 @@
+// -----------------------------------------------------------------------------
+// HOME.SCSS
+// Homepage-specific styles
+// -----------------------------------------------------------------------------
+//
+// This file is reserved for homepage-specific styles that don't belong in
+// the shared docs.scss file. Currently empty as all homepage styles are
+// in docs.scss.
+//
+// Note: The main homepage styles including .module-item, .feature-slider,
+// and responsive variables are currently in docs.scss. Consider moving
+// homepage-specific styles here in the future for better organization.
+@use "docs" as *;
+
+:root {
+
+  --feature-item-width: 560px;
+  --gallery-image-height: 256px;
+
+  @include media-breakpoint-down(medium) {
+    --feature-item-width: 320px;
+    --gallery-image-height: 128px;
+  }
+
+}
+
+.module-item > a {
+  box-shadow: none;
+  --#{$prefix}icon-color: var(--#{$prefix}icon-main);
+  &:hover {
+    --#{$prefix}bg-color: var(--#{$prefix}bg-highlight);
+    --#{$prefix}icon-color: var(--#{$prefix}fg-highlight);
+  }
+  @include media-breakpoint-down(medium) {
+    --#{$prefix}bg-color: var(--#{$prefix}bg-even);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// SLIDER
+// -----------------------------------------------------------------------------
+
+.feature-slider {
+  @include media-breakpoint-up(medium) {
+    z-index: 10;
+    width: 100%;
+    margin: 0 auto;
+
+    // Swiper slide width
+    .swiper-slide {
+      display: flex;
+      width: var(--feature-item-width, 560px);
+      height: auto;
+    }
+    .swiper-navigation {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 20;
+      width: #{calc(100vw - var(--#{$prefix}space-3xlarge))};
+      //padding: 0 32px;
+      transform: translate(-50%, 50%);
+      > .button {
+        color: var(--#{$prefix}fg-main);
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+// Chassis tokens for docs
+@import "@chassis-ui/tokens/dist/web/docs/chassis/main";
+
+// Shared docs settings
+@import "@chassis-ui/docs/scss/settings";
+
+// Chassis CSS variables and mixins
+@import "@chassis-ui/css/scss/settings";
+@import "@chassis-ui/css/scss/functions";
+@import "@chassis-ui/css/scss/tokens";
+@import "@chassis-ui/css/scss/variables";
+@import "@chassis-ui/css/scss/rfs";
+@import "@chassis-ui/css/scss/maps";
+@import "@chassis-ui/css/scss/mixins";
+@import "@chassis-ui/css/scss/placeholders";
+
+// Shared docs styles
+@import "@chassis-ui/docs/scss/main";

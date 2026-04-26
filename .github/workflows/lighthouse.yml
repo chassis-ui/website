@@ -8,39 +8,34 @@ on:
   schedule:
     # Run weekly on Sunday at 2 AM UTC
     - cron: '0 2 * * 0'
+  workflow_dispatch:
 
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'pnpm'
-          
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: latest
-          
+          version: 10.7.0
+
       - name: Install dependencies
         run: pnpm install
-        
+
       - name: Build website
-        run: pnpm build
-        
-      - name: Serve website
-        run: |
-          pnpm preview &
-          sleep 10
-        
+        run: pnpm build:website
+
       - name: Run Lighthouse
         uses: treosh/lighthouse-ci-action@v10
         with:

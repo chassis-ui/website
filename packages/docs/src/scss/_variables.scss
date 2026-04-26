@@ -1,0 +1,78 @@
+// Local docs variables
+// $cxd-main:        $primary-base-color;
+// $cxd-subtle:        lighten(saturate($cxd-main, 5%), 15%); // stylelint-disable-line function-disallowed-list
+// $cxd-main-light:  lighten(saturate($cxd-main, 5%), 45%); // stylelint-disable-line function-disallowed-list
+// $cxd-accent:        $secondary-base-color;
+$cxd-main:        var(--cx-primary-base-color);
+$cxd-subtle:      var(--cx-primary-bg-evident);
+$cxd-main-light:  var(--cx-primary-fg-main);
+$cxd-accent:      var(--cx-primary-base-color);
+
+$cxd-gutter-x: 2rem;
+$cxd-callout-variants: info, warning, danger, default !default;
+
+:root,
+[data-cx-theme="light"] {
+  --cxd-main: #{$cxd-main};
+  --cxd-subtle: #{$cxd-subtle};
+  --cxd-accent: #{$cxd-accent};
+  --cxd-main-rgb: var(--cx-primary-base-color-rgb);
+  --cxd-subtle-rgb: var(--cx-primary-40-rgb);
+  --cxd-accent-rgb: var(--cx-secondary-base-color-rgb);
+  --cxd-pink-rgb: #{to-rgb($pink-500)};
+  --cxd-teal-rgb: #{to-rgb($teal-500)};
+  --cxd-main-bg: var(--cxd-main);
+  --cxd-subtle-bg: var(--cxd-subtle);
+  --cxd-toc-color: var(--cxd-main);
+  --cxd-sidebar-link-bg: var(--cx-bg-highlight);
+  --cxd-callout-link: #{to-rgb($blue-600)};
+  --cxd-callout-code-color: #{$pink-600};
+  // --cxd-pre-bg: var(--cx-bg-even);
+}
+
+@if $enable-dark-mode {
+  @include color-mode(dark, true) {
+    color-scheme: dark;
+    --cxd-subtle: var(--cx-primary-60-rgb);
+    --cxd-subtle-bg: #{$cxd-subtle};
+    // --cxd-toc-color: var(--#{$prefix}fg-subtle);
+    --cxd-sidebar-link-bg: var(--cx-primary-40);
+    --cxd-callout-link: #{to-rgb($blue-300)};
+    --cxd-callout-code-color: #{$pink-300};
+    //--cxd-pre-bg: #{adjust-color($gray-900, $lightness: -2.5%)}; // stylelint-disable-line scss/at-function-named-arguments
+    --cxd-pre-bg: var(--cx-bg-evident);
+  }
+}
+
+// @import "../../../tokens/default.scss";
+//  h1:not(.cxd-example h1),
+//  h2:not(.cxd-example h2),
+//  h3:not(.cxd-example h3),
+//  h4:not(.cxd-example h4),
+//  h5:not(.cxd-example h5),
+//  h6:not(.cxd-example h6) {
+//    & ~ p,
+//    & ~ ol,
+//    & ~ ul {
+//      font-family: var(--cx-font-family-display) !important;
+//    }
+//  }
+
+// .cxd-intro h1 {
+//   line-height: 1.25em;
+// }
+// .cxd-intro h1,
+// .cxd-content > h1,
+// .cxd-content > h2,
+// .cxd-content > h3,
+// .cxd-content > h4 {
+//   font-family: var(--cx-font-family-display) !important;
+//   font-weight: var(--cx-font-weight-display-strong) !important;
+// }
+//
+// .cxd-playground textarea {
+//   font-family: var(--cx-font-family-code) !important;
+//   //font-size: var(--cx-font-small) !important;
+//   background-color: var(--cx-default-bg-even) !important;
+//   border-color: var(--cx-default-border-subtle);
+// }

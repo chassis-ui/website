@@ -48,18 +48,17 @@ const mainProps = overrides?.main ?? {};
 
 <Head
   description={description}
-  direction={frontmatter?.direction}
   layout={layout}
   robots={robots}
   thumbnail={thumbnail}
   title={title}
 />
-  <div class="container d-flex vh-100 align-items-center py-6xlarge">
-    <div class="row py-6xlarge mt-n6xlarge">
-      <div class="col-8 offset-2 text-center py-6xlarge mt-n6xlarge">
-        <ResponsiveImage imgPath="/assets/logo/chassis-logo-brand.png" alt="Chassis UI" classes="mb-6xlarge  mt-n6xlarge" />
-        <h1 class="font-hero mb-4xlarge mt-4xlarge"><span class="text-nowrap">Build Better Design Systems.</span> In Sync. At Scale.</h1>
-        <p class="font-lead mb-6xlarge">
+  <div class="container d-flex min-vh-100 py-6xlarge align-items-center">
+    <div class="row">
+      <div class="col text-center">
+        <ResponsiveImage imgPath="/assets/logo/chassis-logo-brand.png" alt="Chassis UI" classes="mb-large-6xlarge" />
+        <h1 class="font-hero mb-4xlarge mt-4xlarge">Build Better <span class="text-nowrap">Design Systems.</span> <span class="text-nowrap">In Sync. At Scale.</span> </h1>
+        <p class="font-lead mb-6xlarge col-large-8 offset-large-2">
           Chassis is the backbone of scalable design systems built for complex,
           evolving product ecosystems. It unifies Figma components, advanced
           design tokens, multi-platform transformers, asset libraries, and a

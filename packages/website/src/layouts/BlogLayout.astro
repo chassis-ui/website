@@ -1,0 +1,35 @@
+---
+import type { MarkdownHeading } from 'astro'
+import type { CollectionEntry } from 'astro:content'
+import type { LayoutOverridesHTMLAttributes } from '@chassis-ui/docs'
+import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
+import { blogPages } from '@libs/content'
+import LatestPosts from '../components/LatestPosts.astro'
+
+interface Props {
+  frontmatter: CollectionEntry<'blog'>['data']
+  headings?: MarkdownHeading[]
+  id?: CollectionEntry<'blog'>['id']
+}
+
+const { id } = Astro.props
+
+const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
+---
+
+<BaseLayout {...Astro.props} layout="blog" overrides={{ body: bodyProps }}>
+  <Fragment slot="main">
+    <div class="container-2xlarge py-4xlarge">
+      <div class="row g-4xlarge">
+        <div class="col-large-8">
+          <slot />
+        </div>
+        <aside class="col-large-4">
+          <div class="position-sticky" style="top: 96px;">
+            <LatestPosts posts={blogPages} currentPostId={id} />
+          </div>
+        </aside>
+      </div>
+    </div>
+  </Fragment>
+</BaseLayout>

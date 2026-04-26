@@ -1,4 +1,4 @@
 [submodule "vendor/assets"]
 	path = vendor/assets
-	url = https://github.com/ozgurgunes/chassis-assets.git
+	url = https://github.com/chassis-ui/assets.git
 	branch = app/docs

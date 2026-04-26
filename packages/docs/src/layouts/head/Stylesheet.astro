@@ -1,0 +1,22 @@
+---
+/**
+ * Stylesheet
+ *
+ * Stylesheet link tags for external CSS resources.
+ */
+
+import { getChassisCssProps } from '../../libs/chassis'
+import type { Layout } from '../../libs/layout'
+
+interface Props {
+  /** Text direction (for RTL languages) */
+  direction?: 'rtl'
+  /** Current layout context */
+  layout: Layout
+}
+
+const { direction } = Astro.props
+---
+
+<link {...getChassisCssProps(direction)} />
+<link rel="stylesheet" href={`/static/icons/chassis-icons.min.css`} />

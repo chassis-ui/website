@@ -1,0 +1,35 @@
+---
+/**
+ * Hero Section
+ *
+ * Homepage hero section with main heading and module navigation links.
+ */
+
+import ModuleLink from '@components/ModuleLink.astro'
+---
+
+<div id="hero-section" class="home-section py-3xlarge py-medium-6xlarge">
+  <div class="container-2xlarge section-content">
+    <div class="row mb-3xlarge mb-medium-6xlarge py-medium-6xlarge">
+      <header class="section-header text-center col col-large-10 offset-large-1">
+        <h1 class="font-hero">
+          <span class="font-normal">Design Systems That Scale & Sync.</span>
+          <span class="text-nowrap">Across Brands. Across Platforms.</span>
+        </h1>
+        <p class="font-lead">
+          Chassis is the backbone of scalable design systems built for complex, evolving product
+          ecosystems. It unifies Figma components, advanced design tokens, multi-platform
+          transformers, asset libraries, and a fully token-synced CSS framework — all working in
+          harmony across brands, platforms, and products.
+        </p>
+      </header>
+    </div>
+    <div class="section-features d-flex flex-column flex-medium-row align-content-stretch">
+      <ModuleLink icon="cx-swatchbook" title="Design Tokens" url="/tokens" />
+      <ModuleLink icon="cx-figma" title="Figma Components" url="/figma" />
+      <ModuleLink icon="cx-css3" title="CSS Framework" url="/css" />
+      <ModuleLink icon="cx-folder-tree" title="Asset Distributor" url="/assets" />
+      <ModuleLink icon="cx-icons" title="Icon Packager" url="/icons" />
+    </div>
+  </div>
+</div>

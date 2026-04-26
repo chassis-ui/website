@@ -1,0 +1,17 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "@css/*": ["@chassis-ui/css/dist/*"],
+      "@icons/*": ["@chassis-ui/icons/dist/*"],
+      "@assets/*": ["src/assets/*"],
+      "@components/*": ["src/components/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@libs/*": ["src/libs/*"],
+      "@scss/*": ["src/scss/*"],
+      "@shortcodes/*": ["src/components/shortcodes/*"]
+    }
+  }
+}
