@@ -199,25 +199,34 @@ Example:
   "buildCommand": "pnpm site:build",
   "outputDirectory": "_site",
   "trailingSlash": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "has": [
+        { "type": "header", "key": "host", "value": "staging.chassis-ui.com" }
+      ],
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    }
+  ],
   "rewrites": [
     {
-      "source": "/css/:path*",
+      "source": "/css/(.*)",
       "has": [
-        {
-          "type": "header",
-          "key": "host",
-          "value": "staging.chassis-ui.com"
-        }
+        { "type": "header", "key": "host", "value": "staging.chassis-ui.com" }
       ],
-      "destination": "https://chassis-css-staging.vercel.app/:path*"
+      "destination": "https://chassis-css-staging.vercel.app/css/$1"
     },
     {
-      "source": "/css/:path*",
-      "destination": "https://chassis-css.vercel.app/:path*"
+      "source": "/css/(.*)",
+      "destination": "https://chassis-css.vercel.app/css/$1"
     }
   ]
 }
 ```
+
+See [VERCEL_CONFIG.md](VERCEL_CONFIG.md) for the full rewrite set (including `/static/*` referer-based rules) and [INDEXING.md](INDEXING.md) for the full indexing strategy.
 
 ### Environment Detection
 
@@ -400,8 +409,13 @@ jobs:
 ### Staging URLs
 
 - **Main Site:** https://staging.chassis-ui.com
-- **CSS Docs:** https://staging.chassis-ui.com/docs/css/
-- *(Same pattern for other docs)*
+- **CSS Docs:** https://staging.chassis-ui.com/css/
+- **Tokens Docs:** https://staging.chassis-ui.com/tokens/
+- **Icons Docs:** https://staging.chassis-ui.com/icons/
+- **Figma Docs:** https://staging.chassis-ui.com/figma/
+- **Assets Docs:** https://staging.chassis-ui.com/assets/
+
+> ⚠️ Staging is excluded from search engines via `robots.txt` (`Disallow: /`) and `X-Robots-Tag: noindex, nofollow`. See [INDEXING.md](INDEXING.md).
 
 ### Direct Project URLs
 
@@ -416,6 +430,7 @@ Useful for debugging routing:
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) - System architecture
 - [VERCEL_CONFIG.md](VERCEL_CONFIG.md) - Vercel routing details
+- [INDEXING.md](INDEXING.md) - Search engine indexing strategy
 - [DEVELOPMENT.md](DEVELOPMENT.md) - Development workflow
 - [Vercel Documentation](https://vercel.com/docs)
 
