@@ -91,7 +91,16 @@ export function chassis(): AstroIntegration[] {
     sitemap({
       customPages: sitemapCustomPages,
       filter: (page) => sitemapFilter(page, sitemapExcludedUrls)
-    })
+    }),
+    {
+      // Must run AFTER `@astrojs/sitemap` writes `sitemap-index.xml`.
+      name: 'chassis-sitemap-postprocess',
+      hooks: {
+        'astro:build:done': ({ dir }) => {
+          injectSubProjectSitemaps(dir)
+        }
+      }
+    }
   ]
 }
 
@@ -169,4 +178,30 @@ function sitemapFilter(page: string, excludedUrls: string[]) {
   }
 
   return true
+}
+
+/**
+ * Post-processes the generated sitemap-index.xml to inject references to each
+ * sub-project's sitemap. Astro's @astrojs/sitemap only knows about the website's
+ * own pages; sub-project pages live in separate deployments whose sitemaps are
+ * proxied via chassis-ui.com/<project>/sitemap-index.xml.
+ */
+function injectSubProjectSitemaps(dir: URL) {
+  const sitemapIndexPath = path.join(new URL('.', dir).pathname, 'sitemap-index.xml')
+
+  if (!fs.existsSync(sitemapIndexPath)) {
+    console.warn('[chassis] sitemap-index.xml not found, skipping sub-project sitemap injection')
+    return
+  }
+
+  const baseURL = getConfig().baseURL.replace(/\/$/, '')
+  const subProjectPaths = ['/tokens', '/css', '/figma', '/icons', '/assets']
+  const subProjectEntries = subProjectPaths
+    .map((p) => `  <sitemap><loc>${baseURL}${p}/sitemap-index.xml</loc></sitemap>`)
+    .join('\n')
+
+  let content = fs.readFileSync(sitemapIndexPath, 'utf-8')
+  content = content.replace('</sitemapindex>', `\n${subProjectEntries}\n</sitemapindex>`)
+
+  fs.writeFileSync(sitemapIndexPath, content, 'utf-8')
 }
