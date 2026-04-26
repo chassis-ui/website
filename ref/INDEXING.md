@@ -161,13 +161,13 @@ done
 | `chassis-*.vercel.app/*` | `Disallow: /` | (none) |
 | `chassis-*-staging.vercel.app/*` | `Disallow: /` | `noindex, nofollow` |
 
-## 📝 Outstanding work — canonical URLs
+## 📝 Canonical URLs
 
-Each sub-project's HTML currently emits a `<link rel="canonical">` pointing at its own `*.vercel.app` URL (e.g. `https://chassis-icons.vercel.app/404/`). This is benign while `Disallow: /` blocks crawling, but **if Google ever discovers those URLs through external backlinks**, the canonical tag would encourage it to index the `*.vercel.app` URL instead of the equivalent path under `chassis-ui.com`.
+`getSiteUrl()` in `packages/docs/src/libs/utils.ts` determines the Astro `site` value used for sitemap generation and canonical `<link>` tags. In production (`VERCEL_ENV === 'production'`) it returns `config.baseURL`, which is set to the correct path-prefixed `chassis-ui.com` URL in each project's `config.yml` (e.g. `https://chassis-ui.com/tokens/` for chassis-tokens).
 
-**To do (low priority):** Update the canonical base URL in each sub-project's site config to point at `https://chassis-ui.com` (with the appropriate path prefix per project: `/tokens`, `/css`, `/icons`, `/figma`, `/assets`). Implementation likely lives in the shared `@chassis-ui/docs` package's layout component or in each project's `astro.config.mjs` `site` value.
+This means sub-project sitemaps and canonical tags correctly reference `chassis-ui.com/...` URLs in production builds — not the bare `*.vercel.app` host.
 
-Until then, the `Disallow: /` and `X-Robots-Tag: noindex` rules are sufficient to keep these URLs out of search results.
+The `Disallow: /` and `X-Robots-Tag: noindex` rules remain the primary defence against direct `*.vercel.app` indexing regardless.
 
 ## 🐛 Troubleshooting
 

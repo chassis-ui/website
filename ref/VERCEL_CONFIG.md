@@ -69,6 +69,20 @@ Each service has two rewrite rules per route:
 | `/icons-assets/*` | `chassis-icons-staging.vercel.app/icons-assets/*` | `chassis-icons.vercel.app/icons-assets/*` |
 | `/tokens-assets/*` | `chassis-tokens-staging.vercel.app/tokens-assets/*` | `chassis-tokens.vercel.app/tokens-assets/*` |
 
+### Sitemap routes
+
+Each sub-project's sitemaps live at the **root** of their Vercel deployment (e.g. `chassis-tokens.vercel.app/sitemap-index.xml`), not under a path prefix. The general `/tokens/(.*)` rewrite maps to `/tokens/$1` on the sub-project, which would miss the root-level sitemap files. Dedicated sitemap rewrites placed **before** the catch-all rules handle this:
+
+```json
+{ "source": "/tokens/sitemap(.*)", "destination": "https://chassis-tokens.vercel.app/sitemap$1" },
+{ "source": "/css/sitemap(.*)",    "destination": "https://chassis-css.vercel.app/sitemap$1" },
+{ "source": "/figma/sitemap(.*)",  "destination": "https://chassis-figma.vercel.app/sitemap$1" },
+{ "source": "/icons/sitemap(.*)",  "destination": "https://chassis-icons.vercel.app/sitemap$1" },
+{ "source": "/assets/sitemap(.*)", "destination": "https://chassis-assets.vercel.app/sitemap$1" }
+```
+
+Each also has a staging variant (with `has: host = staging.chassis-ui.com`) immediately before the production fallback. After these rewrites, `chassis-ui.com/tokens/sitemap-index.xml` correctly proxies to the sub-project's sitemap.
+
 ### `/static/*` rewrites (referer-based)
 
 Each sub-project's pages reference assets under `/static/...` (CSS, JS, images, fonts). When such a request arrives at the website, we cannot tell which sub-project owns it from the path alone — so we use the `Referer` header to disambiguate.
