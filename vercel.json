@@ -2,6 +2,17 @@
   "buildCommand": "pnpm site:build",
   "outputDirectory": "_site",
   "trailingSlash": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "has": [
+        { "type": "header", "key": "host", "value": "staging.chassis-ui.com" }
+      ],
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/static/(.*)",
