@@ -18,6 +18,17 @@ interface Props {
 }
 
 const { layout, title } = Astro.props
+const { pathname } = Astro.url
+const isActive = (path: string) => {
+  if (path === '/') {
+    return pathname === '/' || pathname === ''
+  }
+  // Remove trailing slashes for a cleaner comparison
+  const cleanPathname = pathname.endsWith('/') ? pathname.slice(0, -1) : pathname
+  const cleanLinkPath = path.endsWith('/') ? path.slice(0, -1) : path
+
+  return cleanPathname.startsWith(cleanLinkPath)
+}
 ---
 
 <header class="navbar navbar-expand-large cxd-navbar sticky-top">
@@ -81,12 +92,11 @@ const { layout, title } = Astro.props
       <div class="offcanvas-body p-large pt-0 p-large-0">
         <hr class="d-large-none text-white-50" />
         <ul class="navbar-nav flex-row flex-wrap cxd-navbar-nav mx-0 mx-large-medium">
-          <NavLink active={layout === 'docs'} href="/docs">Docs</NavLink>
-          <NavLink active={title === 'Tokens'} href="/tokens">Tokens</NavLink>
-          <NavLink active={title === 'Assets'} href="/assets">Assets</NavLink>
-          <NavLink active={title === 'Figma'} href="/figma">Figma</NavLink>
-          <NavLink active={layout === 'icons'} href="/icons">Icons</NavLink>
-          <NavLink active={title === 'CSS'} href="/css">CSS</NavLink>
+          <NavLink active={isActive('/tokens')} href="/tokens">Tokens</NavLink>
+          <NavLink active={isActive('/figma')} href="/figma">Figma</NavLink>
+          <NavLink active={isActive('/css')} href="/css">CSS</NavLink>
+          <NavLink active={isActive('/assets')} href="/assets">Assets</NavLink>
+          <NavLink active={isActive('/icons')} href="/icons">Icons</NavLink>
           <li class="nav-item dropdown ms-medium">
             <a
               class="nav-link dropdown-toggle"
