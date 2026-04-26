@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [staging]
+  pull_request:
+    branches: [staging, main]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.7.0
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: ESLint (website)
+        run: pnpm site:lint:eslint
+
+      - name: ESLint (docs)
+        run: pnpm docs:lint:eslint
+
+      - name: Stylelint (website)
+        run: pnpm site:lint:stylelint
+
+      - name: Stylelint (docs)
+        run: pnpm docs:lint:stylelint
+
+      - name: Prettier (website)
+        run: pnpm site:lint:prettier
+
+      - name: Prettier (docs)
+        run: pnpm docs:lint:prettier
+
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.7.0
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Astro type check
+        run: pnpm check:astro
+
+  audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.7.0
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Audit dependencies
+        run: pnpm check:pnpm
