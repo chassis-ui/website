@@ -124,6 +124,7 @@ class SubmoduleSync {
     this.runCommand(`git submodule update --init --remote ${submodule.path}`, this.rootDir, true)
     const submodulePath = path.join(this.rootDir, submodule.path)
     if (submodule.lfs) {
+      this.runCommand('git lfs install', submodulePath, true)
       this.runCommand('git lfs pull', submodulePath, true)
     }
   }
@@ -170,6 +171,7 @@ class SubmoduleSync {
 
         this.runCommand(`git pull origin ${submodule.expectedBranch}`, submodulePath, true)
         if (submodule.lfs) {
+          this.runCommand('git lfs install', submodulePath, true)
           this.runCommand('git lfs pull', submodulePath, true)
         }
       } else {

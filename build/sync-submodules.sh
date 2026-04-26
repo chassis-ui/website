@@ -9,11 +9,11 @@ set -e  # Exit on any error
 SUBMODULE_BRANCH="${SUBMODULE_BRANCH:-app/docs}"
 
 # Submodule configurations
-# Format: "name|path|branch|build_commands|build_output_path"
+# Format: "name|path|branch|build_commands|build_output_path|lfs"
 declare -a SUBMODULES=(
-  "chassis-assets|vendor/assets|${SUBMODULE_BRANCH}|pnpm install --ignore-workspace && pnpm assets:site|dist/web/chassis-docs"
+  "chassis-assets|vendor/assets|${SUBMODULE_BRANCH}|pnpm install --ignore-workspace && pnpm assets:site|dist/web/chassis-docs|true"
   # Add more submodules here:
-  # "another-submodule|vendor/other|main|npm install && npm run build|dist"
+  # "another-submodule|vendor/other|main|npm install && npm run build|dist|false"
 )
 
 # Colors for output
@@ -60,6 +60,7 @@ sync_submodule() {
   local submodule_name=$1
   local submodule_path=$2
   local submodule_branch=$3
+  local use_lfs=${4:-false}
 
   log "info" "Syncing $submodule_name..."
 
@@ -86,6 +87,17 @@ sync_submodule() {
     git -C "$submodule_path" pull origin "$submodule_branch" 2>/dev/null || true
   else
     git submodule update --init --remote "$submodule_path" 2>/dev/null || true
+  fi
+
+  # Pull LFS objects if this submodule uses Git LFS
+  if [ "$use_lfs" = "true" ]; then
+    if command_exists git-lfs || git lfs version >/dev/null 2>&1; then
+      log "info" "Fetching Git LFS objects for $submodule_name..."
+      git -C "$submodule_path" lfs install
+      git -C "$submodule_path" lfs pull
+    else
+      log "warning" "git-lfs not found — LFS objects will be pointer files for $submodule_name"
+    fi
   fi
 
   log "success" "$submodule_name synced successfully"
@@ -240,13 +252,13 @@ process_all_submodules() {
 
   for submodule_config in "${SUBMODULES[@]}"; do
     # Parse configuration
-    IFS='|' read -r name path branch build_commands build_output <<< "$submodule_config"
+    IFS='|' read -r name path branch build_commands build_output lfs <<< "$submodule_config"
 
     echo ""
     log "info" "━━━ Processing: $name ━━━"
 
     # Sync the submodule
-    sync_submodule "$name" "$path" "$branch"
+    sync_submodule "$name" "$path" "$branch" "$lfs"
 
     # Build if not skipped
     if [ "$SKIP_BUILD" = false ]; then

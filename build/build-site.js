@@ -165,6 +165,12 @@ class ChassisBuilder {
       this.runCommand(`git -C vendor/assets checkout ${this.vendorBranch}`, '.', true)
       this.runCommand(`git -C vendor/assets pull origin ${this.vendorBranch}`, '.', true)
 
+      // Pull LFS objects (vendor/assets uses Git LFS for binary assets)
+      const vendorAssetsForLfs = path.join(this.rootDir, 'vendor/assets')
+      this.log('Fetching Git LFS objects for vendor/assets...', 'info')
+      this.runCommand('git lfs install', vendorAssetsForLfs)
+      this.runCommand('git lfs pull', vendorAssetsForLfs)
+
       // Build the vendor/assets project to generate dist files
       this.log('Building vendor/assets project...', 'info')
       const vendorAssetsPath = path.join(this.rootDir, 'vendor/assets')

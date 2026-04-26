@@ -1,0 +1,17 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import ResponsiveImage from "@components/ResponsiveImage.astro";
+import HomeHero from "@layouts/partials/HomeHero.astro";
+import HomeGallery from "@layouts/partials/HomeGallery.astro";
+import HomeSingleSource from "@layouts/partials/HomeSingleSource.astro";
+import HomeCarousel from "@layouts/partials/HomeCarousel.astro";
+import HomeModularity from "@layouts/partials/HomeModularity.astro";
+---
+
+<BaseLayout {...Astro.props} layout="docs">
+  <HomeHero />
+  <HomeGallery />
+  <HomeSingleSource />
+  <HomeCarousel />
+  <HomeModularity />
+</BaseLayout>
