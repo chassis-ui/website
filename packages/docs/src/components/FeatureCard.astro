@@ -27,7 +27,7 @@ const hasContent = Astro.slots.has('default')
 const cardClasses = [
   'feature-item bg-even d-flex flex-column rounded-large',
   'p-medium p-large-xlarge gap-medium gap-medium-xlarge',
-  horizontal ? 'h-auto' : 'h-100',
+  horizontal ? '' : 'h-100',
   classes
 ]
   .filter(Boolean)

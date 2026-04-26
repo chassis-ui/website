@@ -14,7 +14,6 @@ import Code from '@shortcodes/Code.astro'
   <div class="container-2xlarge section-content">
     <div class="row mb-3xlarge mb-medium-6xlarge">
       <header class="section-header col col-large-10 col-2xlarge-8">
-        <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Support</p>
         <h2 class="font-5xlarge mb-xsmall mb-medium-small mb-large-medium">
           <span class="font-normal d-block">Built for Complex Reality,</span> Not Idealized Simplicity
         </h2>
@@ -29,7 +28,7 @@ import Code from '@shortcodes/Code.astro'
     >
       <!-- Item -->
       <div class="col">
-        <FeatureCard icon="cx-folder-tree" classes="context primary default-fg-main col" horizontal>
+        <FeatureCard icon="cx-folder-tree" classes="context primary default-fg-main" horizontal>
           <Fragment slot="title">Get in touch</Fragment>
           <Fragment slot="body">
             Interested in how Chassis fits into an existing workflow? Share the details below.
@@ -50,7 +49,7 @@ import Code from '@shortcodes/Code.astro'
               >
               <input
                 type="text"
-                class="form-input"
+                class="form-input large"
                 id="nameInput"
                 name="name"
                 required
@@ -63,7 +62,7 @@ import Code from '@shortcodes/Code.astro'
               >
               <input
                 type="email"
-                class="form-input"
+                class="form-input large"
                 id="emailInput"
                 name="email"
                 required
@@ -74,7 +73,7 @@ import Code from '@shortcodes/Code.astro'
               <label for="companyInput" class="form-label">Company</label>
               <input
                 type="text"
-                class="form-input"
+                class="form-input large"
                 id="companyInput"
                 name="company"
                 autocomplete="organization"
@@ -84,7 +83,7 @@ import Code from '@shortcodes/Code.astro'
               <label for="topicSelect" class="form-label"
                 >Topic <span aria-hidden="true">*</span></label
               >
-              <select class="form-select" id="topicSelect" name="topic" required>
+              <select class="form-select large" id="topicSelect" name="topic" required>
                 <option value="">Choose an option</option>
                 <option value="setting-up-chassis">Setting up Chassis</option>
                 <option value="design-system-architecture">Design System Architecture</option>
@@ -102,7 +101,7 @@ import Code from '@shortcodes/Code.astro'
         </FeatureCard>
       </div>
       <div class="col">
-        <FeatureCard icon="cx-book-open-alt" classes="col" horizontal>
+        <FeatureCard icon="cx-book-open-alt" classes="h-100" horizontal>
           <Fragment slot="title">Frequently asked questions</Fragment>
           <Fragment slot="body">
             Common questions about Chassis packages, platform support, and integration.
