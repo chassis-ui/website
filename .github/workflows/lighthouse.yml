@@ -1,44 +1,62 @@
 name: Lighthouse Performance
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    # Run weekly on Sunday at 2 AM UTC
-    - cron: '0 2 * * 0'
+  deployment_status:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to test'
+        required: false
+        default: 'production'
+        type: choice
+        options: [production, staging]
 
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
+    # Only run on successful deployments or manual triggers
+    if: github.event_name == 'workflow_dispatch' || github.event.deployment_status.state == 'success'
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+      - name: Determine base URL
+        id: base-url
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            ENV="${{ github.event.inputs.environment }}"
+          elif [[ "${{ github.event.deployment.ref }}" == "staging" ]] || [[ "${{ github.event.deployment.environment }}" == *"staging"* ]] || [[ "${{ github.event.deployment.environment }}" == *"Preview"* ]]; then
+            ENV="staging"
+          else
+            ENV="production"
+          fi
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.7.0
+          if [[ "$ENV" == "staging" ]]; then
+            echo "url=https://staging.chassis-ui.com" >> $GITHUB_OUTPUT
+          else
+            echo "url=https://chassis-ui.com" >> $GITHUB_OUTPUT
+          fi
+          echo "env=$ENV" >> $GITHUB_OUTPUT
+          echo "Testing $ENV: $(cat $GITHUB_OUTPUT | grep '^url=' | cut -d= -f2)"
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build website
-        run: pnpm build:website
+      - name: Fetch URLs from sitemap
+        id: sitemap
+        run: |
+          BASE="${{ steps.base-url.outputs.url }}"
+          URLS=$(curl -s "$BASE/sitemap-0.xml" | grep -o '<loc>[^<]*</loc>' | sed 's/<loc>//;s/<\/loc>//' | grep -v '/404')
+          echo "Found URLs:"
+          echo "$URLS"
+          {
+            echo "urls<<EOF"
+            echo "$URLS"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
 
       - name: Run Lighthouse
         uses: treosh/lighthouse-ci-action@v10
         with:
+          urls: ${{ steps.sitemap.outputs.urls }}
           configPath: './lighthouse.json'
           uploadArtifacts: true
           temporaryPublicStorage: true
