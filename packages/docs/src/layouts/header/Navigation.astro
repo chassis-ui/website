@@ -1,0 +1,148 @@
+---
+/**
+ * Navigation
+ *
+ * Main site navigation bar with menu items and theme toggler.
+ */
+
+import { getConfig } from '@libs/config'
+import type { Layout } from '../../libs/layout'
+import NavLink from '../../components/NavLink.astro'
+import ThemeToggler from '../../components/ThemeToggler.astro'
+
+interface Props {
+  /** Current layout context */
+  layout: Layout
+  /** Page title for the navbar */
+  title: string
+}
+
+const { layout, title } = Astro.props
+const { pathname } = Astro.url
+const isActive = (path: string) => {
+  if (path === '/') {
+    return pathname === '/' || pathname === ''
+  }
+  // Remove trailing slashes for a cleaner comparison
+  const cleanPathname = pathname.endsWith('/') ? pathname.slice(0, -1) : pathname
+  const cleanLinkPath = path.endsWith('/') ? path.slice(0, -1) : path
+
+  return cleanPathname.startsWith(cleanLinkPath)
+}
+---
+
+<header class="navbar navbar-expand-large cxd-navbar sticky-top">
+  <nav class="container-2xlarge" aria-label="Main navigation">
+    {
+      layout === 'docs' && (
+        <div class="cxd-navbar-toggle">
+          <button
+            class="navbar-toggler p-xsmall2"
+            type="button"
+            data-cx-toggle="offcanvas"
+            data-cx-target="#cxdSidebar"
+            aria-controls="cxdSidebar"
+            aria-label="Toggle docs navigation"
+          >
+            <svg class="icon icon-large" aria-hidden="true">
+              <use href="#bars-solid" />
+            </svg>
+            <span class="d-none fs-6 pe-2xsmall">Browse</span>
+          </button>
+        </div>
+      )
+    }
+    {layout !== 'docs' && <div class="d-large-none" style="width: 4.25rem;" />}
+
+    <a class="navbar-brand me-large-medium" href="/" aria-label="Chassis">
+      <img src="/static/images/site-logo.svg" alt="Chassis UI" width="123" height="32" />
+    </a>
+
+    <div class="d-flex">
+      <div class="cxd-search" id="docsearch"></div>
+
+      <button
+        class="navbar-toggler d-flex d-large-none order-3 p-xsmall"
+        type="button"
+        data-cx-toggle="offcanvas"
+        data-cx-target="#cxdNavbar"
+        aria-controls="cxdNavbar"
+        aria-label="Toggle navigation"
+      >
+        <svg class="icon" aria-hidden="true"><use xlink:href="#ellipsis-h-solid"></use></svg>
+      </button>
+    </div>
+
+    <div
+      class="offcanvas-large offcanvas-end flex-grow-1"
+      tabindex="-1"
+      id="cxdNavbar"
+      aria-labelledby="cxdNavbarOffcanvasLabel"
+    >
+      <div class="offcanvas-header px-large pb-0">
+        <h5 class="offcanvas-title text-white" id="cxdNavbarOffcanvasLabel">Chassis</h5>
+        <button
+          type="button"
+          class="close-button close-button-white"
+          data-cx-dismiss="offcanvas"
+          aria-label="Close"
+          data-cx-target="#cxdNavbar"></button>
+      </div>
+
+      <div class="offcanvas-body p-large pt-0 p-large-0">
+        <hr class="d-large-none text-white-50" />
+        <ul class="navbar-nav flex-row flex-wrap cxd-navbar-nav mx-0 mx-large-medium">
+          <NavLink active={isActive('/tokens')} href="/tokens">Tokens</NavLink>
+          <NavLink active={isActive('/figma')} href="/figma">Figma</NavLink>
+          <NavLink active={isActive('/css')} href="/css">CSS</NavLink>
+          <NavLink active={isActive('/assets')} href="/assets">Assets</NavLink>
+          <NavLink active={isActive('/icons')} href="/icons">Icons</NavLink>
+          <li class="nav-item dropdown ms-medium">
+            <a
+              class="nav-link dropdown-toggle"
+              href="/#"
+              role="button"
+              data-cx-toggle="dropdown"
+              aria-expanded="false">More</a
+            >
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/examples">Examples</a></li>
+              <li><a class="dropdown-item" href="/blog">Blog</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <hr class="d-large-none" />
+
+        <ul class="navbar-nav flex-row flex-wrap ms-medium-auto align-items-center">
+          <NavLink
+            class="nav-link px-0 px-large-2"
+            href={getConfig().github_org}
+            target="_blank"
+            rel="noopener"
+          >
+            <svg class="icon"><title>GitHub</title><use href="#github-brand"></use></svg>
+            <small class="d-large-none ms-xsmall">GitHub</small>
+          </NavLink>
+          <NavLink
+            class="nav-link px-0 px-large-2"
+            href={`https://x.com/${getConfig().x}`}
+            target="_blank"
+            rel="noopener"
+          >
+            <svg class="icon"><title>X</title><use href="#x-twitter-brand"></use></svg>
+            <small class="d-large-none ms-xsmall">X</small>
+          </NavLink>
+          <li class="nav-item col-12 col-large-auto">
+            <div class="vr d-none d-large-flex h-100 mx-large-2 text-white"></div>
+            <hr class="d-large-none" />
+          </li>
+
+          <li class="nav-item dropdown">
+            <ThemeToggler layout={layout} />
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>

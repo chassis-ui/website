@@ -6,7 +6,7 @@
         "http://localhost:4321/getting-started",
         "http://localhost:4321/components"
       ],
-      "startServerCommand": "npm run preview",
+      "startServerCommand": "pnpm preview",
       "startServerReadyPattern": "Local:.*4321"
     },
     "assert": {

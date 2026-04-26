@@ -1,0 +1,64 @@
+---
+/**
+ * Feature Card Component
+ *
+ * A reusable card component for displaying features with icon, title, body, and optional content.
+ *
+ * @slot title - Feature title (required)
+ * @slot body - Feature description (required)
+ * @slot default - Optional additional content (images, code blocks, etc.)
+ */
+
+interface Props {
+  /** Icon ID from the SVG sprite (e.g., "cx-folder-tree") */
+  icon?: string
+  /** Additional CSS classes to apply to the card */
+  classes?: string
+  /** Whether to display the header in horizontal layout (icon + text side by side) */
+  horizontal?: boolean
+}
+
+const { icon, classes, horizontal = false } = Astro.props
+
+// Check if default slot has content without rendering it
+const hasContent = Astro.slots.has('default')
+
+// Build class strings
+const cardClasses = [
+  'feature-item bg-even d-flex flex-column rounded-large',
+  'p-medium p-large-xlarge gap-medium gap-medium-xlarge',
+  horizontal ? '' : 'h-100',
+  classes
+]
+  .filter(Boolean)
+  .join(' ')
+
+const headerClasses = [
+  'feature-header d-flex',
+  'gap-medium gap-medium-xlarge',
+  horizontal ? 'flex-column flex-medium-row' : 'flex-column'
+].join(' ')
+---
+
+<div class={cardClasses}>
+  <div class={headerClasses}>
+    {
+      icon && (
+        <div class="feature-thumb">
+          <svg class="icon feature-icon icon-3xlarge icon-medium-4xlarge" aria-hidden="true">
+            <use href={`#${icon}`} />
+          </svg>
+        </div>
+      )
+    }
+    <div>
+      <h3 class="feature-title font-large font-medium-xlarge mb-3xsmall mb-medium-2xsmall">
+        <slot name="title" />
+      </h3>
+      <p class="feature-body font-medium-large mb-0">
+        <slot name="body" />
+      </p>
+    </div>
+  </div>
+  {hasContent && <slot />}
+</div>

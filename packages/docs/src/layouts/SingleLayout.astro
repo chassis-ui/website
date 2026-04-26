@@ -1,0 +1,41 @@
+---
+/**
+ * Single Layout
+ *
+ * Simple single-column layout for standalone pages.
+ */
+
+import BaseLayout from './BaseLayout.astro'
+
+interface Props {
+  /** Page description */
+  description: string
+  /** Page title */
+  title: string
+}
+
+const { description, title } = Astro.props
+---
+
+<BaseLayout {...Astro.props} layout="single">
+  <Fragment slot="main">
+    <header class="py-xlarge border-bottom">
+      <div class="container-2xlarge cxd-gutter pt-medium-1 pb-medium-4">
+        <div class="row">
+          <div class="col-xlarge-8">
+            <h1 class="cxd-title mt-0">{title}</h1>
+            <p class="cxd-subtitle">{description}</p>
+            <slot name="header-content" />
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="cxd-content order-1 py-xlarge" id="content">
+      <div class="container-2xlarge cxd-gutter">
+        <slot />
+        <slot name="main-content" />
+      </div>
+    </main>
+  </Fragment>
+</BaseLayout>

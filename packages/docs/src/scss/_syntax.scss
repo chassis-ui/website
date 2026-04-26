@@ -1,0 +1,160 @@
+:root,
+[data-cx-theme="light"] {
+  // GitHub Light Theme
+  --base00: #fff;
+  --base01: #f6f8fa;
+  --base02: #e1e4e8;
+  --base03: #6a737d; // Comments
+  --base04: #586069;
+  --base05: #24292e; // Default text
+  --base06: #24292e;
+  --base07: #22863a; // Tags/Classes
+  --base08: #d73a49; // Keywords/Important
+  --base09: #005cc5; // Numbers/Properties
+  --base0A: #005cc5; // Variables
+  --base0B: #6f42c1; // Functions
+  --base0C: #032f62; // Strings
+  --base0D: #6f42c1; // Attributes
+  --base0E: #d73a49; // Keywords
+  --base0F: #e36209; // References
+}
+
+@include color-mode(dark, true) {
+  // GitHub Dark Theme
+  --base00: #0d1117;
+  --base01: #161b22;
+  --base02: #21262d;
+  --base03: #8b949e; // Comments
+  --base04: #6e7681;
+  --base05: #c9d1d9; // Default text
+  --base06: #c9d1d9;
+  --base07: #7ee787; // Tags/Classes
+  --base08: #ff7b72; // Keywords/Important
+  --base09: #79c0ff; // Numbers/Properties
+  --base0A: #79c0ff; // Variables
+  --base0B: #d2a8ff; // Functions
+  --base0C: #a5d6ff; // Strings
+  --base0D: #d2a8ff; // Attributes
+  --base0E: #ff7b72; // Keywords
+  --base0F: #ffa657; // References
+}
+
+// Shell prompts
+.language-bash .line::before,
+.language-sh .line::before {
+  display: inline-block;
+  color: var(--base03);
+  content: "$ ";
+  user-select: none;
+}
+
+.language-powershell .line::before {
+  display: inline-block;
+  color: var(--base0C);
+  content: "PM> ";
+  user-select: none;
+}
+
+// Token styles
+.token {
+  &.comment,
+  &.prolog,
+  &.doctype,
+  &.cdata {
+    color: var(--base03);
+  }
+
+  &.punctuation {
+    color: var(--base05);
+  }
+
+  &.property {
+    color: var(--base0A);
+  }
+
+  &.tag {
+    color: var(--base08);
+  }
+
+  &.boolean,
+  &.number {
+    color: var(--base09);
+  }
+
+  &.constant,
+  &.symbol,
+  &.deleted {
+    color: var(--base08);
+  }
+
+  &.attr-name,
+  &.string,
+  &.char,
+  &.builtin,
+  &.inserted {
+    color: var(--base0C);
+  }
+
+  &.operator,
+  &.entity,
+  &.url {
+    color: var(--base05);
+  }
+
+  &.atrule,
+  &.attr-value,
+  &.keyword {
+    color: var(--base0E);
+  }
+
+  &.function {
+    color: var(--base0B);
+  }
+
+  &.selector,
+  &.class-name {
+    color: var(--base07);
+  }
+
+  &.regex,
+  &.important {
+    color: var(--base0A);
+  }
+
+  &.variable {
+    color: var(--base08);
+  }
+
+  &.important,
+  &.bold {
+    font-weight: $font-weight-bold;
+  }
+
+  &.italic {
+    font-style: italic;
+  }
+
+  &.entity {
+    cursor: help;
+  }
+}
+
+.language-diff {
+  .token {
+    &.deleted {
+      color: $red-400;
+      background-color: transparent;
+    }
+    &.inserted {
+      color: $green-400;
+      background-color: transparent;
+    }
+  }
+}
+
+.language-bash,
+.language-sh {
+  .token.comment {
+    color: var(--base03);
+  }
+}

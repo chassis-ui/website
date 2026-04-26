@@ -1,0 +1,71 @@
+---
+title: Introducing Chassis — A Design System Built for the Real World
+description: Chassis is now publicly available. A look at what it is, the problems it solves, and the tools it ships with.
+author: Özgür Güneş
+pubDate: 2026-04-24
+tags: announcement, design-systems, css, tokens, components
+---
+
+# Introducing Chassis — A Design System Built for the Real World
+
+Chassis is now publicly available.
+
+It's a design system built around one core idea: that enterprise product teams face a different class of problem than the ones most design tools are designed to solve. Multiple brands, multiple platforms, distributed teams, evolving token definitions — and an expectation that everything stays consistent.
+
+Chassis is a set of modular, independently adoptable packages that address each of those problems with a shared architecture.
+
+## The problem
+
+Most design systems are built to serve a single product with a single brand. That works fine — until the organisation grows, a new platform is introduced, or a rebrand touches hundreds of components.
+
+At that point, the gaps appear: tokens defined in one place but managed in three others, design decisions that exist only in Figma, CSS written to match specs that have already changed, icons living in Slack threads and shared drives.
+
+Chassis is designed for teams that have already hit these problems, or can see them coming.
+
+## What Chassis ships
+
+Chassis is organised into five packages. Each can be adopted independently or used together.
+
+### Tokens
+
+[Chassis Tokens](/tokens) provides the token architecture. It defines a structured layer of design decisions — colours, spacing, typography, motion — and transforms them into platform-ready outputs using Style Dictionary and Tokens Studio.
+
+A single token definition feeds web, mobile, and any other platform that needs it. Swap the brand collection; every output updates automatically.
+
+### CSS
+
+[Chassis CSS](/css) is a CSS framework built entirely from the token layer. Every utility class, every component style, every responsive helper is generated from token values — not hardcoded.
+
+Utility classes are named to match Figma variables, so there's no translation layer between a design spec and the code that implements it.
+
+### Figma
+
+[Chassis Figma](/figma) is the component library for design work. Built with Figma variables and mapped to the same token definitions as the CSS layer.
+
+Switching a variable collection switches the brand, application, or colour mode — and every component adapts automatically. Documentation pages are included per component file, covering variants, props, spacing specs, and the tokens each component references.
+
+### Icons
+
+[Chassis Icons](/icons) provides a structured icon library and distribution workflow. Icons are organised with consistent naming conventions, built into multiple usage formats — SVG sprites, individual files, icon fonts — and distributed as a versioned package.
+
+Design and development work from the same source, with the same names, at the same version.
+
+### Assets
+
+[Chassis Assets](/assets) manages the distribution of brand assets across products and platforms. Fonts, images, and other static files are stored in a structured, predictable layout and built into platform-optimised outputs with a single script.
+
+---
+
+## How the pieces fit together
+
+The five packages share an architecture. Tokens are the foundation. CSS consumes them. Figma reflects them. Icons and assets are distributed alongside them.
+
+A change at the token level propagates outward — into CSS variables, into Figma variable collections, into built outputs. That's what makes Chassis suitable for multi-brand, multi-platform work: the source of truth is shared, not copied.
+
+## Who it's for
+
+Chassis is practical for any team building and maintaining a design system — from a small product team looking for consistency to a large organisation managing multiple brands across web and native platforms.
+
+It's open source under the MIT licence and available now. The [getting started guide](/getting-started) covers how to install and configure each package.
+
+Feedback, issues, and contributions are welcome via [GitHub](https://github.com/chassis-ui).

@@ -1,0 +1,27 @@
+---
+/**
+ * Scripts
+ *
+ * JavaScript imports for site functionality.
+ */
+
+import { getChassisJsProps } from '../../libs/chassis'
+import type { Layout } from '../../libs/layout'
+
+interface Props {
+  /** Current layout context */
+  layout: Layout
+}
+
+const { layout } = Astro.props
+---
+
+<script is:inline {...getChassisJsProps()}></script>
+
+<script src="../../js/search.js"></script>
+
+{layout === 'docs' && <script src="../../js/sidebar.js" />}
+
+<script src="../../js/icon-loader.js"></script>
+
+<slot name="scripts" />
