@@ -40,7 +40,18 @@ export default defineConfig([
     }
   },
   {
+    files: ['api/**/*.ts'],
+    languageOptions: {
+      globals: { ...globals.node },
+      parser: tseslint.parser,
+      parserOptions: {
+        project: './api/tsconfig.json'
+      }
+    }
+  },
+  {
     files: ['**/*.ts', '**/*.astro/*.js'],
+    ignores: ['api/**'],
     languageOptions: {
       globals: { ...globals.node, ...globals.browser },
       parser: tseslint.parser,

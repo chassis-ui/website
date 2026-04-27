@@ -216,26 +216,35 @@ import Code from '@shortcodes/Code.astro'
     const originalText = button.textContent
     button.textContent = 'Sending…'
 
+    let response: Response | undefined
     try {
-      const response = await fetch('/api/contact', {
+      response = await fetch('/api/contact', {
         method: 'POST',
         body: new FormData(form)
       })
-
-      const json = (await response.json()) as { ok?: boolean; error?: string }
-
-      if (response.ok && json.ok) {
-        form.reset()
-        messageEl.textContent = "Thank you! We'll be in touch soon."
-        messageEl.classList.add('fg-success')
-      } else {
-        messageEl.textContent = json.error ?? 'Something went wrong. Please try again.'
-        messageEl.classList.add('fg-danger')
-        button.disabled = false
-        button.textContent = originalText
-      }
     } catch {
       messageEl.textContent = 'Network error. Please check your connection and try again.'
+      messageEl.classList.add('fg-danger')
+      button.disabled = false
+      button.textContent = originalText
+      messageEl.hidden = false
+      return
+    }
+
+    let json: { ok?: boolean; error?: string } | undefined
+    try {
+      json = (await response.json()) as { ok?: boolean; error?: string }
+    } catch {
+      // API returned non-JSON (e.g. HTML error page)
+    }
+
+    if (response.ok && json?.ok) {
+      form.reset()
+      messageEl.textContent = "Thank you! We'll be in touch soon."
+      messageEl.classList.add('fg-success')
+    } else {
+      messageEl.textContent =
+        json?.error ?? `Something went wrong (${response.status}). Please try again.`
       messageEl.classList.add('fg-danger')
       button.disabled = false
       button.textContent = originalText
