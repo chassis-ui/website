@@ -23,6 +23,15 @@ export function getReadingTime(content: string): string {
 }
 
 /**
+ * Normalize tags (string | string[] | undefined) to a clean array of strings.
+ */
+export function tagsToArray(tags: string | string[] | undefined): string[] {
+  if (!tags) return []
+  const arr = Array.isArray(tags) ? tags : tags.split(',')
+  return arr.map((t) => t.trim()).filter(Boolean)
+}
+
+/**
  * Generate blog post URL with date structure
  */
 export function getBlogPostUrl(post: any): string {

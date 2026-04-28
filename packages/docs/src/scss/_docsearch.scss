@@ -1,53 +1,68 @@
 // stylelint-disable selector-class-pattern
 
 :root {
+  /* Colors */
   --docsearch-primary-color: var(--cx-primary);
+  --docsearch-soft-primary-color: var(--cx-primary-fg-subtle);
+  --docsearch-subtle-color: var(--cx-border-subtle);
   --docsearch-text-color: var(--cx-fg-main);
-  --docsearch-spacing: var(--cx-space-medium);
-  // --docsearch-icon-stroke-width: 1.4;
-  --docsearch-highlight-color: var(--cx-primary);
-  --docsearch-muted-color: var(--cx-fg-subtle);
+  --docsearch-error-color: var(--cx-danger-fg-main);
+  --docsearch-success-color: var(--cx-success-fg-main);
+  --docsearch-secondary-text-color: var(--cx-fg-subtle);
+  --docsearch-background-color: var(--cx-bg-main);
+  --docsearch-icon-color: var(--cx-fg-subtle);
   --docsearch-container-background: var(--cx-black-dim-main);
   --docsearch-logo-color: var(--cx-primary);
-  // --docsearch-modal-width: 560px;
+  --docsearch-muted-color: var(--cx-fg-subtle);
+  --docsearch-muted-color-darker: var(--cx-fg-slight);
+
+  /* Spacing & Layout */
+  --docsearch-spacing: var(--cx-space-medium);
+  --docsearch-border-radius: var(--cx-border-radius-medium);
+  --docsearch-icon-stroke-width: var(--cx-border-width-medium);
+
+  /* Highlights & Focus */
+  --docsearch-focus-color: var(--cx-primary);
+  --docsearch-highlight-color: var(--cx-primary);
+
+  /* Button */
+  --docsearch-search-button-background: var(--cx-bg-main);
+  --docsearch-search-button-text-color: var(--cx-fg-subtle);
+
+  /* Modal */
+  --docsearch-modal-width: 640px;
   // --docsearch-modal-height: 600px;
+  // --docsearch-modal-variable-height: 60dvh;
   --docsearch-modal-background: var(--cx-bg-even);
-  --docsearch-modal-shadow: var(--cx-box-shadow-large); // inset 1px 1px 0 0 #2c2e40, 0 3px 8px 0 #000309;
+  --docsearch-modal-shadow: var(--cx-box-shadow-large);
+
+  /* Searchbox */
   // --docsearch-searchbox-height: 56px;
-  --docsearch-searchbox-background: var(--cx-bg-main);
-  --docsearch-searchbox-focus-background: var(--cx-bg-hover);
-  // --docsearch-searchbox-shadow: inset 0 0 0 2px var(--docsearch-primary-color);
+  // --docsearch-searchbox-initial-height: 56px;
+  --docsearch-searchbox-background: var(--cx-bg-even);
+  --docsearch-searchbox-focus-background: var(--cx-bg-main);
+  // --docsearch-actions-width: 99px;
+  // --docsearch-actions-height: 44px;
+
+  /* Hit */
   // --docsearch-hit-height: 56px;
   --docsearch-hit-color: var(--cx-fg-main);
-  --docsearch-hit-active-color: var(--cx-primary-fg-solid);
+  --docsearch-hit-highlight-color: var(--cx-bg-highlight);
   --docsearch-hit-background: var(--cx-bg-main);
-  --docsearch-hit-shadow: none;
-  // --docsearch-key-gradient: linear-gradient(-26.5deg, #565872, #31355b);
-  // --docsearch-key-shadow: inset 0 -2px 0 0 #282d55, inset 0 0 1px 1px #51577d, 0 2px 2px 0 rgba(3, 4, 9, .3);
-  // --docsearch-key-pressed-shadow: inset 0 -2px 0 0 #cdcde6, inset 0 0 1px 1px #fff, 0 1px 1px 0 rgba(30, 35, 90, .4);
-  // --docsearch-footer-height: 44px;
-  --docsearch-footer-background: var(--cx-bg-evident);
-  --docsearch-footer-shadow: none; // inset 0 1px 0 0 rgba(73, 76, 106, .5), 0 -4px 8px 0 rgba(0, 0, 0, .2);
-}
 
-@include color-mode(dark, true) {
-  // From here, the values are copied from https://cdn.jsdelivr.net/npm/@docsearch/css@3
-  // in html[data-theme="dark"] selector
-  // and are slightly modified for formatting purpose
-  // --docsearch-text-color: var(--cx-fg-main);
-  // --docsearch-container-background: var(--cx-dim-main);
-  // --docsearch-modal-background: var(--cx-bg-even);
-  // --docsearch-modal-shadow: var(--cx-box-shadow-large); // inset 1px 1px 0 0 #2c2e40, 0 3px 8px 0 #000309;
-  // --docsearch-searchbox-background: var(--cx-bg-main, #fc0);
-  // --docsearch-searchbox-focus-background: var(--cx-bg-hover, #fc0);
-  // --docsearch-hit-color: #bec3c9;
-  // --docsearch-hit-shadow: none;
-  // --docsearch-hit-background: #090a11;
-  // --docsearch-key-gradient: linear-gradient(-26.5deg, #565872, #31355b);
-  // --docsearch-key-shadow: inset 0 -2px 0 0 #282d55, inset 0 0 1px 1px #51577d, 0 2px 2px 0 rgba(3, 4, 9, .3);
-  // --docsearch-footer-background: #1e2136;
-  // --docsearch-footer-shadow: inset 0 1px 0 0 rgba(73, 76, 106, .5), 0 -4px 8px 0 rgba(0, 0, 0, .2);
-  // --docsearch-muted-color: #7f8497;
+  /* Key */
+  --docsearch-key-background: var(--cx-bg-main);
+  --docsearch-key-color: var(--cx-fg-subtle);
+  --docsearch-key-pressed-shadow: var(--cx-box-shadow-small);
+
+  /* Footer */
+  --docsearch-footer-height: 52px;
+  --docsearch-footer-background: var(--cx-bg-evident);
+  --docsearch-footer-shadow: var(--cx-box-shadow-small);
+
+  /* Dropdown Menu */
+  --docsearch-dropdown-menu-background: var(--docsearch-hit-background);
+  --docsearch-dropdown-menu-item-hover-background: var(--docsearch-modal-background);
 }
 
 .cxd-search {
@@ -61,17 +76,11 @@
   }
   @include media-breakpoint-up(2xlarge) {
     left: 50%;
-    width: 280px;
-    margin-left: 12rem;
+    margin-left: 16rem;
   }
-
-
 }
 
 .DocSearch-Container {
-  // --docsearch-muted-color: var(--cx-fg-subtle);
-  // --docsearch-hit-shadow: none;
-
   position: fixed;
   z-index: 2000; // Make sure to be over all components showcased in the documentation
   cursor: auto; // Needed because of [role="button"] in Algolia search modal. Remove once https://github.com/algolia/docsearch/issues/1370 is tackled.
@@ -82,15 +91,8 @@
 }
 
 .DocSearch-Button {
-  --docsearch-searchbox-background: var(--cx-bg-main);
-  --docsearch-searchbox-color: var(--cx-fg-subtle);
-  --docsearch-searchbox-focus-background: var(--cx-bg-hover);
-  --docsearch-searchbox-shadow: none;
-  --docsearch-text-color: var(--cx-fg-subtle);
-  --docsearch-muted-color: var(--cx-fg-subtle);
-
   width: 100%;
-  height: 38px; // Match Chassis - CSS inputs
+  height: 38px; // Match Chassis inputs
   margin: 0;
   border: var(--cx-border-width-medium) solid var(--cx-border-subtle);
   @include border-radius(var(--cx-border-radius-medium));
@@ -102,8 +104,6 @@
   &:active,
   &:focus,
   &:hover {
-    // border-color: rgba($cxd-accent, 1);
-
     .DocSearch-Search-Icon {
       opacity: 1;
     }
@@ -132,7 +132,7 @@
 
 .DocSearch-Button-Keys {
   min-width: 0;
-  padding: .25rem;
+  padding: .125rem .5rem;
   background: var(--cx-bg-evident);
   @include border-radius(var(--cx-border-radius-small));
 }
@@ -140,31 +140,29 @@
 .DocSearch-Button-Key {
   top: 0;
   width: auto;
-  // height: 1.25rem;
-  padding-right: .125rem;
-  padding-left: .125rem;
-  margin-right: 0;
-  // font-size: .875rem;
+  padding: 0;
+  @include font-size(.875rem);
   background: none;
+  border: 0;
   box-shadow: none;
 }
 
 .DocSearch-Commands-Key {
-  // padding-left: 1px;
-  // font-size: .875rem;
-  // background-color: rgba($black, .1);
-  background-image: none;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  color: var(--cx-icon-subtle);
+  background: none;
   box-shadow: none;
-}
-
-.DocSearch-Form {
-  @include border-radius(var(--cx-border-radius));
-}
-
-.DocSearch-Hits {
-  mark {
-    padding: 0;
+  @include border-radius(var(--cx-border-radius-small));
+  .DocSearch-Escape-Key {
+    @include font-size(var(--cx-font-size-xsmall));
   }
+}
+
+.DocSearch-Action:hover,
+.DocSearch-AskAi-Return:hover {
+  background: none;
 }
 
 .DocSearch-Hit {
@@ -174,12 +172,12 @@
   a {
     @include border-radius(0);
     border: solid var(--cx-border-subtle);
-    border-width: 0 1px 1px;
+    border-width: 0 var(--cx-border-width) var(--cx-border-width);
   }
 
   &:first-child a {
     @include border-top-radius(var(--cx-border-radius));
-    border-top-width: 1px;
+    border-top-width: var(--cx-border-width);
   }
   &:last-child a {
     @include border-bottom-radius(var(--cx-border-radius));
@@ -189,6 +187,22 @@
 .DocSearch-Hit-icon {
   display: flex;
   align-items: center;
+  margin-right: var(--cx-space-xsmall);
+}
+
+.DocSearch-Hit-content-wrapper {
+  gap: 0;
+}
+
+.DocSearch-Hit-action-button:focus,
+.DocSearch-Hit-action-button:hover {
+  color: var(--cx-primary-fg-main);
+  background: none;
+}
+
+.DocSearch-Hit-action-button:focus path,
+.DocSearch-Hit-action-button:hover path {
+  fill: none;
 }
 
 // Fix --docsearch-logo-color that doesn't do anything

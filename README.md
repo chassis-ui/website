@@ -21,6 +21,9 @@ Chassis Website is the main hub for the Chassis Design System, featuring compreh
 
 ## Quick Start
 
+> [!WARNING]
+> This project uses `pnpm` for package management. Install it globally with `npm install -g pnpm` before running the commands below.
+
 ### Prerequisites
 
 - Node.js 18.0.0 or higher
@@ -143,14 +146,14 @@ This project is part of the Chassis Design System's multi-repository architectur
 
 | Project | Description |
 |---------|-------------|
-| **chassis-website** | **Main website and shared documentation package (this repository)** |
+| **chassis-website** | **Main website and home of `@chassis-ui/docs` (this repository)** |
 | [chassis-css](https://github.com/chassis-ui/css) | CSS framework and component library |
 | [chassis-tokens](https://github.com/chassis-ui/tokens) | Design token generation and management |
 | [chassis-icons](https://github.com/chassis-ui/icons) | Icon library and build toolkit |
 | [chassis-assets](https://github.com/chassis-ui/assets) | Multi-platform asset management |
 | [chassis-figma](https://github.com/chassis-ui/figma) | Figma component documentation |
 
-All documentation sites share the `@chassis-ui/docs` package for consistent layouts, components, and styling.
+This monorepo publishes [`@chassis-ui/docs`](https://www.npmjs.com/package/@chassis-ui/docs) to npm. All sibling repositories install it as a dependency to share layouts, components, and styling across their documentation sites.
 
 ### Deployment
 

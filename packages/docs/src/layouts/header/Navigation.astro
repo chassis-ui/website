@@ -17,7 +17,7 @@ interface Props {
   title: string
 }
 
-const { layout, title } = Astro.props
+const { layout } = Astro.props
 const { pathname } = Astro.url
 const isActive = (path: string) => {
   if (path === '/') {
@@ -75,6 +75,7 @@ const isActive = (path: string) => {
 
     <div
       class="offcanvas-large offcanvas-end flex-grow-1"
+      role="dialog"
       tabindex="-1"
       id="cxdNavbar"
       aria-labelledby="cxdNavbarOffcanvasLabel"
@@ -90,26 +91,18 @@ const isActive = (path: string) => {
       </div>
 
       <div class="offcanvas-body p-large pt-0 p-large-0">
-        <hr class="d-large-none text-white-50" />
+        <hr class="d-large-none" />
         <ul class="navbar-nav flex-row flex-wrap cxd-navbar-nav mx-0 mx-large-medium">
           <NavLink active={isActive('/tokens')} href="/tokens">Tokens</NavLink>
           <NavLink active={isActive('/figma')} href="/figma">Figma</NavLink>
           <NavLink active={isActive('/css')} href="/css">CSS</NavLink>
           <NavLink active={isActive('/assets')} href="/assets">Assets</NavLink>
           <NavLink active={isActive('/icons')} href="/icons">Icons</NavLink>
-          <li class="nav-item dropdown ms-medium">
-            <a
-              class="nav-link dropdown-toggle"
-              href="/#"
-              role="button"
-              data-cx-toggle="dropdown"
-              aria-expanded="false">More</a
-            >
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/examples">Examples</a></li>
-              <li><a class="dropdown-item" href="/blog">Blog</a></li>
-            </ul>
+          <li class="nav-item col-12 col-large-auto d-large-flex">
+            <div class="vr d-none d-large-flex my-auto mx-large-2"></div>
+            <hr class="d-large-none" />
           </li>
+          <NavLink active={isActive('/examples')} href="/examples">Examples</NavLink>
         </ul>
 
         <hr class="d-large-none" />
@@ -134,7 +127,7 @@ const isActive = (path: string) => {
             <small class="d-large-none ms-xsmall">X</small>
           </NavLink>
           <li class="nav-item col-12 col-large-auto">
-            <div class="vr d-none d-large-flex h-100 mx-large-2 text-white"></div>
+            <div class="vr d-none d-large-flex h-100 mx-large-2"></div>
             <hr class="d-large-none" />
           </li>
 

@@ -1,70 +1,42 @@
 ---
 import BlogLayout from '@layouts/BlogLayout.astro'
 import { blogPages } from '@libs/content'
+import { tagsToArray } from '@libs/blog'
 
-const tags = new Map()
+const tagCounts = new Map<string, number>()
 
 blogPages.forEach((page) => {
-  if (page.data.tags) {
-    const blogTags = Array.isArray(page.data.tags)
-      ? page.data.tags
-      : page.data.tags.split(',').map((tag) => tag.trim())
-    blogTags.forEach((tag: any) => {
-      tags.set(tag, (tags.get(tag) || 0) + 1)
-    })
-  }
+  tagsToArray(page.data.tags).forEach((tag) => {
+    tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
+  })
 })
 
-const sortedTags = Array.from(tags.entries()).sort((a, b) => b[1] - a[1])
+const sortedTags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1])
 
 const frontmatter = {
-  title: 'Browse Blog Posts by Tags',
-  description: `Explore ${blogPages.length} blog posts organized by tags`
+  title: 'Blog posts by tags',
+  description: `Explore ${blogPages.length} blog posts organized by ${tagCounts.size} tags`
 }
 ---
 
 <BlogLayout frontmatter={frontmatter}>
-  <nav aria-label="breadcrumb">
-    <div class="border-bottom border-subtle mb-medium">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-page"><a href="/blog">Blog</a></li>
-        <li class="breadcrumb-page">Tags</li>
-      </ol>
-    </div>
-  </nav>
-  <div class="border-bottom border-subtle">
-    <h1>{frontmatter.title}</h1>
-    <p class="lead">{frontmatter.description}</p>
-  </div>
+  <ol class="breadcrumb" slot="breadcrumb">
+    <li class="breadcrumb-page"><a href="/blog">Blog</a></li>
+    <li class="breadcrumb-page active" aria-current="page">Tags</li>
+  </ol>
 
-  <div class="row my-2xlarge">
-    <div class="col-medium-6">
-      <h2>Tags</h2>
-      <p class="text-muted">Icons labeled by style, type, or characteristics</p>
-      <div class="d-flex flex-wrap gap-medium mb-4">
-        {
-          sortedTags.map(([tag, count]) => (
-            <a href={`/blog/tags/${tag}/`} class="button outline border-subtle">
-              {tag}
-              <span class="badge default ms-2xsmall">{count}</span>
-            </a>
-          ))
-        }
-      </div>
-    </div>
-  </div>
-
-  <section class="surface border p-4 rounded">
-    <h6 class="fg-subtle">Quick Stats</h6>
-    <div class="row text-center">
-      <div class="col-4">
-        <div class="font-5xlarge font-strong">{blogPages.length}</div>
-        <div>Total Blog Posts</div>
-      </div>
-      <div class="col-4">
-        <div class="font-5xlarge font-strong">{tags.size}</div>
-        <div>Tags</div>
-      </div>
+  <section class="mb-2xlarge">
+    <h2>Tags</h2>
+    <p>Topics covered across the blog</p>
+    <div class="d-flex flex-wrap gap-medium">
+      {
+        sortedTags.map(([tag, count]) => (
+          <a href={`/blog/tags/${tag}/`} class="button smooth default">
+            {tag}
+            <span class="badge default ms-2xsmall">{count}</span>
+          </a>
+        ))
+      }
     </div>
   </section>
 </BlogLayout>

@@ -26,6 +26,8 @@ interface Props {
 
 const { frontmatter, headings, id } = Astro.props
 
+type DocSection = NonNullable<typeof frontmatter.sections>[number]
+
 // Extract the directory/section from the ID (format: "directory/filename.mdx")
 const parentDirectory = id.includes('/') ? id.split('/')[0] : ''
 
@@ -44,6 +46,7 @@ if (frontmatter.toc) {
     <aside class="cxd-sidebar">
       <div
         class="offcanvas-large offcanvas-start"
+        role="dialog"
         tabindex="-1"
         id="cxdSidebar"
         aria-labelledby="cxdSidebarOffcanvasLabel"
@@ -139,7 +142,7 @@ if (frontmatter.toc) {
         {
           frontmatter.sections && (
             <div class="row g-xlarge">
-              {frontmatter.sections.map((section) => (
+              {frontmatter.sections.map((section: DocSection) => (
                 <div class="col-medium-6">
                   <a
                     class="d-block text-decoration-none"

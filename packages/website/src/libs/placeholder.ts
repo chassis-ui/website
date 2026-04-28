@@ -1,6 +1,5 @@
 import type { HTMLAttributes } from 'astro/types'
 import * as htmlparser2 from 'htmlparser2'
-import { getData } from './data'
 
 const placeholderRegex = /<Placeholder\s+([^>]+)\/>/g
 
@@ -125,8 +124,8 @@ function getOptionsWithDefaults(options: Partial<PlaceholderOptions>) {
   const optionsWithDefaults = Object.assign(
     {},
     {
-      background: getData('grays')[5].hex,
-      color: getData('grays')[2].hex,
+      background: '#d4d9da', // gray-300
+      color: '#6f8085', // gray-600
       height: '180',
       markup: 'svg',
       title: 'Placeholder',

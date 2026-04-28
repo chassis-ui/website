@@ -30,23 +30,25 @@ const staticFileAliases = {
 // A list of pages that will be excluded from the sitemap.
 const sitemapExcludes = ['/404', '/docs']
 
-// Proxied sub-sites that are not pages in this Astro project but should appear in the sitemap.
-const sitemapProxiedPaths = ['/tokens', '/assets', '/css', '/figma', '/icons']
-
 const headingsRangeRegex = new RegExp(`^h[${getConfig().anchors.min}-${getConfig().anchors.max}]$`)
 
 export function chassis(): AstroIntegration[] {
   const sitemapExcludedUrls = sitemapExcludes.map((url) => `${getConfig().baseURL}${url}/`)
-  const sitemapCustomPages = sitemapProxiedPaths.map((url) => `${getConfig().baseURL}${url}/`)
 
   configurePrism()
+
+  // `astro check` doesn't need static assets copied into _site. Skip the copy hooks
+  // so type-checking works without a built vendor/assets submodule (e.g. in CI).
+  let isCheck = false
 
   return [
     chassisAutoImport(),
     {
       name: 'chassis-integration',
       hooks: {
-        'astro:config:setup': ({ addWatchFile, updateConfig }) => {
+        'astro:config:setup': ({ addWatchFile, command, updateConfig }) => {
+          isCheck = command === 'sync'
+
           // Reload the config when the integration is modified.
           addWatchFile(path.join(getDocsFsPath(), 'src/libs/astro.ts'))
 
@@ -74,6 +76,7 @@ export function chassis(): AstroIntegration[] {
           })
         },
         'astro:config:done': () => {
+          if (isCheck) return
           cleanPublicDirectory()
           copyStatic()
           copyChassisAssets()
@@ -89,7 +92,6 @@ export function chassis(): AstroIntegration[] {
     // https://github.com/withastro/astro/issues/6475
     mdx() as AstroIntegration,
     sitemap({
-      customPages: sitemapCustomPages,
       filter: (page) => sitemapFilter(page, sitemapExcludedUrls)
     }),
     {
@@ -112,8 +114,6 @@ function copyChassisAssets() {
   const source = getChassisAssetsFsPath()
   const destination = path.join(getDocsPublicFsPath(), 'static')
 
-  // fs.mkdirSync(destination, { recursive: true })
-  // copyStaticRecursively(source, destination)
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(source, destination, { recursive: true })
 }
@@ -173,7 +173,12 @@ function copyStaticRecursively(source: string, destination: string) {
 }
 
 function sitemapFilter(page: string, excludedUrls: string[]) {
-  if (excludedUrls.includes(page)) {
+  const baseURL = getConfig().baseURL.replace(/\/$/, '')
+  if (
+    excludedUrls.includes(page) ||
+    page.startsWith(`${baseURL}/test`) ||
+    page.startsWith(`${baseURL}/docs/test`)
+  ) {
     return false
   }
 

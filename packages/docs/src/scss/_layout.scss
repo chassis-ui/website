@@ -23,7 +23,8 @@
 
 .cxd-intro {
   grid-area: intro;
-  margin-top: 2rem;
+  max-width: 960px;
+  margin: 2rem auto 0;
 }
 
 .cxd-main {
@@ -61,12 +62,14 @@
 .cxd-content {
   grid-area: content;
   min-width: 1px; // Fix width when cxd-content contains a `<pre>` https://github.com/chassis-ui/css/issues/25410
+  max-width: 960px;
+  margin: 0 auto;
 }
 
-.cxd-content,
-.cxd-intro {
-  width: 100%;
-  max-width: 960px;
-  margin-right: auto;
-  margin-left: auto;
-}
+// .cxd-content,
+// .cxd-intro {
+//   width: 100%;
+//   max-width: 960px;
+//   margin-right: auto;
+//   margin-left: auto;
+// }
