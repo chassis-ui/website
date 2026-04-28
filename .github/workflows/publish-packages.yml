@@ -54,8 +54,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10.33.2 # keep in sync with packageManager in package.json
 
       - name: Setup Node.js
         uses: actions/setup-node@v5

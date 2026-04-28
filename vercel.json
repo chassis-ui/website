@@ -2,6 +2,12 @@
   "buildCommand": "pnpm site:build",
   "outputDirectory": "_site",
   "trailingSlash": true,
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "staging": true
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
