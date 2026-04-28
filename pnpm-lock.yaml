@@ -64,7 +64,7 @@ importers:
         specifier: ^8.59.0
         version: 8.59.0(eslint@9.39.4)(typescript@5.9.3)
       vnu-jar:
-        specifier: 26.4.16
+        specifier: ^26.4.16
         version: 26.4.16
       zod:
         specifier: ^4.3.6
