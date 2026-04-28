@@ -15,13 +15,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2 # keep in sync with packageManager in package.json
+
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '22'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
 
       - name: Install dependencies
         run: pnpm install
@@ -52,13 +54,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2 # keep in sync with packageManager in package.json
+
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '22'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
 
       - name: Install dependencies
         run: pnpm install
@@ -76,6 +80,8 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2 # keep in sync with packageManager in package.json
 
       - name: Install dependencies
         run: pnpm install
