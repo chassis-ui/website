@@ -17,7 +17,7 @@ interface Props {
   title: string
 }
 
-const { layout, title } = Astro.props
+const { layout } = Astro.props
 const { pathname } = Astro.url
 const isActive = (path: string) => {
   if (path === '/') {
