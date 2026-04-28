@@ -2,16 +2,13 @@
 
 > Shared Astro layouts, components, and utilities for Chassis documentation sites.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-blue.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
-[![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-blue.svg)](https://www.npmjs.com/package/@chassis-ui/docs) [![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
 
 ## Overview
 
 `@chassis-ui/docs` powers every documentation site in the Chassis ecosystem — the main `chassis-ui.com` website and the per-package docs for `chassis-css`, `chassis-tokens`, `chassis-icons`, `chassis-figma`, and `chassis-assets`. It ships pre-built layouts, navigation components, content-processing utilities, and SCSS helpers so each site stays consistent without duplicating code.
 
-> [!NOTE]
-> This package is developed inside the [`chassis-website`](https://github.com/chassis-ui/website) monorepo at `packages/docs/` and published to npm. Source, issues, and pull requests live in that repository.
+> [!NOTE] This package is developed inside the [`chassis-website`](https://github.com/chassis-ui/website) monorepo at `packages/docs/` and published to npm. Source, issues, and pull requests live in that repository.
 
 ## Installation
 
@@ -57,7 +54,7 @@ import { generateTOC, processImage } from '@chassis-ui/docs'
 ## Exports
 
 | Subpath | Contents |
-|---------|----------|
+| --- | --- |
 | `@chassis-ui/docs` | Library functions: `chassis`, `image`, `layout`, `rehype`, `toc`, `utils` |
 | `@chassis-ui/docs/layouts/*` | `BaseLayout`, `DocsLayout`, `RedirectLayout`, `SingleLayout` |
 | `@chassis-ui/docs/components/*` | `DocsSidebar`, `FeatureCard`, `NavLink`, `ResponsiveImage`, `TableOfContents`, `ThemeToggler` |
@@ -82,7 +79,7 @@ src/
 This package is part of the Chassis Design System's multi-repository architecture:
 
 | Project | Description |
-|---------|-------------|
+| --- | --- |
 | [chassis-website](https://github.com/chassis-ui/website) | **Main website and home of `@chassis-ui/docs` (this package)** |
 | [chassis-css](https://github.com/chassis-ui/css) | CSS framework and component library |
 | [chassis-tokens](https://github.com/chassis-ui/tokens) | Design token generation and management |

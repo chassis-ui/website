@@ -37,12 +37,18 @@ export function chassis(): AstroIntegration[] {
 
   configurePrism()
 
+  // `astro check` doesn't need static assets copied into _site. Skip the copy hooks
+  // so type-checking works without a built vendor/assets submodule (e.g. in CI).
+  let isCheck = false
+
   return [
     chassisAutoImport(),
     {
       name: 'chassis-integration',
       hooks: {
-        'astro:config:setup': ({ addWatchFile, updateConfig }) => {
+        'astro:config:setup': ({ addWatchFile, command, updateConfig }) => {
+          isCheck = command === 'sync'
+
           // Reload the config when the integration is modified.
           addWatchFile(path.join(getDocsFsPath(), 'src/libs/astro.ts'))
 
@@ -70,6 +76,7 @@ export function chassis(): AstroIntegration[] {
           })
         },
         'astro:config:done': () => {
+          if (isCheck) return
           cleanPublicDirectory()
           copyStatic()
           copyChassisAssets()
@@ -107,8 +114,6 @@ function copyChassisAssets() {
   const source = getChassisAssetsFsPath()
   const destination = path.join(getDocsPublicFsPath(), 'static')
 
-  // fs.mkdirSync(destination, { recursive: true })
-  // copyStaticRecursively(source, destination)
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(source, destination, { recursive: true })
 }
