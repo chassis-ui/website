@@ -1,98 +1,108 @@
 # @chassis-ui/docs
 
-Shared Astro components and layouts for Chassis documentation sites.
+> Shared Astro layouts, components, and utilities for Chassis documentation sites.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-blue.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
+[![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
 
 ## Overview
 
-This package provides reusable Astro components, layouts, and utilities specifically designed for building documentation websites within the Chassis UI ecosystem. It includes common documentation patterns, styling helpers, and content processing utilities.
+`@chassis-ui/docs` powers every documentation site in the Chassis ecosystem — the main `chassis-ui.com` website and the per-package docs for `chassis-css`, `chassis-tokens`, `chassis-icons`, `chassis-figma`, and `chassis-assets`. It ships pre-built layouts, navigation components, content-processing utilities, and SCSS helpers so each site stays consistent without duplicating code.
+
+> [!NOTE]
+> This package is developed inside the [`chassis-website`](https://github.com/chassis-ui/website) monorepo at `packages/docs/` and published to npm. Source, issues, and pull requests live in that repository.
 
 ## Installation
 
-```bash
-npm install @chassis-ui/docs
-```
-
-or with pnpm:
-
-```bash
+```sh
 pnpm add @chassis-ui/docs
 ```
 
-## Peer Dependencies
+or:
 
-This package requires the following peer dependencies:
+```sh
+npm install @chassis-ui/docs
+```
 
-- `@chassis-ui/css`: Chassis CSS framework
-- `@chassis-ui/icons`: Chassis icon library
-- `@chassis-ui/tokens`: Chassis design tokens
-- `astro`: ^4.0.0 || ^5.0.0
+### Peer Dependencies
+
+```json
+{
+  "astro": "^5.0.0"
+}
+```
+
+In practice, sites also install the rest of the Chassis stack — `@chassis-ui/css`, `@chassis-ui/tokens`, `@chassis-ui/icons` — to render the layouts and styles correctly.
 
 ## Usage
 
-### Importing Components
-
-```typescript
-// Import layouts
-import Layout from '@chassis-ui/docs/layouts/Layout.astro'
+```astro
+---
+import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
 import DocsLayout from '@chassis-ui/docs/layouts/DocsLayout.astro'
+import SingleLayout from '@chassis-ui/docs/layouts/SingleLayout.astro'
 
-// Import components
-import CodeBlock from '@chassis-ui/docs/components/CodeBlock.astro'
-import Callout from '@chassis-ui/docs/components/Callout.astro'
+import TableOfContents from '@chassis-ui/docs/components/TableOfContents.astro'
+import ThemeToggler from '@chassis-ui/docs/components/ThemeToggler.astro'
 
-// Import utilities
-import { generateTOC } from '@chassis-ui/docs'
-import { processImage } from '@chassis-ui/docs'
+import { generateTOC, processImage } from '@chassis-ui/docs'
+---
+
+<SingleLayout title="About" description="…">
+  <slot />
+</SingleLayout>
 ```
 
-### Available Exports
+## Exports
 
-This package exports:
+| Subpath | Contents |
+|---------|----------|
+| `@chassis-ui/docs` | Library functions: `chassis`, `image`, `layout`, `rehype`, `toc`, `utils` |
+| `@chassis-ui/docs/layouts/*` | `BaseLayout`, `DocsLayout`, `RedirectLayout`, `SingleLayout` |
+| `@chassis-ui/docs/components/*` | `DocsSidebar`, `FeatureCard`, `NavLink`, `ResponsiveImage`, `TableOfContents`, `ThemeToggler` |
+| `@chassis-ui/docs/shortcodes/*` | MDX shortcode components |
+| `@chassis-ui/docs/libs/*` | Direct access to individual library modules |
+| `@chassis-ui/docs/js/*` | Client-side scripts |
+| `@chassis-ui/docs/scss/*` | SCSS utilities and partials |
 
-- **Layouts**: Pre-built Astro layouts for documentation pages
-- **Components**: Reusable documentation components (code blocks, callouts, navigation, etc.)
-- **Shortcodes**: MDX-compatible shortcode components
-- **Libraries**: Utility functions for content processing, TOC generation, and more
-- **Styles**: SCSS utilities and mixins
-- **Scripts**: Client-side JavaScript utilities
-
-### Directory Structure
+### Source Layout
 
 ```
 src/
-├── components/     # Astro components
-│   └── shortcodes/ # MDX shortcode components
-├── layouts/        # Page layouts
-├── libs/           # Utility libraries
-├── js/             # Client-side scripts
-└── scss/           # Styling utilities
+├── components/      # Astro components (+ shortcodes/)
+├── layouts/         # Page layouts (+ head/, header/, footer/)
+├── libs/            # Utility libraries
+├── js/              # Client-side scripts
+└── scss/            # Styling utilities
 ```
 
-## Features
+## Chassis Ecosystem
 
-- **Content Processing**: Utilities for processing markdown and MDX content
-- **Table of Contents**: Automatic TOC generation from headings
-- **Image Optimization**: Helper functions for responsive images
-- **Syntax Highlighting**: Code block components with syntax highlighting
-- **Navigation**: Responsive documentation navigation components
-- **Search Integration**: Ready-to-use search components
-- **Accessibility**: WCAG-compliant components with proper ARIA attributes
+This package is part of the Chassis Design System's multi-repository architecture:
 
-## Development
+| Project | Description |
+|---------|-------------|
+| [chassis-website](https://github.com/chassis-ui/website) | **Main website and home of `@chassis-ui/docs` (this package)** |
+| [chassis-css](https://github.com/chassis-ui/css) | CSS framework and component library |
+| [chassis-tokens](https://github.com/chassis-ui/tokens) | Design token generation and management |
+| [chassis-icons](https://github.com/chassis-ui/icons) | Icon library and build toolkit |
+| [chassis-assets](https://github.com/chassis-ui/assets) | Multi-platform asset management |
+| [chassis-figma](https://github.com/chassis-ui/figma) | Figma component documentation |
 
-This package is part of the Chassis UI monorepo. For development instructions, see the main repository documentation.
+All documentation sites in the ecosystem share this package for consistent layouts, components, and styling.
+
+## Contributing
+
+Issues and pull requests are welcome — please file them in [`chassis-ui/website`](https://github.com/chassis-ui/website). For larger changes, open an issue first so we can agree on the approach before you write the code.
 
 ## License
 
 MIT © [Chassis UI](https://github.com/chassis-ui)
 
-## Contributing
-
-Contributions are welcome! Please read the contributing guidelines in the main repository.
-
 ## Links
 
-- [Documentation](https://chassis-ui.com/docs)
-- [GitHub Repository](https://github.com/chassis-ui/website)
-- [Issue Tracker](https://github.com/chassis-ui/website/issues)
-- [Chassis UI Website](https://chassis-ui.com)
+- [chassis-ui.com](https://chassis-ui.com)
+- [npm package](https://www.npmjs.com/package/@chassis-ui/docs)
+- [Source repository](https://github.com/chassis-ui/website/tree/main/packages/docs)
+- [Issue tracker](https://github.com/chassis-ui/website/issues)

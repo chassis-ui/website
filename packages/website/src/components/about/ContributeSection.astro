@@ -11,7 +11,7 @@ const repos = [
   { name: 'chassis-figma', description: 'Figma component library' },
   { name: 'chassis-icons', description: 'Icon library & sprites' },
   { name: 'chassis-assets', description: 'Asset distribution' },
-  { name: 'chassis-website', description: 'This site & shared docs' },
+  { name: 'chassis-website', description: 'This site & shared docs' }
 ]
 ---
 
@@ -21,10 +21,9 @@ const repos = [
       <div class="col-12 col-large-6">
         <h2>Contribute</h2>
         <p class="font-large mb-xlarge">
-          Chassis is shaped by the people using it. File an issue when something is broken,
-          missing, or unclear. Pull requests are welcome for typos, docs, and small fixes —
-          for anything larger, start with an issue so we can agree on the approach before you
-          write the code.
+          Chassis is shaped by the people using it. File an issue when something is broken, missing,
+          or unclear. Pull requests are welcome for typos, docs, and small fixes — for anything
+          larger, start with an issue so we can agree on the approach before you write the code.
         </p>
         <a
           href="https://github.com/chassis-ui"
@@ -37,24 +36,26 @@ const repos = [
       </div>
       <div class="col-12 col-large-6 pt-large-6xlarge">
         <ul class="list-group">
-          {repos.map((repo) => (
-            <li class="list-item">
-              <a
-                href={`https://github.com/chassis-ui/${repo.name}`}
-                class="text-decoration-none d-flex align-items-center gap-medium"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <svg class="icon icon-xlarge icon-default" aria-hidden="true">
-                  <use href="#github-brand"></use>
-                </svg>
-                <div>
-                  <p class="font-code font-strong m-0">{repo.name}</p>
-                  <p class="fg-subtle font-small m-0">{repo.description}</p>
-                </div>
-              </a>
-            </li>
-          ))}
+          {
+            repos.map((repo) => (
+              <li class="list-item">
+                <a
+                  href={`https://github.com/chassis-ui/${repo.name}`}
+                  class="text-decoration-none d-flex align-items-center gap-medium"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg class="icon icon-xlarge icon-default" aria-hidden="true">
+                    <use href="#github-brand" />
+                  </svg>
+                  <div>
+                    <p class="font-code font-strong m-0">{repo.name}</p>
+                    <p class="fg-subtle font-small m-0">{repo.description}</p>
+                  </div>
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </div>
     </div>

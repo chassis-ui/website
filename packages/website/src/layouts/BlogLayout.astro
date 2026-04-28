@@ -30,15 +30,17 @@ const description =
           <div class="col col-large-10 col-2xlarge-8">
             {
               Astro.slots.has('breadcrumb') ? (
-                <nav aria-label="breadcrumb">
-                  <slot name="breadcrumb" />
-                </nav>
-                <h1 class="my-0">{title}</h1>
-
+                <>
+                  <nav aria-label="breadcrumb">
+                    <slot name="breadcrumb" />
+                  </nav>
+                  <h1 class="my-0">{title}</h1>
+                </>
               ) : (
-            <h1 class="mt-0">{title}</h1>
-            <p class="font-lead">{description}</p>
-
+                <>
+                  <h1 class="mt-0">{title}</h1>
+                  <p class="font-lead">{description}</p>
+                </>
               )
             }
           </div>

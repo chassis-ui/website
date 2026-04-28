@@ -60,9 +60,7 @@ Nested list:
 
 ### Blockquote
 
-<Blockquote>
-  Good design is as little design as possible.
-</Blockquote>
+<Blockquote>Good design is as little design as possible.</Blockquote>
 
 <Blockquote attr="Charles Eames">
   The details are not the details. They make the design.
@@ -77,11 +75,13 @@ Nested list:
 </Callout>
 
 <Callout type="warning">
-  This is a **warning** callout. Use it to highlight something the reader should be careful about.
+  This is a **warning** callout. Use it to highlight something the reader should
+  be careful about.
 </Callout>
 
 <Callout type="danger">
-  This is a **danger** callout. Use it for breaking changes or destructive actions.
+  This is a **danger** callout. Use it for breaking changes or destructive
+  actions.
 </Callout>
 
 ---
@@ -146,23 +146,30 @@ Live preview with markup using the `<Example>` shortcode.
 
 ### Button example
 
-<Example code={`<button type="button" class="button primary">Primary</button>
+<Example
+  code={`<button type="button" class="button primary">Primary</button>
 <button type="button" class="button default">Default</button>
-<button type="button" class="button danger">Danger</button>`} />
+<button type="button" class="button danger">Danger</button>`}
+/>
 
 ### Badge example
 
-<Example code={`<span class="badge primary">New</span>
+<Example
+  code={`<span class="badge primary">New</span>
 <span class="badge success smooth">Stable</span>
 <span class="badge warning smooth">Beta</span>
-<span class="badge danger smooth">Deprecated</span>`} />
+<span class="badge danger smooth">Deprecated</span>`}
+/>
 
 ### Preview only (no markup)
 
-<Example showMarkup={false} code={`<div class="d-flex gap-medium p-medium bg-even rounded">
+<Example
+  showMarkup={false}
+  code={`<div class="d-flex gap-medium p-medium bg-even rounded">
   <span class="fg-primary font-mass">Token-first</span>
   <span class="fg-subtle">design system</span>
-</div>`} />
+</div>`}
+/>
 
 ---
 
@@ -170,24 +177,24 @@ Live preview with markup using the `<Example>` shortcode.
 
 ### Basic table (markdown)
 
-| Package          | Type        | Output           |
-| ---------------- | ----------- | ---------------- |
-| chassis-tokens   | Tokens      | CSS, SCSS, JSON  |
-| chassis-css      | CSS         | Stylesheet       |
-| chassis-figma    | Figma       | Components       |
-| chassis-icons    | Icons       | SVG sprite       |
-| chassis-assets   | Assets      | Optimised files  |
+| Package        | Type   | Output          |
+| -------------- | ------ | --------------- |
+| chassis-tokens | Tokens | CSS, SCSS, JSON |
+| chassis-css    | CSS    | Stylesheet      |
+| chassis-figma  | Figma  | Components      |
+| chassis-icons  | Icons  | SVG sprite      |
+| chassis-assets | Assets | Optimised files |
 
 ### Styled table with CxTable
 
 <CxTable class="table table-striped">
 
-| Variable               | Default          | Description                     |
-| ---------------------- | ---------------- | ------------------------------- |
-| `--cx-fg-main`         | `#1a1a1a`        | Primary foreground colour       |
-| `--cx-bg-main`         | `#ffffff`        | Primary background colour       |
-| `--cx-border-subtle`   | `rgba(0,0,0,.1)` | Subtle border colour            |
-| `--cx-primary`         | `#0066ff`        | Brand primary colour            |
+| Variable             | Default          | Description               |
+| -------------------- | ---------------- | ------------------------- |
+| `--cx-fg-main`       | `#1a1a1a`        | Primary foreground colour |
+| `--cx-bg-main`       | `#ffffff`        | Primary background colour |
+| `--cx-border-subtle` | `rgba(0,0,0,.1)` | Subtle border colour      |
+| `--cx-primary`       | `#0066ff`        | Brand primary colour      |
 
 </CxTable>
 
@@ -208,9 +215,11 @@ Content below the rule.
 Callouts can contain inline code and other formatting:
 
 <Callout type="warning">
-  Always run `pnpm install` after pulling changes. Missing dependencies will cause **build failures** that are hard to debug.
+  Always run `pnpm install` after pulling changes. Missing dependencies will
+  cause **build failures** that are hard to debug.
 </Callout>
 
 <Callout type="info">
-  See the [architecture reference](/docs/) for a full breakdown of how packages interact.
+  See the [architecture reference](/docs/) for a full breakdown of how packages
+  interact.
 </Callout>

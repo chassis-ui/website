@@ -28,7 +28,7 @@ function getBlogPostUrl(post: any): string {
 ---
 
 <div class="bg-even p-medium rounded-large mb-medium">
-  <h4>Latest Posts</h4>
+  <h3>Latest Posts</h3>
   <ul class="list-group list-plain">
     {
       posts
@@ -43,7 +43,7 @@ function getBlogPostUrl(post: any): string {
           <li class="list-item bg-even py-small">
             <a href={getBlogPostUrl(post)} class="fg-main text-decoration-none">
               <article>
-                <h5 class="font-medium mb-0">{post.data.title}</h5>
+                <h4 class="font-medium mb-0">{post.data.title}</h4>
                 <time datetime={post.data.pubDate!.toISOString()}>
                   {post.data.pubDate!.toLocaleDateString('en-US', {
                     year: 'numeric',
