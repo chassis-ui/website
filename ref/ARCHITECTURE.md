@@ -289,8 +289,12 @@ Each project has its own CI/CD:
 ### Environment Detection
 
 Vercel rewrites use host header detection (see [VERCEL_CONFIG.md](VERCEL_CONFIG.md)):
-- Request to `chassis-ui.com/docs/css/` → routes to `chassis-css.vercel.app`
-- Request to `staging.chassis-ui.com/docs/css/` → routes to `chassis-css-staging.vercel.app`
+- Request to `chassis-ui.com/css/` → routes to `chassis-css.vercel.app`
+- Request to `staging.chassis-ui.com/css/` → routes to `chassis-css-staging.vercel.app`
+
+### Search Engine Indexing
+
+Only the production custom domain (`chassis-ui.com`) is indexable. Staging and every direct `*.vercel.app` host are excluded via `robots.txt` and (for staging) `X-Robots-Tag: noindex` headers. See [INDEXING.md](INDEXING.md).
 
 ## 🧩 Key Concepts
 

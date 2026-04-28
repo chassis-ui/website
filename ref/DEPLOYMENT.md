@@ -106,82 +106,9 @@ vercel                     # Deploy to preview
 
 ## 📋 GitHub Actions
 
-### Workflow Configuration
+The only GitHub Action in this repo is `.github/workflows/sync-submodules.yml`, which keeps the `vendor/` submodules up to date automatically. There are no Actions-based deploy workflows.
 
-The repository uses GitHub Actions defined in `.github/workflows/`:
-
-**Example workflow:**
-```yaml
-name: Deploy
-
-on:
-  push:
-    branches:
-      - main
-      - staging
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 10
-          
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: 'pnpm'
-          
-      - name: Install dependencies
-        run: pnpm install
-        
-      - name: Build
-        run: pnpm build
-        
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
-```
-
-## 🔐 Required Secrets
-
-### GitHub Secrets
-
-Configure in repository settings (`Settings → Secrets and variables → Actions`):
-
-```
-VERCEL_TOKEN          # Vercel API token
-VERCEL_ORG_ID         # Vercel organization ID
-VERCEL_PROJECT_ID     # Vercel project ID
-```
-
-### Getting Vercel Credentials
-
-1. **Vercel Token:**
-   - Visit https://vercel.com/account/tokens
-   - Create new token
-   - Copy and add as `VERCEL_TOKEN` secret
-
-2. **Vercel Org ID & Project ID:**
-   ```bash
-   # Install Vercel CLI
-   pnpm add -g vercel
-   
-   # Login and link project
-   vercel link
-   
-   # Get IDs from .vercel/project.json
-   cat .vercel/project.json
-   ```
+**Deploys are triggered directly by Vercel's git integration** — Vercel watches the `main` and `staging` branches and builds automatically on push. No secrets or workflow files are needed for deployment.
 
 ## 🔧 Vercel Configuration
 
@@ -199,25 +126,34 @@ Example:
   "buildCommand": "pnpm site:build",
   "outputDirectory": "_site",
   "trailingSlash": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "has": [
+        { "type": "header", "key": "host", "value": "staging.chassis-ui.com" }
+      ],
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    }
+  ],
   "rewrites": [
     {
-      "source": "/css/:path*",
+      "source": "/css/(.*)",
       "has": [
-        {
-          "type": "header",
-          "key": "host",
-          "value": "staging.chassis-ui.com"
-        }
+        { "type": "header", "key": "host", "value": "staging.chassis-ui.com" }
       ],
-      "destination": "https://chassis-css-staging.vercel.app/:path*"
+      "destination": "https://chassis-css-staging.vercel.app/css/$1"
     },
     {
-      "source": "/css/:path*",
-      "destination": "https://chassis-css.vercel.app/:path*"
+      "source": "/css/(.*)",
+      "destination": "https://chassis-css.vercel.app/css/$1"
     }
   ]
 }
 ```
+
+See [VERCEL_CONFIG.md](VERCEL_CONFIG.md) for the full rewrite set (including `/static/*` referer-based rules) and [INDEXING.md](INDEXING.md) for the full indexing strategy.
 
 ### Environment Detection
 
@@ -400,8 +336,13 @@ jobs:
 ### Staging URLs
 
 - **Main Site:** https://staging.chassis-ui.com
-- **CSS Docs:** https://staging.chassis-ui.com/docs/css/
-- *(Same pattern for other docs)*
+- **CSS Docs:** https://staging.chassis-ui.com/css/
+- **Tokens Docs:** https://staging.chassis-ui.com/tokens/
+- **Icons Docs:** https://staging.chassis-ui.com/icons/
+- **Figma Docs:** https://staging.chassis-ui.com/figma/
+- **Assets Docs:** https://staging.chassis-ui.com/assets/
+
+> ⚠️ Staging is excluded from search engines via `robots.txt` (`Disallow: /`) and `X-Robots-Tag: noindex, nofollow`. See [INDEXING.md](INDEXING.md).
 
 ### Direct Project URLs
 
@@ -416,6 +357,7 @@ Useful for debugging routing:
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) - System architecture
 - [VERCEL_CONFIG.md](VERCEL_CONFIG.md) - Vercel routing details
+- [INDEXING.md](INDEXING.md) - Search engine indexing strategy
 - [DEVELOPMENT.md](DEVELOPMENT.md) - Development workflow
 - [Vercel Documentation](https://vercel.com/docs)
 

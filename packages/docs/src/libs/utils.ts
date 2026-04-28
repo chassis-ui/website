@@ -107,9 +107,12 @@ export function getSiteUrl(config: any) {
     return `http://${host}:${port}`
   }
 
-  // Vercel Production: Live production deployment
+  // Vercel Production: Prefer config.baseURL because it already has the correct
+  // path-prefixed chassis-ui.com URL (e.g. https://chassis-ui.com/tokens/).
+  // VERCEL_PROJECT_PRODUCTION_URL is the sub-project's own custom domain
+  // (e.g. tokens.chassis-ui.com) which is NOT the canonical URL we want in sitemaps.
   if (process.env.VERCEL_ENV === 'production') {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    return config.baseURL || `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
   }
 
   // Vercel Preview: Branch deployments and previews

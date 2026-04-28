@@ -22,27 +22,19 @@ jobs:
         run: |
           # Check if docs package.json version changed
           if git diff HEAD~1 HEAD --name-only | grep -q "packages/docs/package.json"; then
-            echo "Package.json changed, checking version..."
-
-            # Get current and previous version
             CURRENT_VERSION=$(node -p "require('./packages/docs/package.json').version")
-            git checkout HEAD~1
-            PREVIOUS_VERSION=$(node -p "require('./packages/docs/package.json').version")
-            git checkout -
+            PREVIOUS_VERSION=$(git show HEAD~1:packages/docs/package.json | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).version")
 
             echo "Current version: $CURRENT_VERSION"
             echo "Previous version: $PREVIOUS_VERSION"
 
             if [ "$CURRENT_VERSION" != "$PREVIOUS_VERSION" ]; then
               echo "docs-changed=true" >> $GITHUB_OUTPUT
-              echo "Version changed from $PREVIOUS_VERSION to $CURRENT_VERSION"
             else
               echo "docs-changed=false" >> $GITHUB_OUTPUT
-              echo "Version unchanged"
             fi
           else
             echo "docs-changed=false" >> $GITHUB_OUTPUT
-            echo "Package.json not changed"
           fi
 
       - name: Get current version
@@ -63,7 +55,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Setup pnpm
@@ -74,19 +66,30 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Check if version already published on npm
+        id: npm-check
+        run: |
+          VERSION="${{ needs.detect-changes.outputs.docs-version }}"
+          if npm view "@chassis-ui/docs@$VERSION" version 2>/dev/null | grep -q "$VERSION"; then
+            echo "already-published=true" >> $GITHUB_OUTPUT
+            echo "Version $VERSION already on npm, skipping publish"
+          else
+            echo "already-published=false" >> $GITHUB_OUTPUT
+            echo "Version $VERSION not on npm, will publish"
+          fi
+
       - name: Publish @chassis-ui/docs
+        if: steps.npm-check.outputs.already-published == 'false'
         working-directory: packages/docs
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_CHASSIS_DOCS }}
 
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: "@chassis-ui/docs@${{ needs.detect-changes.outputs.docs-version }}"
-          release_name: "@chassis-ui/docs v${{ needs.detect-changes.outputs.docs-version }}"
+          name: "@chassis-ui/docs v${{ needs.detect-changes.outputs.docs-version }}"
           body: |
             Published @chassis-ui/docs v${{ needs.detect-changes.outputs.docs-version }} to npm.
 

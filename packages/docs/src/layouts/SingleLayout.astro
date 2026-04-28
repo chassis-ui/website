@@ -6,36 +6,33 @@
  */
 
 import BaseLayout from './BaseLayout.astro'
+import type { LayoutOverridesHTMLAttributes } from '../libs/layout'
 
 interface Props {
-  /** Page description */
-  description: string
   /** Page title */
   title: string
+  /** Page description */
+  description: string
 }
 
 const { description, title } = Astro.props
+
+const mainProps: LayoutOverridesHTMLAttributes<'main'> = {}
+mainProps['class'] = 'min-vh-100'
 ---
 
-<BaseLayout {...Astro.props} layout="single">
-  <Fragment slot="main">
-    <header class="py-xlarge border-bottom">
-      <div class="container-2xlarge cxd-gutter pt-medium-1 pb-medium-4">
-        <div class="row">
-          <div class="col-xlarge-8">
-            <h1 class="cxd-title mt-0">{title}</h1>
-            <p class="cxd-subtitle">{description}</p>
-            <slot name="header-content" />
-          </div>
+<BaseLayout {...Astro.props} layout="single" overrides={{ main: mainProps }}>
+  <header class="py-xlarge py-medium-3xlarge border-bottom border-subtle">
+    <div class="container-2xlarge">
+      <div class="row">
+        <div class="col col-large-10 col-2xlarge-8">
+          <h1 class="mt-0">{title}</h1>
+          <p class="font-lead">{description}</p>
+          <slot name="header-content" />
         </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main class="cxd-content order-1 py-xlarge" id="content">
-      <div class="container-2xlarge cxd-gutter">
-        <slot />
-        <slot name="main-content" />
-      </div>
-    </main>
-  </Fragment>
+  <slot />
 </BaseLayout>

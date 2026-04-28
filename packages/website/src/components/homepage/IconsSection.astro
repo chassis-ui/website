@@ -56,7 +56,7 @@ import Code from '@shortcodes/Code.astro'
             Package and distribute icons as a versioned release. Every team gets the same set, with
             the same names, at the same version.
           </Fragment>
-          <div class="pt-medium border-top border-subtle">
+          <div class="pt-xsmall border-top border-subtle">
             <Code
               lang="text"
               code={`dist/
@@ -81,21 +81,23 @@ import Code from '@shortcodes/Code.astro'
             Icons flow from design tools into code as optimized SVGs with consistent markup. No
             manual cleanup needed.
           </Fragment>
-          <div class="pt-medium border-top border-subtle">
+          <div class="pt-xsmall border-top border-subtle">
             <Code
-              lang="html"
-              code={`@import "icons/chassis-icons.svg"
-@import "icons/chassis-icons.css
+              lang="astro"
+              code={`---
+// page.astro
+import Icons from 'icons/chassis-icons.svg?raw' // for <svg><use>
+import 'icons/chassis-icons.css' // for <span>
 ---
 
 <svg><use xlink:href="#info-circle-solid"/></svg>
-
+<span class="icon-info-circle-solid"></span>
 <img src="/svgs/info-circle-solid.svg" alt="Info" width="24" height="24">
 
-<span class="icon-info-circle-solid"></span>`}
+<div style="display: none;" set:html={Icons} />`}
             />
             <div
-              class="icon-default pt-xlarge mt-medium border-top border-subtle d-flex gap-medium align-items-center justify-content-center"
+              class="icon-default pt-medium mt-xsmall border-top border-subtle d-flex gap-medium align-items-center justify-content-center"
             >
               <span class="icon icon-info-circle-solid"></span>
               <span class="icon icon-info-circle-solid"></span>

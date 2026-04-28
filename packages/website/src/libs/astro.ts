@@ -30,14 +30,10 @@ const staticFileAliases = {
 // A list of pages that will be excluded from the sitemap.
 const sitemapExcludes = ['/404', '/docs']
 
-// Proxied sub-sites that are not pages in this Astro project but should appear in the sitemap.
-const sitemapProxiedPaths = ['/tokens', '/assets', '/css', '/figma', '/icons']
-
 const headingsRangeRegex = new RegExp(`^h[${getConfig().anchors.min}-${getConfig().anchors.max}]$`)
 
 export function chassis(): AstroIntegration[] {
   const sitemapExcludedUrls = sitemapExcludes.map((url) => `${getConfig().baseURL}${url}/`)
-  const sitemapCustomPages = sitemapProxiedPaths.map((url) => `${getConfig().baseURL}${url}/`)
 
   configurePrism()
 
@@ -89,9 +85,17 @@ export function chassis(): AstroIntegration[] {
     // https://github.com/withastro/astro/issues/6475
     mdx() as AstroIntegration,
     sitemap({
-      customPages: sitemapCustomPages,
       filter: (page) => sitemapFilter(page, sitemapExcludedUrls)
-    })
+    }),
+    {
+      // Must run AFTER `@astrojs/sitemap` writes `sitemap-index.xml`.
+      name: 'chassis-sitemap-postprocess',
+      hooks: {
+        'astro:build:done': ({ dir }) => {
+          injectSubProjectSitemaps(dir)
+        }
+      }
+    }
   ]
 }
 
@@ -164,9 +168,40 @@ function copyStaticRecursively(source: string, destination: string) {
 }
 
 function sitemapFilter(page: string, excludedUrls: string[]) {
-  if (excludedUrls.includes(page)) {
+  const baseURL = getConfig().baseURL.replace(/\/$/, '')
+  if (
+    excludedUrls.includes(page) ||
+    page.startsWith(`${baseURL}/test`) ||
+    page.startsWith(`${baseURL}/docs/test`)
+  ) {
     return false
   }
 
   return true
+}
+
+/**
+ * Post-processes the generated sitemap-index.xml to inject references to each
+ * sub-project's sitemap. Astro's @astrojs/sitemap only knows about the website's
+ * own pages; sub-project pages live in separate deployments whose sitemaps are
+ * proxied via chassis-ui.com/<project>/sitemap-index.xml.
+ */
+function injectSubProjectSitemaps(dir: URL) {
+  const sitemapIndexPath = path.join(new URL('.', dir).pathname, 'sitemap-index.xml')
+
+  if (!fs.existsSync(sitemapIndexPath)) {
+    console.warn('[chassis] sitemap-index.xml not found, skipping sub-project sitemap injection')
+    return
+  }
+
+  const baseURL = getConfig().baseURL.replace(/\/$/, '')
+  const subProjectPaths = ['/tokens', '/css', '/figma', '/icons', '/assets']
+  const subProjectEntries = subProjectPaths
+    .map((p) => `  <sitemap><loc>${baseURL}${p}/sitemap-index.xml</loc></sitemap>`)
+    .join('\n')
+
+  let content = fs.readFileSync(sitemapIndexPath, 'utf-8')
+  content = content.replace('</sitemapindex>', `\n${subProjectEntries}\n</sitemapindex>`)
+
+  fs.writeFileSync(sitemapIndexPath, content, 'utf-8')
 }

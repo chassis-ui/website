@@ -1,7 +1,8 @@
 ---
 import { render } from 'astro:content'
-import BlogLayout from '@layouts/BlogLayout.astro'
+import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
 import { blogPages } from '@libs/content'
+import { tagsToArray } from '@libs/blog'
 import Code from '@shortcodes/Code.astro'
 import type { CollectionEntry } from 'astro:content'
 
@@ -28,53 +29,82 @@ type Props = {
 }
 
 const { blogPage } = Astro.props as Props
-const { id, data } = blogPage
+const { data } = blogPage
+const tags = tagsToArray(data.tags)
 
 // Use the render function from astro:content for custom loaders
 const { Content } = await render(blogPage)
 ---
 
-<BlogLayout frontmatter={{ description: data.description, title: data.title }} id={id}>
-  <article>
-    <header class="mb-xlarge text-center">
-      <h1 class="font-5xlarge mb-medium">{data.title}</h1>
+<BaseLayout frontmatter={{ description: data.description, title: data.title }}>
+  <div class="container-2xlarge">
+    <main class="col-12 col-large-10 col-2xlarge-8 mx-auto">
+      <nav class="py-medium border-bottom border-subtle mb-xlarge" aria-label="Breadcrumb">
+        <a href="/blog" class="icon-link text-decoration-none">
+          <svg class="icon icon-adaptive" aria-hidden="true"
+            ><use xlink:href="#arrow-left-outline"></use></svg
+          >
+          Back to Blog
+        </a>
+      </nav>
 
-      <div class="d-flex align-items-center justify-content-center fg-subtle mb-medium">
-        <time datetime={data.pubDate?.toISOString()}>
-          {
-            data.pubDate
-              ? new Date(data.pubDate).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })
-              : ''
-          }
-        </time>
-        {
-          data.author && (
-            <>
-              <span class="mx-small">•</span>
-              <span>by {data.author}</span>
-            </>
-          )
-        }
-      </div>
-    </header>
-    <div class="mb-medium">
-      <img
-        src={data.image?.url || '/static/images/logo/chassis-logo-brand-banner.svg'}
-        alt={data.image?.alt || data.title}
-        class="image rounded image-fluid w-100"
-      />
-    </div>
+      <article class="mb-3xlarge">
+        <header class="mb-xlarge text-center">
+          <h1 class="font-5xlarge mb-medium">{data.title}</h1>
 
-    <div class="mx-auto">
-      <Content components={{ pre: Code }} />
-    </div>
+          <div class="d-flex align-items-center justify-content-center fg-subtle mb-medium">
+            <time datetime={data.pubDate?.toISOString()}>
+              {
+                data.pubDate
+                  ? new Date(data.pubDate).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })
+                  : ''
+              }
+            </time>
+            {
+              data.author && (
+                <>
+                  <span class="mx-small">•</span>
+                  <span>by {data.author}</span>
+                </>
+              )
+            }
+          </div>
+        </header>
 
-    <footer class="mt-xlarge pt-large border-top text-center">
-      <a href="/blog" class="button default"> ← Back to Blog </a>
-    </footer>
-  </article>
-</BlogLayout>
+        <img
+          src={data.image?.url || '/static/images/logo/chassis-logo-brand-banner.svg'}
+          alt={data.image?.alt || data.title}
+          class="image rounded image-fluid w-100 mb-medium"
+        />
+
+        <Content components={{ pre: Code }} />
+      </article>
+      {
+        data.tags && (
+          <aside class="py-medium border-top border-subtle">
+            <h2 class="h6 fg-subtle mb-medium">Tags</h2>
+            <div class="d-flex flex-wrap gap-xsmall">
+              {tags.map((tag) => (
+                <a href={`/blog/tags/${tag}/`} class="button smooth default small">
+                  {tag}
+                </a>
+              ))}
+            </div>
+          </aside>
+        )
+      }
+      <nav class="py-medium border-top border-subtle mb-xlarge" aria-label="Breadcrumb">
+        <a href="/blog" class="icon-link text-decoration-none">
+          <svg class="icon icon-adaptive" aria-hidden="true"
+            ><use xlink:href="#arrow-left-outline"></use></svg
+          >
+          Back to Blog
+        </a>
+      </nav>
+    </main>
+  </div>
+</BaseLayout>

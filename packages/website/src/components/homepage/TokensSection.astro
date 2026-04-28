@@ -65,23 +65,27 @@ import Code from '@shortcodes/Code.astro'
           <div class="pt-medium border-top border-subtle">
             <Code
               lang="scss"
-              code={`// dist/tokens/web/app-a/brand-a/main.scss
-$cx-color-button: #000000`}
+              code={`// dist/web/app-a/brand-a/main.scss
+$cx-color-button: #00A4CC !default;`}
             />
             <Code
               lang="swift"
-              code={`// dist/tokens/ios/app-a/brand-a/main.swift
-@objc public static let CxColorButton = UIColor(red: 1.000, green: 1.000, blue: 1.000, alpha: 0.9)`}
+              code={`// dist/ios/app-a/brand-a/main.swift
+@objc public static let CxColorButton = UIColor(red: 0.000, green: 0.643, blue: 0.800, alpha: 1)`}
             />
             <Code
               lang="xml"
-              code={`<!-- dist/tokens/android/app-a/brand-a/main.xml -->
-<color name="cx_color_button">#ffffffff</color>`}
+              code={`<!-- dist/android/app-a/brand-a/main.xml -->
+<color name="cx_color_button">#ff00a4cc</color>`}
             />
           </div>
         </FeatureCard>
       </FeatureSlider>
     </div>
+    <p class="text-center fg-subtle mt-nxsmall mb-medium mt-large-n2xlarge mb-large-4xlarge">
+      <span class="icon icon-adaptive icon-reset icon-info-circle-outline"></span>
+      Token names are simplified in these examples to focus on the core concepts.
+    </p>
     <div class="d-grid d-medium-flex gap-medium justify-content-medium-center">
       <a href="/tokens/" class="button primary large">Go to Chassis Tokens</a>
       <a href="/tokens/docs/" class="button default large">View Documentation</a>
