@@ -1,10 +1,10 @@
 ---
 import type { GetStaticPathsOptions } from 'astro'
 import BlogLayout from '@layouts/BlogLayout.astro'
+import BlogPostCard from '@components/blog/BlogPostCard.astro'
 import { blogPages } from '@libs/content'
 import { getConfig } from '@libs/config'
-import { formatDate, getReadingTime, getBlogPostUrl } from '@libs/blog'
-import Pagination from '@components/Pagination.astro'
+import Pagination from '@components/blog/Pagination.astro'
 import type { CollectionEntry } from 'astro:content'
 
 type BlogPost = CollectionEntry<'blog'>
@@ -27,82 +27,21 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
 const { page } = Astro.props
 ---
 
-<BlogLayout
-  frontmatter={{
-    title: 'Blog - Chassis Design System',
-    description: 'Insights, tutorials, and stories from the Chassis Design System team'
-  }}
->
-  <header class="mb-xlarge text-center">
-    <h1 class="font-5xlarge mb-medium">Blog</h1>
-    <p class="font-lead fg-subtle">
-      Insights, tutorials, and stories from Chassis UI's team of designers and developers building
-      design systems in the open.
-    </p>
-  </header>
-  <hr />
-  <div class="row">
-    <div class="col">
-      <!-- Blog posts list -->
+<BlogLayout>
+  {
+    page.data.length > 0 ? (
       <div class="mb-xlarge">
-        {
-          page.data.map((post: BlogPost) => (
-            <article class="mb-xlarge pb-xlarge border-bottom">
-              <header class="mb-medium">
-                <h2 class="font-4xlarge mb-small">
-                  <a href={getBlogPostUrl(post)} class="fg-main text-decoration-none">
-                    {post.data.title}
-                  </a>
-                </h2>
-
-                <div class="d-flex align-items-center fg-subtle small mb-small">
-                  <time datetime={post.data.pubDate?.toISOString()}>
-                    {formatDate(post.data.pubDate || new Date())}
-                  </time>
-                  <span class="mx-small">•</span>
-                  <span>{getReadingTime(post.body || '')}</span>
-                  {post.data.author && (
-                    <>
-                      <span class="mx-small">•</span>
-                      <span>by {post.data.author}</span>
-                    </>
-                  )}
-                </div>
-              </header>
-
-              <div class="mb-medium">
-                <img
-                  src={post.data.image?.url || '/static/images/logo/chassis-logo-brand-banner.svg'}
-                  alt={post.data.image?.alt || post.data.title}
-                  class="image rounded image-fluid w-100"
-                />
-              </div>
-              <p>{post.data.description}</p>
-
-              <footer class="text-center">
-                <a href={getBlogPostUrl(post)} class="button smooth default small">
-                  Read more →
-                </a>
-              </footer>
-            </article>
-          ))
-        }
+        {page.data.map((post: BlogPost) => (
+          <BlogPostCard post={post} />
+        ))}
       </div>
+    ) : (
+      <div class="text-center py-xlarge">
+        <h3 class="h4 mb-medium fg-subtle">No blog posts yet</h3>
+        <p class="fg-subtle">Check back soon for insights and tutorials about design systems!</p>
+      </div>
+    )
+  }
 
-      <!-- Pagination -->
-      <Pagination page={page} baseUrl="/blog" />
-
-      <!-- No posts message -->
-      {
-        page.data.length === 0 && (
-          <div class="text-center py-xlarge">
-            <h3 class="h4 mb-medium fg-subtle">No blog posts yet</h3>
-            <p class="fg-subtle">
-              Check back soon for insights and tutorials about design systems!
-            </p>
-          </div>
-        )
-      }
-    </div>
-  </div>
+  <Pagination page={page} baseUrl="/blog" />
 </BlogLayout>

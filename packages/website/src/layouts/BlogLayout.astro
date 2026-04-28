@@ -1,29 +1,55 @@
 ---
 import type { MarkdownHeading } from 'astro'
 import type { CollectionEntry } from 'astro:content'
-import type { LayoutOverridesHTMLAttributes } from '@chassis-ui/docs'
 import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
 import { blogPages } from '@libs/content'
-import LatestPosts from '../components/LatestPosts.astro'
+import LatestPosts from '../components/blog/LatestPosts.astro'
 
 interface Props {
-  frontmatter: CollectionEntry<'blog'>['data']
+  frontmatter?: {
+    title?: string
+    description?: string
+  }
   headings?: MarkdownHeading[]
   id?: CollectionEntry<'blog'>['id']
 }
 
-const { id } = Astro.props
+const { frontmatter, id } = Astro.props
 
-const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
+const title = frontmatter?.title ?? 'Blog'
+const description =
+  frontmatter?.description ??
+  "Insights, tutorials, and stories from Chassis UI's team of designers and developers building design systems in the open."
 ---
 
-<BaseLayout {...Astro.props} layout="blog" overrides={{ body: bodyProps }}>
+<BaseLayout {...Astro.props} layout="blog">
   <Fragment slot="main">
-    <div class="container-2xlarge py-4xlarge">
-      <div class="row g-4xlarge">
-        <div class="col-large-8">
-          <slot />
+    <header class="py-xlarge py-medium-3xlarge border-bottom border-subtle">
+      <div class="container-2xlarge">
+        <div class="row">
+          <div class="col col-large-10 col-2xlarge-8">
+            {
+              Astro.slots.has('breadcrumb') ? (
+                <nav aria-label="breadcrumb">
+                  <slot name="breadcrumb" />
+                </nav>
+                <h1 class="my-0">{title}</h1>
+
+              ) : (
+            <h1 class="mt-0">{title}</h1>
+            <p class="font-lead">{description}</p>
+
+              )
+            }
+          </div>
         </div>
+      </div>
+    </header>
+    <div class="container-2xlarge py-4xlarge min-vh-100">
+      <div class="row g-4xlarge">
+        <main class="col-large-8">
+          <slot />
+        </main>
         <aside class="col-large-4">
           <div class="position-sticky" style="top: 96px;">
             <LatestPosts posts={blogPages} currentPostId={id} />
