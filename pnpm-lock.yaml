@@ -217,7 +217,7 @@ importers:
         specifier: ^16.0.1
         version: 16.0.1
       sass:
-        specifier: ^1.99.0
+        specifier: 1.99.0
         version: 1.99.0
       swiper:
         specifier: ^12.1.4

@@ -2,7 +2,7 @@
 
 > Shared Astro layouts, components, and utilities for Chassis documentation sites.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-blue.svg)](https://www.npmjs.com/package/@chassis-ui/docs) [![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-blue.svg)](https://www.npmjs.com/package/@chassis-ui/docs) [![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
 
 ## Overview
 
