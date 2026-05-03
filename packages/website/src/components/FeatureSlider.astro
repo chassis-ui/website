@@ -10,12 +10,12 @@
 ---
 
 <div class="feature-slider">
-  <div class="swiper-navigation d-none d-medium-block" role="group" aria-label="Slider navigation">
+  <div class="swiper-navigation d-none medium:d-block" role="group" aria-label="Slider navigation">
     <button class="swiper-button-prev button" aria-label="Previous slide"></button>
     <button class="swiper-button-next button" aria-label="Next slide"></button>
   </div>
   <div class="slider-swiper overflow-visible swiper" role="region" aria-label="Feature carousel">
-    <div class="swiper-wrapper flex-column flex-medium-row gap-medium gap-medium-0">
+    <div class="swiper-wrapper flex-column medium:flex-row gap-medium medium:gap-0">
       <slot />
     </div>
   </div>

@@ -17,11 +17,13 @@ const { layout } = Astro.props
 ---
 
 <script is:inline {...getChassisJsProps()}></script>
-
 <script src="../../js/search.js"></script>
-
+<script>
+  const tooltipTriggerList = document.querySelectorAll('[data-cx-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(
+    (tooltipTriggerEl) => new chassis.Tooltip(tooltipTriggerEl)
+  )
+</script>
 {layout === 'docs' && <script src="../../js/sidebar.js" />}
-
 <script src="../../js/icon-loader.js"></script>
-
 <slot name="scripts" />

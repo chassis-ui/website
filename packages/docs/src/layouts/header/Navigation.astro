@@ -31,8 +31,8 @@ const isActive = (path: string) => {
 }
 ---
 
-<header class="navbar navbar-expand-large cxd-navbar sticky-top">
-  <nav class="container-2xlarge" aria-label="Main navigation">
+<header class="navbar large:navbar-expand cxd-navbar sticky-top">
+  <nav class="container 2xlarge" aria-label="Main navigation">
     {
       layout === 'docs' && (
         <div class="cxd-navbar-toggle">
@@ -47,14 +47,14 @@ const isActive = (path: string) => {
             <svg class="icon icon-large" aria-hidden="true">
               <use href="#bars-solid" />
             </svg>
-            <span class="d-none fs-6 pe-2xsmall">Browse</span>
+            <span class="d-none large:d-inline fs-6 pe-2xsmall">Browse</span>
           </button>
         </div>
       )
     }
-    {layout !== 'docs' && <div class="d-large-none" style="width: 4.25rem;" />}
+    {layout !== 'docs' && <div class="large:d-none" style="width: 4.25rem;" />}
 
-    <a class="navbar-brand me-large-medium" href="/" aria-label="Chassis">
+    <a class="navbar-brand large:me-medium" href="/" aria-label="Chassis">
       <img src="/static/images/site-logo.svg" alt="Chassis UI" width="123" height="32" />
     </a>
 
@@ -62,7 +62,7 @@ const isActive = (path: string) => {
       <div class="cxd-search" id="docsearch"></div>
 
       <button
-        class="navbar-toggler d-flex d-large-none order-3 p-xsmall"
+        class="navbar-toggler d-flex large:d-none order-3 p-xsmall"
         type="button"
         data-cx-toggle="offcanvas"
         data-cx-target="#cxdNavbar"
@@ -74,7 +74,7 @@ const isActive = (path: string) => {
     </div>
 
     <div
-      class="offcanvas-large offcanvas-end flex-grow-1"
+      class="offcanvas large:offcanvas offcanvas-end flex-grow-1"
       role="dialog"
       tabindex="-1"
       id="cxdNavbar"
@@ -90,45 +90,45 @@ const isActive = (path: string) => {
           data-cx-target="#cxdNavbar"></button>
       </div>
 
-      <div class="offcanvas-body p-large pt-0 p-large-0">
-        <hr class="d-large-none" />
-        <ul class="navbar-nav flex-row flex-wrap cxd-navbar-nav mx-0 mx-large-medium">
+      <div class="offcanvas-body p-large pt-0 large:p-0">
+        <hr class="large:d-none" />
+        <ul class="navbar-nav flex-row flex-wrap cxd-navbar-nav mx-0 large:mx-medium">
           <NavLink active={isActive('/tokens')} href="/tokens">Tokens</NavLink>
           <NavLink active={isActive('/figma')} href="/figma">Figma</NavLink>
           <NavLink active={isActive('/css')} href="/css">CSS</NavLink>
           <NavLink active={isActive('/assets')} href="/assets">Assets</NavLink>
           <NavLink active={isActive('/icons')} href="/icons">Icons</NavLink>
-          <li class="nav-item col-12 col-large-auto d-large-flex">
-            <div class="vr d-none d-large-flex my-auto mx-large-2"></div>
-            <hr class="d-large-none" />
+          <li class="nav-item col-12 large:col-auto large:d-flex">
+            <div class="vr d-none large:d-flex my-auto large:mx-2"></div>
+            <hr class="large:d-none" />
           </li>
           <NavLink active={isActive('/examples')} href="/examples">Examples</NavLink>
         </ul>
 
-        <hr class="d-large-none" />
+        <hr class="large:d-none" />
 
-        <ul class="navbar-nav flex-row flex-wrap ms-medium-auto align-items-center">
+        <ul class="navbar-nav flex-row flex-wrap medium:ms-auto align-items-center">
           <NavLink
-            class="nav-link px-0 px-large-2"
+            class="nav-link px-0 large:px-2"
             href={getConfig().github_org}
             target="_blank"
             rel="noopener"
           >
             <svg class="icon"><title>GitHub</title><use href="#github-brand"></use></svg>
-            <small class="d-large-none ms-xsmall">GitHub</small>
+            <small class="large:d-none ms-xsmall">GitHub</small>
           </NavLink>
           <NavLink
-            class="nav-link px-0 px-large-2"
+            class="nav-link px-0 large:px-2"
             href={`https://x.com/${getConfig().x}`}
             target="_blank"
             rel="noopener"
           >
             <svg class="icon"><title>X</title><use href="#x-twitter-brand"></use></svg>
-            <small class="d-large-none ms-xsmall">X</small>
+            <small class="large:d-none ms-xsmall">X</small>
           </NavLink>
-          <li class="nav-item col-12 col-large-auto">
-            <div class="vr d-none d-large-flex h-100 mx-large-2"></div>
-            <hr class="d-large-none" />
+          <li class="nav-item col-12 large:col-auto">
+            <div class="vr d-none large:d-flex h-100 large:mx-2"></div>
+            <hr class="large:d-none" />
           </li>
 
           <li class="nav-item dropdown">

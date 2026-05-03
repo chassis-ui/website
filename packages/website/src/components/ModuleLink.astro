@@ -20,9 +20,9 @@ const { icon, title, url } = Astro.props
 <div class="module-item col">
   <a
     href={url}
-    class="d-flex button p-medium p-large-xlarge gap-medium gap-large-small flex-medium-column justify-content-start justify-content-large-center m-xsmall my-medium-0 h-100"
+    class="d-flex button p-medium large:p-xlarge gap-medium large:gap-small medium:flex-column justify-content-start large:justify-content-center m-xsmall medium:my-0 h-100"
   >
-    <svg class="icon icon-2xlarge icon-medium-4xlarge"><use href={`#${icon}`}></use></svg>
+    <svg class="icon icon-2xlarge medium:icon-4xlarge"><use href={`#${icon}`}></use></svg>
     <p class="font-strong font-large m-0">{title}</p>
   </a>
 </div>

@@ -1,6 +1,4 @@
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
+/* global gsap, ScrollTrigger */
 gsap.registerPlugin(ScrollTrigger)
 
 /**
@@ -217,7 +215,4 @@ class HomeAnimations {
 }
 
 // Initialize animations when module loads
-const homeAnimations = new HomeAnimations()
-
-// Export for potential external control
-export default homeAnimations
+new HomeAnimations()

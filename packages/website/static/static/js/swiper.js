@@ -1,6 +1,4 @@
-import Swiper from 'swiper/bundle'
-import 'swiper/css/bundle'
-
+/* global Swiper */
 /**
  * Feature slider controller using Swiper.js
  * Handles initialization and responsive behavior of feature sliders
@@ -135,7 +133,4 @@ class FeatureSliders {
 }
 
 // Initialize sliders when module loads
-const featureSliders = new FeatureSliders()
-
-// Export for potential external control
-export default featureSliders
+new FeatureSliders()

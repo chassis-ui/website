@@ -26,7 +26,7 @@ const hasContent = Astro.slots.has('default')
 // Build class strings
 const cardClasses = [
   'feature-item bg-even d-flex flex-column rounded-large',
-  'p-medium p-large-xlarge gap-medium gap-medium-xlarge',
+  'p-medium large:p-xlarge gap-medium medium:gap-xlarge',
   horizontal ? '' : 'h-100',
   classes
 ]
@@ -35,8 +35,8 @@ const cardClasses = [
 
 const headerClasses = [
   'feature-header d-flex',
-  'gap-medium gap-medium-xlarge',
-  horizontal ? 'flex-column flex-medium-row' : 'flex-column'
+  'gap-medium medium:gap-xlarge',
+  horizontal ? 'flex-column medium:flex-row' : 'flex-column'
 ].join(' ')
 ---
 
@@ -45,17 +45,17 @@ const headerClasses = [
     {
       icon && (
         <div class="feature-thumb">
-          <svg class="icon feature-icon icon-3xlarge icon-medium-4xlarge" aria-hidden="true">
+          <svg class="icon feature-icon icon-3xlarge medium:icon-4xlarge" aria-hidden="true">
             <use href={`#${icon}`} />
           </svg>
         </div>
       )
     }
     <div>
-      <h3 class="feature-title font-large font-medium-xlarge mb-3xsmall mb-medium-2xsmall">
+      <h3 class="feature-title font-large medium:font-xlarge mb-3xsmall medium:mb-2xsmall">
         <slot name="title" />
       </h3>
-      <p class="feature-body font-medium-large mb-0">
+      <p class="feature-body medium:font-large mb-0">
         <slot name="body" />
       </p>
     </div>

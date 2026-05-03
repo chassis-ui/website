@@ -1,10 +1,10 @@
 ---
 title: Docs Layout Test Page
-description: A comprehensive test page covering **all** docs layout features, shortcodes, and markdown elements.
+description: A comprehensive test page covering all docs layout features, shortcodes, and markdown elements.
 toc: true
 added:
   show_badge: true
-  version: 1.0.0
+  version: 0.1.0
 aliases:
   - '/test-category'
   - '[[docsref:/test-page]]'
@@ -16,49 +16,13 @@ This page exists to test the docs layout and all available content features. It 
 
 ---
 
-## Typography
+## Badges
 
-Standard markdown typography rendered in the docs layout.
+<AddedIn version="1.2.0" /> <DeprecatedIn version="2.0.0" />
+<CSSOnly tooltip="This feature is CSS only" />
+<InFigma tooltip="This feature is available in Figma" />
 
-### Headings
-
-All heading levels are tested via the sections in this document and contribute to the table of contents on the right.
-
-### Inline text
-
-**Bold text**, _italic text_, ~~strikethrough~~, `inline code`, and a [link to the docs](/docs/).
-
-### Paragraphs and lists
-
-Paragraph text is rendered at the base font size with comfortable line height. Lists follow below.
-
-Unordered list:
-
-- Design tokens
-- CSS framework
-- Figma component library
-- Icon generator
-- Asset distributor
-
-Ordered list:
-
-1. Clone the repository
-2. Install dependencies with `pnpm install`
-3. Run `pnpm dev` to start the dev server
-4. Open `http://localhost:4321` in your browser
-
-Nested list:
-
-- Tokens
-  - Global
-  - Semantic
-  - Component
-- CSS
-  - Variables
-  - Utilities
-  - Components
-
-### Blockquote
+## Blockquote
 
 <Blockquote>Good design is as little design as possible.</Blockquote>
 
@@ -66,41 +30,34 @@ Nested list:
   The details are not the details. They make the design.
 </Blockquote>
 
----
-
 ## Callouts
 
 <Callout type="info">
-  This is an **info** callout. Use it for general notes and tips.
+  This is an **info** callout with `inline code` and [link to
+  docs]([[docsref:/test-category/test-page]]). Use it for general notes and
+  tips.
 </Callout>
 
 <Callout type="warning">
-  This is a **warning** callout. Use it to highlight something the reader should
-  be careful about.
+  This is a **warning** callout with `inline code` and [link to
+  docs]([[docsref:/test-category/test-page]]). Use it to highlight something
+  important.
 </Callout>
 
 <Callout type="danger">
-  This is a **danger** callout. Use it for breaking changes or destructive
-  actions.
+  This is a **danger** callout with `inline code` and [link to
+  docs]([[docsref:/test-category/test-page]]). Use it for breaking changes or
+  destructive actions.
 </Callout>
-
----
-
-## Added In Badge
-
-Use `<AddedIn>` inline to mark when a feature was introduced:
-
-<AddedIn version="1.2.0" />
-
-This feature was introduced alongside the token pipeline refactor.
-
----
 
 ## Code Blocks
 
-### Fenced markdown code block
+Syntax-highlighted code blocks can be added using standard markdown fenced code blocks with language identifiers, or the `<Code>` shortcode for explicit control over formatting and display options.
+
+### Markdown code
 
 ```html
+<!-- A code block with syntax highlighting for HTML -->
 <div class="container">
   <h1 class="font-5xlarge">Hello, Chassis</h1>
   <p class="fg-subtle">Token-powered UI system.</p>
@@ -108,6 +65,7 @@ This feature was introduced alongside the token pipeline refactor.
 ```
 
 ```scss
+// A code block with syntax highlighting for SCSS
 .my-component {
   color: var(--cx-fg-main);
   background-color: var(--cx-bg-even);
@@ -116,13 +74,19 @@ This feature was introduced alongside the token pipeline refactor.
 ```
 
 ```ts
+// A code block with syntax highlighting for TypeScript
 import { getConfig } from '@libs/config'
 
 const config = getConfig()
 console.log(config.title)
 ```
 
-### Code shortcode (explicit)
+```sh
+# A code block with syntax highlighting for shell commands
+pnpm install && pnpm dev
+```
+
+### Code shortcode
 
 <Code lang="sh" code="pnpm install && pnpm dev" />
 
@@ -138,13 +102,11 @@ console.log(config.title)
 }`}
 />
 
----
-
 ## Examples
 
 Live preview with markup using the `<Example>` shortcode.
 
-### Button example
+### With markup
 
 <Example
   code={`<button type="button" class="button primary">Primary</button>
@@ -152,74 +114,38 @@ Live preview with markup using the `<Example>` shortcode.
 <button type="button" class="button danger">Danger</button>`}
 />
 
-### Badge example
-
-<Example
-  code={`<span class="badge primary">New</span>
-<span class="badge success smooth">Stable</span>
-<span class="badge warning smooth">Beta</span>
-<span class="badge danger smooth">Deprecated</span>`}
-/>
-
-### Preview only (no markup)
+### Preview only
 
 <Example
   showMarkup={false}
-  code={`<div class="d-flex gap-medium p-medium bg-even rounded">
-  <span class="fg-primary font-mass">Token-first</span>
-  <span class="fg-subtle">design system</span>
-</div>`}
+  code={`<button type="button" class="button primary">Primary</button>
+<button type="button" class="button default">Default</button>
+<button type="button" class="button danger">Danger</button>`}
 />
 
----
+### With external files
+
+<ScssDocs name="example-scss" file="content/docs/test-category/example.scss" />
+<JsDocs name="example-js" file="content/docs/test-category/example.js" />
+
+## Placeholders
+
+<Placeholder class="image fluid mb-medium" text="SVG Element" />
+
+<Placeholder
+  markup="img"
+  width="100%"
+  height="180"
+  class="mb-medium object-fit-cover"
+  text="IMG Element"
+/>
 
 ## Tables
 
-### Basic table (markdown)
-
-| Package        | Type   | Output          |
-| -------------- | ------ | --------------- |
-| chassis-tokens | Tokens | CSS, SCSS, JSON |
-| chassis-css    | CSS    | Stylesheet      |
-| chassis-figma  | Figma  | Components      |
-| chassis-icons  | Icons  | SVG sprite      |
-| chassis-assets | Assets | Optimised files |
-
-### Styled table with CxTable
-
 <CxTable class="table table-striped">
-
-| Variable             | Default          | Description               |
-| -------------------- | ---------------- | ------------------------- |
-| `--cx-fg-main`       | `#1a1a1a`        | Primary foreground colour |
-| `--cx-bg-main`       | `#ffffff`        | Primary background colour |
-| `--cx-border-subtle` | `rgba(0,0,0,.1)` | Subtle border colour      |
-| `--cx-primary`       | `#0066ff`        | Brand primary colour      |
-
+  | Variable | Default | Description | | -------------------- | ----------------
+  | ------------------------- | | `--cx-fg-main` | `#1a1a1a` | Primary
+  foreground colour | | `--cx-bg-main` | `#ffffff` | Primary background colour |
+  | `--cx-border-subtle` | `rgba(0,0,0,.1)` | Subtle border colour | |
+  `--cx-primary` | `#0066ff` | Brand primary colour |
 </CxTable>
-
----
-
-## Horizontal Rule
-
-Content above the rule.
-
----
-
-Content below the rule.
-
----
-
-## Nested Callouts and Code
-
-Callouts can contain inline code and other formatting:
-
-<Callout type="warning">
-  Always run `pnpm install` after pulling changes. Missing dependencies will
-  cause **build failures** that are hard to debug.
-</Callout>
-
-<Callout type="info">
-  See the [architecture reference](/docs/) for a full breakdown of how packages
-  interact.
-</Callout>

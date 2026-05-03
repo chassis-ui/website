@@ -1,0 +1,18 @@
+---
+/*
+ * Outputs badge to identify features that are only available in CSS and not in Figma
+ */
+
+interface Props {
+  tooltip?: string
+}
+
+const { tooltip = 'This feature is only available in CSS and not in Figma components.' } =
+  Astro.props
+---
+
+<span
+  class="badge large info smooth mb-medium rounded-medium"
+  data-cx-toggle="tooltip"
+  title={tooltip}>CSS Only</span
+>
