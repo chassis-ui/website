@@ -31,7 +31,7 @@ try {
   const fileContent = fs.readFileSync(file, 'utf8')
 
   const matches = fileContent.match(
-    new RegExp(`\/\/ scss-docs-start ${name}\n((?:.|\n)*)\/\/ scss-docs-end ${name}`, 'm')
+    new RegExp(`// scss-docs-start ${name}\n((?:.|\n)*)// scss-docs-end ${name}`, 'm')
   )
 
   if (!matches || !matches[1]) {

@@ -3,7 +3,7 @@
 > Official website and documentation hub for the Chassis Design System.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Deploy Status](https://github.com/chassis-ui/website/workflows/Deploy%20Website/badge.svg)](https://github.com/chassis-ui/website/actions)
+[![Deploy Status](https://github.com/chassis-ui/website/workflows/Publish%20Packages/badge.svg)](https://github.com/chassis-ui/website/actions)
 
 ## Overview
 
@@ -121,15 +121,11 @@ chassis-website/
 
 ### Working with Submodules
 
-The project uses Git submodules for Chassis library dependencies:
+The project uses Git submodules for Chassis Assets dependency:
 
 ```bash
 # Sync all submodules to latest versions
-pnpm sync:submodules
-
-# Manual submodule operations
-git submodule update --remote --merge
-git submodule status
+pnpm sync-submodules
 ```
 
 ### Adding New Content
