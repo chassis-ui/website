@@ -17,6 +17,10 @@ bodyProps['class'] = 'home-body'
 ---
 
 <BaseLayout {...Astro.props} overrides={{ body: bodyProps }}>
+  <Fragment slot="styles">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
+  </Fragment>
+
   <Hero />
   <Gallery />
   <Tokens />
@@ -30,7 +34,16 @@ bodyProps['class'] = 'home-body'
   </div>
 
   <Fragment slot="scripts">
-    <script src="@assets/swiper.js"></script>
-    <script src="@assets/gsap.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+    <script is:inline src="/static/js/swiper.js"></script>
+    <script is:inline src="/static/js/gsap.js"></script>
+    <script>
+      const tooltipTriggerList = document.querySelectorAll('[data-cx-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(
+        (tooltipTriggerEl) => new chassis.Tooltip(tooltipTriggerEl)
+      )
+    </script>
   </Fragment>
 </BaseLayout>

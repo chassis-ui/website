@@ -3,7 +3,7 @@
 //
 
 .cxd-callout {
-  --#{$prefix}link-main-color-rgb: var(--cxd-callout-link);
+  --#{$prefix}link-main-color: var(--cxd-callout-link);
   --#{$prefix}code-color: var(--cxd-callout-code-color);
 
   padding: 1.25rem;

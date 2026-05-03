@@ -25,3 +25,9 @@ const { layout } = Astro.props
 <script src="../../js/icon-loader.js"></script>
 
 <slot name="scripts" />
+<script>
+  const tooltipTriggerList = document.querySelectorAll('[data-cx-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(
+    (tooltipTriggerEl) => new chassis.Tooltip(tooltipTriggerEl)
+  )
+</script>

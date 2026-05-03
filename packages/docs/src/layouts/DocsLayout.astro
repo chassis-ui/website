@@ -42,10 +42,10 @@ if (frontmatter.toc) {
 ---
 
 <BaseLayout {...Astro.props} layout="docs" overrides={{ body: bodyProps }}>
-  <div slot="main" class="container-fluid cxd-gutter cxd-layout">
+  <div slot="main" class="container fluid cxd-gutter cxd-layout">
     <aside class="cxd-sidebar">
       <div
-        class="offcanvas-large offcanvas-start"
+        class="large:offcanvas offcanvas-start"
         role="dialog"
         tabindex="-1"
         id="cxdSidebar"
@@ -73,9 +73,9 @@ if (frontmatter.toc) {
       <div class="cxd-intro">
         <slot name="intro">
           <div
-            class="d-medium-flex flex-medium-row-reverse justify-content-between align-items-start"
+            class="medium:d-flex medium:flex-row-reverse justify-content-between align-items-start"
           >
-            <div class="mb-medium mb-medium-0 d-flex text-nowrap">
+            <div class="mb-medium medium:mb-0 d-flex text-nowrap">
               {
                 // This is needed because we want to show the badge if show_badge isn't present or is set to false
                 frontmatter.added &&
@@ -113,7 +113,7 @@ if (frontmatter.toc) {
         frontmatter.toc && headings && (
           <div class="cxd-toc">
             <button
-              class="button default mb-large text-decoration-none cxd-toc-toggle d-medium-none"
+              class="button default mb-large text-decoration-none cxd-toc-toggle medium:d-none"
               type="button"
               data-cx-toggle="collapse"
               data-cx-target="#tocContents"
@@ -125,8 +125,8 @@ if (frontmatter.toc) {
                 <use xlink:href="#chevron-sort-solid" />
               </svg>
             </button>
-            <strong class="d-none d-medium-block h6 my-xsmall">On this page</strong>
-            <hr class="d-none d-medium-block my-xsmall" />
+            <strong class="d-none medium:d-block h6 my-xsmall">On this page</strong>
+            <hr class="d-none medium:d-block my-xsmall" />
             <div class="collapse cxd-toc-collapse" id="tocContents">
               <nav id="TableOfContents">
                 <slot name="toc">
@@ -143,7 +143,7 @@ if (frontmatter.toc) {
           frontmatter.sections && (
             <div class="row g-xlarge">
               {frontmatter.sections.map((section: DocSection) => (
-                <div class="col-medium-6">
+                <div class="medium:col-6">
                   <a
                     class="d-block text-decoration-none"
                     href={getChassisDocsPath(

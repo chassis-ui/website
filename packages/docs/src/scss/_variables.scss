@@ -2,9 +2,8 @@
 // $cxd-main:        $primary-base-color;
 // $cxd-subtle:        lighten(saturate($cxd-main, 5%), 15%); // stylelint-disable-line function-disallowed-list
 // $cxd-main-light:  lighten(saturate($cxd-main, 5%), 45%); // stylelint-disable-line function-disallowed-list
-// $cxd-accent:        $secondary-base-color;
 $cxd-main:        var(--cx-primary-base-color);
-$cxd-subtle:      var(--cx-primary-bg-evident);
+$cxd-subtle:      var(--cx-primary-40);
 $cxd-main-light:  var(--cx-primary-fg-main);
 $cxd-accent:      var(--cx-primary-base-color);
 
@@ -15,30 +14,26 @@ $cxd-callout-variants: info, warning, danger, default !default;
 [data-cx-theme="light"] {
   --cxd-main: #{$cxd-main};
   --cxd-subtle: #{$cxd-subtle};
-  --cxd-accent: #{$cxd-accent};
-  --cxd-main-rgb: var(--cx-primary-base-color-rgb);
-  --cxd-subtle-rgb: var(--cx-primary-40-rgb);
-  --cxd-accent-rgb: var(--cx-secondary-base-color-rgb);
   --cxd-pink-rgb: #{to-rgb($pink-500)};
   --cxd-teal-rgb: #{to-rgb($teal-500)};
   --cxd-main-bg: var(--cxd-main);
   --cxd-subtle-bg: var(--cxd-subtle);
   --cxd-toc-color: var(--cxd-main);
   --cxd-sidebar-link-bg: var(--cx-bg-highlight);
-  --cxd-callout-link: #{to-rgb($blue-600)};
-  --cxd-callout-code-color: #{$pink-600};
+  --cxd-callout-link: #{to-color($blue-600)};
+  --cxd-callout-code-color: #{to-color($pink-600)};
   // --cxd-pre-bg: var(--cx-bg-even);
 }
 
 @if $enable-dark-mode {
   @include color-mode(dark, true) {
     color-scheme: dark;
-    --cxd-subtle: var(--cx-primary-60-rgb);
+    --cxd-subtle: var(--cx-primary-60);
     --cxd-subtle-bg: #{$cxd-subtle};
     // --cxd-toc-color: var(--#{$prefix}fg-subtle);
     --cxd-sidebar-link-bg: var(--cx-primary-40);
-    --cxd-callout-link: #{to-rgb($blue-300)};
-    --cxd-callout-code-color: #{$pink-300};
+    --cxd-callout-link: #{to-color($blue-300)};
+    --cxd-callout-code-color: #{to-color($pink-300)};
     //--cxd-pre-bg: #{adjust-color($gray-900, $lightness: -2.5%)}; // stylelint-disable-line scss/at-function-named-arguments
     --cxd-pre-bg: var(--cx-bg-evident);
   }

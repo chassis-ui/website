@@ -1,0 +1,21 @@
+---
+/*
+ * Outputs badge to identify features that are only available in CSS and not in Figma
+ */
+
+interface Props {
+  tooltip?: string
+  plural?: boolean
+}
+
+const { tooltip, plural } = Astro.props
+const tooltipText =
+  tooltip ??
+  `This variant${plural ? 's' : ''} exist${plural ? '' : 's'} in the Figma component library with bound design tokens.`
+---
+
+<span
+  class="badge large primary smooth mb-medium rounded-medium"
+  data-cx-toggle="tooltip"
+  title={tooltipText}>In Figma</span
+>
