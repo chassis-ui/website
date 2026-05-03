@@ -96,7 +96,7 @@
 
     &:focus,
     &[aria-expanded="true"] {
-      box-shadow: 0 0 0 3px rgba(var(--cxd-subtle-rgb), .25);
+      box-shadow: 0 0 0 3px #{to-opacity(var(--cxd-subtle), .25)};
     }
   }
 }

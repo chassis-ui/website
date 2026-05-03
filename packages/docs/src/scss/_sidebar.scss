@@ -22,7 +22,7 @@
   }
 
   @include media-breakpoint-down(large) {
-    .offcanvas-large {
+    .#{large\:}offcanvas {
       border-right-color: var(--cx-border-color);
       box-shadow: var(--cx-box-shadow-large);
     }
