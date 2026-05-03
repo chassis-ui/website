@@ -165,8 +165,7 @@ function copyStaticRecursively(source: string, destination: string) {
     if (entry.isFile()) {
       fs.cpSync(path.join(source, entry.name), path.join(destination, entry.name))
     } else if (entry.isDirectory()) {
-      ;(fs.mkdirSync(path.join(destination, entry.name)), { recursive: true })
-
+      fs.mkdirSync(path.join(destination, entry.name), { recursive: true })
       copyStaticRecursively(path.join(source, entry.name), path.join(destination, entry.name))
     }
   }

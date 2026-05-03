@@ -78,7 +78,7 @@ const { Content } = await render(blogPage)
         <img
           src={data.image?.url || '/static/images/logo/chassis-logo-brand-banner.svg'}
           alt={data.image?.alt || data.title}
-          class="image rounded image-fluid w-100 mb-medium"
+          class="image rounded fluid w-100 mb-medium"
         />
 
         <Content components={{ pre: Code }} />
