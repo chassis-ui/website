@@ -1,0 +1,31 @@
+---
+/**
+ * Blockquote
+ *
+ * Render a blockquote with optional attribution.
+ */
+
+interface Props {
+  /** Attribution text or HTML for the quote */
+  attr?: String
+}
+
+const { attr } = Astro.props
+---
+
+{
+  attr ? (
+    <figure>
+      <blockquote class="blockquote">
+        <slot />
+      </blockquote>
+      <figcaption class="attribution">
+        <Fragment set:html={attr} />
+      </figcaption>
+    </figure>
+  ) : (
+    <blockquote class="blockquote">
+      <slot />
+    </blockquote>
+  )
+}

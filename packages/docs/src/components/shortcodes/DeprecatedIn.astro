@@ -1,0 +1,15 @@
+---
+/*
+ * Outputs badge to identify the version something was deprecated
+ */
+
+interface Props {
+  version: string
+}
+
+const { version } = Astro.props
+---
+
+<span class="badge large warning smooth mb-medium rounded-medium">
+  Deprecated in v{version}
+</span>
