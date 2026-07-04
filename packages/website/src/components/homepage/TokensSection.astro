@@ -7,15 +7,19 @@
 
 import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 import FeatureSlider from '@components/FeatureSlider.astro'
-import Code from '@shortcodes/Code.astro'
+import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 ---
 
-<section id="tokens-section" class="home-section py-3xlarge medium:py-6xlarge">
+<section
+  id="tokens-section"
+  class="home-section py-3xlarge medium:py-6xlarge"
+  aria-labelledby="tokens-heading"
+>
   <div class="container 2xlarge section-content">
     <div class="row mb-3xlarge medium:mb-6xlarge">
       <header class="section-header col large:col-10 2xlarge:col-8">
         <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Tokens</p>
-        <h2 class="font-5xlarge mb-xsmall medium:mb-small large:mb-medium">
+        <h2 id="tokens-heading" class="font-5xlarge mb-xsmall medium:mb-small large:mb-medium">
           <span class="font-normal d-block">Enterprise-Grade</span> Token Management
         </h2>
         <p class="font-lead m-0">
@@ -28,7 +32,7 @@ import Code from '@shortcodes/Code.astro'
     <div
       class="section-features gap-xlarge flex-column medium:flex-row mb-medium medium:mb-6xlarge"
     >
-      <FeatureSlider>
+      <FeatureSlider ariaLabel="Tokens features carousel">
         <!-- Item -->
         <FeatureCard icon="cx-folder-tree" classes="swiper-slide" horizontal>
           <Fragment slot="title">Centralized token definitions</Fragment>
@@ -64,16 +68,19 @@ import Code from '@shortcodes/Code.astro'
           </Fragment>
           <div class="pt-medium border-top border-subtle">
             <Code
+              noToolbar
               lang="scss"
               code={`// dist/web/app-a/brand-a/main.scss
 $cx-color-button: #00A4CC !default;`}
             />
             <Code
+              noToolbar
               lang="swift"
               code={`// dist/ios/app-a/brand-a/main.swift
 @objc public static let CxColorButton = UIColor(red: 0.000, green: 0.643, blue: 0.800, alpha: 1)`}
             />
             <Code
+              noToolbar
               lang="xml"
               code={`<!-- dist/android/app-a/brand-a/main.xml -->
 <color name="cx_color_button">#ff00a4cc</color>`}
@@ -82,7 +89,7 @@ $cx-color-button: #00A4CC !default;`}
         </FeatureCard>
       </FeatureSlider>
     </div>
-    <p class="text-center fg-subtle mt-nxsmall mb-medium large:mt-n2xlarge large:mb-4xlarge">
+    <p class="text-center fg-subtle -mt-xsmall mb-medium large:-mt-2xlarge large:mb-4xlarge">
       <span class="icon icon-adaptive icon-reset icon-info-circle-outline"></span>
       Token names are simplified in these examples to focus on the core concepts.
     </p>

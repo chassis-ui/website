@@ -1,9 +1,13 @@
 ---
-/*
- * Outputs badge to identify features that are only available in CSS and not in Figma
+/**
+ * CSS Only
+ *
+ * Badge indicating a feature is available in CSS but has no equivalent
+ * Figma component. Renders with a tooltip that can be customized.
  */
 
 interface Props {
+  /** Tooltip text shown on hover. */
   tooltip?: string
 }
 

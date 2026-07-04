@@ -7,14 +7,20 @@
  *
  * @slot default - Feature cards to display in the slider
  */
+interface Props {
+  /** Accessible label for the slider region */
+  ariaLabel?: string
+}
+
+const { ariaLabel = 'Feature carousel' } = Astro.props
 ---
 
 <div class="feature-slider">
   <div class="swiper-navigation d-none medium:d-block" role="group" aria-label="Slider navigation">
-    <button class="swiper-button-prev button" aria-label="Previous slide"></button>
-    <button class="swiper-button-next button" aria-label="Next slide"></button>
+    <button type="button" class="swiper-button-prev button" aria-label="Previous slide"></button>
+    <button type="button" class="swiper-button-next button" aria-label="Next slide"></button>
   </div>
-  <div class="slider-swiper overflow-visible swiper" role="region" aria-label="Feature carousel">
+  <div class="slider-swiper overflow-visible swiper" role="region" aria-label={ariaLabel}>
     <div class="swiper-wrapper flex-column medium:flex-row gap-medium medium:gap-0">
       <slot />
     </div>

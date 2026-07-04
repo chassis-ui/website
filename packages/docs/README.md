@@ -2,7 +2,7 @@
 
 > Shared Astro layouts, components, and utilities for Chassis documentation sites.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-blue.svg)](https://www.npmjs.com/package/@chassis-ui/docs) [![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-blue.svg)](https://www.npmjs.com/package/@chassis-ui/docs) [![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
 
 ## Overview
 
@@ -53,15 +53,15 @@ import { generateTOC, processImage } from '@chassis-ui/docs'
 
 ## Exports
 
-| Subpath | Contents |
-| --- | --- |
-| `@chassis-ui/docs` | Library functions: `chassis`, `image`, `layout`, `rehype`, `toc`, `utils` |
-| `@chassis-ui/docs/layouts/*` | `BaseLayout`, `DocsLayout`, `RedirectLayout`, `SingleLayout` |
+| Subpath                         | Contents                                                                                      |
+| ------------------------------- | --------------------------------------------------------------------------------------------- |
+| `@chassis-ui/docs`              | Library functions: `chassis`, `image`, `layout`, `rehype`, `toc`, `utils`                     |
+| `@chassis-ui/docs/layouts/*`    | `BaseLayout`, `DocsLayout`, `RedirectLayout`, `SingleLayout`                                  |
 | `@chassis-ui/docs/components/*` | `DocsSidebar`, `FeatureCard`, `NavLink`, `ResponsiveImage`, `TableOfContents`, `ThemeToggler` |
-| `@chassis-ui/docs/shortcodes/*` | MDX shortcode components |
-| `@chassis-ui/docs/libs/*` | Direct access to individual library modules |
-| `@chassis-ui/docs/js/*` | Client-side scripts |
-| `@chassis-ui/docs/scss/*` | SCSS utilities and partials |
+| `@chassis-ui/docs/shortcodes/*` | MDX shortcode components                                                                      |
+| `@chassis-ui/docs/libs/*`       | Direct access to individual library modules                                                   |
+| `@chassis-ui/docs/js/*`         | Client-side scripts                                                                           |
+| `@chassis-ui/docs/scss/*`       | SCSS utilities and partials                                                                   |
 
 ### Source Layout
 
@@ -78,14 +78,14 @@ src/
 
 This package is part of the Chassis Design System's multi-repository architecture:
 
-| Project | Description |
-| --- | --- |
+| Project                                                  | Description                                                    |
+| -------------------------------------------------------- | -------------------------------------------------------------- |
 | [chassis-website](https://github.com/chassis-ui/website) | **Main website and home of `@chassis-ui/docs` (this package)** |
-| [chassis-css](https://github.com/chassis-ui/css) | CSS framework and component library |
-| [chassis-tokens](https://github.com/chassis-ui/tokens) | Design token generation and management |
-| [chassis-icons](https://github.com/chassis-ui/icons) | Icon library and build toolkit |
-| [chassis-assets](https://github.com/chassis-ui/assets) | Multi-platform asset management |
-| [chassis-figma](https://github.com/chassis-ui/figma) | Figma component documentation |
+| [chassis-css](https://github.com/chassis-ui/css)         | CSS framework and component library                            |
+| [chassis-tokens](https://github.com/chassis-ui/tokens)   | Design token generation and management                         |
+| [chassis-icons](https://github.com/chassis-ui/icons)     | Icon library and build toolkit                                 |
+| [chassis-assets](https://github.com/chassis-ui/assets)   | Multi-platform asset management                                |
+| [chassis-figma](https://github.com/chassis-ui/figma)     | Figma component documentation                                  |
 
 All documentation sites in the ecosystem share this package for consistent layouts, components, and styling.
 

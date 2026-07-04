@@ -1,7 +1,28 @@
 # This file holds all sidebar menu's entries for Chassis Icons.
 
 - title: Test Category
-  icon: code-solid
+  section: Section 1
+  icon: rocket-solid
   icon_color: primary
   pages:
     - title: Test Page
+    - title: Test Page 2
+    - title: Test Page 3
+
+- title: Test Category 2
+  section: Section 2
+  icon: rocket-solid
+  icon_color: secondary
+  pages:
+    - title: Test Page
+    - title: Test Page 2
+    - group: Subsection 1
+      pages:
+        - title: Test Page
+        - title: Test Page 2
+        - title: Test Page 3
+    - group: Subsection 2
+      pages:
+        - title: Test Page
+        - title: Test Page 2
+        - title: Test Page 3

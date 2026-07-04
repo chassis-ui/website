@@ -1,3 +1,5 @@
+import { Tooltip } from '@chassis-ui/css'
+
 // Helper to detect the user's preferred theme
 function getPreferredTheme() {
   // First check localStorage
@@ -40,10 +42,13 @@ function toggleTheme(button) {
   // Update the icon to match the theme
   const iconUse = button.querySelector('use')
   if (iconUse) {
-    const iconHref = newTheme === 'dark' ? '#sun-solid' : '#moon-solid'
-    iconUse.setAttribute('xlink:href', iconHref)
+    const iconHref = newTheme === 'dark' ? 'sun-solid' : 'moon-solid'
+    iconUse.setAttribute('href', `/static/icons/chassis-icons.svg#${iconHref}`)
   }
 }
+
+// Expose globally for inline onclick="toggleTheme(this)" handlers in Example.astro
+window.toggleTheme = toggleTheme
 
 // Initialize theme icons for all buttons based on current theme
 document.addEventListener('DOMContentLoaded', () => {
@@ -51,17 +56,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.button-mode').forEach((button) => {
     // Initialize tooltip
-    if (window.chassis && window.chassis.Tooltip) {
-      window.chassis.Tooltip.getOrCreateInstance(button)
-    }
+    Tooltip.getOrCreateInstance(button)
 
     // Set initial icon based on theme
     const iconUse = button.querySelector('use')
     if (iconUse) {
       const example = button.closest('.cxd-example-snippet')?.querySelector('.cxd-example')
       const currentTheme = example?.getAttribute('data-cx-theme') || preferredTheme
-      const iconHref = currentTheme === 'dark' ? '#sun-solid' : '#moon-solid'
-      iconUse.setAttribute('xlink:href', iconHref)
+      const iconHref = currentTheme === 'dark' ? 'sun-solid' : 'moon-solid'
+      iconUse.setAttribute('href', `/static/icons/chassis-icons.svg#${iconHref}`)
     }
 
     // Add event listener if not already set through onclick

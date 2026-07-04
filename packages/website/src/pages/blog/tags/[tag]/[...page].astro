@@ -11,7 +11,7 @@ import type { CollectionEntry } from 'astro:content'
 type BlogPost = CollectionEntry<'blog'>
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
-  const config = await getConfig()
+  const config = getConfig()
 
   const tags = new Set<string>()
   blogPages.forEach((page: BlogPost) => {

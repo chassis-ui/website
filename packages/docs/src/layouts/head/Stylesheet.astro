@@ -5,18 +5,25 @@
  * Stylesheet link tags for external CSS resources.
  */
 
-import { getChassisCssProps } from '../../libs/chassis'
-import type { Layout } from '../../libs/layout'
+import type { HTMLAttributes } from 'astro/types'
 
-interface Props {
-  /** Text direction (for RTL languages) */
-  direction?: 'rtl'
-  /** Current layout context */
-  layout: Layout
+function getChassisCssProps() {
+  let cxCssLinkHref = '/static/css/chassis'
+
+  if (import.meta.env.PROD) {
+    cxCssLinkHref = `${cxCssLinkHref}.min`
+  }
+
+  cxCssLinkHref = `${cxCssLinkHref}.css`
+
+  const cxCssLinkProps: HTMLAttributes<'link'> = {
+    href: cxCssLinkHref,
+    rel: 'stylesheet'
+  }
+
+  return cxCssLinkProps
 }
-
-const { direction } = Astro.props
 ---
 
-<link {...getChassisCssProps(direction)} />
-<link rel="stylesheet" href={`/static/icons/chassis-icons.min.css`} />
+<link {...getChassisCssProps()} />
+<link rel="stylesheet" href={`/static/icons/chassis-icons.css`} />

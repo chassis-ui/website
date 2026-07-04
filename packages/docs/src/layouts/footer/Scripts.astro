@@ -5,8 +5,8 @@
  * JavaScript imports for site functionality.
  */
 
-import { getChassisJsProps } from '../../libs/chassis'
 import type { Layout } from '../../libs/layout'
+import type { HTMLAttributes } from 'astro/types'
 
 interface Props {
   /** Current layout context */
@@ -14,16 +14,21 @@ interface Props {
 }
 
 const { layout } = Astro.props
+
+function getChassisJsProps() {
+  // __CHASSIS_JS_SRC__ is an optional dev-mode override injected via vite.define by the
+  // host project's integration. When set, it replaces the default public-dir bundle path.
+  const src =
+    (import.meta.env.DEV && (globalThis as any).__CHASSIS_JS_SRC__) ||
+    (import.meta.env.PROD ? '/static/js/chassis.bundle.min.js' : '/static/js/chassis.bundle.js')
+
+  const cxJsLinkProps: HTMLAttributes<'script'> = { type: 'module', src }
+
+  return cxJsLinkProps
+}
 ---
 
-<script is:inline {...getChassisJsProps()}></script>
 <script src="../../js/search.js"></script>
-<script>
-  const tooltipTriggerList = document.querySelectorAll('[data-cx-toggle="tooltip"]')
-  const tooltipList = [...tooltipTriggerList].map(
-    (tooltipTriggerEl) => new chassis.Tooltip(tooltipTriggerEl)
-  )
-</script>
+<script is:inline {...getChassisJsProps()}></script>
 {layout === 'docs' && <script src="../../js/sidebar.js" />}
-<script src="../../js/icon-loader.js"></script>
 <slot name="scripts" />

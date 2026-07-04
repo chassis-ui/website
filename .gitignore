@@ -1,6 +1,6 @@
 # Site
 _site
-packages/website/.astro
+.astro
 packages/website/dist
 packages/website/public
 
@@ -15,6 +15,7 @@ Thumbs.db
 .project
 .settings
 .tmproj
+.claude
 
 # Test coverage
 coverage/

@@ -59,7 +59,7 @@ class SubmoduleSync {
         lfs: true,
         expectedBranch: this.submoduleBranch,
         buildCommands: ['pnpm install --ignore-workspace', 'pnpm assets:site'],
-        buildOutputPath: 'dist/web/chassis-docs'
+        buildOutputPath: 'dist/web/docs/chassis'
       }
     ]
   }

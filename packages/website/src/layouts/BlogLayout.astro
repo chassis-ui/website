@@ -24,40 +24,42 @@ const description =
 
 <BaseLayout {...Astro.props} layout="blog">
   <Fragment slot="main">
-    <header class="py-xlarge medium:py-3xlarge border-bottom border-subtle">
-      <div class="container 2xlarge">
-        <div class="row">
-          <div class="col large:col-10 2xlarge:col-8">
-            {
-              Astro.slots.has('breadcrumb') ? (
-                <>
-                  <nav aria-label="breadcrumb">
-                    <slot name="breadcrumb" />
-                  </nav>
-                  <h1 class="my-0">{title}</h1>
-                </>
-              ) : (
-                <>
-                  <h1 class="mt-0">{title}</h1>
-                  <p class="font-lead">{description}</p>
-                </>
-              )
-            }
+    <main>
+      <header class="py-xlarge medium:py-3xlarge border-bottom border-subtle">
+        <div class="container 2xlarge">
+          <div class="row">
+            <div class="col large:col-10 2xlarge:col-8">
+              {
+                Astro.slots.has('breadcrumb') ? (
+                  <>
+                    <nav aria-label="breadcrumb">
+                      <slot name="breadcrumb" />
+                    </nav>
+                    <h1 class="my-0">{title}</h1>
+                  </>
+                ) : (
+                  <>
+                    <h1 class="mt-0">{title}</h1>
+                    <p class="font-lead">{description}</p>
+                  </>
+                )
+              }
+            </div>
           </div>
         </div>
-      </div>
-    </header>
-    <div class="container 2xlarge py-4xlarge min-vh-100">
-      <div class="row g-4xlarge">
-        <main class="large:col-8">
-          <slot />
-        </main>
-        <aside class="large:col-4">
-          <div class="position-sticky" style="top: 96px;">
-            <LatestPosts posts={blogPages} currentPostId={id} />
+      </header>
+      <div class="container 2xlarge py-4xlarge min-vh-100">
+        <div class="row g-4xlarge">
+          <div class="large:col-8">
+            <slot />
           </div>
-        </aside>
+          <aside class="large:col-4">
+            <div class="position-sticky" style="top: 96px;">
+              <LatestPosts posts={blogPages} currentPostId={id} />
+            </div>
+          </aside>
+        </div>
       </div>
-    </div>
+    </main>
   </Fragment>
 </BaseLayout>

@@ -20,9 +20,13 @@ interface Props {
    * @default 'info'
    */
   type?: 'danger' | 'info' | 'warning'
+  /**
+   * The CSS class(es) to be added to the callout wrapping `div` element.
+   */
+  class?: string
 }
 
-const { name, type = 'info' } = Astro.props
+const { name, type = 'info', class: className } = Astro.props
 
 let Content: MarkdownInstance<{}>['Content'] | undefined
 
@@ -38,6 +42,6 @@ if (name) {
 }
 ---
 
-<div class={`cxd-callout cxd-callout-${type} context ${type}`}>
+<div class:list={[`cxd-callout cxd-callout-${type} context ${type}`, className]}>
   {Content ? <Content /> : <slot />}
 </div>

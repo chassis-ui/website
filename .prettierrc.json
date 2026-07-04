@@ -24,7 +24,7 @@
       "files": ["*.{md,mdx}"],
       "options": {
         "printWidth": 80,
-        "proseWrap": "never"
+        "embeddedLanguageFormatting": "off"
       }
     }
   ]

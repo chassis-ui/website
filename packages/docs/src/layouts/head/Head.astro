@@ -16,8 +16,6 @@ import '@scss/docs.scss'
 interface Props {
   /** Page description for meta tags */
   description: string
-  /** Text direction (for RTL languages) */
-  direction?: 'rtl'
   /** Current layout context */
   layout: Layout
   /** Robots meta tag value */
@@ -28,7 +26,7 @@ interface Props {
   title: string
 }
 
-const { description, direction, layout, robots, thumbnail, title } = Astro.props
+const { description, layout, robots, thumbnail, title } = Astro.props
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site)
 
@@ -45,11 +43,8 @@ const pageTitle = isHome
 
 <meta name="author" content={getConfig().authors} />
 <meta name="generator" content={Astro.generator} />
-<meta name="docsearch:language" content="en" />
 
 <link rel="canonical" href={canonicalUrl} />
-
-<link rel="preconnect" href={`https://${getConfig().algolia.app_id}-dsn.algolia.net`} crossorigin />
 
 <title>{pageTitle}</title>
 
@@ -57,7 +52,7 @@ const pageTitle = isHome
 
 <script src="../../js/color-modes.js"></script>
 
-<Stylesheet direction={direction} layout={layout} />
+<Stylesheet />
 <slot name="styles" />
 <Favicons />
 <Social description={description} layout={layout} thumbnail={thumbnail} title={title} />

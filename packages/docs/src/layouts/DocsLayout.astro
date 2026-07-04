@@ -14,6 +14,7 @@ import { getSlug, processMarkdownToHtml } from '../libs/utils'
 import BaseLayout from './BaseLayout.astro'
 import DocsSidebar from '../components/DocsSidebar.astro'
 import TableOfContents from '../components/TableOfContents.astro'
+import Icon from '../components/shortcodes/Icon.astro'
 
 interface Props {
   /** Frontmatter data from the docs collection */
@@ -44,29 +45,27 @@ if (frontmatter.toc) {
 <BaseLayout {...Astro.props} layout="docs" overrides={{ body: bodyProps }}>
   <div slot="main" class="container fluid cxd-gutter cxd-layout">
     <aside class="cxd-sidebar">
-      <div
-        class="large:offcanvas offcanvas-start"
-        role="dialog"
-        tabindex="-1"
+      <dialog
+        class="max-large:drawer drawer-start"
         id="cxdSidebar"
         aria-labelledby="cxdSidebarOffcanvasLabel"
       >
-        <div class="offcanvas-header border-bottom">
-          <h5 class="offcanvas-title" id="cxdSidebarOffcanvasLabel">Browse docs</h5>
+        <div class="drawer-header">
+          <h2 class="drawer-title" id="cxdSidebarOffcanvasLabel">Browse docs</h2>
           <button
             type="button"
             class="close-button"
-            data-cx-dismiss="offcanvas"
+            data-cx-dismiss="drawer"
             aria-label="Close"
             data-cx-target="#cxdSidebar"></button>
         </div>
-
-        <div class="offcanvas-body">
+        <hr class="large:d-none m-0" />
+        <div class="drawer-body large:p-0">
           <slot name="sidebar">
             <DocsSidebar />
           </slot>
         </div>
-      </div>
+      </dialog>
     </aside>
 
     <main class="cxd-main">
@@ -121,14 +120,12 @@ if (frontmatter.toc) {
               aria-controls="tocContents"
             >
               On this page
-              <svg class="icon icon-small" aria-hidden="true">
-                <use xlink:href="#chevron-sort-solid" />
-              </svg>
+              <Icon name="chevron-sort-solid" class="icon-small" />
             </button>
             <strong class="d-none medium:d-block h6 my-xsmall">On this page</strong>
             <hr class="d-none medium:d-block my-xsmall" />
             <div class="collapse cxd-toc-collapse" id="tocContents">
-              <nav id="TableOfContents">
+              <nav id="TableOfContents" aria-label="Table of contents">
                 <slot name="toc">
                   <TableOfContents headings={headings} config={getConfig()} />
                 </slot>

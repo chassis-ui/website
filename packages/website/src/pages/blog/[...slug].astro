@@ -3,7 +3,7 @@ import { render } from 'astro:content'
 import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
 import { blogPages } from '@libs/content'
 import { tagsToArray } from '@libs/blog'
-import Code from '@shortcodes/Code.astro'
+import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 import type { CollectionEntry } from 'astro:content'
 
 export async function getStaticPaths() {
@@ -38,7 +38,7 @@ const { Content } = await render(blogPage)
 
 <BaseLayout frontmatter={{ description: data.description, title: data.title }}>
   <div class="container 2xlarge">
-    <main class="col-12 large:col-10 2xlarge:col-8 mx-auto">
+    <div class="col-12 large:col-10 2xlarge:col-8 mx-auto">
       <nav class="py-medium border-bottom border-subtle mb-xlarge" aria-label="Breadcrumb">
         <a href="/blog" class="icon-link text-decoration-none">
           <svg class="icon icon-adaptive" aria-hidden="true"
@@ -97,7 +97,7 @@ const { Content } = await render(blogPage)
           </aside>
         )
       }
-      <nav class="py-medium border-top border-subtle mb-xlarge" aria-label="Breadcrumb">
+      <nav class="py-medium border-top border-subtle mb-xlarge" aria-label="Post navigation">
         <a href="/blog" class="icon-link text-decoration-none">
           <svg class="icon icon-adaptive" aria-hidden="true"
             ><use xlink:href="#arrow-left-outline"></use></svg
@@ -105,6 +105,6 @@ const { Content } = await render(blogPage)
           Back to Blog
         </a>
       </nav>
-    </main>
+    </div>
   </div>
 </BaseLayout>

@@ -1,0 +1,7 @@
+# Pagefind CLI configuration
+# https://pagefind.app/docs/config-options/
+
+# Index special characters common in CSS / design-system docs so users can search
+# for things like `$primary`, `--cx-primary`, `&::before`, or `<details>`.
+include_characters: "$&-_<>:."
+glob: "{about/**/*.html,examples/**/*.html}"
