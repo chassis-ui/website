@@ -1,7 +1,7 @@
 # Bootstrap to Chassis CSS Migration Guide for LLMs
 
 > **Document Purpose:** This is an LLM instruction guide for converting Bootstrap CSS to Chassis CSS.  
-> **Last Updated:** February 2026  
+> **Last Updated:** July 2026 (verified against the current `@chassis-ui/css` release — check its `package.json` for the exact version; the breakpoint syntax below has been stable since `v0.2.0`)  
 > **Status:** Living document - Chassis CSS is under active development  
 
 **Target Audience**: LLMs, AI assistants, and automated code conversion tools
@@ -25,7 +25,32 @@ When processing Bootstrap code, apply these transformations:
 3. **Typography**: `display-{n}` → `font-display font-{size}xlarge`
 4. **Spacing**: Numeric (`p-1`, `m-3`) → Semantic (`p-xsmall`, `m-medium`)
 5. **Breakpoints**: Abbreviated (`sm`, `md`, `lg`, `xl`, `xxl`) → Semantic (`small`, `medium`, `large`, `xlarge`, `2xlarge`)
-6. **Data attributes**: `data-bs-*` → `data-cx-*`
+6. **Responsive utilities**: Bootstrap infix (`d-md-flex`, `col-md-6`) → Chassis CSS **prefix** (`medium:d-flex`, `medium:col-6`) — see [Breakpoint Prefix Syntax](#-breakpoint-prefix-syntax-v020) below
+7. **Data attributes**: `data-bs-*` → `data-cx-*`
+
+## ⚠️ Breakpoint Prefix Syntax (v0.2.0+)
+
+As of `@chassis-ui/css@0.2.0`, every responsive utility class uses a Tailwind-style **prefix** (`{breakpoint}:{utility}`), not Bootstrap's **infix** (`{utility}-{breakpoint}`). This applies uniformly to spacing, display, flex, grid columns, and all other responsive utilities:
+
+| Old (pre-0.2.0) infix | Current (0.2.0+) prefix |
+|---|---|
+| `p-large-xlarge` | `large:p-xlarge` |
+| `d-medium-flex` | `medium:d-flex` |
+| `col-medium-6` | `medium:col-6` |
+| `offset-medium-3` | `medium:offset-3` |
+| `offcanvas-large` | `large:offcanvas` |
+| `table-responsive-large` | `large:table-responsive` |
+| `fullscreen-large-down` | `large:down:fullscreen` |
+
+A handful of components additionally moved from a hyphenated modifier to a **compound class** in the same release:
+| Old | Current |
+|---|---|
+| `.container-large` / `.container-fluid` | `.container.large` / `.container.fluid` |
+| `.image-fluid` / `.image-thumbnail` | `.image.fluid` / `.image.thumbnail` |
+| `.list-numbered` / `.list-flush` / `.list-plain` | `.list-group.numbered` / `.list-group.flush` / `.list-group.plain` |
+| `.list-horizontal-large` | `.list-group.large:horizontal` |
+
+**When converting Bootstrap responsive classes, always emit the new prefix form** (e.g. `col-md-6` → `medium:col-6`, never `col-medium-6`). All examples below already use the current prefix syntax.
 
 This comprehensive guide provides mappings from Bootstrap classes to their Chassis CSS equivalents.
 
@@ -116,13 +141,13 @@ When encountering Bootstrap code in user requests:
 | `fw-bolder` | `font-mass` | Heaviest weight |
 
 ### Responsive Breakpoints
-| Bootstrap | Chassis CSS | Screen Width |
-|-----------|-------------|-------------|
-| `sm` | `small` | ≥576px |
-| `md` | `medium` | ≥768px |
-| `lg` | `large` | ≥992px |
-| `xl` | `xlarge` | ≥1200px |
-| `xxl` | `2xlarge` | ≥1400px |
+| Bootstrap | Chassis CSS | Screen Width | Notes |
+|-----------|-------------|-------------|-------|
+| `sm` | `small` | ≥576px | Bootstrap infix (`col-sm-6`) → Chassis prefix (`small:col-6`) |
+| `md` | `medium` | ≥768px | `col-md-6` → `medium:col-6` |
+| `lg` | `large` | ≥1024px | `col-lg-4` → `large:col-4` |
+| `xl` | `xlarge` | ≥1280px | `col-xl-3` → `xlarge:col-3` |
+| `xxl` | `2xlarge` | ≥1536px | `col-xxl-2` → `2xlarge:col-2` |
 
 ## Font Sizes & Typography
 
@@ -392,7 +417,7 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 <!-- Chassis CSS -->
 <div class="container">
   <div class="row">
-    <div class="col-12 col-medium-6 col-large-4">Content</div>
+    <div class="col-12 medium:col-6 large:col-4">Content</div>
   </div>
 </div>
 ```
@@ -405,8 +430,8 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 <div class="col-12 col-md-6 col-lg-4 col-xl-3">
 
 <!-- Chassis CSS -->
-<div class="d-none d-small-block d-medium-flex">
-<div class="col-12 col-medium-6 col-large-4 col-xlarge-3">
+<div class="d-none small:d-block medium:d-flex">
+<div class="col-12 medium:col-6 large:col-4 xlarge:col-3">
 ```
 
 ### Flexbox Utilities
@@ -513,9 +538,9 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 <!-- OUTPUT (Chassis CSS) -->
 <div class="container">
   <div class="row">
-    <div class="col-12 col-small-6 col-medium-4 col-large-3">Column 1</div>
-    <div class="col-12 col-small-6 col-medium-4 col-large-3">Column 2</div>
-    <div class="d-none d-medium-block col-medium-4 col-large-6">Column 3</div>
+    <div class="col-12 small:col-6 medium:col-4 large:col-3">Column 1</div>
+    <div class="col-12 small:col-6 medium:col-4 large:col-3">Column 2</div>
+    <div class="d-none medium:d-block medium:col-4 large:col-6">Column 3</div>
   </div>
 </div>
 ```
@@ -632,10 +657,10 @@ When processing user requests involving CSS frameworks:
 
 ### Layout
 - [ ] Convert breakpoint abbreviations to semantic names (`sm` → `small`, `md` → `medium`, etc.)
-- [ ] Update responsive grid classes (`col-md-6` → `col-medium-6`)
-- [ ] Update responsive display utilities (`d-sm-block` → `d-small-block`)
-- [ ] Flexbox utilities remain largely the same
-- [ ] Display utilities are compatible
+- [ ] Convert infix to prefix syntax for every responsive utility (`col-md-6` → `medium:col-6`, `d-sm-block` → `small:d-block`)
+- [ ] Convert compound-class components (`container-large` → `container.large`, `image-fluid` → `image.fluid`)
+- [ ] Flexbox utilities remain largely the same (just apply the prefix convention when responsive)
+- [ ] Display utilities are compatible (same prefix convention when responsive)
 
 ## LLM Processing Notes
 
@@ -643,6 +668,7 @@ When processing user requests involving CSS frameworks:
 - **Chassis CSS uses space-separated modifiers**: `button primary outline` not `btn btn-primary btn-outline`
 - **Semantic spacing names**: `medium`, `large`, `xlarge` instead of numbers
 - **Semantic breakpoint names**: `small`, `medium`, `large`, `xlarge`, `2xlarge` instead of `sm`, `md`, `lg`, `xl`, `xxl`
+- **Prefix, not infix, for responsive utilities**: `medium:p-large` / `medium:col-6` not `p-medium-large` / `col-medium-6` (see [Breakpoint Prefix Syntax](#-breakpoint-prefix-syntax-v020))
 - **Comprehensive color system**: `fg-subtle`, `fg-slight`, `fg-main` for text variations
 - **Context-aware colors**: `primary-fg-subtle`, `secondary-bg-evident` for advanced usage
 - **Display fonts require two classes**: `font-display font-2xlarge` not just `display-4`

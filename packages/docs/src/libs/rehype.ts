@@ -41,20 +41,3 @@ export const rehypeCxTable: Plugin<[], Root> = function () {
     })
   }
 }
-
-/**
- * Rehype plugin to strip `is:raw` attributes from code elements.
- *
- * The `@astrojs/markdown-remark` rehype-prism plugin adds `is:raw` as an Astro
- * directive, but it leaks into the final HTML output because rehype processes
- * it as a plain attribute rather than an Astro compiler directive.
- */
-export const rehypeStripIsRaw: Plugin<[], Root> = function () {
-  return function rehypeStripIsRawPlugin(tree) {
-    visit(tree, 'element', (node) => {
-      if (node.properties && 'is:raw' in node.properties) {
-        delete node.properties['is:raw']
-      }
-    })
-  }
-}

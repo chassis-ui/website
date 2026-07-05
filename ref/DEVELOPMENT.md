@@ -18,11 +18,11 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the complete ecosystem structure.
 - **macOS, Linux, or Windows** with WSL2
 - **Node.js** 18.0.0 or higher (recommend using nvm/fnm)
 - **pnpm** 10.0.0 or higher
-- **Git** with SSH keys for GitHub access (for submodules)
+- **Git** (the `vendor/assets` submodule is fetched over HTTPS by default — see `.gitmodules`; SSH keys are only needed if you've configured Git to rewrite GitHub URLs to SSH globally)
 
 ### Initial Setup
 
-#### 1. Configure Git SSH Keys (for submodules)
+#### 1. Configure Git SSH Keys (optional, for GitHub SSH access)
 
 ```bash
 # Generate SSH key if you don't have one
@@ -136,8 +136,8 @@ Shared documentation infrastructure used by all Chassis projects.
 
 **Location:** `packages/docs/`  
 **Purpose:** Reusable Astro components, layouts, and utilities  
-**Published:** Yes, to npm registry  
-**Version:** 0.1.7  
+**Published:** Yes, to npm registry (automatically, via `.github/workflows/publish-packages.yml` when its `package.json` version changes on `main`)  
+**Version:** independently versioned — see `packages/docs/package.json` for the current number  
 
 **Development:**
 ```bash
@@ -270,14 +270,14 @@ pnpm dev
 **Publishing updates:**
 
 ```bash
-# 1. Bump version
-cd packages/docs
-# Update version in package.json
+# 1. Bump version (run from repo root; updates packages/docs/package.json + README.md)
+node build/change-version.js --patch   # or --minor / --major
 
-# 2. Commit and push
+# 2. Commit and push to main
 git add .
 git commit -m "feat(docs): add new component"
-git push
+git push origin main
+# → .github/workflows/publish-packages.yml detects the bump and publishes @chassis-ui/docs to npm
 
 # 3. Other projects can update
 # In chassis-css, chassis-tokens, etc.
@@ -301,16 +301,21 @@ packages/docs/src/scss/
 
 ### Using Chassis CSS
 
-The website imports Chassis CSS from the separate project:
+The website depends on Chassis CSS (and Icons, Tokens) via published semver ranges:
 
 ```json
 // packages/website/package.json
 {
-  "dependencies": {
-    "@chassis-ui/css": "github:chassis-ui/css#app/docs"
+  "devDependencies": {
+    "@chassis-ui/css": "^x.y.z",
+    "@chassis-ui/icons": "^x.y.z",
+    "@chassis-ui/tokens": "^x.y.z"
   }
 }
 ```
+(css/icons/tokens release in lockstep — check `packages/website/package.json` for the exact current ranges)
+
+For local development, `pnpm-workspace.yaml` overrides `@chassis-ui/css` and `@chassis-ui/icons` to resolve from sibling checkouts on disk (`link:../chassis-css`, `link:../chassis-icons`) instead of npm, so edits in those sibling repos show up immediately in `pnpm dev`. See [ARCHITECTURE.md](ARCHITECTURE.md#local-development-via-pnpm-workspace-overrides) for details. `@chassis-ui/tokens` always resolves from npm.
 
 ## 🧩 Working with Submodules
 
@@ -357,7 +362,7 @@ Each Chassis project (`chassis-css`, `chassis-tokens`, etc.) depends on `@chassi
 // chassis-css/package.json
 {
   "devDependencies": {
-    "@chassis-ui/docs": "^0.1.3"
+    "@chassis-ui/docs": "^x.y.z"
   }
 }
 ```
@@ -384,9 +389,14 @@ pnpm validate           # Run validators
 
 ### Build Process
 
-1. **Astro builds** `packages/website` to `_site/`
-2. **Static files** are copied to appropriate locations
-3. **Validation** runs (optional)
+`pnpm build` runs `node build/build-site.js all`, which:
+
+1. **Checks dependencies** — verifies `vendor/`, `packages/website`, and that `pnpm`/`git` are available
+2. **Updates vendor assets** — syncs the `vendor/assets` submodule to the `app/docs` branch (override with the `VENDOR_BRANCH` env var), runs `git lfs pull`, installs its dependencies, and runs its `pnpm assets:site` build
+3. **Builds the site** — `pnpm install` then `pnpm astro:build`, output to `_site/`
+4. **Validates output** — confirms `_site/index.html` and built assets exist
+
+`build/build-site.js` also accepts explicit sub-commands: `site` (Astro build only), `vendor` (submodule sync + build only), `clean` (removes `_site`, `.astro`, `node_modules`, `public`), and `validate` (output check only). Vercel's own build uses `pnpm site:build` (`build-site.js` + `pnpm site:pagefind`), not the bare `pnpm build` alias — see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ### Build Output
 

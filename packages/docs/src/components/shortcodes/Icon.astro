@@ -1,0 +1,57 @@
+---
+/**
+ * Icon
+ *
+ * Renders a Chassis icon, either as an SVG referencing the icon sprite
+ * or as a font glyph via the `cx-{name}` icon font class.
+ */
+
+interface Props {
+  /** Icon name/id, e.g. `folder-tree`. */
+  name: string
+  /** Additional CSS class(es) to add alongside the standard `icon` class. */
+  class?: string
+  /** Width/height (in px) applied to the SVG. Ignored in `font` mode. */
+  size?: number
+  /** Render as a `<span class="icon cx-{name}">` font glyph instead of an SVG `<use>`. */
+  font?: boolean
+  /** Accessible name. When set, the icon is exposed to assistive tech instead of hidden. */
+  title?: string
+  /** Path to the SVG sprite file. Ignored in `font` mode. */
+  sprite?: string
+  /** Any other attribute (e.g. `style`, `role`) is passed through to the rendered element. */
+  [key: string]: unknown
+}
+
+const {
+  name,
+  class: className,
+  size = 24,
+  font = false,
+  title,
+  sprite = '/static/icons/chassis-icons.svg',
+  ...rest
+} = Astro.props
+---
+
+{
+  font ? (
+    <span
+      class:list={['icon', `cx-${name}`, className]}
+      aria-hidden={title ? undefined : 'true'}
+      aria-label={title}
+      {...rest}
+    />
+  ) : (
+    <svg
+      class:list={['icon', className]}
+      width={size}
+      height={size}
+      aria-hidden={title ? undefined : 'true'}
+      {...rest}
+    >
+      {title && <title>{title}</title>}
+      <use href={`${sprite}#${name}`} />
+    </svg>
+  )
+}

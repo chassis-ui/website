@@ -3,25 +3,26 @@
  * Table of Contents
  *
  * Generate and render a hierarchical table of contents from headings.
+ * Can be called recursively to render nested children.
  */
 
 import type { MarkdownHeading } from 'astro'
-import { generateToc, type TocEntry } from '../libs/toc'
+import { generateToc, type TocConfig, type TocEntry } from '../libs/toc'
 
 interface Props {
-  /** Markdown headings to generate TOC from */
+  /** Markdown headings to generate TOC from. Required when `entries` is not provided. */
   headings?: MarkdownHeading[]
-  /** Pre-generated TOC entries */
+  /** Pre-generated TOC entries. When provided, `headings` is ignored. */
   entries?: TocEntry[]
-  /** Current nesting level */
+  /** Current nesting level. Set automatically during recursive rendering. */
   level?: number
-  /** TOC generation configuration */
-  config?: any
+  /** TOC depth configuration. Required when `entries` is not provided. */
+  config?: TocConfig
 }
 
 const { entries, headings, level, config } = Astro.props
 
-const toc = entries ? entries : generateToc(headings ?? [], config)
+const toc = entries ? entries : generateToc(headings ?? [], config!)
 let entryLevel = level ? level + 1 : 1
 ---
 

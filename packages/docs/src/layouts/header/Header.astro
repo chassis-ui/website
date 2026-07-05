@@ -5,23 +5,20 @@
  * Site header with navigation and page title.
  */
 
-import type { CollectionEntry } from 'astro:content'
 import type { Layout } from '../../libs/layout'
 import Skippy from './Skippy.astro'
 import Navigation from './Navigation.astro'
 
 interface Props {
-  /** Version when the feature was added */
-  addedIn?: CollectionEntry<'docs'>['data']['added']
   /** Current layout context */
   layout: Layout
   /** Page title */
   title: string
 }
 
-const { layout, title } = Astro.props
+const { layout } = Astro.props
 ---
 
 <Skippy layout={layout} />
 
-<Navigation layout={layout} title={title} />
+<Navigation layout={layout} />

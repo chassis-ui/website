@@ -38,28 +38,19 @@ packages/docs/src/scss/
 
 ### docs.scss
 
-This is the main stylesheet used across the site. Import order:
+This is the main stylesheet used across the site. It now uses Sass's `@use` module system (not `@import`). Actual order in `packages/website/src/scss/docs.scss`:
 
 ```scss
-// 1. Design tokens (CSS custom properties)
-@import "@chassis-ui/tokens/dist/web/docs/chassis/main";
+// 1. Chassis CSS framework (config, functions, maps, mixins)
+@use "@chassis-ui/css/scss/config" as *;
+@use "@chassis-ui/css/scss/functions" as *;
+@use "@chassis-ui/css/scss/maps" as *;
+@use "@chassis-ui/css/scss/mixins" as *;
 
-// 2. Shared docs settings (SCSS variables)
-@import "@chassis-ui/docs/scss/settings";
+// 2. Shared docs component styles
+@use "@chassis-ui/docs/scss/main";
 
-// 3. Chassis CSS framework (functions, mixins, variables)
-@import "@chassis-ui/css/scss/functions";
-@import "@chassis-ui/css/scss/tokens";
-@import "@chassis-ui/css/scss/variables";
-@import "@chassis-ui/css/scss/rfs";
-@import "@chassis-ui/css/scss/maps";
-@import "@chassis-ui/css/scss/mixins";
-@import "@chassis-ui/css/scss/placeholders";
-
-// 4. Shared docs component styles
-@import "@chassis-ui/docs/scss/main";
-
-// 5. Site-specific customizations
+// 3. Site-specific customizations
 :root {
   --feature-item-width: 560px;
   --gallery-image-height: 256px;
@@ -69,6 +60,8 @@ This is the main stylesheet used across the site. Import order:
 .module-item > a { /*...*/ }
 .feature-slider { /*...*/ }
 ```
+
+`@chassis-ui/css/scss/config` forwards tokens, RFS, and defaults internally, so those no longer need separate `@use`/`@import` statements. `home.scss` follows the same pattern (`@use "docs" as *;` plus the config/mixins it needs directly).
 
 ### home.scss
 
@@ -112,29 +105,31 @@ The project uses Chassis CSS mixins for responsive breakpoints:
 
 ```scss
 @include media-breakpoint-up(medium) {
-  // Styles for medium screens and up (≥720px)
+  // Styles for medium screens and up (≥768px)
 }
 
 @include media-breakpoint-down(medium) {
-  // Styles for screens smaller than medium (<720px)
+  // Styles for screens smaller than medium (<768px)
 }
 ```
 
 ### Breakpoints
 
-Default Chassis CSS breakpoints:
+Default Chassis CSS breakpoints (from `@chassis-ui/tokens`, `grid.breakpoint.*`):
 - `small`: 576px
-- `medium`: 720px
-- `large`: 992px
-- `xlarge`: 1200px
-- `2xlarge`: 1440px
+- `medium`: 768px
+- `large`: 1024px
+- `xlarge`: 1280px
+- `2xlarge`: 1536px
+
+As of `@chassis-ui/css@0.2.0`, responsive utility classes use a `{breakpoint}:` **prefix** rather than a Bootstrap-style infix — e.g. `medium:p-large`, `large:d-flex`, `medium:col-6` (not `p-medium-large` / `col-medium-6`). See [CHASSIS_CSS.md](CHASSIS_CSS.md#-breakpoint-prefix-syntax-v020) for the full mapping.
 
 ## Utility-First Approach
 
 The project primarily uses Chassis CSS utility classes:
 
 ```html
-<div class="d-flex flex-column flex-medium-row gap-medium p-xlarge">
+<div class="d-flex flex-column medium:flex-row gap-medium p-xlarge">
   <!-- Content -->
 </div>
 ```
@@ -230,5 +225,5 @@ Consider these architectural improvements:
 
 ---
 
-**Last Updated**: April 2026  
+**Last Updated**: July 2026  
 **Maintainer**: Chassis UI Team

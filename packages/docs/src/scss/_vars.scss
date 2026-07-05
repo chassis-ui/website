@@ -1,0 +1,89 @@
+// Local docs variables
+@use "@chassis-ui/css/scss/functions" as *;
+@use "@chassis-ui/css/scss/mixins" as *;
+
+$aqua:       #0cc !default;
+$black:      #000 !default;
+$blue:       #00f !default;
+$cyan:       #0cf !default;
+$green:      #090 !default;
+$gray:       #999 !default;
+$graydark:   #666 !default;
+$fuchsia:    #c0c !default;
+$indigo:     #639 !default;
+$olive:      #990 !default;
+$orange:     #f90 !default;
+$red:        #f00 !default;
+$pink:       #f39 !default;
+$purple:     #90f !default;
+$teal:       #099 !default;
+$violet:     #c3c !default;
+$white:      #fff !default;
+$yellow:     #fc0 !default;
+
+$cxd-gutter-x: 2rem;
+$cxd-callout-variants: info, warning, danger, default !default;
+
+:root {
+  --cxd-code-color: var(--cx-secondary-fg-main);
+  --cxd-main: var(--cx-primary);
+  --cxd-subtle: light-dark(var(--cx-primary-40), var(--cx-primary-60));
+  --cxd-pink-rgb: #{to-rgb($pink)};
+  --cxd-teal-rgb: #{to-rgb($teal)};
+  --cxd-main-bg: var(--cxd-main);
+  --cxd-subtle-bg: var(--cxd-subtle);
+  --cxd-toc-color: var(--cxd-main);
+  --cxd-sidebar-link-bg: var(--cx-bg-highlight);
+  // --cxd-callout-link: #{to-color($blue-600)};
+  // --cxd-callout-code-color: var(--cx-base-color);
+  // --cxd-pre-bg: var(--cx-bg-even);
+}
+
+
+@layer custom {
+
+  // @if $enable-dark-mode {
+  //   @include color-mode(dark, true) {
+  //     // color-scheme: dark;
+  //     // --cxd-toc-color: var(--cx-fg-subtle);
+  //     --cxd-sidebar-link-bg: var(--cx-primary-40);
+  //     // --cxd-callout-link: #{to-color($blue-300)};
+  //     // --cxd-callout-code-color: #{to-color($pink-300)};
+  //     //--cxd-pre-bg: #{adjust-color($gray-900, $lightness: -2.5%)}; // stylelint-disable-line scss/at-function-named-arguments
+  //     // --cxd-pre-bg: var(--cx-bg-evident);
+  //   }
+  // }
+
+  // @import "../../../tokens/default.scss";
+  //  h1:not(.cxd-example h1),
+  //  h2:not(.cxd-example h2),
+  //  h3:not(.cxd-example h3),
+  //  h4:not(.cxd-example h4),
+  //  h5:not(.cxd-example h5),
+  //  h6:not(.cxd-example h6) {
+  //    & ~ p,
+  //    & ~ ol,
+  //    & ~ ul {
+  //      font-family: var(--cx-font-family-display) !important;
+  //    }
+  //  }
+
+  // .cxd-intro h1 {
+  //   line-height: 1.25em;
+  // }
+  // .cxd-intro h1,
+  // .cxd-content > h1,
+  // .cxd-content > h2,
+  // .cxd-content > h3,
+  // .cxd-content > h4 {
+  //   font-family: var(--cx-font-family-display) !important;
+  //   font-weight: var(--cx-font-weight-display-strong) !important;
+  // }
+  //
+  // .cxd-playground textarea {
+  //   font-family: var(--cx-font-family-code) !important;
+  //   //font-size: var(--cx-font-small) !important;
+  //   background-color: var(--cx-default-bg-even) !important;
+  //   border-color: var(--cx-default-border-subtle);
+  // }
+}

@@ -1,7 +1,7 @@
 ---
 import DocsLayout from '@chassis-ui/docs/layouts/DocsLayout.astro'
 import { docsPages } from '@libs/content'
-import Code from '@shortcodes/Code.astro'
+import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 import { render } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
 import '../../scss/docs.scss'
@@ -24,6 +24,6 @@ const { Content, headings } = await render(docsPage)
 <DocsLayout frontmatter={frontmatter} headings={headings} id={id}>
   <Content components={{ pre: Code }} />
   <Fragment slot="scripts">
-    <script is:inline src="/static/js/example-mode.js"></script>
+    <script src="@chassis-ui/docs/js/example-mode.js"></script>
   </Fragment>
 </DocsLayout>

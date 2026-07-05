@@ -1,0 +1,74 @@
+---
+/**
+ * Search Dialog
+ *
+ * Modal dialog containing the Pagefind search input and results. Opened by
+ * `SearchTrigger` or the ⌘K / Ctrl+K / "/" keyboard shortcuts defined in
+ * `src/js/search.js`. Uses native `<dialog>` with `showModal()`.
+ */
+
+import Icon from '../../components/shortcodes/Icon.astro'
+
+interface Props {
+  /** HTML `id` of the dialog element. Must match the `target` in `SearchTrigger`. */
+  id?: string
+  /** Placeholder text for the search input and the visually-hidden label. */
+  placeholder?: string
+}
+
+const { id = 'cxdSearchDialog', placeholder = 'Search docs…' } = Astro.props
+---
+
+<dialog
+  class="modal dialog large cxd-search-dialog scrollable"
+  id={id}
+  aria-labelledby={`${id}-label`}
+>
+  <search class="modal-header cxd-search-form">
+    <label class="visually-hidden" id={`${id}-label`} for={`${id}-input`}>
+      {placeholder}
+    </label>
+    <cxd-search-input>
+      <div class="form-input">
+        <div class="input-help">
+          <Icon name="search-solid" />
+        </div>
+        <input
+          id={`${id}-input`}
+          type="search"
+          class="ghost-input cxd-search-input"
+          placeholder={placeholder}
+          autocomplete="off"
+          spellcheck="false"
+          enterkeyhint="search"
+        />
+      </div>
+    </cxd-search-input>
+    <button
+      type="button"
+      class="close-button"
+      aria-label="Close"
+      data-cx-dismiss="dialog"
+      data-cx-target={`#${id}`}>×</button
+    >
+  </search>
+
+  <div class="modal-body cxd-search-body">
+    <cxd-search-results></cxd-search-results>
+  </div>
+  <div class="modal-footer cxd-search-footer">
+    <ul class="list horizontal cxd-search-shortcuts-list">
+      <li class="list-item">
+        <kbd class="cxd-search-shortcut-key font-2xsmall">⮐</kbd>
+        <span class="cxd-search-shortcut-label">to select</span>
+      </li><li class="list-item">
+        <kbd class="cxd-search-shortcut-key font-small">↑</kbd>
+        <kbd class="cxd-search-shortcut-key font-small">↓</kbd>
+        <span class="cxd-search-shortcut-label">to navigate</span>
+      </li><li class="list-item">
+        <kbd class="cxd-search-shortcut-key font-xsmall">ESC</kbd>
+        <span class="cxd-search-shortcut-label">to close</span>
+      </li>
+    </ul>
+  </div>
+</dialog>

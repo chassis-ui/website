@@ -1,6 +1,9 @@
 /// <reference path="../.astro/types.d.ts" />
 /// <reference types="astro/client" />
 
+declare module '@chassis-ui/css'
+declare module 'postcss-prefix-custom-properties'
+
 interface ImportMetaEnv {
   readonly VERCEL?: string
 }

@@ -4,14 +4,13 @@
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@css/*": ["@chassis-ui/css/dist/*"],
-      "@icons/*": ["@chassis-ui/icons/dist/*"],
-      "@assets/*": ["src/assets/*"],
+      "@chassis-ui/css/*": ["node_modules/@chassis-ui/css/*"],
       "@components/*": ["src/components/*"],
       "@layouts/*": ["src/layouts/*"],
       "@libs/*": ["src/libs/*"],
       "@scss/*": ["src/scss/*"],
       "@shortcodes/*": ["src/components/shortcodes/*"]
     }
-  }
+  },
+  "exclude": ["public"]
 }

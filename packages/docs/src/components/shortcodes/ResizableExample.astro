@@ -1,0 +1,126 @@
+---
+import { replacePlaceholdersInHtml } from '../../libs/placeholder'
+import { replaceIconsInHtml } from '../../libs/icon'
+import Code from './Code.astro'
+import Icon from './Icon.astro'
+
+interface Props {
+  /**
+   * Defines if extra JS snippet should be added to StackBlitz or not.
+   * @default false
+   */
+  addStackblitzJs?: boolean
+  /**
+   * The example code.
+   */
+  code: string | string[]
+  /**
+   * Custom markup to display in the source code section, different from the preview code.
+   * If provided, this will be used instead of the `code` prop for the source display.
+   */
+  customMarkup?: string | string[]
+  /**
+   * The CSS class(es) to be added to the resizable container.
+   */
+  class?: string
+  /**
+   * Alias for class prop.
+   */
+  containerClass?: string
+  /**
+   * The preview wrapping `div` element ID.
+   */
+  id?: string
+  /**
+   * Initial width of the resizable container.
+   * @default '100%'
+   */
+  initialWidth?: string
+  /**
+   * Minimum width of the resizable container.
+   * @default '200px'
+   */
+  minWidth?: string
+  /**
+   * Whether to show the code markup below.
+   * @default true
+   */
+  showMarkup?: boolean
+  /**
+   * If true, displays line numbers in the code block.
+   * @default false
+   */
+  lineNumbers?: boolean
+}
+
+const {
+  code,
+  class: className,
+  customMarkup,
+  containerClass,
+  id,
+  initialWidth = '100%',
+  minWidth = '200px',
+  showMarkup = true,
+  lineNumbers = false
+} = Astro.props
+
+let markup = Array.isArray(code) ? code.join('\n') : code
+markup = replacePlaceholdersInHtml(markup)
+markup = replaceIconsInHtml(markup)
+
+// The resizable container needs `overflow: hidden` for the CSS `resize` handle
+// to work, which clips popovers like menus/dropdowns when they open. Render them
+// with a fixed positioning strategy in the live preview only so they can spill
+// outside the container. The displayed markup below is left untouched.
+const previewMarkup = markup.replace(
+  /data-cx-toggle="(menu|dropdown)"(?![^>]*\bdata-cx-strategy=)/g,
+  'data-cx-toggle="$1" data-cx-strategy="fixed"'
+)
+
+let sourceMarkup = customMarkup
+  ? Array.isArray(customMarkup)
+    ? customMarkup.join('\n')
+    : customMarkup
+  : markup
+
+const simplifiedMarkup = sourceMarkup
+  .replace(
+    /<svg.*class="cxd-placeholder-img(?:-large)?(?: *?cxd-placeholder-img-large)? ?(.*?)".*?<\/svg>/g,
+    (_match, classes) => `<img src="..."${classes ? ` class="${classes}"` : ''} alt="...">`
+  )
+  .replace(
+    /<img.*class="cxd-placeholder-img(?:-large)?(?: *?cxd-placeholder-img-large)? ?(.*?)".*?>/g,
+    (_match, classes) => `<img src="..."${classes ? ` class="${classes}"` : ''} alt="...">`
+  )
+  .replace(/(<svg class="icon\b[^"]*")\s+width="\d+"\s+height="\d+"/g, '$1')
+  .replace(/href="\/static\/icons\/chassis-icons\.svg#/g, 'href="#')
+---
+
+<div class="cxd-example-snippet cxd-code-snippet" data-pagefind-ignore>
+  <div id={id} class:list={['cxd-example m-0 border-0 context', className]}>
+    <div class="cxd-mode">
+      <button
+        type="button"
+        class="button-mode"
+        title="Toggle color mode"
+        aria-label="Toggle color mode"
+        data-cx-toggle="tooltip"
+        onclick="toggleTheme(this)"
+      >
+        <Icon name="swatchbook-solid" />
+      </button>
+    </div>
+    <div
+      class:list={['cxd-resizable-container', containerClass]}
+      style={`width: ${initialWidth}; min-width: ${minWidth};`}
+    >
+      <Fragment set:html={previewMarkup} />
+    </div>
+  </div>
+  {
+    showMarkup && (
+      <Code code={simplifiedMarkup} lang="html" nestedInExample={true} lineNumbers={lineNumbers} />
+    )
+  }
+</div>

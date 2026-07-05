@@ -1,7 +1,6 @@
 ---
 import fs from 'node:fs'
-import { getConfig } from '@libs/config'
-import Code from '@shortcodes/Code.astro'
+import Code from './Code.astro'
 
 // Prints everything between `// js-docs-start "name"` and `// js-docs-end "name"`
 // comments in the docs.
@@ -48,7 +47,10 @@ try {
     .filter((line) => line.trim().length > 0)
     .map((line) => line.match(/^ */)![0].length)
   const minSpaces = spaceCounts.length ? Math.min(...spaceCounts) : 0
-  content = lines.map((line) => line.slice(minSpaces)).join('\n')
+  content = lines
+    .map((line) => line.slice(minSpaces))
+    .join('\n')
+    .trim()
 } catch (error) {
   throw new Error(
     `Failed to find the content to render in the '<JsDocs />' component at '${file}'.`,
@@ -59,24 +61,4 @@ try {
 }
 ---
 
-<Code containerClass="cxd-example-snippet cxd-code-snippet cxd-file-ref" code={content} lang="js">
-  <div
-    slot="pre"
-    class="d-flex align-items-center highlight-toolbar ps-medium pe-xsmall py-2xsmall border-bottom"
-  >
-    <a
-      class="font-monospace link-secondary link-underline-secondary link-underline-opacity-0 link-underline-opacity-100-hover small"
-      href={`${getConfig().repo}/blob/v${getConfig().current_version}/${file}`.replaceAll(
-        '\\',
-        '/'
-      )}
-    >
-      {file}
-    </a>
-    <div class="d-flex ms-auto">
-      <button type="button" class="button-clipboard mt-0 me-0" title="Copy to clipboard">
-        <svg class="bi" aria-hidden="true"><use xlink:href="#clipboard-solid"></use></svg>
-      </button>
-    </div>
-  </div>
-</Code>
+<Code containerClass="cxd-example-snippet cxd-file-ref" code={content} file={file} lang="js" />

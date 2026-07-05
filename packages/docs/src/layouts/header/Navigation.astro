@@ -9,12 +9,13 @@ import { getConfig } from '@libs/config'
 import type { Layout } from '../../libs/layout'
 import NavLink from '../../components/NavLink.astro'
 import ThemeToggler from '../../components/ThemeToggler.astro'
+import SearchTrigger from './SearchTrigger.astro'
+import SearchDialog from './SearchDialog.astro'
+import Icon from '../../components/shortcodes/Icon.astro'
 
 interface Props {
   /** Current layout context */
   layout: Layout
-  /** Page title for the navbar */
-  title: string
 }
 
 const { layout } = Astro.props
@@ -31,22 +32,20 @@ const isActive = (path: string) => {
 }
 ---
 
-<header class="navbar large:navbar-expand cxd-navbar sticky-top">
-  <nav class="container 2xlarge" aria-label="Main navigation">
+<header class="navbar translucent large:navbar-expand cxd-navbar sticky-top">
+  <nav class="container 2xlarge" aria-label="Site navigation">
     {
       layout === 'docs' && (
         <div class="cxd-navbar-toggle">
           <button
-            class="navbar-toggler p-xsmall2"
+            class="button icon-only navbar-toggler"
             type="button"
-            data-cx-toggle="offcanvas"
+            data-cx-toggle="drawer"
             data-cx-target="#cxdSidebar"
             aria-controls="cxdSidebar"
             aria-label="Toggle docs navigation"
           >
-            <svg class="icon icon-large" aria-hidden="true">
-              <use href="#bars-solid" />
-            </svg>
+            <Icon name="bars-solid" class="icon-large" />
             <span class="d-none large:d-inline fs-6 pe-2xsmall">Browse</span>
           </button>
         </div>
@@ -54,44 +53,42 @@ const isActive = (path: string) => {
     }
     {layout !== 'docs' && <div class="large:d-none" style="width: 4.25rem;" />}
 
-    <a class="navbar-brand large:me-medium" href="/" aria-label="Chassis">
+    <a class="navbar-brand m-0 py-small large:me-medium" href="/" aria-label="Chassis">
       <img src="/static/images/site-logo.svg" alt="Chassis UI" width="123" height="32" />
     </a>
 
     <div class="d-flex">
-      <div class="cxd-search" id="docsearch"></div>
+      <div class="cxd-search"><SearchTrigger placeholder="Search docs…" /></div>
 
       <button
-        class="navbar-toggler d-flex large:d-none order-3 p-xsmall"
+        class="button icon-only navbar-toggler"
         type="button"
-        data-cx-toggle="offcanvas"
+        data-cx-toggle="drawer"
         data-cx-target="#cxdNavbar"
         aria-controls="cxdNavbar"
         aria-label="Toggle navigation"
       >
-        <svg class="icon" aria-hidden="true"><use xlink:href="#ellipsis-h-solid"></use></svg>
+        <Icon name="ellipsis-h-solid" />
       </button>
     </div>
 
-    <div
-      class="offcanvas large:offcanvas offcanvas-end flex-grow-1"
-      role="dialog"
-      tabindex="-1"
+    <dialog
+      class="max-large:drawer drawer-end flex-grow-1"
       id="cxdNavbar"
       aria-labelledby="cxdNavbarOffcanvasLabel"
     >
-      <div class="offcanvas-header px-large pb-0">
-        <h5 class="offcanvas-title text-white" id="cxdNavbarOffcanvasLabel">Chassis</h5>
+      <div class="drawer-header">
+        <h2 class="drawer-title" id="cxdNavbarOffcanvasLabel">Chassis</h2>
         <button
           type="button"
           class="close-button close-button-white"
-          data-cx-dismiss="offcanvas"
+          data-cx-dismiss="drawer"
           aria-label="Close"
           data-cx-target="#cxdNavbar"></button>
       </div>
 
-      <div class="offcanvas-body p-large pt-0 large:p-0">
-        <hr class="large:d-none" />
+      <hr class="large:d-none m-0" />
+      <div class="drawer-body large:p-0">
         <ul class="navbar-nav flex-row flex-wrap cxd-navbar-nav mx-0 large:mx-medium">
           <NavLink active={isActive('/tokens')} href="/tokens">Tokens</NavLink>
           <NavLink active={isActive('/figma')} href="/figma">Figma</NavLink>
@@ -99,43 +96,44 @@ const isActive = (path: string) => {
           <NavLink active={isActive('/assets')} href="/assets">Assets</NavLink>
           <NavLink active={isActive('/icons')} href="/icons">Icons</NavLink>
           <li class="nav-item col-12 large:col-auto large:d-flex">
-            <div class="vr d-none large:d-flex my-auto large:mx-2"></div>
+            <div class="vr d-none large:d-flex my-auto large:mx-small"></div>
             <hr class="large:d-none" />
           </li>
           <NavLink active={isActive('/examples')} href="/examples">Examples</NavLink>
         </ul>
 
-        <hr class="large:d-none" />
+        <hr class="large:d-none m-0" />
 
-        <ul class="navbar-nav flex-row flex-wrap medium:ms-auto align-items-center">
+        <ul class="navbar-nav flex-row flex-wrap large:ms-auto align-items-center">
           <NavLink
-            class="nav-link px-0 large:px-2"
+            class="px-0 large:px-small"
             href={getConfig().github_org}
             target="_blank"
             rel="noopener"
           >
-            <svg class="icon"><title>GitHub</title><use href="#github-brand"></use></svg>
+            <Icon name="github-brand" title="GitHub" />
             <small class="large:d-none ms-xsmall">GitHub</small>
           </NavLink>
           <NavLink
-            class="nav-link px-0 large:px-2"
+            class="px-0 large:px-small"
             href={`https://x.com/${getConfig().x}`}
             target="_blank"
             rel="noopener"
           >
-            <svg class="icon"><title>X</title><use href="#x-twitter-brand"></use></svg>
+            <Icon name="x-twitter-brand" title="X" />
             <small class="large:d-none ms-xsmall">X</small>
           </NavLink>
           <li class="nav-item col-12 large:col-auto">
-            <div class="vr d-none large:d-flex h-100 large:mx-2"></div>
+            <div class="vr d-none large:d-flex h-100 large:mx-2xsmall"></div>
             <hr class="large:d-none" />
           </li>
 
-          <li class="nav-item dropdown">
+          <li class="nav-item">
             <ThemeToggler layout={layout} />
           </li>
         </ul>
       </div>
-    </div>
+    </dialog>
   </nav>
 </header>
+<SearchDialog placeholder="Search docs…" />

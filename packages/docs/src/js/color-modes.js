@@ -7,7 +7,7 @@
 ;(() => {
   'use strict'
 
-  const getStoredTheme = () => localStorage.getItem('theme')
+  const getStoredTheme = () => localStorage.getItem('theme') || 'auto'
   const setStoredTheme = (theme) => localStorage.setItem('theme', theme)
 
   const getPreferredTheme = () => {
@@ -45,11 +45,11 @@
     const svgOfActiveButton = buttonToActive.querySelector('svg use').getAttribute('href')
 
     document.querySelectorAll('[data-cx-theme-value]').forEach((element) => {
-      element.classList.remove('active')
+      element.classList.remove('selected')
       element.setAttribute('aria-pressed', 'false')
     })
 
-    buttonToActive.classList.add('active')
+    buttonToActive.classList.add('selected')
     buttonToActive.setAttribute('aria-pressed', 'true')
     activeThemeIcon.setAttribute('href', svgOfActiveButton)
     const themeSwitcherLabel = `${themeSwitcherText.textContent} (${buttonToActive.dataset.cxThemeValue})`

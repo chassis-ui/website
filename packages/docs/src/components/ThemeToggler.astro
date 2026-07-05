@@ -6,6 +6,7 @@
  */
 
 import type { Layout } from '../libs/layout'
+import Icon from './shortcodes/Icon.astro'
 
 interface Props {
   /** Current layout context */
@@ -16,62 +17,40 @@ const { layout } = Astro.props
 ---
 
 <button
-  class=`nav-link dropdown-toggle`
+  class="nav-link gap-2xsmall px-0 large:px-small"
   id="cxd-theme"
   type="button"
   aria-expanded="false"
-  data-cx-toggle="dropdown"
-  {...layout !== 'examples' ? { 'data-cx-display': 'static' } : {}}
+  data-cx-toggle="menu"
   aria-label="Toggle theme (auto)"
+  data-cx-placement="bottom-end"
 >
-  <svg class="icon theme-icon-active" aria-hidden="true"><use href="#circle-half-solid"></use></svg>
+  <Icon name="circle-half-solid" class="theme-icon-active" />
   <span
     class=`${layout === 'examples' ? 'visually-hidden' : 'large:d-none ms-xsmall'}`
     id="cxd-theme-text">Toggle theme</span
   >
 </button>
-<ul
-  class=`dropdown-menu dropdown-menu-end${layout === 'examples' ? ' shadow' : ''}`
-  aria-labelledby="cxd-theme-text"
->
+<ul class="menu" role="menu" aria-label="Theme options">
   <li>
-    <button
-      type="button"
-      class="dropdown-item d-flex align-items-center"
-      data-cx-theme-value="light"
-      aria-pressed="false"
-    >
-      <svg class="icon icon-reset me-xsmall" aria-hidden="true"><use href="#sun-solid"></use></svg>
+    <button type="button" class="menu-item" data-cx-theme-value="light">
+      <Icon name="sun-solid" class="menu-item-icon" />
       Light
-      <svg class="icon ms-auto d-none" aria-hidden="true"><use href="#check-solid"></use></svg>
+      <Icon name="check-solid" class="menu-item-check" />
     </button>
   </li>
   <li>
-    <button
-      type="button"
-      class="dropdown-item d-flex align-items-center"
-      data-cx-theme-value="dark"
-      aria-pressed="false"
-    >
-      <svg class="icon icon-reset me-xsmall" aria-hidden="true"
-        ><use href="#moon-stars-solid"></use></svg
-      >
+    <button type="button" class="menu-item" data-cx-theme-value="dark">
+      <Icon name="moon-stars-solid" class="menu-item-icon" />
       Dark
-      <svg class="icon ms-auto d-none" aria-hidden="true"><use href="#check-solid"></use></svg>
+      <Icon name="check-solid" class="menu-item-check" />
     </button>
   </li>
   <li>
-    <button
-      type="button"
-      class="dropdown-item d-flex align-items-center active"
-      data-cx-theme-value="auto"
-      aria-pressed="true"
-    >
-      <svg class="icon icon-reset me-xsmall" aria-hidden="true"
-        ><use href="#circle-half-solid"></use></svg
-      >
+    <button type="button" class="menu-item" data-cx-theme-value="auto">
+      <Icon name="circle-half-solid" class="menu-item-icon" />
       Auto
-      <svg class="icon ms-auto d-none" aria-hidden="true"><use href="#check-solid"></use></svg>
+      <Icon name="check-solid" class="menu-item-check" />
     </button>
   </li>
 </ul>

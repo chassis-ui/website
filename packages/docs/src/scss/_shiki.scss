@@ -1,0 +1,120 @@
+@use "@chassis-ui/css/scss/mixins" as *;
+
+// Shiki syntax highlighting — CSS variable theme
+// Requires defaultColor: false in codeToHtml so tokens carry
+// --shiki-light / --shiki-dark custom properties instead of inline hex.
+
+@layer custom {
+  // Explicit dark (data-cx-theme="dark" on root, body, or any ancestor)
+  // @media (prefers-color-scheme: dark) {
+  [data-cx-theme="dark"] {
+    .astro-code,
+    .astro-code span {
+      font-style: var(--shiki-dark-font-style);
+      font-weight: var(--shiki-dark-font-weight);
+      color: var(--shiki-dark);
+      text-decoration: var(--shiki-dark-text-decoration);
+      // background-color: var(--shiki-dark-bg);
+    }
+  }
+
+  // Explicit light override (e.g. a light example inside a dark page)
+  [data-cx-theme="light"] {
+    .astro-code,
+    .astro-code span {
+      font-style: var(--shiki-light-font-style);
+      font-weight: var(--shiki-light-font-weight);
+      color: var(--shiki-light);
+      text-decoration: var(--shiki-light-text-decoration);
+      // background-color: var(--shiki-light-bg);
+    }
+  }
+
+  .astro-code {
+    position: relative;
+    display: flex;
+    padding: var(--cxd-code-padding);
+    @include border-radius(calc(var(--radius-round) - 1px));
+
+    > code {
+      display: flex;
+      flex-shrink: 0;
+      flex-direction: column;
+      width: max-content;
+      min-width: 100%;
+
+      .line:empty {
+        min-height: 1lh;
+      }
+    }
+  }
+
+  .line {
+    width: 100%;
+    &.highlighted {
+      width: #{calc(100% + 2 * var(--cxd-code-padding))};
+      padding-inline: var(--cxd-code-padding);
+      margin-inline: calc(-1 * var(--cxd-code-padding));
+      background-color: var(--cx-bg-highlight);
+    }
+  }
+
+  // Line numbers
+  .line-numbers {
+    --cxd-line-number-width: 2.5rem;
+
+    code {
+      counter-reset: line;
+    }
+
+    .line {
+      position: relative;
+      padding-inline-start: var(--cxd-line-number-width); // make room for the number
+
+      &::before {
+        position: absolute;
+        inset-inline-start: 0;
+        width: var(--cxd-line-number-width);
+        padding-inline-end: .5rem;
+        margin-inline-start: calc(-1 * var(--cxd-code-padding));
+        font-variant-numeric: tabular-nums;
+        color: var(--cx-fg-subtle);
+        text-align: right;
+        pointer-events: none;
+        content: counter(line);
+        counter-increment: line;
+        user-select: none;
+        background-color: var(--cx-dim-slight);
+        border-inline-end: var(--cx-border-width) solid var(--cx-border-subtle);
+      }
+
+      &:first-child::before {
+        padding-block-start: var(--cxd-code-padding);
+        margin-block-start: calc(-1 * var(--cxd-code-padding));
+      }
+
+      &:last-child::before {
+        padding-block-end: var(--cxd-code-padding);
+        margin-block-end: calc(-1 * var(--cxd-code-padding));
+      }
+
+      // include line numbers in highlight background
+      &.highlighted {
+        padding-inline-start: calc(var(--cxd-line-number-width) + var(--cxd-code-padding));
+        margin-inline-start: calc(-1 * var(--cxd-code-padding));
+        &::before {
+          margin-inline-start: 0;
+        }
+      }
+
+      // Exclude line numbers from highlight background
+      // &.highlighted {
+      //   padding-inline-start: calc(var(--cxd-line-number-width) - var(--cxd-code-padding));
+      //   margin-inline-start: var(--cxd-code-padding);
+      //   &::before {
+      //     margin-inline-start: calc(-1 * var(--cxd-line-number-width));
+      //   }
+      // }
+    }
+  }
+}

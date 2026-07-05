@@ -7,15 +7,19 @@
 
 import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 import FeatureSlider from '@components/FeatureSlider.astro'
-import Code from '@shortcodes/Code.astro'
+import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 ---
 
-<section id="assets-section" class="home-section py-3xlarge medium:py-6xlarge">
+<section
+  id="assets-section"
+  class="home-section py-3xlarge medium:py-6xlarge"
+  aria-labelledby="assets-heading"
+>
   <div class="container 2xlarge section-content">
     <div class="row mb-3xlarge medium:mb-6xlarge">
       <header class="section-header col large:col-10 2xlarge:col-8">
         <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Assets</p>
-        <h2 class="font-5xlarge mb-xsmall medium:mb-small large:mb-medium">
+        <h2 id="assets-heading" class="font-5xlarge mb-xsmall medium:mb-small large:mb-medium">
           <span class="font-normal d-block">Asset Management</span> for Multi-Brand Design
         </h2>
         <p class="font-lead m-0">
@@ -28,7 +32,7 @@ import Code from '@shortcodes/Code.astro'
     <div
       class="section-features gap-xlarge flex-column medium:flex-row mb-medium medium:mb-6xlarge"
     >
-      <FeatureSlider>
+      <FeatureSlider ariaLabel="Assets features carousel">
         <!-- Item -->
         <FeatureCard icon="cx-number-one" classes="swiper-slide" horizontal>
           <Fragment slot="title">Store files</Fragment>
@@ -37,6 +41,7 @@ import Code from '@shortcodes/Code.astro'
           </Fragment>
           <div class="pt-medium border-top border-subtle">
             <Code
+              noToolbar
               lang="text"
               code={`source/
 ├── default/
@@ -60,6 +65,7 @@ import Code from '@shortcodes/Code.astro'
           </Fragment>
           <div class="pt-medium border-top border-subtle">
             <Code
+              noToolbar
               lang="sh"
               code={`# Build all platforms
 pnpm assets
@@ -83,6 +89,7 @@ pnpm assets --brand chassis --app demo`}
           </Fragment>
           <div class="pt-medium border-top border-subtle">
             <Code
+              noToolbar
               lang="text"
               code={`dist/
 ├── ios/demo/chassis/

@@ -1,45 +1,56 @@
+import path from 'node:path'
 import { defineConfig } from 'astro/config'
 import { chassis } from './src/libs/astro'
 import { getConfig } from './src/libs/config'
-import { getSiteUrl } from '@chassis-ui/docs'
-import { algoliaPlugin } from './src/plugins/algolia-plugin'
-import { rehypeStripIsRaw } from '@chassis-ui/docs'
-
-const site = getSiteUrl(getConfig())
+import { remarkCxConfig, remarkCxDocsref } from './src/libs/remark'
+import { chassisAutoImportPlugin } from './src/libs/shortcode'
+import { getSiteUrl, getDocsMarkdownConfig } from '@chassis-ui/docs'
 
 // https://astro.build/config
 export default defineConfig({
+  site: getSiteUrl(getConfig()),
   outDir: '../../_site',
   build: {
-    assets: `static`
+    assets: `static/astro`
   },
   integrations: [chassis()],
-  markdown: {
-    smartypants: false,
-    syntaxHighlight: 'prism',
-    rehypePlugins: [rehypeStripIsRaw]
-  },
-  site,
+  markdown: getDocsMarkdownConfig({
+    anchors: getConfig().anchors,
+    remarkPlugins: [chassisAutoImportPlugin(), remarkCxConfig, remarkCxDocsref]
+  }),
   vite: {
-    css: {
-      preprocessorOptions: {
-        scss: {
-          silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function']
+    environments: {
+      client: {
+        build: {
+          rolldownOptions: {
+            external: ['@chassis-ui/css'],
+            output: {
+              paths: { '@chassis-ui/css': '/static/js/chassis.bundle.min.js' },
+              entryFileNames: `static/astro/docs.[hash].js`,
+              chunkFileNames: 'static/astro/docs.[hash].js'
+              // assetFileNames: 'static/astro/docs.[hash][extname]'
+            }
+          }
         }
       }
     },
-    plugins: [algoliaPlugin()],
+    // Required for CSS files
     build: {
-      rollupOptions: {
+      rolldownOptions: {
         output: {
-          // entryFileNames: 'js/[name]-[hash].js',
-          // chunkFileNames: 'static/js/[name].[hash].js',
-          assetFileNames: (assetInfo) => {
-            if (assetInfo.name?.endsWith('.css')) {
-              return 'static/css/docs-[hash].css'
-            }
-            return 'static/docs-[hash][extname]'
-          }
+          assetFileNames: 'static/astro/docs.[hash][extname]'
+        }
+      }
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          loadPaths: [
+            // Custom override `_chassis-tokens.scss` if present in `src/scss`
+            // path.resolve(import.meta.dirname, 'src/scss'),
+            // Framework fallback `_chassis-tokens.scss` if no override above.
+            path.resolve(import.meta.dirname, 'node_modules/@chassis-ui/css/scss/vendor')
+          ]
         }
       }
     }

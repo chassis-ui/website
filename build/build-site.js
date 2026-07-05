@@ -183,7 +183,7 @@ class ChassisBuilder {
 
       // Verify the build succeeded
       this.log('Verifying vendor/assets build output...', 'info')
-      const expectedPath = path.join(vendorAssetsPath, 'dist/web/chassis-docs')
+      const expectedPath = path.join(vendorAssetsPath, 'dist/web/docs/chassis')
 
       if (fs.existsSync(expectedPath)) {
         const contents = fs.readdirSync(expectedPath)
@@ -208,7 +208,8 @@ class ChassisBuilder {
         this.log('  3. Branch availability: ' + this.vendorBranch, 'error')
         this.log('  4. pnpm installation', 'error')
         throw new Error(
-          `Vendor assets update failed. Primary: ${primaryError.message}, Alternative: ${syncError.message}`
+          `Vendor assets update failed. Primary: ${primaryError.message}, Alternative: ${syncError.message}`,
+          { cause: syncError }
         )
       }
     }

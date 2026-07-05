@@ -1,7 +1,7 @@
 # Search Engine Indexing Configuration
 
 > **Document Purpose:** Reference for how the Chassis ecosystem controls search engine indexing across production, staging, and direct Vercel deployment URLs.
-> **Last Updated:** April 2026
+> **Last Updated:** July 2026
 > **Audience:** Developers maintaining the website and sub-project sites.
 
 This document describes how indexing is allowed on the production domain (`chassis-ui.com`) and blocked everywhere else (staging domain + every direct `*.vercel.app` host).
@@ -46,7 +46,7 @@ Indexing is controlled with **two layers**:
 
 ### Website (chassis-website)
 
-**`packages/website/src/pages/robots.txt.ts`** — emits sitemap and `Disallow:` only when `VERCEL_ENV === 'production'`. Staging (`VERCEL_ENV=preview`) emits `Disallow: /`.
+**`packages/website/src/pages/robots.txt.ts`** — emits sitemap and `Disallow:` only when the build is a production Astro build (`import.meta.env.PROD`) **and** either `VERCEL_ENV` is unset or equals `production`. Staging (`VERCEL_ENV=preview`) and local dev builds emit `Disallow: /`.
 
 ```ts
 const vercelEnv = process.env.VERCEL_ENV
@@ -163,7 +163,7 @@ done
 
 ## 📝 Canonical URLs
 
-`getSiteUrl()` in `packages/docs/src/libs/utils.ts` determines the Astro `site` value used for sitemap generation and canonical `<link>` tags. In production (`VERCEL_ENV === 'production'`) it returns `config.baseURL`, which is set to the correct path-prefixed `chassis-ui.com` URL in each project's `config.yml` (e.g. `https://chassis-ui.com/tokens/` for chassis-tokens).
+`getSiteUrl()` in `packages/docs/src/libs/site.ts` determines the Astro `site` value used for sitemap generation and canonical `<link>` tags. In production (`VERCEL_ENV === 'production'`) it returns `config.baseURL`, which is set to the correct path-prefixed `chassis-ui.com` URL in each project's `config.yml` (e.g. `https://chassis-ui.com/tokens/` for chassis-tokens).
 
 This means sub-project sitemaps and canonical tags correctly reference `chassis-ui.com/...` URLs in production builds — not the bare `*.vercel.app` host.
 

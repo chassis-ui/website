@@ -2,28 +2,27 @@
 // Footer
 //
 
-.cxd-footer {
-  // margin-top: 0 !important;
-  // margin-top: 4rem;
-  --cx-fg-color: var(--cx-fg-subtle);
-  background-color: var(--cx-bg-evident);
-  // border-top: var(--cx-border-width) var(--cx-border-style) var(--cx-border-subtle);
-  .nav {
-    display: block;
-    > li {
-      display: list-item;
-      margin-bottom: var(--cx-space-xsmall);
+@layer custom {
+  .cxd-footer {
+    --cx-fg-color: var(--cx-fg-subtle);
+    background-color: var(--cx-bg-evident);
+    .nav {
+      display: block;
+      > li {
+        display: list-item;
+        margin-block-end: var(--cx-space-xsmall);
+      }
     }
-  }
 
-  a {
-    color: var(--cx-fg-color);
-    text-decoration: none;
+    a {
+      color: var(--cx-fg-color);
+      text-decoration: none;
 
-    &:hover,
-    &:focus {
-      color: var(--cx-hover-color);
-      text-decoration: underline;
+      &:hover,
+      &:focus {
+        color: var(--cx-hover-color);
+        text-decoration: underline;
+      }
     }
   }
 }

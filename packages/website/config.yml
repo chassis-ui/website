@@ -16,11 +16,6 @@ x:                      "chassis_ui"
 analytics:
   google_id:            "G-QGR8C28VYN"
 
-algolia:
-  app_id:               "TMI5N9J6TZ"
-  api_key:              "e318e0636b0a951e4f82c8283345df13"
-  index_name:           "chassis-docs"
-
 anchors:
   min:                  2
   max:                  5
