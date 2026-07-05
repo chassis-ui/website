@@ -23,9 +23,7 @@ export default defineConfig({
       client: {
         build: {
           rolldownOptions: {
-            external: ['@chassis-ui/css'],
             output: {
-              paths: { '@chassis-ui/css': '/static/js/chassis.bundle.min.js' },
               entryFileNames: `static/astro/docs.[hash].js`,
               chunkFileNames: 'static/astro/docs.[hash].js'
               // assetFileNames: 'static/astro/docs.[hash][extname]'
