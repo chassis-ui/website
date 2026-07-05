@@ -1,7 +1,7 @@
 {
   "name": "@chassis-ui/docs",
   "description": "Shared Astro components and layouts for Chassis documentation sites.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "type": "module",
   "repository": {
     "type": "git",
@@ -45,7 +45,7 @@
   },
   "peerDependencies": {
     "@astrojs/markdown-remark": "^7.0.0",
-    "@chassis-ui/css": ">=0.3.1",
+    "@chassis-ui/css": ">=0.3.2",
     "@pagefind/component-ui": "^1.0.0",
     "@shikijs/transformers": "^4.3.1",
     "astro": "^7.0.0",
