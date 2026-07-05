@@ -21,10 +21,8 @@
  * Licensed under MIT
  */
 
-import { execFile } from 'node:child_process'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { promisify } from 'node:util'
 
 // Configuration: Files that contain version references to be updated
 // These files contain hardcoded version numbers that need to be kept in sync
@@ -32,8 +30,6 @@ const FILES = ['packages/docs/package.json', 'packages/docs/README.md']
 
 const SEMVER_RE = /^\d+\.\d+\.\d+$/
 const KNOWN_FLAGS = new Set(['--dry', '--dry-run', '--patch', '--minor', '--major', '--help', '-h'])
-
-const execFileAsync = promisify(execFile)
 
 const args = process.argv.slice(2)
 const DRY_RUN = args.includes('--dry') || args.includes('--dry-run')
@@ -124,26 +120,6 @@ async function replaceInFile(file, oldVersion, newVersion) {
   }
 }
 
-/**
- * Updates package.json version using npm version command
- * This ensures package-lock.json and other npm metadata is properly updated
- * @param {string} newVersion - The new version to set
- */
-async function bumpNpmVersion(newVersion) {
-  if (DRY_RUN) {
-    console.log(`📄 Would update package.json to v${newVersion}`)
-    return
-  }
-
-  try {
-    await execFileAsync('npm', ['version', newVersion, '--no-git-tag-version'])
-    console.log(`📄 Package.json updated to v${newVersion}`)
-  } catch (error) {
-    console.error(`❌ Failed to update package.json: ${error.message}`)
-    process.exit(1)
-  }
-}
-
 function showUsage() {
   console.log('USAGE: change-version <old_version> <new_version> [--dry-run]')
   console.log('       change-version --patch | --minor | --major [--dry-run]')
@@ -226,25 +202,20 @@ async function main() {
   console.log(`🚀 Bumping version ${oldVersion} → ${newVersion}${DRY_RUN ? ' (DRY RUN)' : ''}`)
   console.log('')
 
-  await bumpNpmVersion(newVersion)
-
   try {
     const results = await Promise.all(
       FILES.map((file) => replaceInFile(file, oldVersion, newVersion))
     )
 
-    const updatedCount = results.filter(Boolean).length
-    const totalCount = updatedCount + 1 // +1 for package.json
+    const totalCount = results.filter(Boolean).length
 
     console.log('')
 
     if (DRY_RUN) {
-      console.log(
-        `ℹ️  Summary: Would update ${totalCount} file${totalCount === 1 ? '' : 's'} (including package.json)`
-      )
+      console.log(`ℹ️  Summary: Would update ${totalCount} file${totalCount === 1 ? '' : 's'}`)
     } else {
       console.log(
-        `✅ Complete: Updated ${totalCount} file${totalCount === 1 ? '' : 's'} successfully (including package.json)`
+        `✅ Complete: Updated ${totalCount} file${totalCount === 1 ? '' : 's'} successfully`
       )
     }
   } catch (error) {
