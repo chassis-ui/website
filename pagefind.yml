@@ -5,3 +5,4 @@
 # for things like `$primary`, `--cx-primary`, `&::before`, or `<details>`.
 include_characters: "$&-_<>:."
 glob: "{about/**/*.html,examples/**/*.html}"
+root_selector: "main"

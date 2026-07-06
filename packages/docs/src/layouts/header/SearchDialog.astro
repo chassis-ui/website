@@ -44,6 +44,10 @@ const { id = 'cxdSearchDialog', placeholder = 'Search docs…' } = Astro.props
         />
       </div>
     </cxd-search-input>
+    <cxd-search-filter class="cxd-search-filter" hidden>
+      <label class="visually-hidden" for={`${id}-filter`}>Search in</label>
+      <select id={`${id}-filter`} class="form-input cxd-search-filter-select"></select>
+    </cxd-search-filter>
     <button
       type="button"
       class="close-button"

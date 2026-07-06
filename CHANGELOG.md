@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.5] - 2026-07-06
+
+### Added
+
+- Multi-site Pagefind search: the docs search dialog now merges every Chassis project's index (`website`, `tokens`, `css`, `assets`, `icons`, `figma`) into one site-filterable search with a new site filter dropdown (`cxd-search-filter`) to scope results to a single project or "Everywhere"
+
+### Changed
+
+- `_search.scss` rules moved into `@layer custom` to fix cascade ordering against `@chassis-ui/css`
+- `pagefind.yml`: added `root_selector: "main"` so indexing skips shared chrome (nav, footer) and only picks up page content
+
+### Fixed
+
+- `packages/website/src/scss/home.scss`: removed unused `docs`/`@chassis-ui/css/scss/config` imports and a leftover `background-image` override on `.module-item`, and dropped an unnecessary `#{calc(...)}` interpolation
+- `HeroSection.astro`: added missing whitespace between the two `<h1>` text segments
+
 ## [0.3.4] - 2026-07-05
 
 ### Fixed

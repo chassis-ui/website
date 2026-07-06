@@ -22,7 +22,74 @@ const LOADING_SKELETON_DELAY_MS = 200
 const RECENT_STORAGE_KEY = 'cxd:search:recent'
 const RECENT_LIMIT = 5
 
-const instance = getInstanceManager().getInstance('default')
+// ─── Multi-site search ────────────────────────────────────────────────────────
+// Every Chassis project deploys its own Pagefind index under its own path
+// prefix (e.g. `/tokens/pagefind/`), matching the prefix chassis-ui.com's
+// Vercel rewrites proxy that project under (see `ref/VERCEL_CONFIG.md`).
+// This lets one shared instance merge every project's index into a single,
+// site-filterable search — no cross-origin requests required, since
+// `chassis-ui.com/<slug>/...` and `<slug>.vercel.app/<slug>/...` both resolve
+// the same root-relative bundle path.
+
+/** All Chassis projects with their own Pagefind index, in nav order. `website` is the hub (root-level index, no path prefix). */
+const CHASSIS_SITES = [
+  { slug: 'website', label: 'Website' },
+  { slug: 'tokens', label: 'Tokens' },
+  { slug: 'css', label: 'CSS' },
+  { slug: 'assets', label: 'Assets' },
+  { slug: 'icons', label: 'Icons' },
+  { slug: 'figma', label: 'Figma' }
+]
+
+// Hosts where every project's index is reachable at its root-relative bundle
+// path via Vercel's proxy rewrites. Everywhere else (local dev, direct
+// `*.vercel.app` preview deployments) only this site's own pages exist, so
+// merging would 404. Pagefind has no built-in resilience for a failed
+// `mergeIndex` call — it throws and takes the whole search down with it — so
+// merging is only attempted on these hosts.
+const CANONICAL_HOSTS = new Set(['chassis-ui.com', 'staging.chassis-ui.com'])
+
+const getBundlePath = (slug) => (slug === 'website' ? '/pagefind/' : `/${slug}/pagefind/`)
+
+const getCurrentSite = () => {
+  const [, firstSegment] = typeof location === 'undefined' ? [] : location.pathname.split('/')
+  return CHASSIS_SITES.find((site) => site.slug === firstSegment) ?? CHASSIS_SITES[0]
+}
+
+const isCanonicalHost = () =>
+  typeof location !== 'undefined' && CANONICAL_HOSTS.has(location.hostname)
+
+const currentSite = getCurrentSite()
+
+// Pagefind derives `baseUrl` from `bundlePath` by stripping the trailing
+// `pagefind` segment (e.g. `/tokens/pagefind/` -> `/tokens/`), then prepends
+// that to every result's raw URL. Those raw URLs are already site-root-relative
+// (e.g. `tokens/docs/...`, because that's where the page actually lives inside
+// `_site`), so the auto-derived baseUrl would double up the prefix into
+// `/tokens/tokens/docs/...`. Force it back to `/` for every index.
+const BASE_URL = '/'
+
+const mergeIndex = isCanonicalHost()
+  ? CHASSIS_SITES.filter((site) => site.slug !== currentSite.slug).map((site) => ({
+      bundlePath: getBundlePath(site.slug),
+      baseUrl: BASE_URL,
+      mergeFilter: { site: site.slug }
+    }))
+  : []
+
+const instance = getInstanceManager().getInstance('default', {
+  bundlePath: getBundlePath(currentSite.slug),
+  baseUrl: BASE_URL,
+  mergeFilter: { site: currentSite.slug },
+  mergeIndex
+})
+
+// Default filter scope: the website (hub) defaults to searching everywhere;
+// every project site defaults to its own results, but can still be widened
+// or switched via the `cxd-search-filter` control.
+if (currentSite.slug !== 'website') {
+  instance.searchFilters = { site: currentSite.slug }
+}
 
 // ─── Recent visits ────────────────────────────────────────────────────────────
 // Opt-out via Do Not Track; silently no-op when storage is unavailable.
@@ -368,6 +435,44 @@ class CxdSearchResults extends HTMLElement {
   }
 }
 
+// ─── Site filter ──────────────────────────────────────────────────────────────
+// Dropdown letting the visitor scope results to a single project, or back out
+// to "Everywhere". Only rendered when other sites were actually merged in
+// (see `mergeIndex` above) — with a single, un-merged index there's nothing
+// meaningful to filter.
+
+const FILTER_OPTIONS = [{ slug: '', label: 'Everywhere' }, ...CHASSIS_SITES]
+
+class CxdSearchFilter extends HTMLElement {
+  connectedCallback() {
+    this.select = this.querySelector('select')
+    if (!this.select) return
+
+    // Always rendered — even outside merging (local dev, direct preview
+    // deployments) the current site's own results are tagged with `site`, so
+    // "Everywhere" and the current site both work; switching to a *different*
+    // site just yields no results until it's actually merged in.
+    this.hidden = false
+
+    this.select.innerHTML = FILTER_OPTIONS.map(
+      (option) => `<option value="${option.slug}">${escapeHtml(option.label)}</option>`
+    ).join('')
+    this.select.value = currentSite.slug === 'website' ? '' : currentSite.slug
+
+    this._onChange = this._onChange.bind(this)
+    this.select.addEventListener('change', this._onChange)
+  }
+
+  disconnectedCallback() {
+    this.select?.removeEventListener('change', this._onChange)
+  }
+
+  _onChange() {
+    const value = this.select.value
+    instance.triggerSearchWithFilters(instance.searchTerm, value ? { site: value } : {})
+  }
+}
+
 // ─── Registration ─────────────────────────────────────────────────────────────
 
 const defineSearchCustomElements = () => {
@@ -376,6 +481,9 @@ const defineSearchCustomElements = () => {
   }
   if (!customElements.get('cxd-search-results')) {
     customElements.define('cxd-search-results', CxdSearchResults)
+  }
+  if (!customElements.get('cxd-search-filter')) {
+    customElements.define('cxd-search-filter', CxdSearchFilter)
   }
 }
 
