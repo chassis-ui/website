@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.4] - 2026-07-05
+
+### Fixed
+
+- Removed the dev-mode virtual-module Vite plugin (`chassisBundlePlugin`) that resolved `@chassis-ui/css` to a fake module in `Scripts.astro`. Vite's `optimizeDeps` pre-bundling of `@chassis-ui/docs/js/example-mode.js` ran before the plugin's `resolveId`/`load` hooks could apply, inlining a second, un-deduped copy of every `@chassis-ui/css` component — duplicate `document`-level `data-cx-toggle`/`data-cx-dismiss` click handlers, causing modal/drawer/etc. to double-toggle in consumers' dev servers
+- `Scripts.astro` now loads Chassis JS with a plain `import '@chassis-ui/css'` instead of a hand-computed dev/prod `<script is:inline>` src. Consumers who install `@chassis-ui/css` as a real dependency (e.g. `packages/website`) need no special config — the import resolves normally and Vite's own dependency optimizer dedupes it. Consumers who self-host `@chassis-ui/css` (i.e. *are* that package) need to alias it to their own build output in dev themselves — see chassis-css's own `site/src/libs/astro.ts` for the pattern
+- `packages/website/src/libs/astro.ts`: removed a call to the now-removed `chassisBundlePlugin`
+- `packages/website/astro.config.ts`: removed a dead `rollupOptions.external`/`output.paths` pair that never applied — Astro 7.0.6's client build config only reads the `output` sub-key of `rolldownOptions`, never `external`, so `@chassis-ui/css` was never actually externalized despite the config implying it was
+- Worked around a `@chassis-ui/css` bug (fixed upstream in `@chassis-ui/css@0.3.2`) where a missing `sideEffects` entry for its package entry point let bundlers tree-shake away components nobody imported by name (`Dialog`, `Drawer`, `Accordion`, etc.), breaking modal/drawer in `packages/website`'s production build
+
 ## [0.3.3] - 2026-07-05
 
 ### Fixed

@@ -3,7 +3,6 @@ import path from 'node:path'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import type { AstroIntegration } from 'astro'
-import { chassisBundlePlugin } from '@chassis-ui/docs'
 import { getConfig } from './config'
 import {
   getDocsFsPath,
@@ -50,13 +49,10 @@ export function chassis(): AstroIntegration[] {
     {
       name: 'chassis-integration',
       hooks: {
-        'astro:config:setup': ({ addWatchFile, command: cmd, updateConfig }) => {
+        'astro:config:setup': ({ addWatchFile, command: cmd }) => {
           command = cmd
           // Reload the config when the integration is modified.
           addWatchFile(path.join(getDocsFsPath(), 'src/libs/astro.ts'))
-
-          const { plugin, define } = chassisBundlePlugin(getChassisCSSFsPath)
-          updateConfig({ vite: { plugins: [plugin], define } })
         },
         'astro:config:done': () => {
           if (command === 'sync') return

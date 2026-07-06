@@ -152,3 +152,22 @@ Live preview with markup using the `<Example>` shortcode.
 | `--cx-border-subtle` | `rgba(0,0,0,.1)` | Subtle border color |
 | `--cx-primary` | `#0066ff` | Brand primary color |
 </CxTable>
+
+## Javascript
+
+<Example lang="html" code={`<button type="button" class="button primary" data-cx-toggle="dialog" data-cx-target="#exampleModalLive">Show modal</button>
+<a href="#exampleModalLive" class="button link" data-cx-toggle="dialog">Show modal</a>
+
+  <dialog class="modal dialog" id="exampleModalLive" aria-labelledby="exampleModalLiveLabel">
+    <div class="modal-header">
+      <h2 class="modal-title" id="exampleModalLiveLabel">Modal title</h2>
+      <button type="button" class="close-button" data-cx-dismiss="dialog" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <p>Modal body content goes here.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="button primary">Take action</button>
+      <button type="button" class="button default" data-cx-dismiss="dialog">Close</button>
+    </div>
+  </dialog>`} />
