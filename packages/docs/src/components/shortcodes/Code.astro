@@ -1,0 +1,289 @@
+---
+import fs from 'node:fs'
+import path from 'node:path'
+import { transformerNotationDiff, transformerNotationHighlight } from '@shikijs/transformers'
+import { getConfig } from '@libs/config'
+import { highlightCode } from '../../libs/highlight'
+import Icon from './Icon.astro'
+
+interface Props {
+  /**
+   * If extra JS snippet should be added to StackBlitz or not.
+   * @default false
+   */
+  addStackblitzJs?: boolean
+  /**
+   * The CSS class(es) to be added to the `pre` HTML element when rendering code blocks in Markdown.
+   * Note that this prop is not used when the component is invoked directly.
+   */
+  class?: string
+  /**
+   * The code to highlight.
+   * If an array is passed, elements will be joined with a new line.
+   */
+  code?: string | string[]
+  /**
+   * The CSS class(es) to be added to the `div` wrapper HTML element.
+   */
+  containerClass?: string
+  /**
+   * The language attribute from Shiki/Astro markdown processing
+   */
+  'data-language'?: string
+  /**
+   * The language to use for highlighting.
+   * @see https://shiki.style/languages
+   */
+  lang?: string
+  /**
+   * If the `filePath` prop is defined, this prop can be used to specify a regex containing a match group to extract
+   * only a part of the file.
+   */
+  fileMatch?: string
+  /**
+   * A path to the file containing the code to highlight relative to the root of the repository.
+   * This takes precedence over the `code` prop.
+   */
+  filePath?: string
+  /**
+   * A file path to display in the highlight toolbar instead of the language label.
+   */
+  file?: string
+  /**
+   * Defines if the `<Code>` component is nested inside an `<Example>` component or not.
+   * @default false
+   */
+  nestedInExample?: boolean
+  /**
+   * If true, hides the highlight toolbar (language label and copy button).
+   * @default false
+   */
+  noToolbar?: boolean
+  /**
+   * If true, displays line numbers in the code block.
+   * @default false
+   */
+  lineNumbers?: boolean
+  /**
+   * If true, displays color mode and stackblitz buttons in the toolbar.
+   * @default false
+   */
+  hasPreview?: boolean
+}
+
+const {
+  addStackblitzJs = false,
+  class: className,
+  code,
+  containerClass,
+  'data-language': dataLanguage,
+  file,
+  fileMatch,
+  filePath,
+  lang,
+  nestedInExample = false,
+  noToolbar = false,
+  lineNumbers = false,
+  hasPreview = false
+} = Astro.props
+
+const fileUrl = file
+  ? `${getConfig().repo}/blob/v${getConfig().current_version}/${file}`.replaceAll('\\', '/')
+  : null
+
+// Extract language from multiple possible sources (for markdown code blocks)
+// Priority: lang prop > data-language attribute > className pattern
+let detectedLang = lang || dataLanguage
+if (!detectedLang && className) {
+  const langMatch = className.match(/language-(\w+)/)
+  if (langMatch) {
+    detectedLang = langMatch[1]
+  }
+}
+
+// Format language for display (e.g., "html" -> "HTML", "javascript" -> "JavaScript")
+const displayLang = detectedLang
+  ? detectedLang === 'js'
+    ? 'JavaScript'
+    : detectedLang === 'ts'
+      ? 'TypeScript'
+      : detectedLang === 'html'
+        ? 'HTML'
+        : detectedLang === 'css'
+          ? 'CSS'
+          : detectedLang === 'scss'
+            ? 'SCSS'
+            : detectedLang === 'bash' || detectedLang === 'sh'
+              ? 'Shell'
+              : detectedLang === 'powershell'
+                ? 'PowerShell'
+                : detectedLang.toUpperCase()
+  : ''
+
+let codeToDisplay = filePath
+  ? fs.readFileSync(path.join(process.cwd(), filePath), 'utf8')
+  : Array.isArray(code)
+    ? code.join('\n')
+    : code
+
+if (filePath && fileMatch && codeToDisplay) {
+  const matches = [...codeToDisplay.matchAll(new RegExp(fileMatch, 'g'))]
+
+  if (matches.length === 0) {
+    throw new Error(
+      `The file at ${filePath} does not contain a match for the regex '${fileMatch}'.`
+    )
+  }
+
+  codeToDisplay = matches.map((m) => m[0]).join('\n\n')
+}
+
+const diffTransformers = [transformerNotationDiff(), transformerNotationHighlight()]
+
+let highlightedCode: string | null = null
+if (codeToDisplay && detectedLang) {
+  const { html } = await highlightCode(codeToDisplay, detectedLang, diffTransformers)
+  highlightedCode = html
+}
+---
+
+<script>
+  import { Tooltip } from '@chassis-ui/css'
+  import { initCopyButtons } from '@libs/clipboard'
+
+  document.querySelectorAll('.button-edit').forEach((button) => {
+    Tooltip.getOrCreateInstance(button, { title: 'Edit on StackBlitz' })
+  })
+
+  initCopyButtons('.button-clipboard', (trigger) => {
+    const snippet = trigger.closest('.cxd-code-snippet') || trigger.closest('.cxd-example-snippet')
+    const activeTab = snippet?.querySelector('.code-tab-content.active .astro-code')
+    if (activeTab) {
+      return activeTab.textContent?.trim() || ''
+    }
+
+    return snippet?.querySelector('.astro-code')?.textContent?.trim() || ''
+  })
+</script>
+
+{
+  nestedInExample && !noToolbar && (
+    <div class="cxd-snippet-toolbar">
+      {file ? (
+        <a
+          class="text-decoration-none font-code fg-subtle text-uppercase"
+          href={fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {file}
+        </a>
+      ) : (
+        <small class="font-code fg-subtle text-uppercase">{displayLang}</small>
+      )}
+      <div class="d-flex ms-auto gap-2xsmall">
+        {hasPreview && (
+          <>
+            <button
+              type="button"
+              class="button-mode"
+              title="Toggle color mode"
+              aria-label="Toggle color mode"
+              onclick="toggleTheme(this)"
+            >
+              <Icon name="swatchbook-solid" />
+            </button>
+            <span class="vr mx-2xsmall" />
+            <button
+              type="button"
+              class="button-edit"
+              title="Try it on StackBlitz"
+              aria-label="Try it on StackBlitz"
+              data-sb-js-snippet={addStackblitzJs ? true : undefined}
+            >
+              <Icon name="lightning-solid" />
+            </button>
+          </>
+        )}
+        <button
+          type="button"
+          class="button-clipboard"
+          title="Copy to clipboard"
+          aria-label="Copy to clipboard"
+        >
+          <Icon name="clipboard-outline" />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+{
+  nestedInExample ? (
+    <>
+      {highlightedCode ? (
+        <div class:list={['cxd-code', { 'line-numbers': lineNumbers }]}>
+          <Fragment set:html={highlightedCode} />
+        </div>
+      ) : (
+        <div class:list={['cxd-code', { 'line-numbers': lineNumbers }]}>
+          {/* prettier-ignore */}
+          <pre class={className}><slot /></pre>
+        </div>
+      )}
+    </>
+  ) : (
+    <div class:list={['cxd-code-snippet', containerClass]} data-pagefind-ignore>
+      {!noToolbar && (
+        <div class="cxd-snippet-toolbar">
+          {file ? (
+            <a
+              class="text-decoration-none font-code fg-subtle"
+              href={fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {file}
+            </a>
+          ) : (
+            <small class="font-code fg-subtle text-uppercase">{displayLang}</small>
+          )}
+          <div class="d-flex ms-auto gap-2xsmall">
+            <button
+              type="button"
+              class="button-clipboard"
+              title="Copy to clipboard"
+              aria-label="Copy to clipboard"
+            >
+              <Icon name="clipboard-outline" />
+            </button>
+          </div>
+        </div>
+      )}
+      <slot name="pre" />
+      {!Astro.slots.has('pre') && noToolbar ? (
+        <div class="cxd-clipboard">
+          <button
+            type="button"
+            class="button-clipboard"
+            title="Copy to clipboard"
+            aria-label="Copy to clipboard"
+          >
+            <Icon name="clipboard-outline" />
+          </button>
+        </div>
+      ) : null}
+
+      {highlightedCode ? (
+        <div class:list={['cxd-code', { 'line-numbers': lineNumbers }]}>
+          <Fragment set:html={highlightedCode} />
+        </div>
+      ) : (
+        <div class:list={['cxd-code', { 'line-numbers': lineNumbers }]}>
+          {/* prettier-ignore */}
+          <pre class={className}><slot /></pre>
+        </div>
+      )}
+    </div>
+  )
+}

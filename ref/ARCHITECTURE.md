@@ -49,8 +49,10 @@ chassis-website/                 # Main monorepo
 Each Chassis project is an independent repository with:
 - Its own npm package for distribution
 - A `site/` folder for documentation (Astro-based)
-- Dependency on `@chassis-ui/docs@^0.1.7`
+- Dependency on `@chassis-ui/docs` (see `packages/docs/package.json` for the current published version)
 - Independent Vercel deployment
+
+> Not every project has migrated yet — `chassis-tokens` and `chassis-assets` still pin `@chassis-ui/icons`/`@chassis-ui/tokens` to `github:chassis-ui/*#app/docs` branch refs rather than semver ranges. `chassis-css` and `chassis-icons` are on the semver model described below.
 
 ```
 chassis-tokens/                  # @chassis-ui/tokens
@@ -140,7 +142,7 @@ export * from './src/libs/utils'      // General utilities
 ```json
 {
   "name": "@chassis-ui/docs",
-  "version": "0.1.7",
+  "version": "x.y.z",
   "exports": {
     ".": "./index.ts",
     "./components/*": "./src/components/*",
@@ -175,19 +177,38 @@ export default defineConfig({
 
 ### Direct Package Dependencies
 
-Chassis projects reference each other as dependencies:
+Chassis projects reference each other via published semver ranges rather than git-branch refs. `packages/website/package.json` depends on:
 
 ```json
 // packages/website/package.json
 {
-  "dependencies": {
-    "@chassis-ui/css": "github:chassis-ui/css#app/docs",
-    "@chassis-ui/icons": "github:chassis-ui/icons#app/docs",
-    "@chassis-ui/tokens": "github:chassis-ui/tokens#app/docs",
-    "@chassis-ui/docs": "workspace:*"
+  "devDependencies": {
+    "@chassis-ui/css": "^x.y.z",
+    "@chassis-ui/docs": "workspace:*",
+    "@chassis-ui/icons": "^x.y.z",
+    "@chassis-ui/tokens": "^x.y.z"
   }
 }
 ```
+
+`@chassis-ui/css`, `@chassis-ui/icons`, and `@chassis-ui/tokens` are published to npm from their own repos and are released in lockstep — they share the same MINOR version number release-to-release. Check `packages/website/package.json` for the exact current ranges rather than trusting a number written here. `@chassis-ui/docs` is versioned independently inside this monorepo (see `packages/docs/package.json`) and is not part of that coordinated release.
+
+### Local Development via pnpm Workspace Overrides
+
+For day-to-day development, `pnpm-workspace.yaml` at the repo root overrides two of those packages to resolve from sibling checkouts on disk instead of the npm registry:
+
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - 'packages/*'
+overrides:
+  '@chassis-ui/css': link:../chassis-css
+  '@chassis-ui/icons': link:../chassis-icons
+```
+
+This assumes `chassis-css` and `chassis-icons` are checked out as sibling directories next to `chassis-website` (e.g. `Sites/chassis-css`, `Sites/chassis-icons`, `Sites/chassis-website`). Editing either sibling repo is reflected immediately in `pnpm dev` without publishing. `@chassis-ui/tokens` is not overridden this way — it's always resolved from the published npm package. Remove or comment out the relevant override line if you need to test against the real published version of css/icons instead of a local checkout.
+
+> Some sibling repos (`chassis-tokens`, `chassis-assets`) haven't migrated off the old `github:chassis-ui/<pkg>#app/docs` dependency style yet for their own internal cross-deps — that's a per-repo migration, independent of chassis-website's workspace overrides.
 
 ### CDN-Based Asset Sharing
 
@@ -279,12 +300,14 @@ pnpm site:build         # Builds only the site (to _site folder)
 
 ## 🚀 Deployment Pipeline
 
-### Automatic via GitHub Actions
+### Automatic via GitHub Actions + Vercel
 
-Each project has its own CI/CD:
-- Push to `main` → production deployment
-- Push to `staging` → staging deployment
-- Vercel handles builds automatically
+Deploys themselves are triggered directly by Vercel's git integration (push to `main` → production, push to `staging` → staging) — no Actions workflow performs the deploy. chassis-website's own `.github/workflows/` does three other things:
+- **`ci.yml`** — ESLint, Stylelint, Prettier, `astro check`, and `pnpm audit` on PRs against `main`/`staging` and on push to `staging`
+- **`lighthouse.yml`** — runs Lighthouse CI against the production or staging URL on `deployment_status` events (or manually via `workflow_dispatch`)
+- **`publish-packages.yml`** — on push to `main`, detects a version bump in `packages/docs/package.json` and publishes `@chassis-ui/docs` to npm automatically
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for details.
 
 ### Environment Detection
 

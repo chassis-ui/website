@@ -1,7 +1,9 @@
-.skippy {
-  background-color: $cxd-main;
+@layer custom {
+  .skippy {
+    background-color: var(--cx-primary-base-color);
 
-  a {
-    color: $white;
+    a {
+      color: var(--cx-primary-contrast-color);
+    }
   }
 }

@@ -8,11 +8,15 @@
 import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 ---
 
-<section id="support-section" class="home-section py-3xlarge medium:py-6xlarge">
+<section
+  id="support-section"
+  class="home-section py-3xlarge medium:py-6xlarge"
+  aria-labelledby="support-heading"
+>
   <div class="container 2xlarge section-content">
     <div class="row mb-3xlarge medium:mb-6xlarge">
       <header class="section-header col large:col-10 2xlarge:col-8">
-        <h2 class="font-5xlarge mb-xsmall medium:mb-small large:mb-medium">
+        <h2 id="support-heading" class="font-5xlarge mb-xsmall medium:mb-small large:mb-medium">
           <span class="font-normal d-block">Built for Complex Reality,</span> Not Idealized Simplicity
         </h2>
         <p class="font-lead m-0">
@@ -81,7 +85,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
               <label for="topicSelect" class="form-label"
                 >Topic <span aria-hidden="true">*</span></label
               >
-              <select class="form-select large" id="topicSelect" name="topic" required>
+              <select class="form-input large" id="topicSelect" name="topic" required>
                 <option value="">Choose an option</option>
                 <option value="setting-up-chassis">Setting up Chassis</option>
                 <option value="design-system-architecture">Design System Architecture</option>

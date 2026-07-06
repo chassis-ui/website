@@ -1,15 +1,10 @@
 import fs from 'node:fs'
-import yaml from 'js-yaml'
+import { load } from 'js-yaml'
 import { z } from 'zod'
 import { zVersionSemver } from './validation'
 
 // The config schema used to validate the config file content and ensure all values required by the site are valid.
 const configSchema = z.object({
-  algolia: z.object({
-    api_key: z.string(),
-    app_id: z.string(),
-    index_name: z.string()
-  }),
   analytics: z.object({
     google_id: z.string()
   }),
@@ -18,7 +13,7 @@ const configSchema = z.object({
     max: z.number()
   }),
   authors: z.string(),
-  baseURL: z.string().url(),
+  baseURL: z.url(),
   blog: z.object({
     pageSize: z.number()
   }),
@@ -27,8 +22,8 @@ const configSchema = z.object({
   // docs_version: zVersionMajorMinor,
   docsDir: z.string(),
   docsPath: z.string(),
-  github_org: z.string().url(),
-  repo: z.string().url(),
+  github_org: z.url(),
+  repo: z.url(),
   subtitle: z.string(),
   title: z.string(),
   toc: z.object({
@@ -50,7 +45,7 @@ export function getConfig(): Config {
 
   try {
     // Load the config from the `config.yml` file.
-    const rawConfig = yaml.load(fs.readFileSync('./config.yml', 'utf8'))
+    const rawConfig = load(fs.readFileSync('./config.yml', 'utf8'))
 
     // Parse the config using the config schema to validate its content and get back a fully typed config object.
     config = configSchema.parse(rawConfig)

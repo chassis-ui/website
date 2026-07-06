@@ -10,9 +10,15 @@ aliases:
   - '[[docsref:/test-page]]'
 ---
 
+export const bgColor = '#888'
+export const fgColor = '#fff'
+
 ## Overview
 
 This page exists to test the docs layout and all available content features. It covers frontmatter options, markdown elements, all shortcode components, code blocks, tables, and callouts.
+
+Test:  
+asdasda
 
 ---
 
@@ -93,14 +99,13 @@ pnpm install && pnpm dev
 <Code
   lang="json"
   code={`{
-  "chassis": {
-    "build": {
-      "brands": ["chassis", "example"],
-      "apps": { "docs": ["web"] }
+    "chassis": {
+      "build": {
+        "brands": ["chassis", "example"],
+        "apps": { "docs": ["web"] }
+      }
     }
-  }
-}`}
-/>
+  }`} />
 
 ## Examples
 
@@ -110,18 +115,16 @@ Live preview with markup using the `<Example>` shortcode.
 
 <Example
   code={`<button type="button" class="button primary">Primary</button>
-<button type="button" class="button default">Default</button>
-<button type="button" class="button danger">Danger</button>`}
-/>
+  <button type="button" class="button default">Default</button>
+  <button type="button" class="button danger">Danger</button>`} />
 
 ### Preview only
 
 <Example
   showMarkup={false}
   code={`<button type="button" class="button primary">Primary</button>
-<button type="button" class="button default">Default</button>
-<button type="button" class="button danger">Danger</button>`}
-/>
+  <button type="button" class="button default">Default</button>
+  <button type="button" class="button danger">Danger</button>`} />
 
 ### With external files
 
@@ -130,22 +133,22 @@ Live preview with markup using the `<Example>` shortcode.
 
 ## Placeholders
 
-<Placeholder class="image fluid mb-medium" text="SVG Element" />
+<Example code={`<Placeholder class="image fluid mb-medium w-100" height="160" text="SVG Element" />
+<Placeholder markup="img" class="image w-100 object-fit-cover mb-medium" height="160" text="IMG Element" background=${bgColor} color=${fgColor} />`} />
 
-<Placeholder
-  markup="img"
-  width="100%"
-  height="180"
-  class="mb-medium object-fit-cover"
-  text="IMG Element"
-/>
+## Icons
+
+<Example code={`<Icon name="info-circle-solid" />
+  <Icon name="info-circle-solid" class="icon-secondary" size="48" /> 
+  <Icon name="info-circle-solid" class="icon-reset" font />`} />
 
 ## Tables
 
 <CxTable class="table table-striped">
-  | Variable | Default | Description | | -------------------- | ----------------
-  | ------------------------- | | `--cx-fg-main` | `#1a1a1a` | Primary
-  foreground colour | | `--cx-bg-main` | `#ffffff` | Primary background colour |
-  | `--cx-border-subtle` | `rgba(0,0,0,.1)` | Subtle border colour | |
-  `--cx-primary` | `#0066ff` | Brand primary colour |
+| Variable | Default | Description |
+| ---------|-------- | ------------|
+|`--cx-fg-main` | `#1a1a1a` | Primary foreground color |
+| `--cx-bg-main` | `#ffffff` | Primary background color |
+| `--cx-border-subtle` | `rgba(0,0,0,.1)` | Subtle border color |
+| `--cx-primary` | `#0066ff` | Brand primary color |
 </CxTable>

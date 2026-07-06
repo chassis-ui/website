@@ -22,7 +22,7 @@ export default {
           border: 'none',
           outline: 'none'
         },
-        'function-disallowed-list': ['calc', 'lighten', 'darken'],
+        'function-disallowed-list': ['lighten', 'darken'],
         'property-disallowed-list': [
           'font-size',
           'border-radius',
@@ -32,6 +32,7 @@ export default {
           'border-bottom-left-radius',
           'transition'
         ],
+        'scss/at-function-named-arguments': ['never', { ignoreFunctions: ['if'] }],
         'scss/dollar-variable-default': [true, { ignore: 'local' }],
         'scss/selector-no-union-class-name': true
       }

@@ -1,5 +1,4 @@
 ---
-import type { InferGetStaticPropsType } from 'astro'
 import RedirectLayout from '@chassis-ui/docs/layouts/RedirectLayout.astro'
 import { getChassisDocsPath } from '@libs/path'
 import { trimLeadingAndTrailingSlashes } from '@chassis-ui/docs'
@@ -34,7 +33,7 @@ export async function getStaticPaths() {
   return staticPaths.flat()
 }
 
-type Props = InferGetStaticPropsType<typeof getStaticPaths>
+type Props = { path: string }
 
 const { path } = Astro.props
 ---

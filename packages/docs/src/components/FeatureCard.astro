@@ -9,6 +9,8 @@
  * @slot default - Optional additional content (images, code blocks, etc.)
  */
 
+import Icon from './shortcodes/Icon.astro'
+
 interface Props {
   /** Icon ID from the SVG sprite (e.g., "cx-folder-tree") */
   icon?: string
@@ -45,9 +47,7 @@ const headerClasses = [
     {
       icon && (
         <div class="feature-thumb">
-          <svg class="icon feature-icon icon-3xlarge medium:icon-4xlarge" aria-hidden="true">
-            <use href={`#${icon}`} />
-          </svg>
+          <Icon name={icon} class="feature-icon icon-3xlarge medium:icon-4xlarge" sprite="" />
         </div>
       )
     }

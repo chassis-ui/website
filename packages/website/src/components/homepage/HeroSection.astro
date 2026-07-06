@@ -8,12 +8,16 @@
 import ModuleLink from '@components/ModuleLink.astro'
 ---
 
-<div id="hero-section" class="home-section py-3xlarge medium:py-6xlarge">
+<section
+  id="hero-section"
+  class="home-section py-3xlarge medium:py-6xlarge"
+  aria-labelledby="hero-heading"
+>
   <div class="container 2xlarge section-content">
     <div class="row mb-3xlarge medium:mb-6xlarge medium:py-6xlarge">
       <header class="section-header text-center col large:col-10 large:offset-1">
-        <h1 class="font-hero">
-          <span class="font-normal">Design Systems That Scale & Sync.</span>
+        <h1 id="hero-heading" class="font-hero">
+          <span class="font-normal">Design Systems That Scale &amp; Sync.</span>
           Across Brands. Across Platforms.
         </h1>
         <p class="font-lead">
@@ -24,12 +28,14 @@ import ModuleLink from '@components/ModuleLink.astro'
         </p>
       </header>
     </div>
-    <div class="section-features d-flex flex-column medium:flex-row align-content-stretch">
-      <ModuleLink icon="cx-swatchbook" title="Design Tokens" url="/tokens" />
-      <ModuleLink icon="cx-figma" title="Figma Components" url="/figma" />
-      <ModuleLink icon="cx-css3" title="CSS Framework" url="/css" />
-      <ModuleLink icon="cx-folder-tree" title="Asset Distributor" url="/assets" />
-      <ModuleLink icon="cx-icons" title="Icon Packager" url="/icons" />
-    </div>
+    <nav aria-label="Modules">
+      <ul class="section-features d-flex flex-column medium:flex-row align-content-stretch m-0 p-0">
+        <ModuleLink icon="cx-swatchbook" title="Design Tokens" url="/tokens" />
+        <ModuleLink icon="cx-figma" title="Figma Components" url="/figma" />
+        <ModuleLink icon="cx-css3" title="CSS Framework" url="/css" />
+        <ModuleLink icon="cx-folder-tree" title="Asset Distributor" url="/assets" />
+        <ModuleLink icon="cx-icons" title="Icon Packager" url="/icons" />
+      </ul>
+    </nav>
   </div>
-</div>
+</section>

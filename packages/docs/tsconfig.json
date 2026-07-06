@@ -5,16 +5,18 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@libs/*": ["../website/src/libs/*"] // Development-only: allows VSCode to resolve @libs/* imports
+      // Mirror website's path aliases so editors and astro check can resolve imports in ../website/src
+      "@components/*": ["../website/src/components/*"],
+      "@layouts/*": ["../website/src/layouts/*"],
+      "@libs/*": ["../website/src/libs/*"],
+      "@scss/*": ["../website/src/scss/*"],
+      "@shortcodes/*": ["../website/src/components/shortcodes/*"]
     }
   },
   "include": [
+    "index.ts",
     "src/**/*",
-    "../website/src/**/*", // Development-only: allows VSCode to see website types
-    "index.ts"
-  ],
-  "exclude": [
-    // "src/components/index.ts",  // Exclude index files that export .astro components
-    // "src/layouts/index.ts"      // TypeScript can't resolve .astro imports without Astro's build system
+    // Include website source so editors and astro check see its types alongside docs types
+    "../website/src/**/*"
   ]
 }

@@ -1,20 +1,20 @@
 // scss-docs-start example-scss
 // Chassis tokens for docs
-@import "@chassis-ui/tokens/dist/web/docs/chassis/main";
+@use "@chassis-ui/tokens/dist/web/docs/chassis/main";
 
 // Shared docs settings
-@import "@chassis-ui/docs/scss/settings";
+@use "@chassis-ui/docs/scss/settings" as *;
 
 // Chassis CSS variables and mixins
-@import "@chassis-ui/css/scss/settings";
-@import "@chassis-ui/css/scss/functions";
-@import "@chassis-ui/css/scss/tokens";
-@import "@chassis-ui/css/scss/variables";
-@import "@chassis-ui/css/scss/rfs";
-@import "@chassis-ui/css/scss/maps";
-@import "@chassis-ui/css/scss/mixins";
-@import "@chassis-ui/css/scss/placeholders";
+@use "@chassis-ui/css/scss/config/settings" as *;
+@use "@chassis-ui/css/scss/functions" as *;
+@use "@chassis-ui/css/scss/tokens" as *;
+@use "@chassis-ui/css/scss/config/defaults" as *;
+@use "@chassis-ui/css/scss/rfs" as *;
+@use "@chassis-ui/css/scss/maps" as *;
+@use "@chassis-ui/css/scss/mixins" as *;
+@use "@chassis-ui/css/scss/placeholders" as *;
 
 // Shared docs styles
-@import "@chassis-ui/docs/scss/main";
+@use "@chassis-ui/docs/scss/main";
 // scss-docs-end example-scss

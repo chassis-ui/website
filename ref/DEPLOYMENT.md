@@ -22,7 +22,7 @@ Each Chassis project (css, tokens, assets, icons, figma) has its own staging and
 
 **Repository:** `chassis-ui/website`  
 **Hosting:** Vercel  
-**Build Command:** `pnpm build`  
+**Build Command:** `pnpm site:build` (per `vercel.json` — runs `build/build-site.js` then `pnpm site:pagefind`; the plain `pnpm build` script does the same site build plus a vendor-asset sync and is meant for local/manual full builds)  
 **Output Directory:** `_site`  
 
 **Production:**
@@ -106,9 +106,17 @@ vercel                     # Deploy to preview
 
 ## 📋 GitHub Actions
 
-The only GitHub Action in this repo is `.github/workflows/sync-submodules.yml`, which keeps the `vendor/` submodules up to date automatically. There are no Actions-based deploy workflows.
+**Deploys are triggered directly by Vercel's git integration** — Vercel watches the `main` and `staging` branches and builds automatically on push. No Actions workflow performs the actual deploy.
 
-**Deploys are triggered directly by Vercel's git integration** — Vercel watches the `main` and `staging` branches and builds automatically on push. No secrets or workflow files are needed for deployment.
+This repo's `.github/workflows/` currently has three workflows, none of which deploy:
+
+| Workflow | Trigger | Purpose |
+|---|---|---|
+| `ci.yml` | PRs against `main`/`staging`, pushes to `staging` | ESLint, Stylelint, Prettier, `astro check` (both `packages/website` and `packages/docs`), `pnpm audit` |
+| `lighthouse.yml` | `deployment_status` events (or manual `workflow_dispatch`) | Runs Lighthouse CI against the resulting production or staging URL, using `lighthouse.json` thresholds |
+| `publish-packages.yml` | Push to `main` | Detects a version bump in `packages/docs/package.json` and publishes `@chassis-ui/docs` to npm automatically |
+
+Submodule syncing (`vendor/assets`) is handled by `build/sync-submodules.js`, invoked via `pnpm sync-submodules` (part of `pnpm dev` and `pnpm build`) — not a scheduled or triggered GitHub Action.
 
 ## 🔧 Vercel Configuration
 
@@ -196,12 +204,12 @@ Vercel automatically sets environment variables:
 
 When deploying changes that affect multiple projects:
 
-1. **Update @chassis-ui/docs** (if shared components changed)
+1. **Update @chassis-ui/docs** (if shared components changed) — run from the repo root:
    ```bash
-   cd packages/docs
-   # Update version in package.json (e.g., 0.1.0 → 0.1.1)
+   node build/change-version.js --patch   # or --minor / --major, or: node build/change-version.js <old> <new>
    git commit -m "feat(docs): update shared component"
-   git push
+   git push origin main
+   # → .github/workflows/publish-packages.yml detects the version bump and publishes to npm automatically
    ```
 
 2. **Update dependent projects**
@@ -213,6 +221,8 @@ When deploying changes that affect multiple projects:
    ```
 
 3. **Deploy in order** (optional, or just deploy all simultaneously)
+
+> `@chassis-ui/css` and `@chassis-ui/tokens` share the same MINOR version number.
 
 ## 🧪 Pre-Deployment Checklist
 
@@ -299,28 +309,7 @@ Access via Vercel dashboard for each project.
 
 ### Lighthouse CI
 
-The repository may include Lighthouse CI for performance monitoring:
-
-```yaml
-# .github/workflows/lighthouse.yml
-name: Lighthouse CI
-
-on:
-  pull_request:
-    branches: [main, staging]
-
-jobs:
-  lighthouse:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: treosh/lighthouse-ci-action@v10
-        with:
-          urls: |
-            https://chassis-ui.com
-            https://chassis-ui.com/css/
-          uploadArtifacts: true
-```
+`.github/workflows/lighthouse.yml` runs on `deployment_status` events (or manual `workflow_dispatch`) and determines the target URL dynamically based on the deployment's environment (production vs. staging) rather than a hardcoded list — see the workflow file for the exact URL-resolution logic. Score thresholds (performance, accessibility, best-practices, SEO — all `0.9`) are defined in `lighthouse.json` at the repo root.
 
 ## 🔗 Deployment URLs
 

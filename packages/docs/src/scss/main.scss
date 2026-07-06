@@ -1,101 +1,96 @@
-@import "settings";
+@use "@chassis-ui/css/scss/mixins" as *;
 
-@import "colors";
-@import "variables";
-@import "fonts";
+@forward "./fonts";
+@forward "./navbar";
+@forward "./content";
+@forward "./skippy";
+@forward "./sidebar";
+@forward "./layout";
+@forward "./toc";
+@forward "./footer";
+@forward "./snippets";
+@forward "./callouts";
+@forward "./placeholder-img";
+@forward "./scrolling";
 
-@import "navbar";
-@import "content";
-@import "skippy";
-@import "sidebar";
-@import "layout";
-@import "toc";
-@import "footer";
-@import "buttons";
-@import "code";
-@import "callouts";
-@import "brand";
-@import "clipboard-js";
-@import "placeholder-img";
-@import "scrolling";
+@forward "./shiki";
+@forward "./anchor";
+@forward "./search";
 
-@import "syntax";
-@import "anchor";
-
-@import "@docsearch/css/dist/style";
-@import "docsearch";
-
-/* Hide light-mode things when in dark mode */
-.visible-light {
-  [data-cx-theme="dark"] &:not([data-cx-theme="dark"] [data-cx-theme="light"] &) {
-    display: none;
-  }
-}
-
-/* Hide dark-mode things when in light mode */
-.visible-dark {
-  [data-cx-theme="light"] &:not([data-cx-theme="light"] [data-cx-theme="dark"] &) {
-    display: none;
-  }
-}
-
-.docs-body .navbar,
-.docs-body .cxd-footer {
-  .container.#{\32 xlarge} {
-    max-width: 100%;
-  }
-  .cxd-search {
-    @include media-breakpoint-up(2xlarge) {
-      right: 12rem;
-      left: auto;
+@layer custom {
+  /* Hide light-mode things when in dark mode */
+  .visible-light {
+    [data-cx-theme="dark"] &:not([data-cx-theme="dark"] [data-cx-theme="light"] &) {
+      display: none;
     }
   }
-}
 
-.home-section {
-  overflow: hidden;
-}
-
-.section-content:has(.gallery-image) > div {
-  height: var(--gallery-image-height, 256px);
-  border: var(--#{$prefix}border-width-medium) solid var(--#{$prefix}bg-evident);
-}
-
-.gallery-image {
-  display: flex;
-  align-items: center;
-
-  @include media-breakpoint-down(medium) {
-    margin-top: -25%;
+  /* Hide dark-mode things when in light mode */
+  .visible-dark {
+    [data-cx-theme="light"] &:not([data-cx-theme="light"] [data-cx-theme="dark"] &) {
+      display: none;
+    }
   }
 
-  > img {
-    vertical-align: middle;
-    zoom: 1.5;
-    transform: rotate(30deg) skewX(-30deg) scaleY(.866);
-  }
-}
-
-.feature-item .cxd-code-snippet {
-  --cxicon-color: var(--#{$prefix}fg-color);
-  --cx-icon-size: 1em;
-  margin-bottom: 0;
-  background-color: var(--#{$prefix}bg-even);
-  border: 0;
-
-  .highlight {
-    padding: var(--#{$prefix}space-medium);
-    background-color: var(--#{$prefix}bg-even);
-  }
-  pre {
-    padding: 0;
-    margin: 0;
-  }
-  > .cxd-clipboard {
-    display: none;
+  .docs-body .navbar,
+  .docs-body .cxd-footer {
+    .container.#{\32 xlarge} {
+      max-width: 100%;
+    }
   }
 
-  .token.comment {
-    color: var(--#{$prefix}fg-subtle);
+  code {
+    color: var(--cxd-code-color, var(--cx-code-color));
+    pre & {
+      color: inherit;
+    }
+  }
+
+  .home-section {
+    overflow: hidden;
+  }
+
+  .section-content:has(.gallery-image) > div {
+    height: var(--gallery-image-height, 256px);
+    border: var(--cx-border-width-medium) solid var(--cx-bg-evident);
+  }
+
+  .gallery-image {
+    display: flex;
+    align-items: center;
+
+    @include media-breakpoint-down(medium) {
+      margin--block-start: -25%;
+    }
+
+    > img {
+      vertical-align: middle;
+      zoom: 1.5;
+      transform: rotate(30deg) skewX(-30deg) scaleY(.866);
+    }
+  }
+
+  .feature-item .cxd-code-snippet {
+    --cx-icon-color: var(--cx-fg-color);
+    --cx-icon-size: 1em;
+    margin-block-end: 0;
+    background-color: var(--cx-bg-even);
+    border: 0;
+
+    .cxd-code {
+      padding: var(--cx-space-medium);
+      background-color: var(--cx-bg-even);
+    }
+    pre {
+      padding: 0;
+      margin: 0;
+    }
+    > .cxd-clipboard {
+      display: none;
+    }
+
+    .token.comment {
+      color: var(--cx-fg-subtle);
+    }
   }
 }

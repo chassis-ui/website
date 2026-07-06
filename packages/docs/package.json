@@ -1,7 +1,7 @@
 {
   "name": "@chassis-ui/docs",
   "description": "Shared Astro components and layouts for Chassis documentation sites.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -40,24 +40,36 @@
   "publishConfig": {
     "access": "public"
   },
+  "scripts": {
+    "astro": "astro"
+  },
   "peerDependencies": {
-    "astro": "^5.0.0"
+    "@astrojs/markdown-remark": "^7.0.0",
+    "@chassis-ui/css": ">=0.3.1",
+    "@pagefind/component-ui": "^1.0.0",
+    "@shikijs/transformers": "^4.3.1",
+    "astro": "^7.0.0",
+    "htmlparser2": "^10.1.0",
+    "rehype-autolink-headings": "^7.0.0",
+    "sass": "1.99.0",
+    "shiki": "^4.3.1"
+  },
+  "peerDependenciesMeta": {
+    "@pagefind/component-ui": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "@docsearch/css": "^4.6.2",
-    "@docsearch/js": "^4.6.2",
     "@types/hast": "^3.0.4",
-    "@types/mdast": "^4.0.4",
-    "astro": "^6.1.9",
+    "astro": "^7.0.6",
     "github-slugger": "^2.0.0",
     "image-size": "^2.0.2",
     "mdast-util-from-markdown": "^2.0.3",
-    "mdast-util-mdx-jsx": "^3.2.0",
     "mdast-util-to-string": "^4.0.0",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
-    "zod": "^4.3.6"
+    "vite": "^8.1.3"
   }
 }

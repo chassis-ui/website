@@ -1,10 +1,15 @@
 ---
-/*
- * Outputs badge to identify features that are only available in CSS and not in Figma
+/**
+ * In Figma
+ *
+ * Badge indicating a variant exists in the Figma component library with bound
+ * design tokens. Renders with a tooltip that can be customized.
  */
 
 interface Props {
+  /** Custom tooltip text. Defaults to a generated message based on `plural`. */
   tooltip?: string
+  /** When true, uses plural phrasing in the default tooltip text. */
   plural?: boolean
 }
 

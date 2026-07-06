@@ -1,0 +1,108 @@
+---
+import fs from 'node:fs'
+import path from 'node:path'
+import * as sass from 'sass'
+import Code from './Code.astro'
+
+// Prints everything between `// scss-docs-start "name"` and `// scss-docs-end "name"`
+// comments in the docs. When compile={true}, the snippet is compiled via the Sass
+// JS API so @include mixin output is shown as real CSS. Default is raw SCSS.
+
+interface Props {
+  /**
+   * Reference name used to find the content to display within the content of the `file` prop.
+   */
+  name: string
+  /**
+   * File path that contains the content to display relative to the root of the repository.
+   */
+  file: string
+  /**
+   * When true, compiles the SCSS snippet via the Sass JS API and displays
+   * the resulting CSS output (useful when the block contains @include mixin calls).
+   * Defaults to false — raw SCSS is shown as-is.
+   */
+  compile?: boolean
+}
+
+const { name, file, compile = false } = Astro.props
+
+if (!name || !file) {
+  throw new Error(
+    `Missing required parameter(s) for the '<ScssDocs />' component, expected both 'name' and 'file' but got 'name: ${name}' and 'file: ${file}'.`
+  )
+}
+
+let content: string
+let lang: string = 'scss'
+
+try {
+  const fileContent = fs.readFileSync(file, 'utf8')
+
+  const matches = fileContent.match(
+    new RegExp(`// scss-docs-start ${name}\n((?:.|\n)*)// scss-docs-end ${name}`, 'm')
+  )
+
+  if (!matches || !matches[1]) {
+    throw new Error(
+      `Failed to find the content named '${name}', make sure that '// scss-docs-start ${name}' and '// scss-docs-end ${name}' are defined.`
+    )
+  }
+
+  const rawContent = matches[1]
+
+  if (compile) {
+    // Derive the SCSS load path from the file argument (e.g. "scss/_foo.scss" → "scss/")
+    const scssLoadPath = path.resolve(process.cwd(), file.split('/')[0])
+
+    const scssInput = [
+      '@use "config" as *;',
+      '@use "functions" as *;',
+      '@use "tokens" as *;',
+      '@use "maps" as *;',
+      '@use "mixins" as *;',
+      '',
+      '.__cxd_docs_sentinel__ {',
+      rawContent,
+      '}'
+    ].join('\n')
+
+    const result = await sass.compileStringAsync(scssInput, {
+      loadPaths: [scssLoadPath, path.resolve(process.cwd(), 'scss/vendor')],
+      // Match the same deprecation silencing used in astro.config.ts / vite scss options
+      silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'] as any
+    })
+
+    // Extract the body between the sentinel braces.
+    // Greedy [\s\S]* ensures we capture multi-property output including mixin expansions.
+    const sentinelMatch = result.css.match(/\.__cxd_docs_sentinel__\s*\{([\s\S]*)\}/)
+    content = sentinelMatch ? sentinelMatch[1] : result.css
+    // Apply the same cx- prefix to CSS custom properties as the build's css:prefix step does.
+    content = content.replace(/\.__cxd_docs_sentinel__\s*/g, '')
+    content = content.replace(/--(?!cx-|cxd-|pf-|shell-|shiki-)([a-zA-Z][a-zA-Z0-9-]*)/g, '--cx-$1')
+  } else {
+    // Raw SCSS mode — Sass variable declarations, shown as-is.
+    content = rawContent.replaceAll(' !default', '')
+  }
+
+  // Normalise indentation by removing the common leading-space prefix.
+  const lines = content.split('\n')
+  const spaceCounts = lines
+    .filter((line) => line.trim().length > 0)
+    .map((line) => (line.match(/^ */) || [''])[0].length)
+  const minSpaces = spaceCounts.length ? Math.min(...spaceCounts) : 0
+  content = lines
+    .map((line) => line.slice(minSpaces))
+    .join('\n')
+    .trim()
+} catch (error) {
+  throw new Error(
+    `Failed to find the content to render in the '<ScssDocs />' component at '${file}'.`,
+    {
+      cause: error
+    }
+  )
+}
+---
+
+<Code containerClass="cxd-example-snippet cxd-file-ref" code={content} lang={lang} file={file} />

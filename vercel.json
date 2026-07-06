@@ -224,36 +224,6 @@
     {
       "source": "/icons/(.*)",
       "destination": "https://chassis-icons.vercel.app/icons/$1"
-    },
-    {
-      "source": "/tokens-assets/(.*)",
-      "has": [
-        {
-          "type": "header",
-          "key": "host",
-          "value": "staging.chassis-ui.com"
-        }
-      ],
-      "destination": "https://chassis-tokens-staging.vercel.app/tokens-assets/$1"
-    },
-    {
-      "source": "/tokens-assets/(.*)",
-      "destination": "https://chassis-tokens.vercel.app/tokens-assets/$1"
-    },
-    {
-      "source": "/icons-assets/(.*)",
-      "has": [
-        {
-          "type": "header",
-          "key": "host",
-          "value": "staging.chassis-ui.com"
-        }
-      ],
-      "destination": "https://chassis-icons-staging.vercel.app/icons-assets/$1"
-    },
-    {
-      "source": "/icons-assets/(.*)",
-      "destination": "https://chassis-icons.vercel.app/icons-assets/$1"
     }
   ]
 }

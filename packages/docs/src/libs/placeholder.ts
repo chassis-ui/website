@@ -124,12 +124,12 @@ function getOptionsWithDefaults(options: Partial<PlaceholderOptions>) {
   const optionsWithDefaults = Object.assign(
     {},
     {
-      background: '#d4d9da', // gray-300
-      color: '#6f8085', // gray-600
-      height: '180',
+      background: 'var(--cx-neutral-bg-evident)',
+      color: 'var(--cx-neutral-fg-subtle)',
+      // width: '100%',
+      // height: '180',
       markup: 'svg',
-      title: 'Placeholder',
-      width: '100%'
+      title: 'Placeholder'
     },
     options
   )
@@ -151,7 +151,7 @@ function getPlaceholderSrc(
   const textColor = color.replace(/^#/, '')
 
   // Build the raw SVG string first
-  let svg = `<svg style='font-size: 1.125rem; font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"; -webkit-user-select: none; -moz-user-select: none; user-select: none; text-anchor: middle;' width='200' height='200' xmlns='http://www.w3.org/2000/svg'>`
+  let svg = `<svg style='font-size: 1.125rem; font-family:system-ui; -webkit-user-select: none; -moz-user-select: none; user-select: none; text-anchor: middle;' width='200' height='200' xmlns='http://www.w3.org/2000/svg'>`
 
   if (showTitle) {
     svg += `<title>${title}</title>`
@@ -191,7 +191,7 @@ function sanitizeHtmlAttributesFromMdx(attributes: Record<string, unknown>) {
 export interface PlaceholderOptions {
   /**
    * The SVG background color.
-   * @default "#868e96"
+   * @default "#868f96"
    */
   background: string
   /**
@@ -216,7 +216,7 @@ export interface PlaceholderOptions {
   /**
    * The text to show in the image. You can explicitely pass the `false` boolean value (and not the string "false") to
    * hide the text.
-   * @default "${width}x{$height)"
+   * @default "${width}x${height}"
    */
   text: string | false
   /**

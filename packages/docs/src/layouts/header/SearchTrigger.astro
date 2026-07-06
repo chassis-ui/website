@@ -1,0 +1,41 @@
+---
+/**
+ * Search Trigger
+ *
+ * Button that opens the `SearchDialog`. Displays a platform-aware keyboard
+ * shortcut hint (⌘K on Mac, Ctrl K elsewhere) that `search.js` fills in after
+ * detecting the platform — rendered hidden until then so non-JS visitors never
+ * see a misleading hint.
+ */
+
+import Icon from '../../components/shortcodes/Icon.astro'
+
+interface Props {
+  /** Additional CSS classes to apply to the trigger button. */
+  class?: string
+  /** Accessible label and visible placeholder text inside the trigger. */
+  placeholder?: string
+  /** CSS selector for the dialog to open. Must match `SearchDialog`'s `id`. */
+  target?: string
+}
+
+const { class: className, placeholder = 'Search docs…', target = '#cxdSearchDialog' } = Astro.props
+---
+
+<button
+  type="button"
+  class:list={['cxd-search-trigger', className]}
+  data-cx-toggle="dialog"
+  data-cx-target={target}
+  aria-haspopup="dialog"
+  aria-label={placeholder}
+>
+  <Icon name="search-solid" size={16} />
+  <span class="cxd-search-trigger-label">{placeholder}</span>
+  {
+    /* Shortcut hint is empty + hidden until search.js detects the platform and
+      fills in either ⌘K (Mac) or Ctrl K (other). Without JS the shortcut
+      itself doesn't work, so showing nothing is more honest than guessing. */
+  }
+  <span class="cxd-search-trigger-shortcut" hidden></span>
+</button>

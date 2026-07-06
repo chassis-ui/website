@@ -10,12 +10,16 @@ import FeatureSlider from '@components/FeatureSlider.astro'
 import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
 ---
 
-<section id="figma-section" class="home-section py-3xlarge medium:py-6xlarge">
+<section
+  id="figma-section"
+  class="home-section py-3xlarge medium:py-6xlarge"
+  aria-labelledby="figma-heading"
+>
   <div class="container 2xlarge section-content">
     <div class="row mb-3xlarge medium:mb-6xlarge">
       <header class="section-header col large:col-10 2xlarge:col-8">
         <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Figma</p>
-        <h2 class="font-5xlarge mb-xsmall medium:mb-small large:mb-medium">
+        <h2 id="figma-heading" class="font-5xlarge mb-xsmall medium:mb-small large:mb-medium">
           <span class="font-normal d-block">One Library for</span> Every Brand, Every App
         </h2>
         <p class="font-lead m-0">
@@ -27,7 +31,7 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
     <div
       class="section-features gap-xlarge flex-column medium:flex-row mb-medium medium:mb-6xlarge"
     >
-      <FeatureSlider>
+      <FeatureSlider ariaLabel="Figma features carousel">
         <!-- Item -->
         <FeatureCard icon="cx-swatchbook" classes="swiper-slide" horizontal>
           <Fragment slot="title">Contextual color system</Fragment>

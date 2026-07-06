@@ -1,14 +1,20 @@
-import os from 'os'
 import { slug } from 'github-slugger'
 import { fromMarkdown } from 'mdast-util-from-markdown'
 import { toString } from 'mdast-util-to-string'
 import { remark } from 'remark'
 import remarkHtml from 'remark-html'
 
+/** Returns `str` with its first character uppercased. */
 export function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
+/**
+ * Generates an inclusive numeric sequence from `start` to `end` with the given `step`.
+ *
+ * @example getSequence(1, 5)      // [1, 2, 3, 4, 5]
+ * @example getSequence(0, 10, 2)  // [0, 2, 4, 6, 8, 10]
+ */
 export function getSequence(start: number, end: number, step = 1) {
   const sequence = []
 
@@ -19,107 +25,53 @@ export function getSequence(start: number, end: number, step = 1) {
   return sequence
 }
 
-// This function is used in the docs sidebar to generate partial slugs and properly order the sidebar entries and also
-// to generate docs frontmatter sections slugs.
-// Note: this should be refactored and removed, the sidebar ordering defined in `site/data/sidebar.yml` should not rely
-// on slugified custom titles that are expected to generate a string matching the actual file names on disk, this is
-// error prone. Instead, custom sidebar titles should be defined in the frontmatter of the MDX files when needed and
-// `site/data/sidebar.yml` should only reference the actual file names and slug extracted from the docs content
-// collection. Same goes for the docs frontmatter sections.
+/**
+ * Converts a string to a URL-safe slug, collapsing consecutive hyphens.
+ *
+ * Used by the docs sidebar to derive page slugs from sidebar entry titles and
+ * by `DocsLayout` to resolve frontmatter section slugs.
+ *
+ * @remarks
+ * **Known limitation:** the sidebar relies on slugified custom titles matching
+ * the actual filenames on disk, which is fragile. The long-term fix is to move
+ * slug generation into MDX frontmatter and have `sidebar.yml` reference file
+ * names directly. See the `DocsSidebar` component for related context.
+ */
 export function getSlug(str: string) {
   return slug(str).replace(/--+/g, '-')
 }
 
+/** Removes leading and trailing slashes from a URL path segment. */
 export function trimLeadingAndTrailingSlashes(str: string) {
   return str.replace(/^\/+|\/+$/g, '')
 }
 
+/**
+ * Strips Markdown formatting from a string, returning plain text.
+ * Useful for generating clean meta descriptions from Markdown content.
+ */
 export function stripMarkdown(str: string) {
   return toString(fromMarkdown(str))
 }
 
+/**
+ * Converts a Markdown string to an HTML string synchronously.
+ * Intended for short inline content such as page descriptions.
+ */
 export function processMarkdownToHtml(markdown: string): string {
-  // Use remark to process markdown to HTML
   const result = remark().use(remarkHtml).processSync(markdown)
   return result.toString()
 }
 
+/**
+ * Converts a string to title case (first letter of each word uppercased,
+ * remaining letters lowercased).
+ *
+ * @example titleCase('hello world') // 'Hello World'
+ */
 export function titleCase(str: string) {
   return str.replace(
     /\w\S*/g,
     (text) => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
   )
-}
-
-/**
- * Gets the appropriate host and port for development server
- * @returns {object} Object with host and port properties
- */
-function getDevHost() {
-  const hasHostFlag = process.argv.includes('--host')
-  let host = 'localhost'
-  let port = 4321
-
-  // Check for --port command line argument (e.g., astro dev --port 4322)
-  const portFlagIndex = process.argv.findIndex((arg) => arg === '--port')
-  if (portFlagIndex !== -1 && process.argv[portFlagIndex + 1]) {
-    const cliPort = parseInt(process.argv[portFlagIndex + 1], 10)
-    if (!isNaN(cliPort) && cliPort > 0 && cliPort < 65536) {
-      port = cliPort
-    }
-  }
-
-  // Check for PORT environment variable (most common way to override port)
-  if (process.env.PORT) {
-    const envPort = parseInt(process.env.PORT, 10)
-    if (!isNaN(envPort) && envPort > 0 && envPort < 65536) {
-      port = envPort
-    }
-  }
-
-  // Determine host based on --host flag
-  if (hasHostFlag) {
-    const interfaces = os.networkInterfaces()
-    for (const iface of Object.values(interfaces).flat()) {
-      if (iface?.family === 'IPv4' && !iface.internal) {
-        host = iface.address
-        break
-      }
-    }
-  }
-
-  return { host, port }
-}
-
-/**
- * Determines the site URL based on environment and deployment context
- * @returns {string} The appropriate site URL for the current environment
- */
-export function getSiteUrl(config: any) {
-  // Check for explicit SITE_URL override first
-  if (process.env.SITE_URL) {
-    return process.env.SITE_URL
-  }
-
-  // Development: Local server with optional network access
-  if (process.env.NODE_ENV === 'development') {
-    const { host, port } = getDevHost()
-    return `http://${host}:${port}`
-  }
-
-  // Vercel Production: Prefer config.baseURL because it already has the correct
-  // path-prefixed chassis-ui.com URL (e.g. https://chassis-ui.com/tokens/).
-  // VERCEL_PROJECT_PRODUCTION_URL is the sub-project's own custom domain
-  // (e.g. tokens.chassis-ui.com) which is NOT the canonical URL we want in sitemaps.
-  if (process.env.VERCEL_ENV === 'production') {
-    return config.baseURL || `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  }
-
-  // Vercel Preview: Branch deployments and previews
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`
-  }
-
-  // Fallback: Use baseURL from config.yml
-  return config.baseURL
 }

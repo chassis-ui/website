@@ -1,7 +1,7 @@
 # Vercel Configuration Guide
 
 > **Document Purpose:** Technical reference for Vercel proxy routing configuration
-> **Last Updated:** April 2026
+> **Last Updated:** July 2026 (verified against current `vercel.json`; no routing changes found)
 > **Audience:** Developers working on chassis-website deployment
 
 This document describes how environment-specific URL routing works for the Chassis ecosystem using Vercel rewrites and conditional headers.

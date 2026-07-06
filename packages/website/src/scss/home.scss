@@ -11,6 +11,8 @@
 // and responsive variables are currently in docs.scss. Consider moving
 // homepage-specific styles here in the future for better organization.
 @use "docs" as *;
+@use "@chassis-ui/css/scss/config" as *;
+@use "@chassis-ui/css/scss/mixins" as *;
 
 :root {
 
@@ -24,15 +26,18 @@
 
 }
 
-.module-item > a {
-  box-shadow: none;
-  --#{$prefix}icon-color: var(--#{$prefix}icon-main);
-  &:hover {
-    --#{$prefix}bg-color: var(--#{$prefix}bg-highlight);
-    --#{$prefix}icon-color: var(--#{$prefix}fg-highlight);
-  }
-  @include media-breakpoint-down(medium) {
-    --#{$prefix}bg-color: var(--#{$prefix}bg-even);
+.module-item {
+  list-style: none;
+  > a {
+    box-shadow: none;
+    --cx-icon-color: var(--cx-icon-main);
+    &:hover {
+      --cx-bg-color: var(--cx-bg-highlight);
+      --cx-icon-color: var(--cx-fg-highlight);
+    }
+    @include media-breakpoint-down(medium) {
+      --cx-bg-color: var(--cx-bg-even);
+    }
   }
 }
 
@@ -57,11 +62,11 @@
       top: 50%;
       left: 50%;
       z-index: 20;
-      width: #{calc(100vw - var(--#{$prefix}space-3xlarge))};
+      width: #{calc(100vw - var(--cx-space-3xlarge))};
       //padding: 0 32px;
       transform: translate(-50%, 50%);
       > .button {
-        color: var(--#{$prefix}fg-main);
+        color: var(--cx-fg-main);
       }
     }
   }

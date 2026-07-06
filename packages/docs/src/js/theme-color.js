@@ -83,7 +83,7 @@
    */
   function updateThemeColor() {
     const context = getScrollContext()
-    let color = CONFIG.defaultColor
+    let color
 
     switch (context) {
       case 'top':
