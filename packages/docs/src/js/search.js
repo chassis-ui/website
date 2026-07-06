@@ -41,12 +41,10 @@ const CHASSIS_SITES = [
   { slug: 'figma', label: 'Figma' }
 ]
 
-// Hosts where every project's index is reachable at its root-relative bundle
-// path via Vercel's proxy rewrites. Everywhere else (local dev, direct
-// `*.vercel.app` preview deployments) only this site's own pages exist, so
-// merging would 404. Pagefind has no built-in resilience for a failed
-// `mergeIndex` call — it throws and takes the whole search down with it — so
-// merging is only attempted on these hosts.
+// Hosts where every project's index is *expected* to be reachable at its
+// root-relative bundle path via Vercel's proxy rewrites. Everywhere else
+// (local dev, direct `*.vercel.app` preview deployments) only this site's own
+// pages exist, so merging would always 404 — not attempted there at all.
 const CANONICAL_HOSTS = new Set(['chassis-ui.com', 'staging.chassis-ui.com'])
 
 const getBundlePath = (slug) => (slug === 'website' ? '/pagefind/' : `/${slug}/pagefind/`)
@@ -69,19 +67,17 @@ const currentSite = getCurrentSite()
 // `/tokens/tokens/docs/...`. Force it back to `/` for every index.
 const BASE_URL = '/'
 
-const mergeIndex = isCanonicalHost()
-  ? CHASSIS_SITES.filter((site) => site.slug !== currentSite.slug).map((site) => ({
-      bundlePath: getBundlePath(site.slug),
-      baseUrl: BASE_URL,
-      mergeFilter: { site: site.slug }
-    }))
-  : []
-
+// NOTE: we deliberately do NOT pass `mergeIndex` here. `@pagefind/component-ui`
+// awaits every entry in that array back-to-back with no try/catch — if a
+// single sibling site's index 404s (e.g. mid-rollout, one repo deployed
+// before another), the whole `__doLoad__` throws and search breaks entirely,
+// including this site's own results. We instead merge additional sites
+// ourselves afterwards, in `mergeAdditionalSites()` below, so a single
+// unreachable sibling is skipped rather than taking everything down.
 const instance = getInstanceManager().getInstance('default', {
   bundlePath: getBundlePath(currentSite.slug),
   baseUrl: BASE_URL,
-  mergeFilter: { site: currentSite.slug },
-  mergeIndex
+  mergeFilter: { site: currentSite.slug }
 })
 
 // Default filter scope: the website (hub) defaults to searching everywhere;
@@ -89,6 +85,99 @@ const instance = getInstanceManager().getInstance('default', {
 // or switched via the `cxd-search-filter` control.
 if (currentSite.slug !== 'website') {
   instance.searchFilters = { site: currentSite.slug }
+}
+
+let mergeAttempted = false
+
+// How long to wait for a sibling's Pagefind entry file before assuming it's
+// unreachable (bad deploy, rollout in progress, host down, etc.).
+const PROBE_TIMEOUT_MS = 4000
+
+// Mirrors Pagefind's own language selection in `PagefindInstance.findIndex`:
+// exact `<html lang>` match, then its base subtag, then the language with the
+// most pages. Needed so the probe below checks the same chunk `init()` will
+// actually request.
+const getPreferredLanguageHash = (entry) => {
+  const languages = entry?.languages
+  if (!languages) return null
+  const htmlLang = document.documentElement.getAttribute('lang')?.toLowerCase()
+  if (htmlLang && languages[htmlLang]) return languages[htmlLang].hash
+  const base = htmlLang?.split('-')[0]
+  if (base && languages[base]) return languages[base].hash
+  const [topLanguage] = Object.values(languages).sort((a, b) => b.page_count - a.page_count)
+  return topLanguage?.hash ?? null
+}
+
+/**
+ * Checks whether a sibling site's Pagefind bundle actually exists, without
+ * touching the shared `pf` instance. This matters because a *failed*
+ * `pf.mergeIndex()` call corrupts that instance beyond recovery — there is no
+ * public API to detach a bad merge, and every future search (including this
+ * site's own) throws the same error afterwards.
+ *
+ * `init()` performs two fetches, not one: `pagefind-entry.json`, then the
+ * language-specific `pagefind.<hash>.pf_meta` chunk it points to. Checking
+ * only the entry file misses exactly the failure this is meant to guard
+ * against — a deploy mid-rollout where the entry file has already updated to
+ * reference a hash whose chunk hasn't finished uploading (or was purged) yet.
+ * So we probe both before ever calling `mergeIndex`.
+ */
+const isBundleReachable = async (bundlePath) => {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS)
+  try {
+    const entryResponse = await fetch(`${bundlePath}pagefind-entry.json`, {
+      signal: controller.signal
+    })
+    if (!entryResponse.ok) return false
+
+    const hash = getPreferredLanguageHash(await entryResponse.json())
+    if (!hash) return false
+
+    const metaResponse = await fetch(`${bundlePath}pagefind.${hash}.pf_meta`, {
+      signal: controller.signal
+    })
+    return metaResponse.ok
+  } catch {
+    return false
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
+/**
+ * Loads this site's own Pagefind bundle, then merges every other Chassis
+ * site's index in, one at a time. Each sibling is probed first (see
+ * `isBundleReachable`) so an unreachable one — a bad deploy, a rollout still
+ * in progress across the (separate) Chassis repos, etc. — is silently skipped
+ * instead of breaking search for everyone. Safe to call multiple times; only
+ * does real work once.
+ */
+const mergeAdditionalSites = async () => {
+  if (mergeAttempted) return
+  mergeAttempted = true
+
+  await instance.triggerLoad()
+  const pf = instance.__pagefind__
+  if (!pf || !isCanonicalHost()) return
+
+  const siblings = CHASSIS_SITES.filter((site) => site.slug !== currentSite.slug)
+  await Promise.allSettled(
+    siblings.map(async (site) => {
+      const bundlePath = getBundlePath(site.slug)
+      if (!(await isBundleReachable(bundlePath))) {
+        console.warn(
+          `Chassis search: "${site.slug}" index not reachable at ${bundlePath}, skipping`
+        )
+        return
+      }
+      try {
+        await pf.mergeIndex(bundlePath, { baseUrl: BASE_URL, mergeFilter: { site: site.slug } })
+      } catch (error) {
+        console.warn(`Chassis search: failed to merge the "${site.slug}" index`, error)
+      }
+    })
+  )
 }
 
 // ─── Recent visits ────────────────────────────────────────────────────────────
@@ -137,19 +226,39 @@ const HTML_ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => HTML_ESCAPES[char])
 
 // Single template for every clickable row: top-level results, sub-results, and
-// recently visited items. `title` and `excerpt` are inlined as-is so callers
-// can either escape them (recents, plain text) or pass Pagefind's pre-marked HTML.
-const renderItem = ({ url, title, excerpt = '', icon, sub = false }) => `
+// recently visited items. `titleHtml`/`excerptHtml` name the contract, not just
+// describe it: callers must pass already-safe HTML, either by running plain
+// text through `escapeHtml` (recents) or by using Pagefind's own pre-marked
+// excerpt (search results, which embed `<mark>` highlights).
+const renderItem = ({ url, titleHtml, excerptHtml = '', icon, sub = false }) => `
   <a class="cxd-search-item${sub ? ' cxd-search-subitem' : ''}" href="${escapeHtml(url)}">
     <svg class="icon cxd-search-item-icon" width="16" height="16" aria-hidden="true">
-      <use href="#${icon}"></use>
+      <use href="/static/icons/chassis-icons.svg#${icon}"></use>
     </svg>
     <div class="cxd-search-item-body">
-      <div class="cxd-search-item-title">${title}</div>
-      ${excerpt ? `<div class="cxd-search-item-excerpt">${excerpt}</div>` : ''}
+      <div class="cxd-search-item-title">${titleHtml}</div>
+      ${excerptHtml ? `<div class="cxd-search-item-excerpt">${excerptHtml}</div>` : ''}
     </div>
   </a>
 `
+
+// Shared wrapper for every rendered list of rows (recents, top-level results).
+const renderResultsList = (itemsHtml) =>
+  `<ol class="list flush cxd-search-results-list">${itemsHtml}</ol>`
+
+// Wires `handlers` (eventType -> bound listener) onto `target` and returns a
+// cleanup function that removes them all — the bind/track/remove dance every
+// element below otherwise repeats by hand in connectedCallback/disconnectedCallback.
+const addListeners = (target, handlers) => {
+  for (const [type, handler] of Object.entries(handlers)) {
+    target.addEventListener(type, handler)
+  }
+  return () => {
+    for (const [type, handler] of Object.entries(handlers)) {
+      target.removeEventListener(type, handler)
+    }
+  }
+}
 
 // ─── Custom elements ──────────────────────────────────────────────────────────
 
@@ -161,23 +270,16 @@ class CxdSearchInput extends HTMLElement {
     this.inputEl = this.input
     instance.registerInput(this, { keyboardNavigation: true })
 
-    this._onInput = this._onInput.bind(this)
-    this._onKeydown = this._onKeydown.bind(this)
-    this.input.addEventListener('input', this._onInput)
-    this.input.addEventListener('keydown', this._onKeydown)
+    this._removeListeners = addListeners(this.input, {
+      input: this._onInput.bind(this),
+      keydown: this._onKeydown.bind(this)
+    })
 
-    this.input.addEventListener(
-      'focus',
-      () => {
-        instance.triggerLoad()
-      },
-      { once: true }
-    )
+    this.input.addEventListener('focus', () => mergeAdditionalSites(), { once: true })
   }
 
   disconnectedCallback() {
-    this.input?.removeEventListener('input', this._onInput)
-    this.input?.removeEventListener('keydown', this._onKeydown)
+    this._removeListeners?.()
   }
 
   _onInput(event) {
@@ -213,17 +315,16 @@ class CxdSearchResults extends HTMLElement {
     instance.on('results', (result) => this._renderResults(result), this)
     instance.on('error', (error) => this._renderError(error), this)
 
-    this._onKeydown = this._onKeydown.bind(this)
-    this._onClick = this._onClick.bind(this)
-    this.addEventListener('keydown', this._onKeydown)
-    this.addEventListener('click', this._onClick)
+    this._removeListeners = addListeners(this, {
+      keydown: this._onKeydown.bind(this),
+      click: this._onClick.bind(this)
+    })
 
     this._renderEmpty()
   }
 
   disconnectedCallback() {
-    this.removeEventListener('keydown', this._onKeydown)
-    this.removeEventListener('click', this._onClick)
+    this._removeListeners?.()
     this._clearLoadingTimer()
   }
 
@@ -317,24 +418,24 @@ class CxdSearchResults extends HTMLElement {
           <span class="cxd-search-recent-label">Recently visited</span>
           <button type="button" class="cxd-search-recent-clear" data-cxd-search-clear-recent>Clear</button>
         </div>
-        <ol class="list flush cxd-search-results-list">
-          ${recents
+        ${renderResultsList(
+          recents
             .map((visit) => {
               const isSubLink = visit.url.includes('#')
               return `
               <li class="cxd-search-result">
                 ${renderItem({
                   url: visit.url,
-                  title: escapeHtml(visit.title),
-                  excerpt: escapeHtml(visit.excerpt),
+                  titleHtml: escapeHtml(visit.title),
+                  excerptHtml: escapeHtml(visit.excerpt),
                   icon: isSubLink ? 'hashtag-outline' : 'file-outline',
                   sub: isSubLink
                 })}
               </li>
             `
             })
-            .join('')}
-        </ol>
+            .join('')
+        )}
       </div>
     `
   }
@@ -398,11 +499,7 @@ class CxdSearchResults extends HTMLElement {
 
     if (instance.searchTerm !== term) return // newer search started
 
-    this.innerHTML = `
-      <ol class="list flush cxd-search-results-list">
-        ${data.map((result) => this._renderResult(result)).join('')}
-      </ol>
-    `
+    this.innerHTML = renderResultsList(data.map((result) => this._renderResult(result)).join(''))
   }
 
   _renderResult(result) {
@@ -418,7 +515,7 @@ class CxdSearchResults extends HTMLElement {
           .map(
             (sub) => `
           <li class="list-item">
-            ${renderItem({ url: sub.url, title: escapeHtml(sub.title), excerpt: sub.excerpt, icon: 'hashtag-outline', sub: true })}
+            ${renderItem({ url: sub.url, titleHtml: escapeHtml(sub.title), excerptHtml: sub.excerpt, icon: 'hashtag-outline', sub: true })}
           </li>
         `
           )
@@ -428,7 +525,7 @@ class CxdSearchResults extends HTMLElement {
 
     return `
       <li class="list-item cxd-search-result">
-        ${renderItem({ url: result.url, title: escapeHtml(title), excerpt: result.excerpt, icon: 'file-outline' })}
+        ${renderItem({ url: result.url, titleHtml: escapeHtml(title), excerptHtml: result.excerpt, icon: 'file-outline' })}
         ${subResultsHtml}
       </li>
     `
@@ -437,9 +534,8 @@ class CxdSearchResults extends HTMLElement {
 
 // ─── Site filter ──────────────────────────────────────────────────────────────
 // Dropdown letting the visitor scope results to a single project, or back out
-// to "Everywhere". Only rendered when other sites were actually merged in
-// (see `mergeIndex` above) — with a single, un-merged index there's nothing
-// meaningful to filter.
+// to "Everywhere". Always rendered (see `CxdSearchFilter` below) — filtering to
+// a site that hasn't actually been merged in just yields no results.
 
 const FILTER_OPTIONS = [{ slug: '', label: 'Everywhere' }, ...CHASSIS_SITES]
 
@@ -459,12 +555,13 @@ class CxdSearchFilter extends HTMLElement {
     ).join('')
     this.select.value = currentSite.slug === 'website' ? '' : currentSite.slug
 
-    this._onChange = this._onChange.bind(this)
-    this.select.addEventListener('change', this._onChange)
+    this._removeListeners = addListeners(this.select, {
+      change: this._onChange.bind(this)
+    })
   }
 
   disconnectedCallback() {
-    this.select?.removeEventListener('change', this._onChange)
+    this._removeListeners?.()
   }
 
   _onChange() {

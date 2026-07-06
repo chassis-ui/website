@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.6] - 2026-07-06
+
+### Fixed
+
+- Multi-site search no longer breaks entirely when a sibling Chassis site's Pagefind index is unreachable (bad deploy, rollout still in progress across the separate repos). Previously `mergeIndex` was passed up front and a single failed merge threw and corrupted the shared instance for every future search, including the current site's own results. Now the current site's own index loads first, and each sibling is probed — both its `pagefind-entry.json` and the language-specific `pagefind.<hash>.pf_meta` chunk `init()` actually requests — before `mergeIndex` is attempted, so an unreachable sibling is skipped instead of taking down search
+- The site filter dropdown (`cxd-search-filter`) is now always rendered instead of only when other sites were successfully merged in at load time
+- Search result item icons now reference the shared icon sprite (`/static/icons/chassis-icons.svg#…`) instead of a bare `#id` fragment, which resolved against the current page instead of the sprite
+- Removed the unused `vite` devDependency from `@chassis-ui/docs`; it only backed the `chassisBundlePlugin` removed in 0.3.4 and had no remaining imports
+- `@pagefind/component-ui` is no longer marked `optional` in `peerDependenciesMeta` — every docs layout unconditionally renders the search dialog and imports it, and every consuming site already installs it directly, so it was never actually optional
+- `README.md`: corrected the peer dependencies list (was just `astro: ^5.0.0`; now matches the full, actual `package.json` peer set) and the `@chassis-ui/docs` exports table, which was missing `highlight`, `markdown`, `placeholder`, `shortcodes`, `site` and listed a nonexistent `chassis` module
+
+### Changed
+
+- Refactored `search.js`: renamed the `renderItem` params `title`/`excerpt` to `titleHtml`/`excerptHtml` to make explicit that callers must pass pre-escaped/pre-marked HTML, and extracted `renderResultsList` and `addListeners` helpers to remove repeated markup and bind/track/remove boilerplate across the custom elements
+
 ## [0.3.5] - 2026-07-06
 
 ### Added
