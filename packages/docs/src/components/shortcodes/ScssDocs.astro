@@ -27,6 +27,43 @@ interface Props {
 
 const { name, file, compile = false } = Astro.props
 
+// Unwraps the `.__cxd_docs_sentinel__` rule(s) produced by compiling a snippet.
+// A snippet can be pure declarations (`color: red;`), a directive that emits its
+// own selectors (`@each ... { .foo { ... } }`), or a mix of both in the same
+// block — Sass hoists any nested selector into its own sibling
+// `.__cxd_docs_sentinel__ <selector>` rule, so there can be several top-level
+// rules to unwrap, not just one. Walks brace depth instead of regex-matching a
+// single block so every case round-trips correctly.
+function unwrapSentinel(css: string): string {
+  const blocks: string[] = []
+  let i = 0
+  while (i < css.length) {
+    const braceIndex = css.indexOf('{', i)
+    if (braceIndex === -1) break
+
+    const selector = css.slice(i, braceIndex).trim()
+    let depth = 1
+    let j = braceIndex + 1
+    while (j < css.length && depth > 0) {
+      if (css[j] === '{') depth++
+      else if (css[j] === '}') depth--
+      j++
+    }
+    const body = css.slice(braceIndex + 1, j - 1)
+
+    if (selector === '.__cxd_docs_sentinel__') {
+      blocks.push(body)
+    } else if (selector.startsWith('.__cxd_docs_sentinel__ ')) {
+      const bareSelector = selector.slice('.__cxd_docs_sentinel__ '.length)
+      blocks.push(`${bareSelector} {${body}}`)
+    } else if (selector) {
+      blocks.push(`${selector} {${body}}`)
+    }
+    i = j
+  }
+  return blocks.join('\n\n')
+}
+
 if (!name || !file) {
   throw new Error(
     `Missing required parameter(s) for the '<ScssDocs />' component, expected both 'name' and 'file' but got 'name: ${name}' and 'file: ${file}'.`
@@ -68,17 +105,20 @@ try {
     ].join('\n')
 
     const result = await sass.compileStringAsync(scssInput, {
-      loadPaths: [scssLoadPath, path.resolve(process.cwd(), 'scss/vendor')],
+      loadPaths: [
+        scssLoadPath,
+        path.resolve(process.cwd(), 'scss/vendor'),
+        // Vite's own Sass importer resolves bare npm specifiers (e.g. `@chassis-ui/tokens/...`)
+        // through its module resolver, independent of `loadPaths`. This raw Sass JS API call
+        // bypasses Vite, so `node_modules` must be added here explicitly.
+        path.resolve(process.cwd(), 'node_modules')
+      ],
       // Match the same deprecation silencing used in astro.config.ts / vite scss options
       silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'] as any
     })
 
-    // Extract the body between the sentinel braces.
-    // Greedy [\s\S]* ensures we capture multi-property output including mixin expansions.
-    const sentinelMatch = result.css.match(/\.__cxd_docs_sentinel__\s*\{([\s\S]*)\}/)
-    content = sentinelMatch ? sentinelMatch[1] : result.css
+    content = unwrapSentinel(result.css)
     // Apply the same cx- prefix to CSS custom properties as the build's css:prefix step does.
-    content = content.replace(/\.__cxd_docs_sentinel__\s*/g, '')
     content = content.replace(/--(?!cx-|cxd-|pf-|shell-|shiki-)([a-zA-Z][a-zA-Z0-9-]*)/g, '--cx-$1')
   } else {
     // Raw SCSS mode — Sass variable declarations, shown as-is.
