@@ -2,7 +2,7 @@
 
 > Shared Astro layouts, components, and utilities for Chassis documentation sites.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Version: 0.3.5](https://img.shields.io/badge/Version-0.3.5-blue.svg)](https://www.npmjs.com/package/@chassis-ui/docs) [![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Version: 0.3.6](https://img.shields.io/badge/Version-0.3.6-blue.svg)](https://www.npmjs.com/package/@chassis-ui/docs) [![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
 
 ## Overview
 
@@ -26,11 +26,19 @@ npm install @chassis-ui/docs
 
 ```json
 {
-  "astro": "^5.0.0"
+  "@astrojs/markdown-remark": "^7.0.0",
+  "@chassis-ui/css": ">=0.3.2",
+  "@pagefind/component-ui": "^1.0.0",
+  "@shikijs/transformers": "^4.3.1",
+  "astro": "^7.0.0",
+  "htmlparser2": "^12.0.0",
+  "rehype-autolink-headings": "^7.0.0",
+  "sass": "^1.101.0",
+  "shiki": "^4.3.1"
 }
 ```
 
-In practice, sites also install the rest of the Chassis stack — `@chassis-ui/css`, `@chassis-ui/tokens`, `@chassis-ui/icons` — to render the layouts and styles correctly.
+In practice, sites also install the rest of the Chassis stack — `@chassis-ui/tokens`, `@chassis-ui/icons` — to render the layouts and styles correctly.
 
 ## Usage
 
@@ -55,7 +63,7 @@ import { generateTOC, processImage } from '@chassis-ui/docs'
 
 | Subpath                         | Contents                                                                                      |
 | ------------------------------- | --------------------------------------------------------------------------------------------- |
-| `@chassis-ui/docs`              | Library functions: `chassis`, `image`, `layout`, `rehype`, `toc`, `utils`                     |
+| `@chassis-ui/docs`              | Library functions: `highlight`, `image`, `layout`, `markdown`, `placeholder`, `rehype`, `shortcodes`, `site`, `toc`, `utils` |
 | `@chassis-ui/docs/layouts/*`    | `BaseLayout`, `DocsLayout`, `RedirectLayout`, `SingleLayout`                                  |
 | `@chassis-ui/docs/components/*` | `DocsSidebar`, `FeatureCard`, `NavLink`, `ResponsiveImage`, `TableOfContents`, `ThemeToggler` |
 | `@chassis-ui/docs/shortcodes/*` | MDX shortcode components                                                                      |
