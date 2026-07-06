@@ -1,418 +1,434 @@
 @use "@chassis-ui/css/scss/mixins" as *;
 @use "@chassis-ui/css/scss/placeholders" as *;
 
-//
-// Pagefind search UI
-//
+@layer custom {
+  //
+  // Pagefind search UI
+  //
 
-.cxd-search {
-  position: relative;
+  .cxd-search {
+    position: relative;
 
-  @include media-breakpoint-up(large) {
-    position: absolute;
-    top: 20%;
-    right: 13rem;
-    width: 200px;
+    @include media-breakpoint-up(large) {
+      position: absolute;
+      top: 20%;
+      right: 13rem;
+      width: 200px;
 
-    [dir="rtl"] & {
-      right: auto;
-      left: 13rem;
-    }
-  }
-
-}
-
-
-// Trigger button
-//
-// Mobile (< md): icon-only, no chrome.
-// md+:           expands to a faux input with label and ⌘K shortcut hint.
-
-.cxd-search-trigger {
-  // @extend %form-input;
-  --cx-padding-x: var(--cx-space-xsmall);
-  --cx-padding-y: .375rem;
-  --cx-icon-color: var(--cx-fg-color);
-  display: inline-flex;
-  gap: .5rem;
-  align-items: center;
-  margin-block: .125rem;
-  // padding-inline-end: .5rem;
-  // padding: .25rem .5rem;
-  @include exclude-strokes(form-input);
-  @include font-size(var(--cx-font-size-small));
-  color: var(--cx-fg-subtle);
-  text-align: start;
-  cursor: pointer;
-  background-color: transparent;
-  border: 0;
-  @include border-radius(var(--cx-border-radius-medium));
-  @include transition(color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out);
-
-  &:focus-visible {
-    @include focus-ring(true);
-  }
-
-  @include media-breakpoint-up(large) {
-    --cx-border-color: var(--cx-border-subtle);
-    --cx-icon-size: var(--cx-icon-small);
-    --cx-icon-color: var(--cx-fg-subtle);
-    width: 100%;
-    background-color: var(--cx-bg-main);
-    @include border();
-
-    &:hover {
-      // --fg-color: var(--cx-fg-main);
-      --cx-icon-color: var(--cx-fg-color);
-      --cx-border-color: var(--cx-border-main);
-    }
-  }
-}
-
-.cxd-search-trigger-icon {
-  flex-shrink: 0;
-  color: var(--cx-fg-subtle);
-}
-
-.cxd-search-trigger-label,
-.cxd-search-trigger-shortcut {
-  display: none;
-
-  @include media-breakpoint-up(large) {
-    display: inline-flex;
-  }
-}
-
-.cxd-search-trigger-label {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.cxd-search-trigger-shortcut {
-  flex-shrink: 0;
-  gap: .125rem;
-}
-
-.cxd-search-trigger-key {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.25rem;
-  padding: .125rem .375rem;
-  font-family: var(--cx-font-family-code);
-  @include font-size(var(--cx-font-size-small));
-  @include line-height(var(--cx-line-height-small));
-  color: var(--cx-fg-subtle);
-  background-color: var(--cx-bg-evident);
-  // border: var(--cx-border-width) solid var(--cx-border-color);
-  @include border-radius(var(--cx-border-radius-small));
-}
-
-// Search dialog shell
-//
-// Top-aligned overlay using the existing `.dialog` surface.
-// Sizing and position make it feel like a command palette.
-
-.cxd-search-dialog {
-  --cx-dialog-margin: 1.5rem;
-  --cx-dialog-padding: .75rem;
-  --cx-dialog-header-padding: .75rem;
-  --cx-dialog-footer-padding: .5rem .75rem;
-  --cx-dialog-border-radius: var(--cx-border-radius-large);
-
-  align-self: flex-start;
-  width: 640px;
-  max-height: min(80dvh, 720px);
-  margin-block-start: 3rem;
-  overflow: hidden;
-  background-color: var(--cx-bg-even);
-
-  @include media-breakpoint-down(small) {
-    max-height: calc(100dvh - 4rem);
-  }
-}
-
-// Header / search form
-
-.cxd-search-form {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: .75rem;
-  align-items: center;
-  padding: var(--cx-space-medium);
-  border-bottom: 0;
-}
-
-cxd-search-input {
-  width: 100%;
-}
-// .cxd-search-input {
-//   flex: 1;
-//   width: 100%;
-//   min-width: 0;
-//   background-color: transparent;
-//   border-color: transparent;
-//   box-shadow: none;
-
-//   &:focus {
-//     background-color: transparent;
-//     border-color: transparent;
-//     box-shadow: none;
-//   }
-// }
-
-// .cxd-search-close {
-//   flex-shrink: 0;
-//   margin-inline-start: 0;
-// }
-
-// Body / results
-
-.cxd-search-body {
-  padding: 0 var(--cx-space-medium) var(--cx-space-medium);
-}
-
-.cxd-search-results {
-  display: block;
-  min-height: 6rem;
-  border: 0;
-}
-
-.cxd-search-results-list {
-  // --cx-list-border-width: 0;
-  // --cx-list-border-radius: 0;
-
-  gap: var(--cx-space-small);
-  padding-block-start: var(--cx-space-xsmall);
-  list-style: none;
-  .list-item {
-    padding: 0;
-    border: 0;
-  }
-}
-
-.cxd-search-result {
-  display: flex;
-  flex-direction: column;
-  // gap: var(--cx-space-xsmall);
-  gap: 0;
-  padding: 0;
-}
-
-// Default-active state: while focus is in the search input, the first result
-// is highlighted as the Enter target. Once the user arrows into the list,
-// :focus-within takes over.
-.cxd-search-results:not(:focus-within) .cxd-search-result:first-child > .cxd-search-item {
-  @include focus-ring(true);
-  --cx-focus-ring-offset: -2px;
-  background-color: var(--cx-bg-main);
-}
-
-// Single row template: top-level results, sub-results, and recent visits.
-.cxd-search-item {
-  --cx-icon-size: var(--cx-icon-medium);
-  --cx-icon-color: var(--cx-fg-subtle);
-  position: relative;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: .5rem;
-  align-items: center;
-  padding: var(--cx-space-xsmall);
-  text-decoration: none;
-  background-color: var(--cx-bg-main);
-  @include border();
-  @include border-radius(var(--cx-border-radius-medium));
-
-  mark {
-    background: none;
-  }
-
-  &:has(+ .cxd-search-subresults) {
-    border-block-end-width: 0;
-    @include border-bottom-radius(0);
-  }
-
-  &:hover {
-    background-color: var(--cx-bg-main);
-  }
-
-  &:focus-visible {
-    --cx-focus-ring-offset: -2px;
-    z-index: 1;
-    @include focus-ring(true);
-  }
-
-  // &:not(.cxd-search-item-sub) {
-  //   border: var(--cx-border-width) solid var(--cx-border-color);
-  // }
-}
-
-.cxd-search-item-icon {
-  // margin-block-start: .15rem;
-  color: var(--cx-fg-subtle);
-}
-
-.cxd-search-item-body {
-  grid-column: 2;
-  min-width: 0;
-}
-
-.cxd-search-item-title {
-  font-weight: var(--cx-font-weight-strong);
-  color: var(--cx-fg-main);
-}
-
-.cxd-search-item-excerpt {
-  overflow: hidden;
-  color: var(--cx-fg-subtle);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  @include font-size(var(--cx-font-size-small));
-  @include line-height(var(--cx-line-height-small));
-}
-
-.cxd-search-subitem {
-  --cx-icon-size: var(--cx-icon-small);
-  --cx-icon-color: var(--cx-fg-subtle);
-  align-items: center;
-  padding-inline-start: var(--cx-space-4xlarge);
-  // padding-inline-start: var(--cx-space-medium);
-
-  &::before {
-    position: absolute;
-    inset-block: 15%;
-    inset-inline: 0;
-    width: var(--cx-border-width);
-    height: 70%;
-    margin-inline-start: 1.25rem;
-    content: " ";
-    background-color: var(--cx-fg-subtle);
-  }
-  &::after {
-    position: absolute;
-    inset: 0;
-    width: .75rem;
-    height: var(--cx-border-width);
-    margin-block: auto;
-    margin-inline-start: 1.25rem;
-    content: " ";
-    background-color: var(--cx-fg-subtle);
-  }
-  .cxd-search-item-title {
-    @include font-size(var(--cx-font-size-small));
-    @include line-height(var(--cx-line-height-small));
-  }
-
-}
-
-.cxd-search-subresults {
-  display: flex;
-  flex-direction: column;
-  // gap: var(--cx-space-xsmall);
-  gap: 0;
-  // padding-inline-start: var(--cx-space-large);
-  .cxd-search-subitem {
-    border-block-end-width: 0;
-    @include border-radius(0);
-    &:is(:last-child > .cxd-search-subitem) {
-      border-block-end-width: var(--cx-border-width);
-      @include border-bottom-radius(var(--cx-border-radius));
-      &::before {
-        height: 35%;
+      [dir="rtl"] & {
+        right: auto;
+        left: 13rem;
       }
     }
 
   }
-}
 
-// Recently visited
 
-.cxd-search-recent-header {
-  display: flex;
-  gap: .5rem;
-  align-items: center;
-  justify-content: space-between;
-  padding-block: .5rem;
-}
+  // Trigger button
+  //
+  // Mobile (< md): icon-only, no chrome.
+  // md+:           expands to a faux input with label and ⌘K shortcut hint.
 
-.cxd-search-recent-label {
-  @include font-size(var(--cx-font-size-xsmall));
-  font-weight: 600;
-  color: var(--cx-fg-subtle);
-  text-transform: uppercase;
-  letter-spacing: .04em;
-}
+  .cxd-search-trigger {
+    // @extend %form-input;
+    --cx-padding-x: var(--cx-space-xsmall);
+    --cx-padding-y: .375rem;
+    --cx-icon-color: var(--cx-fg-color);
+    display: inline-flex;
+    gap: .5rem;
+    align-items: center;
+    margin-block: .125rem;
+    // padding-inline-end: .5rem;
+    // padding: .25rem .5rem;
+    @include exclude-strokes(form-input);
+    @include font-size(var(--cx-font-size-small));
+    color: var(--cx-fg-subtle);
+    text-align: start;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    @include border-radius(var(--cx-border-radius-medium));
+    @include transition(color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out);
 
-.cxd-search-recent-clear {
-  padding: .125rem .375rem;
-  @include font-size(var(--cx-font-size-xsmall));
-  color: var(--cx-fg-subtle);
-  cursor: pointer;
-  background-color: transparent;
-  border: 0;
-  @include border-radius(var(--cx-border-radius-medium));
-  @include transition(color .15s ease-in-out, background-color .15s ease-in-out);
+    &:focus-visible {
+      @include focus-ring(true);
+    }
 
-  &:hover {
-    color: var(--cx-fg-main);
+    @include media-breakpoint-up(large) {
+      --cx-border-color: var(--cx-border-subtle);
+      --cx-icon-size: var(--cx-icon-small);
+      --cx-icon-color: var(--cx-fg-subtle);
+      width: 100%;
+      background-color: var(--cx-bg-main);
+      @include border();
+
+      &:hover {
+        // --fg-color: var(--cx-fg-main);
+        --cx-icon-color: var(--cx-fg-color);
+        --cx-border-color: var(--cx-border-main);
+      }
+    }
+  }
+
+  .cxd-search-trigger-icon {
+    flex-shrink: 0;
+    color: var(--cx-fg-subtle);
+  }
+
+  .cxd-search-trigger-label,
+  .cxd-search-trigger-shortcut {
+    display: none;
+
+    @include media-breakpoint-up(large) {
+      display: inline-flex;
+    }
+  }
+
+  .cxd-search-trigger-label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cxd-search-trigger-shortcut {
+    flex-shrink: 0;
+    gap: .125rem;
+  }
+
+  .cxd-search-trigger-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    padding: .125rem .375rem;
+    font-family: var(--cx-font-family-code);
+    @include font-size(var(--cx-font-size-small));
+    @include line-height(var(--cx-line-height-small));
+    color: var(--cx-fg-subtle);
+    background-color: var(--cx-bg-evident);
+    // border: var(--cx-border-width) solid var(--cx-border-color);
+    @include border-radius(var(--cx-border-radius-small));
+  }
+
+  // Search dialog shell
+  //
+  // Top-aligned overlay using the existing `.dialog` surface.
+  // Sizing and position make it feel like a command palette.
+
+  .cxd-search-dialog {
+    --cx-dialog-margin: 1.5rem;
+    --cx-dialog-padding: .75rem;
+    --cx-dialog-header-padding: .75rem;
+    --cx-dialog-footer-padding: .5rem .75rem;
+    --cx-dialog-border-radius: var(--cx-border-radius-large);
+
+    align-self: flex-start;
+    width: 640px;
+    max-height: min(80dvh, 720px);
+    margin-block-start: 3rem;
+    overflow: hidden;
+    background-color: var(--cx-bg-even);
+
+    @include media-breakpoint-down(small) {
+      max-height: calc(100dvh - 4rem);
+    }
+  }
+
+  // Header / search form
+
+  .cxd-search-form {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: .75rem;
+    align-items: center;
+    padding: var(--cx-space-medium);
+    border-bottom: 0;
+  }
+
+  cxd-search-input {
+    flex-grow: 1;
+  }
+
+  // Site filter dropdown — only shown when other project indexes were merged
+  // in (see `search.js`), letting the visitor scope results to one project or
+  // back out to "Everywhere".
+  .cxd-search-filter {
+    flex-shrink: 0;
+  }
+
+  // .cxd-search-filter-select {
+  //   --cx-padding-y: .375rem;
+  //   --cx-padding-x: .5rem;
+  //   width: auto;
+  //   @include font-size(var(--cx-font-size-small));
+  // }
+  // .cxd-search-input {
+  //   flex: 1;
+  //   width: 100%;
+  //   min-width: 0;
+  //   background-color: transparent;
+  //   border-color: transparent;
+  //   box-shadow: none;
+
+  //   &:focus {
+  //     background-color: transparent;
+  //     border-color: transparent;
+  //     box-shadow: none;
+  //   }
+  // }
+
+  // .cxd-search-close {
+  //   flex-shrink: 0;
+  //   margin-inline-start: 0;
+  // }
+
+  // Body / results
+
+  .cxd-search-body {
+    padding: 0 var(--cx-space-medium) var(--cx-space-medium);
+  }
+
+  .cxd-search-results {
+    display: block;
+    min-height: 6rem;
+    border: 0;
+  }
+
+  .cxd-search-results-list {
+    // --cx-list-border-width: 0;
+    // --cx-list-border-radius: 0;
+
+    gap: var(--cx-space-small);
+    padding-block-start: var(--cx-space-xsmall);
+    list-style: none;
+    .list-item {
+      padding: 0;
+      border: 0;
+    }
+  }
+
+  .cxd-search-result {
+    display: flex;
+    flex-direction: column;
+    // gap: var(--cx-space-xsmall);
+    gap: 0;
+    padding: 0;
+  }
+
+  // Default-active state: while focus is in the search input, the first result
+  // is highlighted as the Enter target. Once the user arrows into the list,
+  // :focus-within takes over.
+  .cxd-search-results:not(:focus-within) .cxd-search-result:first-child > .cxd-search-item {
+    @include focus-ring(true);
+    --cx-focus-ring-offset: -2px;
     background-color: var(--cx-bg-main);
   }
 
-  &:focus-visible {
-    @include focus-ring(true);
+  // Single row template: top-level results, sub-results, and recent visits.
+  .cxd-search-item {
+    --cx-icon-size: var(--cx-icon-medium);
+    --cx-icon-color: var(--cx-fg-subtle);
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: .5rem;
+    align-items: center;
+    padding: var(--cx-space-xsmall);
+    text-decoration: none;
+    background-color: var(--cx-bg-main);
+    @include border();
+    @include border-radius(var(--cx-border-radius-medium));
+
+    mark {
+      background: none;
+    }
+
+    &:has(+ .cxd-search-subresults) {
+      border-block-end-width: 0;
+      @include border-bottom-radius(0);
+    }
+
+    &:hover {
+      background-color: var(--cx-bg-main);
+    }
+
+    &:focus-visible {
+      --cx-focus-ring-offset: -2px;
+      z-index: 1;
+      @include focus-ring(true);
+    }
+
+    // &:not(.cxd-search-item-sub) {
+    //   border: var(--cx-border-width) solid var(--cx-border-color);
+    // }
   }
-}
 
-// Empty / loading / error states
+  .cxd-search-item-icon {
+    // margin-block-start: .15rem;
+    color: var(--cx-fg-subtle);
+  }
 
-.cxd-search-empty,
-.cxd-search-error {
-  padding: 2rem 1rem;
-  @include font-size(var(--cx-font-size-small));
-  color: var(--cx-fg-subtle);
-  text-align: center;
-}
+  .cxd-search-item-body {
+    grid-column: 2;
+    min-width: 0;
+  }
 
-.cxd-search-error {
-  color: var(--cx-danger-fg-main);
-}
+  .cxd-search-item-title {
+    font-weight: var(--cx-font-weight-strong);
+    color: var(--cx-fg-main);
+  }
 
-.cxd-search-loading {
-  display: flex;
-  flex-direction: column;
-  gap: var(--cx-space-small);
-}
+  .cxd-search-item-excerpt {
+    overflow: hidden;
+    color: var(--cx-fg-subtle);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include font-size(var(--cx-font-size-small));
+    @include line-height(var(--cx-line-height-small));
+  }
+
+  .cxd-search-subitem {
+    --cx-icon-size: var(--cx-icon-small);
+    --cx-icon-color: var(--cx-fg-subtle);
+    align-items: center;
+    padding-inline-start: var(--cx-space-4xlarge);
+    // padding-inline-start: var(--cx-space-medium);
+
+    &::before {
+      position: absolute;
+      inset-block: 15%;
+      inset-inline: 0;
+      width: var(--cx-border-width);
+      height: 70%;
+      margin-inline-start: 1.25rem;
+      content: " ";
+      background-color: var(--cx-fg-subtle);
+    }
+    &::after {
+      position: absolute;
+      inset: 0;
+      width: .75rem;
+      height: var(--cx-border-width);
+      margin-block: auto;
+      margin-inline-start: 1.25rem;
+      content: " ";
+      background-color: var(--cx-fg-subtle);
+    }
+    .cxd-search-item-title {
+      @include font-size(var(--cx-font-size-small));
+      @include line-height(var(--cx-line-height-small));
+    }
+
+  }
+
+  .cxd-search-subresults {
+    display: flex;
+    flex-direction: column;
+    // gap: var(--cx-space-xsmall);
+    gap: 0;
+    // padding-inline-start: var(--cx-space-large);
+    .cxd-search-subitem {
+      border-block-end-width: 0;
+      @include border-radius(0);
+      &:is(:last-child > .cxd-search-subitem) {
+        border-block-end-width: var(--cx-border-width);
+        @include border-bottom-radius(var(--cx-border-radius));
+        &::before {
+          height: 35%;
+        }
+      }
+
+    }
+  }
+
+  // Recently visited
+
+  .cxd-search-recent-header {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: .5rem;
+  }
+
+  .cxd-search-recent-label {
+    @include font-size(var(--cx-font-size-xsmall));
+    font-weight: 600;
+    color: var(--cx-fg-subtle);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  .cxd-search-recent-clear {
+    padding: .125rem .375rem;
+    @include font-size(var(--cx-font-size-xsmall));
+    color: var(--cx-fg-subtle);
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    @include border-radius(var(--cx-border-radius-medium));
+    @include transition(color .15s ease-in-out, background-color .15s ease-in-out);
+
+    &:hover {
+      color: var(--cx-fg-main);
+      background-color: var(--cx-bg-main);
+    }
+
+    &:focus-visible {
+      @include focus-ring(true);
+    }
+  }
+
+  // Empty / loading / error states
+
+  .cxd-search-empty,
+  .cxd-search-error {
+    padding: 2rem 1rem;
+    @include font-size(var(--cx-font-size-small));
+    color: var(--cx-fg-subtle);
+    text-align: center;
+  }
+
+  .cxd-search-error {
+    color: var(--cx-danger-fg-main);
+  }
+
+  .cxd-search-loading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cx-space-small);
+  }
 
 
-.cxd-search-footer {
-  padding-block: var(--cx-space-small);
-  background-color: var(--cx-bg-evident);
-}
+  .cxd-search-footer {
+    padding-block: var(--cx-space-small);
+    background-color: var(--cx-bg-evident);
+  }
 
-.cxd-search-shortcuts-list > .list-item {
-  display: inline-flex;
-  gap: .25rem;
-  align-items: center;
-  padding: 0 .5rem;
-  color: var(--cx-fg-subtle);
-  background: none;
-  border: 0;
-}
+  .cxd-search-shortcuts-list > .list-item {
+    display: inline-flex;
+    gap: .25rem;
+    align-items: center;
+    padding: 0 .5rem;
+    color: var(--cx-fg-subtle);
+    background: none;
+    border: 0;
+  }
 
-.cxd-search-shortcut-key {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.25rem;
-  min-height: 1.25rem;
-  padding: 0 .25rem;
-  background-color: var(--cx-bg-main);
-}
+  .cxd-search-shortcut-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    min-height: 1.25rem;
+    padding: 0 .25rem;
+    background-color: var(--cx-bg-main);
+  }
 
-.cxd-search-shortcut-label {
-  padding-inline-start: .25rem;
-  @include font-size(var(--cx-font-size-small));
-  @include line-height(var(--cx-line-height-small));
+  .cxd-search-shortcut-label {
+    padding-inline-start: .25rem;
+    @include font-size(var(--cx-font-size-small));
+    @include line-height(var(--cx-line-height-small));
+  }
 }
