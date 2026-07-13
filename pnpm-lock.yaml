@@ -82,8 +82,8 @@ importers:
         specifier: ^7.0.0
         version: 7.2.1
       '@chassis-ui/css':
-        specifier: '>=0.3.2'
-        version: 0.3.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)
+        specifier: '>=0.3.3'
+        version: 0.3.3(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)
       '@pagefind/component-ui':
         specifier: ^1.0.0
         version: 1.5.2
@@ -149,8 +149,8 @@ importers:
         specifier: ^3.7.3
         version: 3.7.3
       '@chassis-ui/css':
-        specifier: ^0.3.2
-        version: 0.3.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)
+        specifier: ^0.3.3
+        version: 0.3.3(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)
       '@chassis-ui/docs':
         specifier: workspace:*
         version: link:../docs
@@ -416,8 +416,8 @@ packages:
     resolution: {integrity: sha512-CuNiSqg7+e1cO/GjffyMOm5Tt2jUF9CWHHnvQ/UkqvtkGfHdgwEC0wpmq7fkN3gxwpRnrAN0WzO3vREKmNolMQ==}
     engines: {node: '>=18'}
 
-  '@chassis-ui/css@0.3.2':
-    resolution: {integrity: sha512-srajYTzdceT12+ki9O1g1CPrAZV6h9yD5v55EXD6ydK7cW2Isi676AwuS7UmpaMVibbM9n/DI+ZJUpOKGpWeLw==}
+  '@chassis-ui/css@0.3.3':
+    resolution: {integrity: sha512-ET4eSdBfKjFQZJCVBX+0XeSEpmPIYemLK2q2ftO1IZ9SUakdcJEviBJJA3HSTdTmLvJA5wwdhqOTHLm1AjdK1A==}
     peerDependencies:
       '@floating-ui/dom': ^1.7.6
       postcss-prefix-custom-properties: ^0.1.0
@@ -4395,7 +4395,7 @@ snapshots:
     dependencies:
       fontkitten: 1.0.3
 
-  '@chassis-ui/css@0.3.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)':
+  '@chassis-ui/css@0.3.3(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)':
     dependencies:
       '@floating-ui/dom': 1.7.6
       postcss-prefix-custom-properties: 0.1.0(postcss@8.5.16)
