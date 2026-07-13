@@ -107,21 +107,21 @@ const isActive = (path: string) => {
         <ul class="navbar-nav flex-row flex-wrap large:ms-auto align-items-center">
           <NavLink
             class="px-0 large:px-small"
-            href={getConfig().github_org}
+            href={`https://figma.com/@${getConfig().figma_handle}`}
+            target="_blank"
+            rel="noopener"
+          >
+            <Icon name="figma-brand" title="Figma" />
+            <small class="large:d-none ms-xsmall">Figma Community</small>
+          </NavLink>
+          <NavLink
+            class="px-0 large:px-small"
+            href={`https://github.com/${getConfig().github_org}`}
             target="_blank"
             rel="noopener"
           >
             <Icon name="github-brand" title="GitHub" />
             <small class="large:d-none ms-xsmall">GitHub</small>
-          </NavLink>
-          <NavLink
-            class="px-0 large:px-small"
-            href={`https://x.com/${getConfig().x}`}
-            target="_blank"
-            rel="noopener"
-          >
-            <Icon name="x-twitter-brand" title="X" />
-            <small class="large:d-none ms-xsmall">X</small>
           </NavLink>
           <li class="nav-item col-12 large:col-auto">
             <div class="vr d-none large:d-flex h-100 large:mx-2xsmall"></div>

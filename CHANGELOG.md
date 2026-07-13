@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.7] - 2026-07-13
+
+### Fixed
+
+- `api/contact.ts`: the contact form handler now checks the `error` returned from `resend.emails.send()`'s response and returns a 500 instead of silently reporting success; previously only request-level failures (network errors, etc.) were caught, not API-level errors returned in the response body
+- Support form (`SupportSection.astro`) success/error states now use the `notification` component.
+- `packages/website/config.yml`: `repo` was pointing at the `chassis-ui/docs` repository; corrected to `chassis-ui/website`
+
+### Changed
+
+- Renamed the `x` site config key to `x_username`, changed `github_org` to hold a bare org slug instead of a full URL, and added a new `figma_handle` key (config schema updated to match)
+- Docs header navigation: replaced the X/Twitter link with a new link to the Chassis Figma Community profile, alongside GitHub
+- CI: bumped `pnpm/action-setup` to v6 and `softprops/action-gh-release` to v3 in `publish-packages.yml`, and renamed the docs npm publish token secret to `NPM_CHASSIS_UI`
+- Bumped `@chassis-ui/css` to `^0.3.3` in `packages/docs` peerDependencies
+- Bumped `@chassis-ui/icons` to `^0.3.1` in `packages/website`
+
 ## [0.3.6] - 2026-07-06
 
 ### Fixed

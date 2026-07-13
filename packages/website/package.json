@@ -27,7 +27,7 @@
     "@astrojs/sitemap": "^3.7.3",
     "@chassis-ui/css": "^0.3.2",
     "@chassis-ui/docs": "workspace:*",
-    "@chassis-ui/icons": "^0.3.0",
+    "@chassis-ui/icons": "^0.3.1",
     "@chassis-ui/tokens": "^0.3.0",
     "@floating-ui/dom": "^1.7.6",
     "@pagefind/component-ui": "^1.5.2",

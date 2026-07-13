@@ -155,8 +155,8 @@ importers:
         specifier: workspace:*
         version: link:../docs
       '@chassis-ui/icons':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.3.1
+        version: 0.3.1
       '@chassis-ui/tokens':
         specifier: ^0.3.0
         version: 0.3.0
@@ -423,8 +423,8 @@ packages:
       postcss-prefix-custom-properties: ^0.1.0
       vanilla-calendar-pro: ^3.1.0
 
-  '@chassis-ui/icons@0.3.0':
-    resolution: {integrity: sha512-pb8NXd6XO7oHyk/ndxZudeFi069CEC5AbwQ+50HP6Tzfc9PZff4QTjcOI0cxc4Ff1vNHIm+FfJ65AB7B7Fiwog==}
+  '@chassis-ui/icons@0.3.1':
+    resolution: {integrity: sha512-u940omGLvaDqQWzkLDiXXACs3UiEGgZeESbDM+7mB9Dd/L2QKkCk0XQE6sVRv3Tb4+eXDmJOLNd63scZgAKS+Q==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   '@chassis-ui/tokens@0.3.0':
@@ -4401,7 +4401,7 @@ snapshots:
       postcss-prefix-custom-properties: 0.1.0(postcss@8.5.16)
       vanilla-calendar-pro: 3.1.0
 
-  '@chassis-ui/icons@0.3.0': {}
+  '@chassis-ui/icons@0.3.1': {}
 
   '@chassis-ui/tokens@0.3.0': {}
 

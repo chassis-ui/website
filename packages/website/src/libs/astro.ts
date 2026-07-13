@@ -42,20 +42,20 @@ export function chassis(): AstroIntegration[] {
 
   // `astro check` / `astro sync` doesn't need static assets copied into _site.
   // Track the command so the config:done hook can skip expensive file copies.
-  let command = 'dev'
+  let cmd = 'dev'
 
   return [
     chassisAutoImportIntegration(),
     {
       name: 'chassis-integration',
       hooks: {
-        'astro:config:setup': ({ addWatchFile, command: cmd }) => {
-          command = cmd
+        'astro:config:setup': ({ addWatchFile, command }) => {
+          cmd = command
           // Reload the config when the integration is modified.
           addWatchFile(path.join(getDocsFsPath(), 'src/libs/astro.ts'))
         },
         'astro:config:done': () => {
-          if (command === 'sync') return
+          if (cmd === 'sync') return
           cleanPublicDirectory()
           copyStatic()
           copyChassisAssets()

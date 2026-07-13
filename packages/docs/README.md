@@ -2,7 +2,7 @@
 
 > Shared Astro layouts, components, and utilities for Chassis documentation sites.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Version: 0.3.6](https://img.shields.io/badge/Version-0.3.6-blue.svg)](https://www.npmjs.com/package/@chassis-ui/docs) [![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Version: 0.3.7](https://img.shields.io/badge/Version-0.3.7-blue.svg)](https://www.npmjs.com/package/@chassis-ui/docs) [![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
 
 ## Overview
 
@@ -61,15 +61,15 @@ import { generateTOC, processImage } from '@chassis-ui/docs'
 
 ## Exports
 
-| Subpath                         | Contents                                                                                      |
-| ------------------------------- | --------------------------------------------------------------------------------------------- |
+| Subpath                         | Contents                                                                                                                     |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `@chassis-ui/docs`              | Library functions: `highlight`, `image`, `layout`, `markdown`, `placeholder`, `rehype`, `shortcodes`, `site`, `toc`, `utils` |
-| `@chassis-ui/docs/layouts/*`    | `BaseLayout`, `DocsLayout`, `RedirectLayout`, `SingleLayout`                                  |
-| `@chassis-ui/docs/components/*` | `DocsSidebar`, `FeatureCard`, `NavLink`, `ResponsiveImage`, `TableOfContents`, `ThemeToggler` |
-| `@chassis-ui/docs/shortcodes/*` | MDX shortcode components                                                                      |
-| `@chassis-ui/docs/libs/*`       | Direct access to individual library modules                                                   |
-| `@chassis-ui/docs/js/*`         | Client-side scripts                                                                           |
-| `@chassis-ui/docs/scss/*`       | SCSS utilities and partials                                                                   |
+| `@chassis-ui/docs/layouts/*`    | `BaseLayout`, `DocsLayout`, `RedirectLayout`, `SingleLayout`                                                                 |
+| `@chassis-ui/docs/components/*` | `DocsSidebar`, `FeatureCard`, `NavLink`, `ResponsiveImage`, `TableOfContents`, `ThemeToggler`                                |
+| `@chassis-ui/docs/shortcodes/*` | MDX shortcode components                                                                                                     |
+| `@chassis-ui/docs/libs/*`       | Direct access to individual library modules                                                                                  |
+| `@chassis-ui/docs/js/*`         | Client-side scripts                                                                                                          |
+| `@chassis-ui/docs/scss/*`       | SCSS utilities and partials                                                                                                  |
 
 ### Source Layout
 

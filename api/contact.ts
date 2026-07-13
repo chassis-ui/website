@@ -65,7 +65,7 @@ export default async function handler(request: Request): Promise<Response> {
   const topicLabel = TOPIC_LABELS[topic]
 
   try {
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL ?? 'Chassis Support <noreply@chassis-ui.com>',
       to: process.env.RESEND_TO_EMAIL ?? 'support@chassis-ui.com',
       replyTo: email,
@@ -78,7 +78,16 @@ export default async function handler(request: Request): Promise<Response> {
         <p><strong>Topic:</strong> ${topicLabel}</p>
       `
     })
-  } catch {
+
+    if (error) {
+      console.error('Resend API error:', error)
+      return new Response(JSON.stringify({ error: 'Failed to send message. Please try again.' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+  } catch (err) {
+    console.error('Resend request failed:', err)
     return new Response(JSON.stringify({ error: 'Failed to send message. Please try again.' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
