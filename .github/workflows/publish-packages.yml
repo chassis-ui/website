@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: publish-packages-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   detect-changes:
     runs-on: ubuntu-latest
@@ -18,15 +22,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          fetch-depth: 2 # Need at least 2 commits to compare
+          fetch-depth: 0 # Need full history to diff against github.event.before
 
       - name: Check for package changes
         id: changes
         run: |
+          BEFORE_SHA="${{ github.event.before }}"
+
+          # On workflow_dispatch, or a push with no known previous commit
+          # (e.g. first push to the branch), fall back to comparing against
+          # the immediate parent commit.
+          if [ -z "$BEFORE_SHA" ] || [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            BEFORE_SHA="HEAD~1"
+          fi
+
           # Check if docs package.json version changed
-          if git diff HEAD~1 HEAD --name-only | grep -q "packages/docs/package.json"; then
+          if git diff "$BEFORE_SHA" HEAD --name-only | grep -q "packages/docs/package.json"; then
             CURRENT_VERSION=$(node -p "require('./packages/docs/package.json').version")
-            PREVIOUS_VERSION=$(git show HEAD~1:packages/docs/package.json | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).version")
+            PREVIOUS_VERSION=$(git show "$BEFORE_SHA":packages/docs/package.json | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).version")
 
             echo "Current version: $CURRENT_VERSION"
             echo "Previous version: $PREVIOUS_VERSION"
@@ -61,11 +74,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '22'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Check if version already published on npm
         id: npm-check

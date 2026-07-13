@@ -11,6 +11,10 @@ on:
         type: choice
         options: [production, staging]
 
+concurrency:
+  group: lighthouse-${{ github.event.deployment.environment || github.event.inputs.environment || 'manual' }}
+  cancel-in-progress: true
+
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
@@ -44,7 +48,18 @@ jobs:
         id: sitemap
         run: |
           BASE="${{ steps.base-url.outputs.url }}"
-          URLS=$(curl -s "$BASE/sitemap-0.xml" | grep -o '<loc>[^<]*</loc>' | sed 's/<loc>//;s/<\/loc>//' | grep -v '/404')
+          HTTP_CODE=$(curl -s -o /tmp/sitemap.xml -w "%{http_code}" "$BASE/sitemap-0.xml")
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Failed to fetch sitemap from $BASE/sitemap-0.xml (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+
+          URLS=$(grep -o '<loc>[^<]*</loc>' /tmp/sitemap.xml | sed 's/<loc>//;s/<\/loc>//' | grep -v '/404')
+          if [ -z "$URLS" ]; then
+            echo "::error::No URLs found in sitemap at $BASE/sitemap-0.xml"
+            exit 1
+          fi
+
           echo "Found URLs:"
           echo "$URLS"
           {
@@ -59,6 +74,7 @@ jobs:
         with:
           urls: ${{ steps.sitemap.outputs.urls }}
           configPath: './lighthouse.json'
+          runs: 3
           uploadArtifacts: false
           temporaryPublicStorage: true
 
