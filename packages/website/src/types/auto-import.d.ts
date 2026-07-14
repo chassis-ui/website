@@ -20,4 +20,5 @@ export declare global {
   export const ResizableExample: typeof import('@chassis-ui/docs/shortcodes/ResizableExample.astro').default
   export const ScssDocs: typeof import('@chassis-ui/docs/shortcodes/ScssDocs.astro').default
   export const ScssDocsSimple: typeof import('@chassis-ui/docs/shortcodes/ScssDocsSimple.astro').default
+  export const GalleryImage: typeof import('@shortcodes/GalleryImage.astro').default
 }

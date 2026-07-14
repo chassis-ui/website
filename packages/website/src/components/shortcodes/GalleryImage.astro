@@ -1,0 +1,53 @@
+---
+/**
+ * Responsive Image
+ *
+ * Render a small/large viewport pair, each with 1x and 2x density variants.
+ * The small tier swaps in below the `small` breakpoint (576px) from
+ * @chassis-ui/css so narrow viewports don't download the large-tier image.
+ */
+
+interface Props {
+  /** Path to the large-tier image file (small tier is derived: `-small` suffix) */
+  imgPath: string
+  /** Alternative text for the image */
+  alt: string
+  /** Additional CSS classes */
+  classes?: string
+  /** Enable lazy loading */
+  lazyload?: boolean
+  /** Image width in pixels */
+  width?: number
+  /** Image height in pixels */
+  height?: number
+}
+
+const { imgPath, alt, classes = '', lazyload = true, width, height } = Astro.props
+
+const classNames = ['image', classes].filter(Boolean).join(' ')
+
+const basePath = imgPath.split('/').slice(0, -1).join('/')
+const basename = imgPath.split('/').pop()?.split('.')[0] || ''
+const ext = imgPath.includes('.') ? `.${imgPath.split('.').pop()}` : ''
+
+const imgPathLarge1x = `${basePath}/${basename}${ext}`
+const imgPathLarge2x = `${basePath}/${basename}@2x${ext}`
+const imgPathSmall1x = `${basePath}/${basename}-small${ext}`
+const imgPathSmall2x = `${basePath}/${basename}-small@2x${ext}`
+
+// Matches the `small` breakpoint in @chassis-ui/css (576px).
+const smallBreakpoint = '(max-width: 575px)'
+---
+
+<picture>
+  <source media={smallBreakpoint} srcset={`${imgPathSmall1x}, ${imgPathSmall2x} 2x`} />
+  <img
+    class={classNames}
+    srcset={`${imgPathLarge1x}, ${imgPathLarge2x} 2x`}
+    src={imgPathLarge1x}
+    alt={alt}
+    loading={lazyload ? 'lazy' : undefined}
+    width={width}
+    height={height}
+  />
+</picture>

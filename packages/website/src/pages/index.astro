@@ -18,6 +18,7 @@ bodyProps['class'] = 'home-body'
 
 <BaseLayout {...Astro.props} overrides={{ body: bodyProps }}>
   <Fragment slot="styles">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
   </Fragment>
 
@@ -29,7 +30,7 @@ bodyProps['class'] = 'home-body'
   <Assets />
   <Icons />
   <Support />
-  <div class="d-none">
+  <div hidden>
     <Fragment set:html={HomeIcons} />
   </div>
 
