@@ -60,10 +60,10 @@
     align-items: center;
 
     @include media-breakpoint-down(medium) {
-      margin--block-start: -25%;
+      margin-block-start: -25%;
     }
 
-    > img {
+    img {
       vertical-align: middle;
       zoom: 1.5;
       transform: rotate(30deg) skewX(-30deg) scaleY(.866);

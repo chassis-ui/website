@@ -5,22 +5,26 @@
  * Display component gallery images with light/dark mode variants.
  */
 
-import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
+import GalleryImage from '@components/shortcodes/GalleryImage.astro'
 ---
 
 <div id="gallery-section" class="home-section py-6xlarge">
   <div class="container 2xlarge section-content">
     <div class="overflow-hidden rounded">
       <div class="gallery-image bg-evident">
-        <ResponsiveImage
+        <GalleryImage
           imgPath="/static/images/home/comp-gallery-light.png"
           alt="Chassis UI"
           classes="mb-5xlarge fluid w-100 visible-light t-0"
+          width={1240}
+          height={1080}
         />
-        <ResponsiveImage
+        <GalleryImage
           imgPath="/static/images/home/comp-gallery-dark.png"
           alt="Chassis UI"
           classes="mb-5xlarge fluid w-100 visible-dark"
+          width={1240}
+          height={1080}
         />
       </div>
     </div>

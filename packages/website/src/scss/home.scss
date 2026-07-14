@@ -47,6 +47,12 @@
 // -----------------------------------------------------------------------------
 
 .feature-slider {
+
+  .swiper-slide {
+    display: flex;
+    height: auto;
+  }
+
   @include media-breakpoint-up(medium) {
     z-index: 10;
     width: 100%;
@@ -54,9 +60,7 @@
 
     // Swiper slide width
     .swiper-slide {
-      display: flex;
       width: var(--feature-item-width, 560px);
-      height: auto;
     }
     .swiper-navigation {
       position: absolute;

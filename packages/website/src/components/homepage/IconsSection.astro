@@ -8,6 +8,7 @@
 import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 import FeatureSlider from '@components/FeatureSlider.astro'
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
 ---
 
 <section
@@ -45,11 +46,15 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
             src="/static/images/home/icon-library-light.svg"
             alt="Structured icon library"
             class="image fluid w-100 visible-light"
+            width="512"
+            height="288"
           />
           <img
             src="/static/images/home/icon-library-dark.svg"
             alt="Structured icon library"
             class="image fluid w-100 visible-dark"
+            width="512"
+            height="288"
           />
         </FeatureCard>
 
@@ -89,25 +94,25 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
           <div class="pt-xsmall border-top border-subtle">
             <Code
               noToolbar
-              lang="astro"
-              code={`---
-// page.astro
-import Icons from 'icons/chassis-icons.svg?raw' // for <svg><use>
-import 'icons/chassis-icons.css' // for <span>
----
+              lang="jsx"
+              code={`import '/icons/chassis-icons.css'
 
-<svg><use xlink:href="#info-circle-solid"/></svg>
-<span class="icon-info-circle-solid"></span>
-<img src="/svgs/info-circle-solid.svg" alt="Info" width="24" height="24">
-
-<div style="display: none;" set:html={Icons} />`}
+export default function IconExample() {
+  return (
+    <div>
+      <span className="cx-info-circle-solid" />
+      <svg><use href="/icons/chassis-icons.svg#info-circle-solid" /></svg>
+      <img src="/icons/svgs/info-circle-solid.svg" alt="Info" width={24} height={24} />
+    </div>
+  )
+}`}
             />
             <div
               class="icon-default pt-medium mt-xsmall border-top border-subtle d-flex gap-medium align-items-center justify-content-center"
             >
-              <span class="icon icon-info-circle-solid"></span>
-              <span class="icon icon-info-circle-solid"></span>
-              <span class="icon icon-info-circle-solid"></span>
+              <Icon name="info-circle-solid" font />
+              <Icon name="info-circle-solid" font />
+              <Icon name="info-circle-solid" font />
             </div>
           </div>
         </FeatureCard>
