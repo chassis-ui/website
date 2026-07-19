@@ -4,7 +4,9 @@ import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
 import { blogPages } from '@libs/content'
 import { tagsToArray } from '@libs/blog'
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
 import type { CollectionEntry } from 'astro:content'
+import '@scss/blog.scss'
 
 export async function getStaticPaths() {
   return blogPages.map((blogPage: CollectionEntry<'blog'>) => {
@@ -36,19 +38,34 @@ const tags = tagsToArray(data.tags)
 const { Content } = await render(blogPage)
 ---
 
-<BaseLayout frontmatter={{ description: data.description, title: data.title }}>
+<BaseLayout
+  frontmatter={{
+    description: data.description,
+    title: data.title,
+    thumbnail: data.image?.url,
+    extra_js: data.extra_js
+  }}
+  layout="blog"
+>
   <div class="container 2xlarge">
+    <nav class="col py-medium border-bottom border-subtle mb-xlarge" aria-label="Breadcrumb">
+      <a href="/blog" class="icon-link text-decoration-none">
+        <Icon name="arrow-left-outline" class="icon-adaptive" /> Back to Blog
+      </a>
+    </nav>
     <div class="col-12 large:col-10 2xlarge:col-8 mx-auto">
-      <nav class="py-medium border-bottom border-subtle mb-xlarge" aria-label="Breadcrumb">
-        <a href="/blog" class="icon-link text-decoration-none">
-          <svg class="icon icon-adaptive" aria-hidden="true"
-            ><use xlink:href="#arrow-left-outline"></use></svg
-          >
-          Back to Blog
-        </a>
-      </nav>
-
-      <article class="mb-3xlarge">
+      {
+        data.tags && (
+          <div class="d-flex flex-wrap gap-xsmall justify-content-center my-xlarge large:my-3xlarge">
+            {tags.map((tag) => (
+              <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip primary smooth">
+                {tag}
+              </a>
+            ))}
+          </div>
+        )
+      }
+      <article class="blog-article mb-3xlarge">
         <header class="mb-xlarge text-center">
           <h1 class="font-5xlarge mb-medium">{data.title}</h1>
 
@@ -76,35 +93,18 @@ const { Content } = await render(blogPage)
         </header>
 
         <img
-          src={data.image?.url || '/static/images/logo/chassis-logo-brand-banner.svg'}
+          src={data.image?.url || '/static/images/social-image.png'}
           alt={data.image?.alt || data.title}
-          class="image rounded fluid w-100 mb-medium"
+          class="image rounded fluid w-100 mb-xlarge large:mb-3xlarge"
         />
 
         <Content components={{ pre: Code }} />
       </article>
-      {
-        data.tags && (
-          <aside class="py-medium border-top border-subtle">
-            <h2 class="h6 fg-subtle mb-medium">Tags</h2>
-            <div class="d-flex flex-wrap gap-xsmall">
-              {tags.map((tag) => (
-                <a href={`/blog/tags/${tag}/`} class="button smooth default small">
-                  {tag}
-                </a>
-              ))}
-            </div>
-          </aside>
-        )
-      }
-      <nav class="py-medium border-top border-subtle mb-xlarge" aria-label="Post navigation">
-        <a href="/blog" class="icon-link text-decoration-none">
-          <svg class="icon icon-adaptive" aria-hidden="true"
-            ><use xlink:href="#arrow-left-outline"></use></svg
-          >
-          Back to Blog
-        </a>
-      </nav>
     </div>
+    <nav class="col py-medium border-top border-subtle mb-xlarge" aria-label="Post navigation">
+      <a href="/blog" class="icon-link text-decoration-none">
+        <Icon name="arrow-left-outline" class="icon-adaptive" /> Back to Blog
+      </a>
+    </nav>
   </div>
 </BaseLayout>

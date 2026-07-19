@@ -15,25 +15,27 @@ const sortedTags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1])
 
 const frontmatter = {
   title: 'Blog posts by tags',
-  description: `Explore ${blogPages.length} blog posts organized by ${tagCounts.size} tags`
+  description: `${blogPages.length} blog posts organized by ${tagCounts.size} tags`
 }
 ---
 
 <BlogLayout frontmatter={frontmatter}>
   <ol class="breadcrumb" slot="breadcrumb">
-    <li class="breadcrumb-page"><a href="/blog">Blog</a></li>
-    <li class="breadcrumb-page active" aria-current="page">Tags</li>
+    <li class="breadcrumb-item"><a href="/blog">Blog</a></li>
+    <li class="breadcrumb-item" aria-current="page">Tags</li>
   </ol>
 
   <section class="mb-2xlarge">
-    <h2>Tags</h2>
-    <p>Topics covered across the blog</p>
-    <div class="d-flex flex-wrap gap-medium">
+    <header class="mb-medium large:mb-3xlarge">
+      <h2>Tags</h2>
+      <p class="font-large">Topics covered across the blog</p>
+    </header>
+    <div class="d-flex flex-wrap gap-xsmall">
       {
         sortedTags.map(([tag, count]) => (
-          <a href={`/blog/tags/${tag}/`} class="button smooth default">
+          <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip large neutral smooth">
             {tag}
-            <span class="badge default ms-2xsmall">{count}</span>
+            <span class="badge neutral -me-xsmall">{count}</span>
           </a>
         ))
       }

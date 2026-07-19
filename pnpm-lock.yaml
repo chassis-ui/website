@@ -79,8 +79,8 @@ importers:
         specifier: ^7.0.0
         version: 7.2.1
       '@chassis-ui/css':
-        specifier: '>=0.3.3'
-        version: 0.3.3(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)
+        specifier: '>=0.3.4'
+        version: 0.3.4(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)
       '@pagefind/component-ui':
         specifier: ^1.0.0
         version: 1.5.2
@@ -102,6 +102,9 @@ importers:
       mdast-util-to-string:
         specifier: ^4.0.0
         version: 4.0.0
+      medium-zoom:
+        specifier: ^1.1.0
+        version: 1.1.0
       rehype-autolink-headings:
         specifier: ^7.0.0
         version: 7.1.0
@@ -146,8 +149,8 @@ importers:
         specifier: ^3.7.3
         version: 3.7.3
       '@chassis-ui/css':
-        specifier: ^0.3.3
-        version: 0.3.3(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)
+        specifier: ^0.3.4
+        version: 0.3.4(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)
       '@chassis-ui/docs':
         specifier: workspace:*
         version: link:../docs
@@ -413,8 +416,8 @@ packages:
     resolution: {integrity: sha512-CuNiSqg7+e1cO/GjffyMOm5Tt2jUF9CWHHnvQ/UkqvtkGfHdgwEC0wpmq7fkN3gxwpRnrAN0WzO3vREKmNolMQ==}
     engines: {node: '>=18'}
 
-  '@chassis-ui/css@0.3.3':
-    resolution: {integrity: sha512-ET4eSdBfKjFQZJCVBX+0XeSEpmPIYemLK2q2ftO1IZ9SUakdcJEviBJJA3HSTdTmLvJA5wwdhqOTHLm1AjdK1A==}
+  '@chassis-ui/css@0.3.4':
+    resolution: {integrity: sha512-/YNcMqjgl2I8zIbJAybd6NJ40y3SDvBt0fqvyeThmJXQmdv2tZDraaClre/4bu7byL6ZtkovsQWMZAm8sZh5Qg==}
     peerDependencies:
       '@floating-ui/dom': ^1.7.6
       postcss-prefix-custom-properties: ^0.1.0
@@ -2820,6 +2823,9 @@ packages:
   mdn-data@2.28.1:
     resolution: {integrity: sha512-U9w+PzSZ00Z5m9rZ5ARVFL5xOfuCHdKYi/1RRwDCJsboFgJDNT3zT6PIPD7mZQYaQLhsZM3GfDRgSMRHhSmVng==}
 
+  medium-zoom@1.1.0:
+    resolution: {integrity: sha512-ewyDsp7k4InCUp3jRmwHBRFGyjBimKps/AJLjRSox+2q/2H4p/PNpQf+pwONWlJiOudkBXtbdmVbFjqyybfTmQ==}
+
   meow@13.2.0:
     resolution: {integrity: sha512-pxQJQzB6djGPXh08dacEloMFopsOqGVRKFPYvPOt9XDZ1HasbgDZA74CJGreSU4G3Ak7EFJGoiH2auq+yXISgA==}
     engines: {node: '>=18'}
@@ -4360,7 +4366,7 @@ snapshots:
     dependencies:
       fontkitten: 1.0.3
 
-  '@chassis-ui/css@0.3.3(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)':
+  '@chassis-ui/css@0.3.4(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)':
     dependencies:
       '@floating-ui/dom': 1.7.6
       postcss-prefix-custom-properties: 0.1.0(postcss@8.5.16)
@@ -7002,6 +7008,8 @@ snapshots:
   mdn-data@2.27.1: {}
 
   mdn-data@2.28.1: {}
+
+  medium-zoom@1.1.0: {}
 
   meow@13.2.0: {}
 

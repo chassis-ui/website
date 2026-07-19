@@ -288,16 +288,45 @@ pnpm add @chassis-ui/docs@latest
 
 ### SCSS Structure
 
-```
-packages/website/src/scss/
-├── _variables.scss       # Site-specific variables
-├── _mixins.scss          # Custom mixins
-└── main.scss             # Main stylesheet
+- `packages/website/src/scss/` — site-level stylesheets: `docs.scss` (main stylesheet,
+  used across doc/content pages), `home.scss` (homepage-specific), `blog.scss`
+  (blog-specific). Imported directly by layouts, e.g.
+  `packages/website/src/layouts/Layout.astro`.
+- `packages/docs/src/scss/` — shared partials (layout, navbar, sidebar, toc, search,
+  callouts, syntax highlighting, etc.) consumed as a group via
+  `@chassis-ui/docs/scss/main`. Check the directory directly for the current file list
+  rather than trusting a list here — it grows as shared UI grows.
 
-packages/docs/src/scss/
-├── _layout.scss          # Shared layout styles
-└── _utilities.scss       # Shared utilities
+### Import Pattern
+
+Site stylesheets use Sass's `@use` module system (not `@import`). `docs.scss` pulls in
+Chassis CSS's config/mixins, then the shared docs styles, then site-specific overrides:
+
+```scss
+@use "@chassis-ui/css/scss/config" as *;
+@use "@chassis-ui/css/scss/functions" as *;
+@use "@chassis-ui/css/scss/maps" as *;
+@use "@chassis-ui/css/scss/mixins" as *;
+@use "@chassis-ui/docs/scss/main";
+
+// site-specific overrides below
 ```
+
+`@chassis-ui/css/scss/config` forwards tokens and defaults internally, so those don't
+need separate `@use` statements.
+
+### Responsive Breakpoints
+
+Chassis CSS utility classes use a `{breakpoint}:` **prefix**, not a Bootstrap-style
+infix — e.g. `medium:p-large`, not `p-medium-large`. See
+[CHASSIS_CSS.md](CHASSIS_CSS.md#-breakpoint-prefix-syntax-v020) for the full mapping.
+
+### Adding Component Styles
+
+When a component needs styles beyond what Chassis CSS utility classes cover:
+1. **One-off/small** — inline `<style>` tag in the `.astro` component
+2. **Shared across components** — add a partial under `packages/docs/src/scss/`
+3. **Large/standalone** — a dedicated SCSS file
 
 ### Using Chassis CSS
 
@@ -428,16 +457,6 @@ pnpm preview
 # Visit http://localhost:4321
 ```
 
-### Validation
-
-```bash
-# HTML validation (requires Java)
-pnpm site:lint:vnu
-
-# All validations
-pnpm site:lint
-```
-
 ## 🐛 Troubleshooting
 
 ### Common Issues
@@ -539,14 +558,10 @@ git commit -m "refactor: reorganize component structure"
 
 ### Pull Request Process
 
-1. Create feature branch
-2. Make changes
-3. Test locally (`pnpm build && pnpm preview`)
-4. Commit and push
-5. Create PR on GitHub
-6. Wait for CI checks
-7. Request review
-8. Merge after approval
+Branch → commit → push → open a PR against `main` or `staging`. CI (`ci.yml`) runs
+lint, `astro check`, and `pnpm audit` automatically — see the GitHub Actions table in
+[DEPLOYMENT.md](DEPLOYMENT.md) for exactly what it checks. Test locally first with
+`pnpm build && pnpm preview`.
 
 ## 🎯 IDE Setup
 

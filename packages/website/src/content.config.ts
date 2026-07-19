@@ -17,17 +17,9 @@ const blogSchema = z.object({
     alt: z.string()
   }),
   pubDate: z.date(),
-  sections: z
-    .object({
-      description: z.string(),
-      title: z.string()
-    })
-    .array()
-    .optional(),
+  published: z.boolean().optional(),
   tags: z.string().optional(),
-  title: z.string(),
-  thumbnail: z.string().optional(),
-  toc: z.boolean().optional()
+  title: z.string()
 })
 
 const docsSchema = z.object({

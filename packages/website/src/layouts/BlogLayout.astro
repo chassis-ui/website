@@ -3,7 +3,7 @@ import type { MarkdownHeading } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
 import { blogPages } from '@libs/content'
-import LatestPosts from '../components/blog/LatestPosts.astro'
+import { tagsToArray } from '@libs/blog'
 
 interface Props {
   frontmatter?: {
@@ -14,12 +14,23 @@ interface Props {
   id?: CollectionEntry<'blog'>['id']
 }
 
-const { frontmatter, id } = Astro.props
+const { frontmatter } = Astro.props
 
 const title = frontmatter?.title ?? 'Blog'
 const description =
   frontmatter?.description ??
   "Insights, tutorials, and stories from Chassis UI's team of designers and developers building design systems in the open."
+
+const tagCounts = new Map<string, number>()
+blogPages.forEach((post: CollectionEntry<'blog'>) => {
+  tagsToArray(post.data.tags).forEach((tag) => {
+    tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
+  })
+})
+const popularTags = Array.from(tagCounts.entries())
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 5)
+  .map(([tag]) => tag)
 ---
 
 <BaseLayout {...Astro.props} layout="blog">
@@ -28,37 +39,51 @@ const description =
       <header class="py-xlarge medium:py-3xlarge border-bottom border-subtle">
         <div class="container 2xlarge">
           <div class="row">
-            <div class="col large:col-10 2xlarge:col-8">
+            <div class="col-12 medium:col-7 xlarge:col-8">
               {
                 Astro.slots.has('breadcrumb') ? (
-                  <>
+                  <div>
                     <nav aria-label="breadcrumb">
                       <slot name="breadcrumb" />
                     </nav>
-                    <h1 class="my-0">{title}</h1>
-                  </>
-                ) : (
-                  <>
                     <h1 class="mt-0">{title}</h1>
                     <p class="font-lead">{description}</p>
-                  </>
+                  </div>
+                ) : (
+                  <div>
+                    <h1 class="mt-0">{title}</h1>
+                    <p class="font-lead">{description}</p>
+                  </div>
                 )
               }
+            </div>
+            <div class="col-12 medium:col-5 xlarge:col-4">
+              <div class="rounded p-medium large:p-large border">
+                <p class="d-flex">
+                  <strong>Popular tags</strong>
+                  <a href="/blog/tags" class="font-small ms-auto text-decoration-none"
+                    >View all tags</a
+                  >
+                </p>
+                <p class="d-flex flex-wrap gap-xsmall row-gap-small mb-0">
+                  {
+                    popularTags.map((tag) => (
+                      <a
+                        href={`/blog/tags/${encodeURIComponent(tag)}/`}
+                        class="chip primary smooth"
+                      >
+                        {tag}
+                      </a>
+                    ))
+                  }
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </header>
       <div class="container 2xlarge py-4xlarge min-vh-100">
-        <div class="row g-4xlarge">
-          <div class="large:col-8">
-            <slot />
-          </div>
-          <aside class="large:col-4">
-            <div class="position-sticky" style="top: 96px;">
-              <LatestPosts posts={blogPages} currentPostId={id} />
-            </div>
-          </aside>
-        </div>
+        <slot />
       </div>
     </main>
   </Fragment>

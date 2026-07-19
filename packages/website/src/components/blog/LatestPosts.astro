@@ -5,6 +5,8 @@
  * Display a list of the most recent blog posts.
  */
 
+import { getBlogPostUrl } from '@libs/blog'
+
 type Props = {
   /** Array of blog post entries */
   posts: any
@@ -13,18 +15,6 @@ type Props = {
 }
 
 const { posts, currentPostId } = Astro.props
-
-function getBlogPostUrl(post: any): string {
-  const pubDate = new Date(post.data.pubDate || Date.now())
-  const year = pubDate.getFullYear()
-  const month = String(pubDate.getMonth() + 1).padStart(2, '0')
-  const day = String(pubDate.getDate()).padStart(2, '0')
-
-  // Extract slug from the file path (remove year folder and extension)
-  const slug = post.id.replace(/^\d{4}\//, '').replace(/\.(md|mdx)$/, '')
-
-  return `/blog/${year}/${month}/${day}/${slug}`
-}
 ---
 
 <div class="bg-even p-medium rounded-large mb-medium">
