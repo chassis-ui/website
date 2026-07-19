@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.9] - 2026-07-19
+
+### Added
+
+- `packages/docs`: new `zoom.js` script — initialises `medium-zoom` on any element tagged `[data-zoomable]`; `medium-zoom` added as a dependency
+- `packages/docs/src/libs/image.ts`: new `getRemoteImageSize()` helper that fetches a remote image at build time and returns its pixel dimensions; used by `Social.astro` for CDN-hosted thumbnails
+- `packages/docs/src/layouts/head/Social.astro`: `<meta property="og:site_name">` tag
+
+### Changed
+
+- `packages/docs/src/layouts/head/Social.astro`: supports remote thumbnail URLs — when `thumbnail` starts with `http(s)://` it uses `getRemoteImageSize()` instead of reading a local file
+- `packages/docs/src/components/ResponsiveImage.astro`: forwards extra props (`...rest`) to the rendered `<img>` element
+- `packages/docs/package.json`: bumped `@chassis-ui/css` peer dependency to `>=0.3.4`
+
 ## [0.3.8] - 2026-07-14
 
 ### Added
