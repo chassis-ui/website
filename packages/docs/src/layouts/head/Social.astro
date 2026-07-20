@@ -8,7 +8,7 @@
 import path from 'node:path'
 import { getConfig } from '@libs/config'
 import { getDocsPublicFsPath } from '@libs/path'
-import { getStaticImageSize } from '../../libs/image'
+import { getRemoteImageSize, getStaticImageSize } from '../../libs/image'
 import type { Layout } from '../../libs/layout'
 
 interface Props {
@@ -25,7 +25,10 @@ interface Props {
 const { description, layout, thumbnail, title } = Astro.props
 
 const socialImageUrl = new URL(thumbnail, Astro.site)
-const socialImageSize = await getStaticImageSize(path.join(getDocsPublicFsPath(), thumbnail))
+const isRemoteThumbnail = /^https?:\/\//i.test(thumbnail)
+const socialImageSize = isRemoteThumbnail
+  ? await getRemoteImageSize(thumbnail)
+  : await getStaticImageSize(path.join(getDocsPublicFsPath(), thumbnail))
 ---
 
 <meta name="twitter:card" content="summary_large_image" />
@@ -39,6 +42,7 @@ const socialImageSize = await getStaticImageSize(path.join(getDocsPublicFsPath()
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:type" content={layout === 'docs' ? 'article' : 'website'} />
+<meta property="og:site_name" content={getConfig().title} />
 <meta property="og:image" content={socialImageUrl} />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content={String(socialImageSize.width)} />

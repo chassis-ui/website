@@ -42,11 +42,12 @@ execFile('java', ['-version'], (error, stdout, stderr) => {
 
   const args = [
     '-jar',
-    `"${vnu}"`,
+    vnu,
     '--asciiquotes',
     '--skip-non-html',
     '--Werror',
-    `--filterpattern "${ignores}"`,
+    '--filterpattern',
+    ignores,
     ...getSitePaths()
   ]
 
@@ -56,7 +57,6 @@ execFile('java', ['-version'], (error, stdout, stderr) => {
   }
 
   spawn('java', args, {
-    shell: true,
     stdio: 'inherit'
   }).on('exit', (code) => {
     if (code === 0) {

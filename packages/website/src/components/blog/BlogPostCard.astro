@@ -1,54 +1,53 @@
 ---
 import type { CollectionEntry } from 'astro:content'
 import { formatDate, getReadingTime, getBlogPostUrl } from '@libs/blog'
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
 
 interface Props {
   post: CollectionEntry<'blog'>
-  showImage?: boolean
 }
 
-const { post, showImage = true } = Astro.props
+const { post } = Astro.props
 const url = getBlogPostUrl(post)
 ---
 
-<article class="mb-xlarge pb-xlarge border-bottom border-subtle">
-  <header class="mb-medium">
-    <h2 class="font-3xlarge mb-small">
-      <a href={url} class="fg-main text-decoration-none">{post.data.title}</a>
-    </h2>
+<article class="row mb-xlarge pb-xlarge border-bottom border-subtle">
+  <div class="col-12 large:col-4 mb-medium large:mb-0">
+    <a href={url} class="d-block">
+      <img
+        src={post.data.image?.url || '/static/images/social-image.png'}
+        alt={post.data.image?.alt || post.data.title}
+        class="image rounded fluid w-100"
+      />
+    </a>
+  </div>
+  <div class="col-12 large:col-8">
+    <header class="mb-medium">
+      <h2 class="font-strong font-3xlarge mb-small">
+        <a href={url} class="fg-main text-decoration-none">{post.data.title}</a>
+      </h2>
+      <div class="fg-subtle small">
+        <time datetime={post.data.pubDate?.toISOString()} class="text-nowrap">
+          {formatDate(post.data.pubDate || new Date())}
+        </time>
+        <span class="mx-xsmall">•</span>
+        <span class="text-nowrap">{getReadingTime(post.body || '')}</span>
+        {
+          post.data.author && (
+            <>
+              <span class="mx-xsmall">•</span>
+              <span class="text-nowrap">by {post.data.author}</span>
+            </>
+          )
+        }
+      </div>
+    </header>
 
-    <div class="fg-subtle small">
-      <time datetime={post.data.pubDate?.toISOString()} class="text-nowrap">
-        {formatDate(post.data.pubDate || new Date())}
-      </time>
-      <span class="mx-xsmall">•</span>
-      <span class="text-nowrap">{getReadingTime(post.body || '')}</span>
-      {
-        post.data.author && (
-          <>
-            <span class="mx-xsmall">•</span>
-            <span class="text-nowrap">by {post.data.author}</span>
-          </>
-        )
-      }
-    </div>
-  </header>
-
-  {
-    showImage && post.data.image?.url && (
-      <a href={url} class="d-block mb-medium">
-        <img
-          src={post.data.image.url}
-          alt={post.data.image.alt || post.data.title}
-          class="image rounded fluid w-100"
-        />
-      </a>
-    )
-  }
-
-  {post.data.description && <p>{post.data.description}</p>}
-
-  <footer>
-    <a href={url} class="button link default small">Read more →</a>
-  </footer>
+    {post.data.description && <p class="font-large">{post.data.description}</p>}
+    <footer>
+      <a href={url} class="icon-link text-decoration-none"
+        >Read more <Icon name="arrow-right-outline" class="icon-adaptive" /></a
+      >
+    </footer>
+  </div>
 </article>

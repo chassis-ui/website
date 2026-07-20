@@ -20,9 +20,11 @@ interface Props {
   width?: number
   /** Image height in pixels */
   height?: number
+  /** Any other attribute is passed through to the rendered element. */
+  [key: string]: unknown
 }
 
-const { imgPath, alt, classes = '', lazyload = true, width, height } = Astro.props
+const { imgPath, alt, classes = '', lazyload = true, width, height, ...rest } = Astro.props
 
 const classNames = ['image', classes].filter(Boolean).join(' ')
 
@@ -49,5 +51,6 @@ const smallBreakpoint = '(max-width: 575px)'
     loading={lazyload ? 'lazy' : undefined}
     width={width}
     height={height}
+    {...rest}
   />
 </picture>

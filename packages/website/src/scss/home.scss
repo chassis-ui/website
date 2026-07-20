@@ -33,8 +33,9 @@
     box-shadow: none;
     --cx-icon-color: var(--cx-icon-main);
     &:hover {
-      --cx-bg-color: var(--cx-bg-highlight);
-      --cx-icon-color: var(--cx-fg-highlight);
+      --cx-bg-color: var(--cx-primary-bg-main);
+      --cx-fg-color: var(--cx-primary-fg-main);
+      --cx-icon-color: var(--cx-fg-color);
     }
     @include media-breakpoint-down(medium) {
       --cx-bg-color: var(--cx-bg-even);

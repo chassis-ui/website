@@ -45,16 +45,17 @@ const tag = Astro.params.tag as string
 
 const postCount = page.total
 const frontmatter = {
-  title: `Blog posts with "${tag}" tag`,
-  description: `Browse ${postCount} ${postCount === 1 ? 'post' : 'posts'} tagged with "${tag}"`
+  // title: `Blog posts with "${tag}" tag`,
+  title: tag.charAt(0).toUpperCase() + tag.slice(1),
+  description: `${postCount} tagged ${postCount === 1 ? 'post' : 'posts'}`
 }
 ---
 
 <BlogLayout frontmatter={frontmatter}>
   <ol class="breadcrumb" slot="breadcrumb">
-    <li class="breadcrumb-page"><a href="/blog">Blog</a></li>
-    <li class="breadcrumb-page"><a href="/blog/tags">Tags</a></li>
-    <li class="breadcrumb-page active" aria-current="page">{tag}</li>
+    <li class="breadcrumb-item"><a href="/blog">Blog</a></li>
+    <li class="breadcrumb-item"><a href="/blog/tags">Tags</a></li>
+    <li class="breadcrumb-item" aria-current="page">{tag}</li>
   </ol>
 
   {
@@ -69,5 +70,5 @@ const frontmatter = {
     )
   }
 
-  <Pagination page={page} baseUrl={`/blog/tags/${tag}`} />
+  <Pagination page={page} baseUrl={`/blog/tags/${encodeURIComponent(tag)}`} />
 </BlogLayout>

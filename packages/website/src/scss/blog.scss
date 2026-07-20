@@ -1,0 +1,36 @@
+@use "@chassis-ui/css/scss/mixins" as *;
+
+@layer custom {
+  .blog-article {
+    :where(h2, h3, h4, h5, h6) {
+      margin-block: var(--space-3xlarge) var(--space-large);
+      font-weight: var(--font-weight-strong);
+    }
+    :where(p, li, dt, dd, blockquote) {
+      @include font-size(var(--font-size-large));
+      font-weight: var(--font-weight-elegant);
+      @include line-height(1.625);
+    }
+    :where(p, ol, ul) {
+      margin-block-end: var(--space-xlarge);
+    }
+    @include media-breakpoint-up(medium) {
+      :where(h2, h3, h4, h5, h6) {
+        margin-block: var(--space-5xlarge) var(--space-large);
+      }
+      :where(b, strong) {
+        font-weight: var(--font-weight-strong);
+      }
+      :where(p, ol, ul) {
+        margin-block-end: var(--space-xlarge);
+      }
+      :where(.attribution) {
+        @include font-size(var(--font-size-medium));
+      }
+      :where(figure:has(blockquote), blockquote:not(figure > blockquote)) {
+        padding-inline-start: var(--space-2xlarge);
+        border-inline-start: .25rem solid var(--border-main);
+      }
+    }
+  }
+}

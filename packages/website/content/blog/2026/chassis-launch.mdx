@@ -1,62 +1,84 @@
 ---
-title: The hard part isn't building the design system
-description: Why I built Chassis — a personal take on multi-brand, multi-platform design systems, and the small set of decisions that make them tractable.
+title: The Hard Part Isn't Building the Design System
+description: Design systems work when there's one product, one brand, one platform, one team. Chassis is for what happens when there isn't.
 author: Özgür Güneş
-pubDate: 2027-05-24
-tags: announcement, design-systems, css, tokens, components
+pubDate: 2026-07-20
+tags: announcement, design systems, design tokens, figma, components
 image:
   url: /static/images/social-image.png
   alt: Chassis launch social image
 ---
 
-Chassis is now public. Before the feature list, I want to write about why it exists — because the project makes more sense if you understand what it's reacting against.
+Design systems have become a core part of modern product development. They help teams move faster, build consistent user experiences, and make the relationship between design and engineering more efficient.
 
-## The hard part isn't building the system
+Most of the tools and writing around design systems assume a fairly narrow starting point, though: one product, one brand, one platform, one team. In that world, defining a color palette, setting typography, and building a handful of reusable components is enough.
 
-Every design system tutorial assumes the same starting point. One product, one brand, one platform, one team. Pick a primary colour, define some spacing scales, build a button. Done.
+Real product organizations are rarely that tidy. More often, one service's functionality gets split across separate applications by persona: a passenger app, a driver app, an internal operations console, each owned by a different team, on a different stack, expected to feel like one product. Add web, iOS, and Android being built in parallel, and it gets harder still.
 
-That's not the world I've been working in for the last decade. The projects I keep ending up on look more like this: three brands sharing roughly the same product but each with their own palette, typography and a marketing team that wants their version to be _just slightly different_. A web app, an iOS app, an Android app — different engineers, different frameworks, different opinions about how things should be built. A Figma file that has drifted from production by about six months and twelve un-merged variants. Three definitions of "primary blue" living in three places, all subtly different, all claiming to be the source of truth.
+The challenge is no longer creating components. It's keeping design decisions consistent across products, platforms, teams, and time. That's the problem **Chassis** was built to solve.
 
-The pattern is the same every time: building the system isn't the hard part. Keeping it consistent — across brands, platforms, teams, and time — is. And almost every tool I tried was built to solve the small-system problem, not this one.
+## What holds a design system together
 
-So a few years ago I started building the thing I wished existed. Chassis is what it became.
+A design system is more than a UI library of reusable components. It's the infrastructure connecting three layers: design tokens (the raw values, like color, spacing, typography, radius, shadow), the components built from them in Figma and in code, and the process that keeps all three in sync as the product changes.
 
-## Token-first, not component-first
+Get that right, and design and engineering share one vocabulary. A component's name, behavior, and purpose mean the same thing to everyone touching it, and moving a decision from design into code stops being a game of telephone. Small projects manage this without much effort. It gets progressively harder as the number of products, platforms, and brands grows.
 
-The thing that finally clicked for me was changing what counts as the source of truth.
+## Where it breaks down at scale
 
-Most design systems start with components. You build a button, a card, an input. The tokens come later, generated from CSS variables, often retro-fitted to match what the components are already doing. That works fine for one brand. The moment you have two, the components stop being a source of truth and start being a translation layer — every brand needs its own forked version, every platform needs its own re-implementation.
+Growth rarely comes from building more components. It comes from supporting more variation.
 
-Chassis flips that. Tokens are the source. Everything else — Figma variables, CSS classes, platform-specific outputs — consumes them. A change at the token layer propagates outward automatically. Swap the brand collection at the top; every output downstream updates. No forking, no manual handoff, no spreadsheet of "what changed this week".
+Web, iOS, and Android can share a brand identity, but each platform comes with its own conventions and constraints. Colors and typography usually stay shared, since they represent the brand. Component sizing, spacing, and interaction behavior often can't.
 
-It sounds obvious when you write it down. In practice almost no system is built this way, because doing it requires committing to it from the start.
+Add multiple brands running on the same infrastructure, each with its own palette and visual identity, and the goal changes. Instead of a separate system per brand, you need one shared infrastructure that still supports what makes each brand distinct. Multiple products sharing that infrastructure, each with its own user needs and business logic, multiplies the same tension again.
 
-## No translation layers
+## Small disconnects that compound
 
-The other decision I'm proud of is naming.
+None of these problems show up all at once. They build up over time, one small gap at a time.
 
-In Chassis, the CSS class names match the Figma variable names. When a designer writes a spec that says `bg-surface-secondary`, that's a real Figma variable _and_ a real CSS class _and_ a real token. There's no "designer says one thing, code says another, somebody translates between them" layer.
+Color is usually one of the first things a design system defines, and one of the first things that starts drifting as the system grows. What one team calls "disabled button" ends up a shade off from another team's version, and differences like that eventually surface as visible inconsistency in the product.
 
-That sounds small. It isn't. A startling amount of design system maintenance is just translation — one team's words into another team's words, then back again. Killing that loop changes how design and engineering work together.
+Dark mode meaningfully raises the complexity of a design system. Every color needs a correctly defined light and dark counterpart, and any missing or incorrect mapping shows up as a contrast, accessibility, or consistency bug.
 
-## Five packages, one architecture
+Visual assets are just as much a part of a design system as components are. Preparing, updating, and distributing them in the right formats for different platforms is usually its own process, and when that process is manual, it becomes a steady source of errors.
 
-Chassis ships as five packages. [Tokens](/tokens) is the foundation. [CSS](/css) is the framework — Bootstrap-compatible, but every utility class is generated from tokens. [Figma](/figma) is the component library, bound to the same token definitions. [Icons](/icons) handles the SVG/sprite/font pipeline. [Assets](/assets) handles fonts and brand images.
+Design and code drift apart too. A Figma file gets updated and the code never catches up. A new component gets designed and engineering builds something different from it. Eventually the design file and the shipped product represent two systems that happen to share a name.
 
-You can adopt them independently, but they're designed to work as a single system. That's really the whole pitch — five separately-useful tools that share an architecture, so that adopting one of them makes the others easier to adopt later.
+## The real problem: decisions get scattered, not lost
 
-The full breakdown is on the [about page](/about) and in the docs. I'd rather not turn this post into a feature list.
+Platform differences, brand and app needs, dark mode, asset management, and drift between design and code look like a set of separate problems. Underneath, they share one root cause. Design decisions end up scattered across different tools and different teams.
 
-## Who this is for
+A color decision lives in Figma. Its counterpart lives in CSS. Another version lives inside the mobile apps. Another lives in a brand guidelines document somewhere. Over time, teams stop working from one system and start reconciling several different ones, and the shared language a design system is supposed to provide quietly falls apart.
 
-If you're building one product for one brand on one platform, Chassis is overkill. Pick something simpler.
+The decisions aren't lost. They're just scattered across more places than any one team can track.
 
-But if any of this sounds familiar — multiple brands, multiple platforms, a Figma file drifted from production, three definitions of the same blue — then Chassis is built for you. Because it was built _from_ that situation, not for an idealised version of it.
+## How Chassis actually solves it
 
-## What's next
+Chassis doesn't approach this by building another component library. Building a new button or card is not a hard technical problem. Keeping that button, and the decisions it's built from, consistent across every platform and team using it, is.
 
-Chassis is MIT-licensed and developed in the open. Every package is on [GitHub](https://github.com/chassis-ui) and published to npm. The [getting started guide](/getting-started) walks through installing each package; the [contribute page](/contribute) covers how to help.
+### Tokens are the source, not a byproduct
 
-If you've been fighting the same problems and want to talk about them, [get in touch](/#support-section). Issues, contributions, and "have you considered…" emails are all welcome.
+Most design systems start with components; tokens get generated afterward, retrofitted to match whatever the components already do. That works fine for one app or brand. It breaks the moment there are two, because the components stop being the source of truth and start being a translation layer, forked per app, re-implemented per platform. Chassis inverts that: tokens are the single source, and everything else (Figma variables, web styles, iOS and Android code) is generated from them automatically. Change a token once, and it flows to every platform from the same place.
 
-— Özgür
+### One library, many modes, not many libraries
+
+The common fix for multi-app, multi-platform, multi-brand is forking: a components library per platform, a token set per app. Chassis keeps one token source and one component library, and treats brand, theme, and app as selectable modes instead of separate codebases. Building for one specific brand, app, and platform just means selecting those modes, not maintaining a separate copy of the system.
+
+Design works the same way. A designer switches modes inside a single Figma file to preview a different brand, theme, or platform, instead of opening a different file for each combination. The architecture grows by configuration rather than by forking, so design and code stay in lockstep because both are structured around the same modes, generated from the same source.
+
+### No translation layer between design and code
+
+In Chassis, the name a designer gives a color in Figma is the same name used in the web styles and in the native iOS and Android code. That part matters more than it sounds. Most design systems stop at the browser, treating mobile as someone else's problem to reimplement by hand later. Chassis generates all three from the same source, so a design decision doesn't get re-translated, re-named, or approximated on its way to a phone. It just shows up there, already correct. Instead of synchronizing separate implementations, every platform simply consumes the same decisions.
+
+Those three decisions show up as five packages, each responsible for one piece of the architecture but generated from the same source:
+
+- **[Tokens](/tokens)** holds the source values everything else is generated from.
+- **[Figma](/figma)** is a component library bound to the same token definitions.
+- **[Assets](/assets)** distributes images, fonts, and illustrations across brands and platforms.
+- **[CSS](/css)** generates classes from tokens, matching Figma in name and look.
+- **[Icons](/icons)** optimizes source SVGs and compiles them into an icon font and SVG sprite.
+
+Each package works fine on its own. Used together, they close the gap between a design decision and its implementation.
+
+If you're evaluating whether this fits your stack, [Tokens](/tokens) is the best place to start. Everything else in the system builds from it.
+
+The code for all five packages is public under [**Chassis on GitHub**](https://github.com/chassis-ui). Issues, questions, and pull requests are welcome. This is early, and feedback from people actually building with it will shape where it goes next.

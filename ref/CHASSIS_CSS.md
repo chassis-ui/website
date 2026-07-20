@@ -1,7 +1,7 @@
 # Bootstrap to Chassis CSS Migration Guide for LLMs
 
 > **Document Purpose:** This is an LLM instruction guide for converting Bootstrap CSS to Chassis CSS.  
-> **Last Updated:** July 2026 (verified against the current `@chassis-ui/css` release — check its `package.json` for the exact version; the breakpoint syntax below has been stable since `v0.2.0`)  
+> **Last Updated:** 2026-07-19, verified line-by-line against `@chassis-ui/css@0.3.4` source (breakpoint pixel values, card/list/drawer class names) — check `package.json` for the exact current version; the prefix syntax itself has been stable since `v0.2.0`  
 > **Status:** Living document - Chassis CSS is under active development  
 
 **Target Audience**: LLMs, AI assistants, and automated code conversion tools
@@ -20,7 +20,7 @@ Chassis CSS is part of the Chassis UI ecosystem:
 
 When processing Bootstrap code, apply these transformations:
 
-1. **Components**: `btn` → `button`, `card-body` → `card-content`
+1. **Components**: `btn` → `button` (see the Component Classes table below — most card/card-body classes are unchanged)
 2. **Colors**: `text-{color}` → `fg-{color}`, `text-muted` → `fg-subtle`
 3. **Typography**: `display-{n}` → `font-display font-{size}xlarge`
 4. **Spacing**: Numeric (`p-1`, `m-3`) → Semantic (`p-xsmall`, `m-medium`)
@@ -32,23 +32,25 @@ When processing Bootstrap code, apply these transformations:
 
 As of `@chassis-ui/css@0.2.0`, every responsive utility class uses a Tailwind-style **prefix** (`{breakpoint}:{utility}`), not Bootstrap's **infix** (`{utility}-{breakpoint}`). This applies uniformly to spacing, display, flex, grid columns, and all other responsive utilities:
 
-| Old (pre-0.2.0) infix | Current (0.2.0+) prefix |
+Most utilities use an **up** (min-width) prefix — active *at and above* the named breakpoint — e.g. `large:p-xlarge`, `medium:d-flex`, `medium:col-6`, `medium:offset-3`. Never emit a hyphenated infix like `col-medium-6` or `d-medium-flex` — that was Chassis's own pre-0.2.0 syntax and is invalid today.
+
+A few components instead use a **down** (max-width) variant — active *below* the named breakpoint — which gets its own `max-` prefix (`max-{breakpoint}:{utility}`), confirmed against the compiled `dist/css/chassis.css`:
+
+| Bootstrap | Chassis CSS |
 |---|---|
-| `p-large-xlarge` | `large:p-xlarge` |
-| `d-medium-flex` | `medium:d-flex` |
-| `col-medium-6` | `medium:col-6` |
-| `offset-medium-3` | `medium:offset-3` |
-| `offcanvas-large` | `large:offcanvas` |
-| `table-responsive-large` | `large:table-responsive` |
-| `fullscreen-large-down` | `large:down:fullscreen` |
+| `offcanvas-large` | `max-large:drawer` |
+| `table-responsive-large` | `max-large:table-responsive` |
+| `fullscreen-large-down` | `max-large:fullscreen` |
+
+Note that Bootstrap's **Offcanvas** component was renamed to **Drawer** in Chassis CSS — the class isn't just re-prefixed, the component itself is `.drawer` (see `_drawer.scss`), so a breakpoint-scoped offcanvas becomes `max-large:drawer`, not `large:offcanvas`.
 
 A handful of components additionally moved from a hyphenated modifier to a **compound class** in the same release:
 | Old | Current |
 |---|---|
 | `.container-large` / `.container-fluid` | `.container.large` / `.container.fluid` |
 | `.image-fluid` / `.image-thumbnail` | `.image.fluid` / `.image.thumbnail` |
-| `.list-numbered` / `.list-flush` / `.list-plain` | `.list-group.numbered` / `.list-group.flush` / `.list-group.plain` |
-| `.list-horizontal-large` | `.list-group.large:horizontal` |
+| `.list-numbered` / `.list-flush` / `.list-plain` | `.list.numbered` / `.list.flush` / `.list.plain` |
+| `.list-horizontal-large` | `.list.large:horizontal` |
 
 **When converting Bootstrap responsive classes, always emit the new prefix form** (e.g. `col-md-6` → `medium:col-6`, never `col-medium-6`). All examples below already use the current prefix syntax.
 
@@ -127,8 +129,8 @@ When encountering Bootstrap code in user requests:
 | `btn-outline-*` | `button * outline` | Outline button |
 | `btn-sm` | `button small` | Small button |
 | `btn-lg` | `button large` | Large button |
-| `card-body` | `card-content` | Card content area |
-| `card-text` | `card-body` | Card body text |
+| `card-body` | `card-body` | Unchanged — Chassis kept Bootstrap's name for this element |
+| `card-text` | *(none — plain element)* | No dedicated class; use a plain element inside `.card-body` |
 | `badge bg-*` | `badge *` | Badge with color |
 | `alert alert-*` | `alert *` | Alert with type |
 
@@ -145,9 +147,9 @@ When encountering Bootstrap code in user requests:
 |-----------|-------------|-------------|-------|
 | `sm` | `small` | ≥576px | Bootstrap infix (`col-sm-6`) → Chassis prefix (`small:col-6`) |
 | `md` | `medium` | ≥768px | `col-md-6` → `medium:col-6` |
-| `lg` | `large` | ≥1024px | `col-lg-4` → `large:col-4` |
-| `xl` | `xlarge` | ≥1280px | `col-xl-3` → `xlarge:col-3` |
-| `xxl` | `2xlarge` | ≥1536px | `col-xxl-2` → `2xlarge:col-2` |
+| `lg` | `large` | ≥992px | `col-lg-4` → `large:col-4` |
+| `xl` | `xlarge` | ≥1200px | `col-xl-3` → `xlarge:col-3` |
+| `xxl` | `2xlarge` | ≥1400px | `col-xxl-2` → `2xlarge:col-2` |
 
 ## Font Sizes & Typography
 
@@ -382,9 +384,9 @@ Chassis CSS uses semantic naming instead of numeric scales:
 
 <!-- Chassis CSS -->
 <div class="card">
-  <div class="card-content">
+  <div class="card-body">
     <h5 class="card-title">Card title</h5>
-    <p class="card-body">Card content</p>
+    <p>Card content</p>
   </div>
 </div>
 ```
@@ -397,8 +399,8 @@ Chassis CSS uses semantic naming instead of numeric scales:
 <div class="alert alert-danger">Danger alert</div>
 
 <!-- Chassis CSS -->
-<div class="alert primary">Primary alert</div>
-<div class="alert danger">Danger alert</div>
+<div class="notification primary">Primary alert</div>
+<div class="notification danger">Danger alert</div>
 ```
 
 ## Layout & Grid
@@ -501,9 +503,9 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 
 <!-- OUTPUT (Chassis CSS) -->
 <div class="card">
-  <div class="card-content">
+  <div class="card-body">
     <h5 class="card-title fg-primary">Title</h5>
-    <p class="card-body fg-subtle">Content</p>
+    <p class="fg-subtle">Content</p>
     <a href="#" class="button primary small">Action</a>
   </div>
 </div>
@@ -576,7 +578,7 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 ### After (Chassis CSS)
 ```html
 <div class="card">
-  <div class="card-content">
+  <div class="card-body">
     <h3 class="card-title font-display font-large fg-primary">Quick Stats</h3>
     <div class="row text-center">
       <div class="col-4">
@@ -647,7 +649,7 @@ When processing user requests involving CSS frameworks:
 
 ### Components
 - [ ] Replace `btn` with `button`
-- [ ] Convert `card-body` to `card-content`, `card-text` to `card-body`
+- [ ] `card-body` is unchanged; drop `card-text` (no dedicated class, use a plain element)
 - [ ] Update badge background classes (`bg-primary` → `primary`)
 - [ ] Change alert modifier classes (`alert-primary` → `primary`)
 
