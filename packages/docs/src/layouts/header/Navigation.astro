@@ -99,6 +99,7 @@ const isActive = (path: string) => {
             <div class="vr d-none large:d-flex my-auto large:mx-small"></div>
             <hr class="large:d-none" />
           </li>
+          <NavLink active={isActive('/blog')} href="/blog">Blog</NavLink>
           <NavLink active={isActive('/examples')} href="/examples">Examples</NavLink>
         </ul>
 
