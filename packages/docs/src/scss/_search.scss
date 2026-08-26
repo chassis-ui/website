@@ -12,12 +12,12 @@
     @include media-breakpoint-up(large) {
       position: absolute;
       top: 20%;
-      right: 13rem;
+      right: 11rem;
       width: 200px;
 
       [dir="rtl"] & {
         right: auto;
-        left: 13rem;
+        left: 11rem;
       }
     }
 

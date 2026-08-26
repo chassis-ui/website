@@ -65,7 +65,7 @@
         background-color: var(--cx-cue-main);
       }
 
-      li:not(.cxd-links-subgroup):first-child::before,
+      li:not(.cxd-links-subgroup, :only-child):first-child::before,
       .cxd-links-subgroup + li::before {
         height: 2em;
         margin-block-start: .8em;
@@ -76,6 +76,7 @@
         height: .8em;
       }
 
+      li:first-child:has(+ .cxd-links-subgroup)::before,
       li:only-child::before {
         height: .8em;
         margin-block-start: .4em;
@@ -108,12 +109,14 @@
   }
 
   .cxd-links-subgroup {
-    @include font-size(var(--cx-font-size-small));
+    @include font-size(var(--cx-font-size-xsmall));
     @include line-height(var(--cx-line-height-small));
     --cx-icon-size: var(--cx-icon-xsmall);
-    padding-inline-start: .5em;
-    margin-block: .5em .25em;
+    padding-inline-start: 1.5rem;
+    margin-block: 1em .25em;
     font-weight: var(--cx-font-weight-strong);
+    color: var(--cx-primary-fg-main);
+    text-transform: uppercase;
   }
 
 
