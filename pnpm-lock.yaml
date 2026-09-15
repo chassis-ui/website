@@ -79,8 +79,8 @@ importers:
         specifier: ^7.0.0
         version: 7.2.1
       '@chassis-ui/css':
-        specifier: '>=0.4.0-0'
-        version: 0.4.0-0(@floating-ui/dom@1.7.6)(vanilla-calendar-pro@3.1.0)
+        specifier: ^0.4.0
+        version: 0.4.0(@floating-ui/dom@1.7.6)(vanilla-calendar-pro@3.1.0)
       '@pagefind/component-ui':
         specifier: ^1.0.0
         version: 1.5.2
@@ -149,8 +149,8 @@ importers:
         specifier: ^3.7.3
         version: 3.7.3
       '@chassis-ui/css':
-        specifier: ^0.4.0-0
-        version: 0.4.0-0(@floating-ui/dom@1.7.6)(vanilla-calendar-pro@3.1.0)
+        specifier: ^0.4.0
+        version: 0.4.0(@floating-ui/dom@1.7.6)(vanilla-calendar-pro@3.1.0)
       '@chassis-ui/docs':
         specifier: workspace:*
         version: link:../docs
@@ -416,8 +416,8 @@ packages:
     resolution: {integrity: sha512-CuNiSqg7+e1cO/GjffyMOm5Tt2jUF9CWHHnvQ/UkqvtkGfHdgwEC0wpmq7fkN3gxwpRnrAN0WzO3vREKmNolMQ==}
     engines: {node: '>=18'}
 
-  '@chassis-ui/css@0.4.0-0':
-    resolution: {integrity: sha512-ezN4Z4GwBmOfm/a0CrpPSE64OgPUjfDHi8kuaah+VUbSP3fOPf/Qq7yzE3HpJ6g3vb76rGrlDqdqTXQQUjDcQg==}
+  '@chassis-ui/css@0.4.0':
+    resolution: {integrity: sha512-yOkWGhECiM213rdtJM0NKEDM1CGRdKMhoLelO3mOUFX/qBgFngAsavVSY+uh6Vz14C/WWanl9GuFv5iVbhEuEQ==}
     peerDependencies:
       '@floating-ui/dom': ^1.7.6
       vanilla-calendar-pro: ^3.1.0
@@ -4365,7 +4365,7 @@ snapshots:
     dependencies:
       fontkitten: 1.0.3
 
-  '@chassis-ui/css@0.4.0-0(@floating-ui/dom@1.7.6)(vanilla-calendar-pro@3.1.0)':
+  '@chassis-ui/css@0.4.0(@floating-ui/dom@1.7.6)(vanilla-calendar-pro@3.1.0)':
     dependencies:
       '@floating-ui/dom': 1.7.6
       vanilla-calendar-pro: 3.1.0
