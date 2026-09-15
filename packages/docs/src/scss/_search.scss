@@ -9,7 +9,7 @@
   .cxd-search {
     position: relative;
 
-    @include media-breakpoint-up(large) {
+    @include media-breakpoint-up(lg) {
       position: absolute;
       top: 20%;
       right: 11rem;
@@ -31,7 +31,7 @@
 
   .cxd-search-trigger {
     // @extend %form-input;
-    --cx-padding-x: var(--cx-space-xsmall);
+    --cx-padding-x: var(--cx-space-xs);
     --cx-padding-y: .375rem;
     --cx-icon-color: var(--cx-fg-color);
     display: inline-flex;
@@ -41,22 +41,22 @@
     // padding-inline-end: .5rem;
     // padding: .25rem .5rem;
     @include exclude-strokes(form-input);
-    @include font-size(var(--cx-font-size-small));
+    @include font-size(var(--cx-font-size-sm));
     color: var(--cx-fg-subtle);
     text-align: start;
     cursor: pointer;
     background-color: transparent;
     border: 0;
-    @include border-radius(var(--cx-border-radius-medium));
+    @include border-radius(var(--cx-border-radius-md));
     @include transition(color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out);
 
     &:focus-visible {
       @include focus-ring(true);
     }
 
-    @include media-breakpoint-up(large) {
+    @include media-breakpoint-up(lg) {
       --cx-border-color: var(--cx-border-subtle);
-      --cx-icon-size: var(--cx-icon-small);
+      --cx-icon-size: var(--cx-icon-sm);
       --cx-icon-color: var(--cx-fg-subtle);
       width: 100%;
       background-color: var(--cx-bg-main);
@@ -79,7 +79,7 @@
   .cxd-search-trigger-shortcut {
     display: none;
 
-    @include media-breakpoint-up(large) {
+    @include media-breakpoint-up(lg) {
       display: inline-flex;
     }
   }
@@ -103,12 +103,12 @@
     min-width: 1.25rem;
     padding: .125rem .375rem;
     font-family: var(--cx-font-family-code);
-    @include font-size(var(--cx-font-size-small));
-    @include line-height(var(--cx-line-height-small));
+    @include font-size(var(--cx-font-size-sm));
+    @include line-height(var(--cx-line-height-sm));
     color: var(--cx-fg-subtle);
     background-color: var(--cx-bg-evident);
     // border: var(--cx-border-width) solid var(--cx-border-color);
-    @include border-radius(var(--cx-border-radius-small));
+    @include border-radius(var(--cx-border-radius-sm));
   }
 
   // Search dialog shell
@@ -121,7 +121,7 @@
     --cx-dialog-padding: .75rem;
     --cx-dialog-header-padding: .75rem;
     --cx-dialog-footer-padding: .5rem .75rem;
-    --cx-dialog-border-radius: var(--cx-border-radius-large);
+    --cx-dialog-border-radius: var(--cx-border-radius-lg);
 
     align-self: flex-start;
     width: 640px;
@@ -130,7 +130,7 @@
     overflow: hidden;
     background-color: var(--cx-bg-even);
 
-    @include media-breakpoint-down(small) {
+    @include media-breakpoint-down(sm) {
       max-height: calc(100dvh - 4rem);
     }
   }
@@ -142,7 +142,7 @@
     flex-wrap: nowrap;
     gap: .75rem;
     align-items: center;
-    padding: var(--cx-space-medium);
+    padding: var(--cx-space-md);
     border-bottom: 0;
   }
 
@@ -161,7 +161,7 @@
   //   --cx-padding-y: .375rem;
   //   --cx-padding-x: .5rem;
   //   width: auto;
-  //   @include font-size(var(--cx-font-size-small));
+  //   @include font-size(var(--cx-font-size-sm));
   // }
   // .cxd-search-input {
   //   flex: 1;
@@ -186,7 +186,7 @@
   // Body / results
 
   .cxd-search-body {
-    padding: 0 var(--cx-space-medium) var(--cx-space-medium);
+    padding: 0 var(--cx-space-md) var(--cx-space-md);
   }
 
   .cxd-search-results {
@@ -199,8 +199,8 @@
     // --cx-list-border-width: 0;
     // --cx-list-border-radius: 0;
 
-    gap: var(--cx-space-small);
-    padding-block-start: var(--cx-space-xsmall);
+    gap: var(--cx-space-sm);
+    padding-block-start: var(--cx-space-xs);
     list-style: none;
     .list-item {
       padding: 0;
@@ -211,7 +211,7 @@
   .cxd-search-result {
     display: flex;
     flex-direction: column;
-    // gap: var(--cx-space-xsmall);
+    // gap: var(--cx-space-xs);
     gap: 0;
     padding: 0;
   }
@@ -227,18 +227,18 @@
 
   // Single row template: top-level results, sub-results, and recent visits.
   .cxd-search-item {
-    --cx-icon-size: var(--cx-icon-medium);
+    --cx-icon-size: var(--cx-icon-md);
     --cx-icon-color: var(--cx-fg-subtle);
     position: relative;
     display: grid;
     grid-template-columns: auto 1fr;
     column-gap: .5rem;
     align-items: center;
-    padding: var(--cx-space-xsmall);
+    padding: var(--cx-space-xs);
     text-decoration: none;
     background-color: var(--cx-bg-main);
     @include border();
-    @include border-radius(var(--cx-border-radius-medium));
+    @include border-radius(var(--cx-border-radius-md));
 
     mark {
       background: none;
@@ -284,16 +284,16 @@
     color: var(--cx-fg-subtle);
     text-overflow: ellipsis;
     white-space: nowrap;
-    @include font-size(var(--cx-font-size-small));
-    @include line-height(var(--cx-line-height-small));
+    @include font-size(var(--cx-font-size-sm));
+    @include line-height(var(--cx-line-height-sm));
   }
 
   .cxd-search-subitem {
-    --cx-icon-size: var(--cx-icon-small);
+    --cx-icon-size: var(--cx-icon-sm);
     --cx-icon-color: var(--cx-fg-subtle);
     align-items: center;
-    padding-inline-start: var(--cx-space-4xlarge);
-    // padding-inline-start: var(--cx-space-medium);
+    padding-inline-start: var(--cx-space-4xl);
+    // padding-inline-start: var(--cx-space-md);
 
     &::before {
       position: absolute;
@@ -316,8 +316,8 @@
       background-color: var(--cx-fg-subtle);
     }
     .cxd-search-item-title {
-      @include font-size(var(--cx-font-size-small));
-      @include line-height(var(--cx-line-height-small));
+      @include font-size(var(--cx-font-size-sm));
+      @include line-height(var(--cx-line-height-sm));
     }
 
   }
@@ -325,9 +325,9 @@
   .cxd-search-subresults {
     display: flex;
     flex-direction: column;
-    // gap: var(--cx-space-xsmall);
+    // gap: var(--cx-space-xs);
     gap: 0;
-    // padding-inline-start: var(--cx-space-large);
+    // padding-inline-start: var(--cx-space-lg);
     .cxd-search-subitem {
       border-block-end-width: 0;
       @include border-radius(0);
@@ -353,7 +353,7 @@
   }
 
   .cxd-search-recent-label {
-    @include font-size(var(--cx-font-size-xsmall));
+    @include font-size(var(--cx-font-size-xs));
     font-weight: 600;
     color: var(--cx-fg-subtle);
     text-transform: uppercase;
@@ -362,12 +362,12 @@
 
   .cxd-search-recent-clear {
     padding: .125rem .375rem;
-    @include font-size(var(--cx-font-size-xsmall));
+    @include font-size(var(--cx-font-size-xs));
     color: var(--cx-fg-subtle);
     cursor: pointer;
     background-color: transparent;
     border: 0;
-    @include border-radius(var(--cx-border-radius-medium));
+    @include border-radius(var(--cx-border-radius-md));
     @include transition(color .15s ease-in-out, background-color .15s ease-in-out);
 
     &:hover {
@@ -385,7 +385,7 @@
   .cxd-search-empty,
   .cxd-search-error {
     padding: 2rem 1rem;
-    @include font-size(var(--cx-font-size-small));
+    @include font-size(var(--cx-font-size-sm));
     color: var(--cx-fg-subtle);
     text-align: center;
   }
@@ -397,12 +397,12 @@
   .cxd-search-loading {
     display: flex;
     flex-direction: column;
-    gap: var(--cx-space-small);
+    gap: var(--cx-space-sm);
   }
 
 
   .cxd-search-footer {
-    padding-block: var(--cx-space-small);
+    padding-block: var(--cx-space-sm);
     background-color: var(--cx-bg-evident);
   }
 
@@ -428,7 +428,7 @@
 
   .cxd-search-shortcut-label {
     padding-inline-start: .25rem;
-    @include font-size(var(--cx-font-size-small));
-    @include line-height(var(--cx-line-height-small));
+    @include font-size(var(--cx-font-size-sm));
+    @include line-height(var(--cx-line-height-sm));
   }
 }

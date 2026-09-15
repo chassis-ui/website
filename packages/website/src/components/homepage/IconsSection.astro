@@ -13,14 +13,14 @@ import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
 
 <section
   id="icons-section"
-  class="home-section py-3xlarge medium:py-6xlarge"
+  class="home-section py-3xl md:py-6xl"
   aria-labelledby="icons-heading"
 >
-  <div class="container 2xlarge section-content">
-    <div class="row mb-3xlarge medium:mb-6xlarge">
-      <header class="section-header col large:col-10 2xlarge:col-8">
-        <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Icons</p>
-        <h2 id="icons-heading" class="font-5xlarge mb-xsmall medium:mb-small large:mb-medium">
+  <div class="container 2xl section-content">
+    <div class="row mb-3xl md:mb-6xl">
+      <header class="section-header col lg:col-10 2xl:col-8">
+        <p class="fg-primary font-mass text-uppercase mb-xs">Chassis Icons</p>
+        <h2 id="icons-heading" class="font-5xl mb-xs md:mb-sm lg:mb-md">
           <span class="font-normal d-block">Icons that ship</span> with your system.
         </h2>
         <p class="font-lead m-0">
@@ -31,7 +31,7 @@ import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
       </header>
     </div>
     <div
-      class="section-features gap-xlarge flex-column medium:flex-row mb-medium medium:mb-6xlarge"
+      class="section-features gap-xl flex-column md:flex-row mb-md md:mb-6xl"
     >
       <FeatureSlider ariaLabel="Icons features carousel">
         <!-- Item 1: Structured icon library -->
@@ -65,7 +65,7 @@ import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
             Package and distribute icons as a versioned release. Every team gets the same set, with
             the same names, at the same version.
           </Fragment>
-          <div class="pt-xsmall border-top border-subtle">
+          <div class="pt-xs border-top border-subtle">
             <Code
               noToolbar
               lang="text"
@@ -91,7 +91,7 @@ import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
             Icons flow from design tools into code as optimized SVGs with consistent markup. No
             manual cleanup needed.
           </Fragment>
-          <div class="pt-xsmall border-top border-subtle">
+          <div class="pt-xs border-top border-subtle">
             <Code
               noToolbar
               lang="jsx"
@@ -108,7 +108,7 @@ export default function IconExample() {
 }`}
             />
             <div
-              class="icon-default pt-medium mt-xsmall border-top border-subtle d-flex gap-medium align-items-center justify-content-center"
+              class="icon-default pt-md mt-xs border-top border-subtle d-flex gap-md align-items-center justify-content-center"
             >
               <Icon name="info-circle-solid" font />
               <Icon name="info-circle-solid" font />
@@ -118,9 +118,9 @@ export default function IconExample() {
         </FeatureCard>
       </FeatureSlider>
     </div>
-    <div class="d-grid medium:d-flex gap-medium medium:justify-content-center">
-      <a href="/icons/" class="button primary large">Go to Chassis Icons</a>
-      <a href="/icons/docs/" class="button default large">View Documentation</a>
+    <div class="d-grid md:d-flex gap-md md:justify-content-center">
+      <a href="/icons/" class="button primary lg">Go to Chassis Icons</a>
+      <a href="/icons/docs/" class="button default lg">View Documentation</a>
     </div>
   </div>
 </section>

@@ -11,8 +11,8 @@ const { post } = Astro.props
 const url = getBlogPostUrl(post)
 ---
 
-<article class="row mb-xlarge pb-xlarge border-bottom border-subtle">
-  <div class="col-12 large:col-4 mb-medium large:mb-0">
+<article class="row mb-xl pb-xl border-bottom border-subtle">
+  <div class="col-12 lg:col-4 mb-md lg:mb-0">
     <a href={url} class="d-block">
       <img
         src={post.data.image?.url || '/static/images/social-image.png'}
@@ -21,21 +21,21 @@ const url = getBlogPostUrl(post)
       />
     </a>
   </div>
-  <div class="col-12 large:col-8">
-    <header class="mb-medium">
-      <h2 class="font-strong font-3xlarge mb-small">
+  <div class="col-12 lg:col-8">
+    <header class="mb-md">
+      <h2 class="font-strong font-3xl mb-sm">
         <a href={url} class="fg-main text-decoration-none">{post.data.title}</a>
       </h2>
-      <div class="fg-subtle small">
+      <div class="fg-subtle sm">
         <time datetime={post.data.pubDate?.toISOString()} class="text-nowrap">
           {formatDate(post.data.pubDate || new Date())}
         </time>
-        <span class="mx-xsmall">•</span>
+        <span class="mx-xs">•</span>
         <span class="text-nowrap">{getReadingTime(post.body || '')}</span>
         {
           post.data.author && (
             <>
-              <span class="mx-xsmall">•</span>
+              <span class="mx-xs">•</span>
               <span class="text-nowrap">by {post.data.author}</span>
             </>
           )
@@ -43,7 +43,7 @@ const url = getBlogPostUrl(post)
       </div>
     </header>
 
-    {post.data.description && <p class="font-large">{post.data.description}</p>}
+    {post.data.description && <p class="font-lg">{post.data.description}</p>}
     <footer>
       <a href={url} class="icon-link text-decoration-none"
         >Read more <Icon name="arrow-right-outline" class="icon-adaptive" /></a

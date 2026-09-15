@@ -7,7 +7,7 @@
   }
 
   .cxd-layout {
-    @include media-breakpoint-up(large) {
+    @include media-breakpoint-up(lg) {
       display: grid;
       grid-template-areas: "sidebar main";
       grid-template-columns: 14rem auto;
@@ -32,11 +32,11 @@
     grid-area: main;
     order: 1;
 
-    @include media-breakpoint-down(large) {
+    @include media-breakpoint-down(lg) {
       margin-inline: auto;
     }
 
-    @include media-breakpoint-up(medium) {
+    @include media-breakpoint-up(md) {
       display: grid;
       grid-template-areas:
         "intro"
@@ -46,7 +46,7 @@
       gap: inherit;
     }
 
-    @include media-breakpoint-up(large) {
+    @include media-breakpoint-up(lg) {
       grid-template-areas:
         "intro   toc"
         "content toc";

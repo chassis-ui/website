@@ -34,6 +34,7 @@
     "dev": "pnpm sync-submodules && pnpm astro:dev",
     "validate": "node build/build-site.js validate",
     "site": "pnpm site:build && pnpm site:lint:vnu",
+    "site:setup": "pnpm sync-submodules",
     "site:build": "node build/build-site.js && pnpm site:pagefind",
     "site:lint": "pnpm site:lint:eslint && pnpm site:lint:stylelint && pnpm site:lint:prettier && pnpm site:lint:vnu",
     "site:lint:eslint": "eslint --cache --cache-location .cache/.eslintcache --report-unused-disable-directives packages/website",

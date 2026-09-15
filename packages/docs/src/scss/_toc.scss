@@ -4,7 +4,7 @@
 @layer custom {
 
   .cxd-toc {
-    @include media-breakpoint-up(large) {
+    @include media-breakpoint-up(lg) {
       position: sticky;
       top: 4rem;
       right: 0;
@@ -20,12 +20,12 @@
       // border-style: solid;
       border-inline-start: var(--cx-border-width) var(--cx-border-style) var(--cx-border-subtle);
     }
-    @include media-breakpoint-between(medium, large) {
+    @include media-breakpoint-between(md, lg) {
       padding: .5rem 1rem;
       margin-block-end: 1rem;
       background-color: var(--cx-bg-even);
       border: var(--cx-border-width) var(--cx-border-style) var(--cx-border-subtle);
-      @include border-radius(var(--cx-border-radius-medium));
+      @include border-radius(var(--cx-border-radius-md));
     }
 
     nav {
@@ -78,15 +78,15 @@
     display: flex;
     align-items: center;
 
-    @include media-breakpoint-down(small) {
+    @include media-breakpoint-down(sm) {
       justify-content: space-between;
       width: 100%;
     }
 
-    @include media-breakpoint-down(medium) {
+    @include media-breakpoint-down(md) {
       color: var(--cx-fg-color);
       border: var(--cx-border-width) var(--cx-border-style) var(--cx-border-color);
-      @include border-radius(var(--cx-border-radius-medium));
+      @include border-radius(var(--cx-border-radius-md));
 
       &:hover,
       &:focus,
@@ -105,16 +105,16 @@
   }
 
   .cxd-toc-collapse {
-    @include media-breakpoint-down(medium) {
+    @include media-breakpoint-down(md) {
       nav {
         padding: 1.25rem 1.25rem 1.25rem 1rem;
         background-color: var(--cx-bg-even);
         border: var(--cx-border-width) solid var(--cx-border-subtle);
-        @include border-radius(var(--cx-border-radius-medium));
+        @include border-radius(var(--cx-border-radius-md));
       }
     }
 
-    @include media-breakpoint-up(medium) {
+    @include media-breakpoint-up(md) {
       display: block;
     }
   }

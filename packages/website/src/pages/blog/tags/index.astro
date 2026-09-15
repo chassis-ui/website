@@ -25,17 +25,17 @@ const frontmatter = {
     <li class="breadcrumb-item" aria-current="page">Tags</li>
   </ol>
 
-  <section class="mb-2xlarge">
-    <header class="mb-medium large:mb-3xlarge">
+  <section class="mb-2xl">
+    <header class="mb-md lg:mb-3xl">
       <h2>Tags</h2>
-      <p class="font-large">Topics covered across the blog</p>
+      <p class="font-lg">Topics covered across the blog</p>
     </header>
-    <div class="d-flex flex-wrap gap-xsmall">
+    <div class="d-flex flex-wrap gap-xs">
       {
         sortedTags.map(([tag, count]) => (
-          <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip large neutral smooth">
+          <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip lg neutral smooth">
             {tag}
-            <span class="badge neutral -me-xsmall">{count}</span>
+            <span class="badge neutral -me-xs">{count}</span>
           </a>
         ))
       }

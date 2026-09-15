@@ -15,12 +15,12 @@ const repos = [
 ]
 ---
 
-<section id="contribute" class="py-3xlarge medium:py-6xlarge">
-  <div class="container 2xlarge">
-    <div class="row g-medium large:g-3xlarge">
-      <div class="col-12 large:col-6">
+<section id="contribute" class="py-3xl md:py-6xl">
+  <div class="container 2xl">
+    <div class="row g-md lg:g-3xl">
+      <div class="col-12 lg:col-6">
         <h2>Contribute</h2>
-        <p class="font-large mb-xlarge">
+        <p class="font-lg mb-xl">
           Chassis is shaped by the people using it. File an issue when something is broken, missing,
           or unclear. Pull requests are welcome for typos, docs, and small fixes — for anything
           larger, start with an issue so we can agree on the approach before you write the code.
@@ -34,23 +34,23 @@ const repos = [
           Browse repositories
         </a>
       </div>
-      <div class="col-12 large:col-6 large:pt-6xlarge">
+      <div class="col-12 lg:col-6 lg:pt-6xl">
         <ul class="list-group">
           {
             repos.map((repo) => (
               <li class="list-item">
                 <a
                   href={`https://github.com/chassis-ui/${repo.name}`}
-                  class="text-decoration-none d-flex align-items-center gap-medium"
+                  class="text-decoration-none d-flex align-items-center gap-md"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <svg class="icon icon-xlarge icon-default" aria-hidden="true">
+                  <svg class="icon icon-xl icon-default" aria-hidden="true">
                     <use href="#github-brand" />
                   </svg>
                   <div>
                     <p class="font-code font-strong m-0">{repo.name}</p>
-                    <p class="fg-subtle font-small m-0">{repo.description}</p>
+                    <p class="fg-subtle font-sm m-0">{repo.description}</p>
                   </div>
                 </a>
               </li>

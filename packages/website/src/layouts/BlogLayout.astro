@@ -36,10 +36,10 @@ const popularTags = Array.from(tagCounts.entries())
 <BaseLayout {...Astro.props} layout="blog">
   <Fragment slot="main">
     <main>
-      <header class="py-xlarge medium:py-3xlarge border-bottom border-subtle">
-        <div class="container 2xlarge">
+      <header class="py-xl md:py-3xl border-bottom border-subtle">
+        <div class="container 2xl">
           <div class="row">
-            <div class="col-12 medium:col-7 xlarge:col-8">
+            <div class="col-12 md:col-7 xl:col-8">
               {
                 Astro.slots.has('breadcrumb') ? (
                   <div>
@@ -57,15 +57,15 @@ const popularTags = Array.from(tagCounts.entries())
                 )
               }
             </div>
-            <div class="col-12 medium:col-5 xlarge:col-4">
-              <div class="rounded p-medium large:p-large border">
+            <div class="col-12 md:col-5 xl:col-4">
+              <div class="rounded p-md lg:p-lg border">
                 <p class="d-flex">
                   <strong>Popular tags</strong>
-                  <a href="/blog/tags" class="font-small ms-auto text-decoration-none"
+                  <a href="/blog/tags" class="font-sm ms-auto text-decoration-none"
                     >View all tags</a
                   >
                 </p>
-                <p class="d-flex flex-wrap gap-xsmall row-gap-small mb-0">
+                <p class="d-flex flex-wrap gap-xs row-gap-sm mb-0">
                   {
                     popularTags.map((tag) => (
                       <a
@@ -82,7 +82,7 @@ const popularTags = Array.from(tagCounts.entries())
           </div>
         </div>
       </header>
-      <div class="container 2xlarge py-4xlarge min-vh-100">
+      <div class="container 2xl py-4xl min-vh-100">
         <slot />
       </div>
     </main>

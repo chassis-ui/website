@@ -30,14 +30,14 @@ const { page } = Astro.props
 <BlogLayout>
   {
     page.data.length > 0 ? (
-      <div class="mb-xlarge">
+      <div class="mb-xl">
         {page.data.map((post: BlogPost) => (
           <BlogPostCard post={post} />
         ))}
       </div>
     ) : (
-      <div class="text-center py-xlarge">
-        <h2 class="h4 mb-medium fg-subtle">No blog posts yet</h2>
+      <div class="text-center py-xl">
+        <h2 class="h4 mb-md fg-subtle">No blog posts yet</h2>
         <p class="fg-subtle">Check back soon for insights and tutorials about design systems!</p>
       </div>
     )

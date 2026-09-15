@@ -12,14 +12,14 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 
 <section
   id="assets-section"
-  class="home-section py-3xlarge medium:py-6xlarge"
+  class="home-section py-3xl md:py-6xl"
   aria-labelledby="assets-heading"
 >
-  <div class="container 2xlarge section-content">
-    <div class="row mb-3xlarge medium:mb-6xlarge">
-      <header class="section-header col large:col-10 2xlarge:col-8">
-        <p class="fg-primary font-mass text-uppercase mb-xsmall">Chassis Assets</p>
-        <h2 id="assets-heading" class="font-5xlarge mb-xsmall medium:mb-small large:mb-medium">
+  <div class="container 2xl section-content">
+    <div class="row mb-3xl md:mb-6xl">
+      <header class="section-header col lg:col-10 2xl:col-8">
+        <p class="fg-primary font-mass text-uppercase mb-xs">Chassis Assets</p>
+        <h2 id="assets-heading" class="font-5xl mb-xs md:mb-sm lg:mb-md">
           <span class="font-normal d-block">Asset Management</span> for Multi-Brand Design
         </h2>
         <p class="font-lead m-0">
@@ -30,7 +30,7 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
       </header>
     </div>
     <div
-      class="section-features gap-xlarge flex-column medium:flex-row mb-medium medium:mb-6xlarge"
+      class="section-features gap-xl flex-column md:flex-row mb-md md:mb-6xl"
     >
       <FeatureSlider ariaLabel="Assets features carousel">
         <!-- Item -->
@@ -39,7 +39,7 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
           <Fragment slot="body"
             >Organize brand- and app-specific assets in structured, predictable folders.
           </Fragment>
-          <div class="pt-medium border-top border-subtle">
+          <div class="pt-md border-top border-subtle">
             <Code
               noToolbar
               lang="text"
@@ -63,7 +63,7 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
           <Fragment slot="body"
             >Automatically generate platform-optimized assets with a single script.
           </Fragment>
-          <div class="pt-medium border-top border-subtle">
+          <div class="pt-md border-top border-subtle">
             <Code
               noToolbar
               lang="sh"
@@ -87,7 +87,7 @@ pnpm assets --brand chassis --app demo`}
           <Fragment slot="body"
             >Output is organised per platform and brand — correctly named and ready to use.
           </Fragment>
-          <div class="pt-medium border-top border-subtle">
+          <div class="pt-md border-top border-subtle">
             <Code
               noToolbar
               lang="text"
@@ -107,9 +107,9 @@ pnpm assets --brand chassis --app demo`}
         </FeatureCard>
       </FeatureSlider>
     </div>
-    <div class="d-grid medium:d-flex gap-medium medium:justify-content-center">
-      <a href="/assets/" class="button primary large">Go to Chassis Assets</a>
-      <a href="/assets/docs/" class="button default large">View Documentation</a>
+    <div class="d-grid md:d-flex gap-md md:justify-content-center">
+      <a href="/assets/" class="button primary lg">Go to Chassis Assets</a>
+      <a href="/assets/docs/" class="button default lg">View Documentation</a>
     </div>
   </div>
 </section>
