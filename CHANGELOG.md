@@ -5,11 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.4.0] - 2026-09-15
 
 ### Changed
 
-- Bumped `@chassis-ui/css` to `^0.4.0-0` (`packages/website`) / `>=0.4.0-0` (`packages/docs` peer dependency) and `@chassis-ui/tokens` to `^0.4.0` in `packages/website`, for compatibility with CSS/tokens v0.4
+- Bumped `@chassis-ui/css` and `@chassis-ui/tokens` to `^0.4.0`
 - `packages/docs/src/scss/_sidebar.scss`: reworked subgroup label styling (uppercase, `--cx-font-size-xsmall`, `--cx-primary-fg-main` color, adjusted spacing) and the `::before` connector line selectors to correctly handle first-child/only-child/subgroup combinations
 - `packages/docs/src/scss/_search.scss`: adjusted the search dialog's large-breakpoint offset from `13rem` to `11rem` (both LTR and RTL)
 - `ThemeToggler.astro` and header nav links (`Navigation.astro`): replaced `px-0 large:px-small` with `px-0 large:px-xsmall`; `ThemeToggler` also gained a `caret` class
