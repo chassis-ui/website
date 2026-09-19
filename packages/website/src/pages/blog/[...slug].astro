@@ -47,16 +47,16 @@ const { Content } = await render(blogPage)
   }}
   layout="blog"
 >
-  <div class="container 2xlarge">
-    <nav class="col py-medium border-bottom border-subtle mb-xlarge" aria-label="Breadcrumb">
+  <div class="container 2xl">
+    <nav class="col py-md border-bottom border-subtle mb-xl" aria-label="Breadcrumb">
       <a href="/blog" class="icon-link text-decoration-none">
         <Icon name="arrow-left-outline" class="icon-adaptive" /> Back to Blog
       </a>
     </nav>
-    <div class="col-12 large:col-10 2xlarge:col-8 mx-auto">
+    <div class="col-12 lg:col-10 2xl:col-8 mx-auto">
       {
         data.tags && (
-          <div class="d-flex flex-wrap gap-xsmall justify-content-center my-xlarge large:my-3xlarge">
+          <div class="d-flex flex-wrap gap-xs justify-content-center my-xl lg:my-3xl">
             {tags.map((tag) => (
               <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip primary smooth">
                 {tag}
@@ -65,11 +65,11 @@ const { Content } = await render(blogPage)
           </div>
         )
       }
-      <article class="blog-article mb-3xlarge">
-        <header class="mb-xlarge text-center">
-          <h1 class="font-5xlarge mb-medium">{data.title}</h1>
+      <article class="blog-article mb-3xl">
+        <header class="mb-xl text-center">
+          <h1 class="font-5xl mb-md">{data.title}</h1>
 
-          <div class="d-flex align-items-center justify-content-center fg-subtle mb-medium">
+          <div class="d-flex align-items-center justify-content-center fg-subtle mb-md">
             <time datetime={data.pubDate?.toISOString()}>
               {
                 data.pubDate
@@ -84,7 +84,7 @@ const { Content } = await render(blogPage)
             {
               data.author && (
                 <>
-                  <span class="mx-small">•</span>
+                  <span class="mx-sm">•</span>
                   <span>by {data.author}</span>
                 </>
               )
@@ -95,13 +95,13 @@ const { Content } = await render(blogPage)
         <img
           src={data.image?.url || '/static/images/social-image.png'}
           alt={data.image?.alt || data.title}
-          class="image rounded fluid w-100 mb-xlarge large:mb-3xlarge"
+          class="image rounded fluid w-100 mb-xl lg:mb-3xl"
         />
 
         <Content components={{ pre: Code }} />
       </article>
     </div>
-    <nav class="col py-medium border-top border-subtle mb-xlarge" aria-label="Post navigation">
+    <nav class="col py-md border-top border-subtle mb-xl" aria-label="Post navigation">
       <a href="/blog" class="icon-link text-decoration-none">
         <Icon name="arrow-left-outline" class="icon-adaptive" /> Back to Blog
       </a>

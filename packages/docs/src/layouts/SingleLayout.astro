@@ -22,10 +22,10 @@ mainProps['class'] = 'min-vh-100'
 ---
 
 <BaseLayout {...Astro.props} layout="single" overrides={{ main: mainProps }}>
-  <header class="py-xlarge medium:py-3xlarge border-bottom border-subtle">
-    <div class="container 2xlarge">
+  <header class="py-xl md:py-3xl border-bottom border-subtle">
+    <div class="container 2xl">
       <div class="row">
-        <div class="col large:col-10 2xlarge:col-8">
+        <div class="col lg:col-10 2xl:col-8">
           <h1 class="mt-0">{title}</h1>
           <p class="font-lead">{description}</p>
           <slot name="header-content" />

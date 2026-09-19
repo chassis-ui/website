@@ -46,7 +46,7 @@ if (frontmatter.toc) {
   <div slot="main" class="container fluid cxd-gutter cxd-layout">
     <aside class="cxd-sidebar">
       <dialog
-        class="max-large:drawer drawer-start"
+        class="max-lg:drawer drawer-start"
         id="cxdSidebar"
         aria-labelledby="cxdSidebarOffcanvasLabel"
       >
@@ -59,8 +59,8 @@ if (frontmatter.toc) {
             aria-label="Close"
             data-cx-target="#cxdSidebar"></button>
         </div>
-        <hr class="large:d-none m-0" />
-        <div class="drawer-body large:p-0">
+        <hr class="lg:d-none m-0" />
+        <div class="drawer-body lg:p-0">
           <slot name="sidebar">
             <DocsSidebar />
           </slot>
@@ -72,22 +72,22 @@ if (frontmatter.toc) {
       <div class="cxd-intro">
         <slot name="intro">
           <div
-            class="medium:d-flex medium:flex-row-reverse justify-content-between align-items-start"
+            class="md:d-flex md:flex-row-reverse justify-content-between align-items-start"
           >
-            <div class="mb-medium medium:mb-0 d-flex text-nowrap">
+            <div class="mb-md md:mb-0 d-flex text-nowrap">
               {
                 // This is needed because we want to show the badge if show_badge isn't present or is set to false
                 frontmatter.added &&
                   ((frontmatter.added.show_badge !== undefined &&
                     frontmatter.added.show_badge === true) ||
                     frontmatter.added.show_badge === undefined) && (
-                    <span class="badge success smooth rounded-medium me-xsmall">
+                    <span class="badge success smooth rounded-md me-xs">
                       Added in v{frontmatter.added.version}
                     </span>
                   )
               }
               <a
-                class="button default small"
+                class="button default sm"
                 href={`${getConfig().repo}/blob/${id}.mdx`}
                 title="View and edit this file on GitHub"
                 target="_blank"
@@ -96,7 +96,7 @@ if (frontmatter.toc) {
                 View on GitHub
               </a>
             </div>
-            <h1 class="cxd-title mb-small" id="content">{frontmatter.title}</h1>
+            <h1 class="cxd-title mb-sm" id="content">{frontmatter.title}</h1>
           </div>
           <div class="cxd-subtitle">
             {
@@ -112,7 +112,7 @@ if (frontmatter.toc) {
         frontmatter.toc && headings && (
           <div class="cxd-toc">
             <button
-              class="button default mb-large text-decoration-none cxd-toc-toggle medium:d-none"
+              class="button default mb-lg text-decoration-none cxd-toc-toggle md:d-none"
               type="button"
               data-cx-toggle="collapse"
               data-cx-target="#tocContents"
@@ -120,10 +120,10 @@ if (frontmatter.toc) {
               aria-controls="tocContents"
             >
               On this page
-              <Icon name="chevron-sort-solid" class="icon-small" />
+              <Icon name="chevron-sort-solid" class="icon-sm" />
             </button>
-            <strong class="d-none medium:d-block h6 my-xsmall">On this page</strong>
-            <hr class="d-none medium:d-block my-xsmall" />
+            <strong class="d-none md:d-block h6 my-xs">On this page</strong>
+            <hr class="d-none md:d-block my-xs" />
             <div class="collapse cxd-toc-collapse" id="tocContents">
               <nav id="TableOfContents" aria-label="Table of contents">
                 <slot name="toc">
@@ -138,16 +138,16 @@ if (frontmatter.toc) {
       <div class="cxd-content">
         {
           frontmatter.sections && (
-            <div class="row g-xlarge">
+            <div class="row g-xl">
               {frontmatter.sections.map((section: DocSection) => (
-                <div class="medium:col-6">
+                <div class="md:col-6">
                   <a
                     class="d-block text-decoration-none"
                     href={getChassisDocsPath(
                       `${parentDirectory ? parentDirectory + '/' : ''}${section.slug ? section.slug : getSlug(section.title)}/`
                     )}
                   >
-                    <strong class="d-block h5 mb-2xsmall">{section.title}</strong>
+                    <strong class="d-block h5 mb-2xs">{section.title}</strong>
                     <span class="fg-subtle">{section.description}</span>
                   </a>
                 </div>

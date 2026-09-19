@@ -36,7 +36,7 @@
 
     > ol > li {
       &:has(:where(h3, h4):first-child)::marker {
-        @include font-size(var(--cx-font-size-xlarge));
+        @include font-size(var(--cx-font-size-xl));
         font-weight: var(--cx-font-weight-strong);
       }
     }
@@ -92,8 +92,8 @@
     @include font();
   }
 
-  .border-large-start {
-    @include media-breakpoint-up(large) {
+  .border-lg-start {
+    @include media-breakpoint-up(lg) {
       border-inline-start: var(--cx-border-width) solid var(--cx-border-color);
     }
   }

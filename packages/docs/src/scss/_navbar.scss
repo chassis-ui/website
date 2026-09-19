@@ -3,7 +3,7 @@
 @layer custom {
   .cxd-navbar {
     padding: 0;
-    border-block-end: var(--cx-border-width-medium) solid var(--cx-border-subtle);
+    border-block-end: var(--cx-border-width-md) solid var(--cx-border-subtle);
 
     > .container {
       position: relative;
@@ -12,18 +12,18 @@
     .navbar-toggler,
     .nav-link {
       --cx-caret-color: var(--cx-fg-color);
-      @include font-size(var(--cx-font-size-small));
+      @include font-size(var(--cx-font-size-sm));
       font-weight: var(--cx-font-weight-strong);
       text-transform: uppercase;
       .icon {
         --cx-icon-color: var(--cx-fg-color);
       }
 
-      @include media-breakpoint-up(large) {
-        padding: var(--cx-space-large) var(--cx-space-xsmall);
+      @include media-breakpoint-up(lg) {
+        padding: var(--cx-space-lg) var(--cx-space-xs);
         &.active {
-          padding-block-end: var(--cx-space-medium);
-          border-block-end: var(--cx-border-width-2xlarge) solid var(--cx-primary-cue-main);
+          padding-block-end: var(--cx-space-md);
+          border-block-end: var(--cx-border-width-2xl) solid var(--cx-primary-cue-main);
         }
       }
     }

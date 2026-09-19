@@ -17,7 +17,7 @@ const { layout } = Astro.props
 ---
 
 <button
-  class="nav-link caret px-0 large:px-xsmall"
+  class="nav-link caret px-0 lg:px-xs"
   id="cxd-theme"
   type="button"
   aria-expanded="false"
@@ -27,7 +27,7 @@ const { layout } = Astro.props
 >
   <Icon name="circle-half-solid" class="theme-icon-active" />
   <span
-    class=`${layout === 'examples' ? 'visually-hidden' : 'large:d-none ms-xsmall'}`
+    class=`${layout === 'examples' ? 'visually-hidden' : 'lg:d-none ms-xs'}`
     id="cxd-theme-text">Toggle theme</span
   >
 </button>

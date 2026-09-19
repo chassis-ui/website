@@ -9,7 +9,7 @@
     --cx-bg-highlight: var(--cx-default-bg-highlight);
     --cx-fg-highlight: var(--cx-fg-main);
 
-    @include media-breakpoint-up(large) {
+    @include media-breakpoint-up(lg) {
       position: sticky;
       top: 4rem;
       display: block;
@@ -22,10 +22,10 @@
       border-inline-end: var(--cx-border-width) solid var(--cx-border-subtle);
     }
 
-    @include media-breakpoint-down(large) {
-      .#{large-down\:}drawer {
+    @include media-breakpoint-down(lg) {
+      .#{lg-down\:}drawer {
         border-right-color: var(--cx-border-color);
-        box-shadow: var(--cx-box-shadow-large);
+        box-shadow: var(--cx-box-shadow-lg);
       }
     }
   }
@@ -51,7 +51,7 @@
       list-style: none;
     }
 
-    @include media-breakpoint-up(large) {
+    @include media-breakpoint-up(lg) {
       li:has(.active) {
         // --cx-cue-main: var(--cx-secondary-contrast-color);
       }
@@ -101,17 +101,17 @@
 
   .cxd-links-heading {
     --cx-icon-color: var(--cx-fg-main);
-    --cx-icon-size: var(--cx-icon-xsmall);
+    --cx-icon-size: var(--cx-icon-xs);
     display: flex;
-    gap: var(--cx-space-xsmall);
+    gap: var(--cx-space-xs);
     align-items: center;
     color: var(--cx-fg-main);
   }
 
   .cxd-links-subgroup {
-    @include font-size(var(--cx-font-size-xsmall));
-    @include line-height(var(--cx-line-height-small));
-    --cx-icon-size: var(--cx-icon-xsmall);
+    @include font-size(var(--cx-font-size-xs));
+    @include line-height(var(--cx-line-height-sm));
+    --cx-icon-size: var(--cx-icon-xs);
     padding-inline-start: 1.5rem;
     margin-block: 1em .25em;
     font-weight: var(--cx-font-weight-strong);
@@ -121,11 +121,11 @@
 
 
   .cxd-links-nav {
-    @include media-breakpoint-down(large) {
+    @include media-breakpoint-down(lg) {
       @include font-size(.875rem);
     }
 
-    @include media-breakpoint-between(xsmall, large) {
+    @include media-breakpoint-between(xs, lg) {
       column-count: 2;
       column-gap: 1.5rem;
 
@@ -147,8 +147,8 @@
     margin-inline-start: 0;
     color: var(--cx-fg-color);
     text-decoration: if(sass($link-decoration == none): null; else: none);
-    @include font-size(var(--cx-font-size-small));
-    @include border-radius(var(--cx-border-radius-medium));
+    @include font-size(var(--cx-font-size-sm));
+    @include border-radius(var(--cx-border-radius-md));
 
     &:hover,
     &:focus {

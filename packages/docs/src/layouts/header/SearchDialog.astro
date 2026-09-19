@@ -20,7 +20,7 @@ const { id = 'cxdSearchDialog', placeholder = 'Search docs…' } = Astro.props
 ---
 
 <dialog
-  class="modal dialog large cxd-search-dialog scrollable"
+  class="modal dialog lg cxd-search-dialog scrollable"
   id={id}
   aria-labelledby={`${id}-label`}
 >
@@ -63,14 +63,14 @@ const { id = 'cxdSearchDialog', placeholder = 'Search docs…' } = Astro.props
   <div class="modal-footer cxd-search-footer">
     <ul class="list horizontal cxd-search-shortcuts-list">
       <li class="list-item">
-        <kbd class="cxd-search-shortcut-key font-2xsmall">⮐</kbd>
+        <kbd class="cxd-search-shortcut-key font-2xs">⮐</kbd>
         <span class="cxd-search-shortcut-label">to select</span>
       </li><li class="list-item">
-        <kbd class="cxd-search-shortcut-key font-small">↑</kbd>
-        <kbd class="cxd-search-shortcut-key font-small">↓</kbd>
+        <kbd class="cxd-search-shortcut-key font-sm">↑</kbd>
+        <kbd class="cxd-search-shortcut-key font-sm">↓</kbd>
         <span class="cxd-search-shortcut-label">to navigate</span>
       </li><li class="list-item">
-        <kbd class="cxd-search-shortcut-key font-xsmall">ESC</kbd>
+        <kbd class="cxd-search-shortcut-key font-xs">ESC</kbd>
         <span class="cxd-search-shortcut-label">to close</span>
       </li>
     </ul>

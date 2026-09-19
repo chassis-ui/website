@@ -19,7 +19,7 @@
   --feature-item-width: 560px;
   --gallery-image-height: 256px;
 
-  @include media-breakpoint-down(medium) {
+  @include media-breakpoint-down(md) {
     --feature-item-width: 320px;
     --gallery-image-height: 128px;
   }
@@ -37,7 +37,7 @@
       --cx-fg-color: var(--cx-primary-fg-main);
       --cx-icon-color: var(--cx-fg-color);
     }
-    @include media-breakpoint-down(medium) {
+    @include media-breakpoint-down(md) {
       --cx-bg-color: var(--cx-bg-even);
     }
   }
@@ -54,7 +54,7 @@
     height: auto;
   }
 
-  @include media-breakpoint-up(medium) {
+  @include media-breakpoint-up(md) {
     z-index: 10;
     width: 100%;
     margin: 0 auto;
@@ -68,7 +68,7 @@
       top: 50%;
       left: 50%;
       z-index: 20;
-      width: calc(100vw - var(--cx-space-3xlarge));
+      width: calc(100vw - var(--cx-space-3xl));
       //padding: 0 32px;
       transform: translate(-50%, 50%);
       > .button {

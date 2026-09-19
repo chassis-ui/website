@@ -2,13 +2,13 @@
 /**
  * Responsive Image
  *
- * Render a small/large viewport pair, each with 1x and 2x density variants.
- * The small tier swaps in below the `small` breakpoint (576px) from
- * @chassis-ui/css so narrow viewports don't download the large-tier image.
+ * Render a sm/lg viewport pair, each with 1x and 2x density variants.
+ * The sm tier swaps in below the `sm` breakpoint (576px) from
+ * @chassis-ui/css so narrow viewports don't download the lg-tier image.
  */
 
 interface Props {
-  /** Path to the large-tier image file (small tier is derived: `-small` suffix) */
+  /** Path to the lg-tier image file (sm tier is derived: `-sm` suffix) */
   imgPath: string
   /** Alternative text for the image */
   alt: string
@@ -34,15 +34,15 @@ const ext = imgPath.includes('.') ? `.${imgPath.split('.').pop()}` : ''
 
 const imgPathLarge1x = `${basePath}/${basename}${ext}`
 const imgPathLarge2x = `${basePath}/${basename}@2x${ext}`
-const imgPathSmall1x = `${basePath}/${basename}-small${ext}`
-const imgPathSmall2x = `${basePath}/${basename}-small@2x${ext}`
+const imgPathSmall1x = `${basePath}/${basename}-sm${ext}`
+const imgPathSmall2x = `${basePath}/${basename}-sm@2x${ext}`
 
-// Matches the `small` breakpoint in @chassis-ui/css (576px).
-const smallBreakpoint = '(max-width: 575px)'
+// Matches the `sm` breakpoint in @chassis-ui/css (576px).
+const smBreakpoint = '(max-width: 575px)'
 ---
 
 <picture>
-  <source media={smallBreakpoint} srcset={`${imgPathSmall1x}, ${imgPathSmall2x} 2x`} />
+  <source media={smBreakpoint} srcset={`${imgPathSmall1x}, ${imgPathSmall2x} 2x`} />
   <img
     class={classNames}
     srcset={`${imgPathLarge1x}, ${imgPathLarge2x} 2x`}

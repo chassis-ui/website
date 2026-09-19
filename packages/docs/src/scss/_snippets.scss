@@ -13,10 +13,10 @@
     border: solid var(--cx-border-subtle);
     border-width: 1px 0;
 
-    @include media-breakpoint-up(medium) {
+    @include media-breakpoint-up(md) {
       margin-inline: 0;
       border-width: 1px;
-      @include border-radius(var(--cx-border-radius-medium));
+      @include border-radius(var(--cx-border-radius-md));
     }
   }
 
@@ -31,11 +31,11 @@
     border-width: 1px 0;
     // @include clearfix();
 
-    @include media-breakpoint-up(medium) {
+    @include media-breakpoint-up(md) {
       --cxd-example-padding: 1.5rem;
       margin-inline: 0;
       border-width: 1px;
-      @include border-radius(var(--cx-border-radius-medium));
+      @include border-radius(var(--cx-border-radius-md));
       &:has(~ .cxd-snippet-toolbar) {
         @include border-bottom-radius(0);
       }
@@ -69,8 +69,8 @@
     position: relative;
     background-color: var(--cxd-pre-bg, var(--cx-bg-even));
 
-    @include media-breakpoint-up(medium) {
-      @include border-radius(calc(var(--cx-border-radius-medium) - 1px));
+    @include media-breakpoint-up(md) {
+      @include border-radius(calc(var(--cx-border-radius-md) - 1px));
     }
 
     .cxd-clipboard ~ & {
@@ -81,8 +81,8 @@
       padding: var(--cxd-code-padding);
       margin-block-end: 0;
       overflow: overlay;
-      @include font-size(var(--cx-font-size-code-small));
-      line-height: var(--cx-line-height-code-small);
+      @include font-size(var(--cx-font-size-code-sm));
+      line-height: var(--cx-line-height-code-sm);
       white-space: pre;
       background-color: transparent;
       border: 0;
@@ -100,10 +100,10 @@
 
   .cxd-snippet-toolbar {
     display: flex;
-    gap: var(--cx-space-xsmall);
+    gap: var(--cx-space-xs);
     align-items: center;
-    padding-block: var(--cx-space-2xsmall);
-    padding-inline: var(--cx-space-small) var(--cx-space-xsmall);
+    padding-block: var(--cx-space-2xs);
+    padding-inline: var(--cx-space-sm) var(--cx-space-xs);
     background-color: var(--cxd-pre-bg, var(--cx-bg-even));
     border-block-end: var(--cx-border-width) var(--cx-border-style) var(--cx-border-subtle);
     .cxd-example ~ & {
@@ -115,15 +115,15 @@
     }
 
     > a {
-      @include font-size(var(--cx-font-size-small));
+      @include font-size(var(--cx-font-size-sm));
     }
   }
 
   .cxd-file-ref {
     .cxd-snippet-toolbar {
       border-block-start: 0;
-      @include media-breakpoint-up(medium) {
-        @include border-top-radius(calc(var(--cx-border-radius-medium) - 1px));
+      @include media-breakpoint-up(md) {
+        @include border-top-radius(calc(var(--cx-border-radius-md) - 1px));
       }
     }
   }
@@ -155,7 +155,7 @@
   .button-clipboard,
   .button-edit {
     --cx-icon-color: var(--cx-fg-subtle);
-    --cx-icon-size: var(--cx-icon-small);
+    --cx-icon-size: var(--cx-icon-sm);
     display: block;
     padding: .25em;
     line-height: 1;

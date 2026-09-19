@@ -84,11 +84,11 @@ let sourceMarkup = customMarkup
 
 const simplifiedMarkup = sourceMarkup
   .replace(
-    /<svg.*class="cxd-placeholder-image(?:-large)?(?: *?cxd-placeholder-image-large)? ?(.*?)".*?<\/svg>/g,
+    /<svg.*class="cxd-placeholder-image(?:-lg)?(?: *?cxd-placeholder-image-lg)? ?(.*?)".*?<\/svg>/g,
     (_match, classes) => `<img src="..."${classes ? ` class="${classes}"` : ''} alt="...">`
   )
   .replace(
-    /<img.*class="cxd-placeholder-image(?:-large)?(?: *?cxd-placeholder-image-large)? ?(.*?)".*?>/g,
+    /<img.*class="cxd-placeholder-image(?:-lg)?(?: *?cxd-placeholder-image-lg)? ?(.*?)".*?>/g,
     (_match, classes) => `<img src="..."${classes ? ` class="${classes}"` : ''} alt="...">`
   )
   .replace(/(<svg class="icon\b[^"]*")\s+width="\d+"\s+height="\d+"/g, '$1')
