@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-09-19
+
+### Changed
+
+- Reworked breakpoint and sizing utility classes/tokens across `packages/docs` and `packages/website` to use the shorthand naming from the updated Chassis CSS (e.g. `large:px-xsmall` → `lg:px-xs`, `medium` → `md`), spanning layouts, components, shortcodes, SCSS partials, and page templates
+- Bumped `@chassis-ui/css` and `@chassis-ui/tokens` peer dependencies to `^0.5.0`
+
 ## [0.4.0] - 2026-09-15
 
 ### Changed
