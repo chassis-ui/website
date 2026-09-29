@@ -71,7 +71,12 @@ Run them from the root of the repository.
 
 The scripts behind them are in `package.json`. `site:*` scripts act on `packages/website`,
 `docs:*` scripts on `packages/docs`, for example `pnpm site:lint:eslint`. `pnpm site` builds
-the site, validates its HTML and checks its links, which the Build job of CI does too.
+the site, validates its HTML, and checks its links and its accessibility, which the Build job
+of CI does too.
+
+`pnpm site:lint:a11y` runs axe on every page of the built site, in the light and the dark
+colour mode, against WCAG 2.2 A and AA. Colour contrast is left out for now. It needs Google
+Chrome installed.
 
 `pnpm site:lint:links` checks every link, anchor and asset of the built site that stays on
 it. Given a deployment, such as `pnpm site:lint:links https://staging.chassis-ui.com`, it

@@ -141,6 +141,10 @@ jobs:
       - name: Check links
         run: pnpm site:lint:links
 
+      # axe in the Chrome that the runner has installed
+      - name: Check accessibility
+        run: pnpm site:lint:a11y
+
   fixtures:
     name: Fixture Site (${{ matrix.layout }})
     runs-on: ubuntu-latest

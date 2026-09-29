@@ -45,6 +45,12 @@ jobs:
             echo "url=https://chassis-ui.com" >> $GITHUB_OUTPUT
           fi
           echo "env=$ENV" >> $GITHUB_OUTPUT
+          # Staging is checked once per URL, so that Vercel does not throttle the run
+          if [[ "$ENV" == "staging" ]]; then
+            echo "runs=1" >> $GITHUB_OUTPUT
+          else
+            echo "runs=3" >> $GITHUB_OUTPUT
+          fi
           echo "Testing $ENV: $(cat $GITHUB_OUTPUT | grep '^url=' | cut -d= -f2)"
 
       - name: Fetch URLs from sitemap
@@ -57,7 +63,9 @@ jobs:
             exit 1
           fi
 
-          URLS=$(grep -o '<loc>[^<]*</loc>' /tmp/sitemap.xml | sed 's/<loc>//;s/<\/loc>//' | grep -v '/404')
+          # A preview build lists the URLs of its own deployment, such as
+          # chassis-website-<hash>.vercel.app. They are tested on the environment's domain.
+          URLS=$(grep -o '<loc>[^<]*</loc>' /tmp/sitemap.xml | sed 's/<loc>//;s/<\/loc>//' | grep -v '/404' | sed -E "s#^https?://[^/]+#$BASE#")
           if [ -z "$URLS" ]; then
             echo "::error::No URLs found in sitemap at $BASE/sitemap-0.xml"
             exit 1
@@ -79,7 +87,7 @@ jobs:
         with:
           urls: ${{ steps.sitemap.outputs.urls }}
           configPath: './lighthouse.json'
-          runs: 3
+          runs: ${{ steps.base-url.outputs.runs }}
           uploadArtifacts: false
           temporaryPublicStorage: true
 
