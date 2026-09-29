@@ -68,8 +68,11 @@ Each service has two rewrite rules per route:
 | `/icons/*` | `chassis-icons-staging.vercel.app/icons/*` | `chassis-icons.vercel.app/icons/*` |
 | `/react/*` | `chassis-react-staging.vercel.app/react/*` | `chassis-react.vercel.app/react/*` |
 
-chassis-react has no staging deployment yet, so `staging.chassis-ui.com/react/` answers 404
-until it has one. The route is there so that staging never shows production content.
+chassis-react-staging.vercel.app is behind Vercel's deployment protection, unlike the
+other five staging deployments, so `staging.chassis-ui.com/react/` shows Vercel's login.
+The Links workflow on staging lists the `/react` link of the header and footer as a
+warning for react until it is reachable. The maintainer keeps the protection. See task RCT2.
+The route sends staging to it, so that staging never shows production content.
 
 ### Sitemap routes
 

@@ -11,8 +11,9 @@
  *
  * With a URL, crawls that deployment instead, the proxied projects included, for example
  * `node build/check-links.js https://staging.chassis-ui.com`. A broken link on a page of
- * this site fails the run. A broken link on a page of a proxied project is listed as a
- * warning, by project, because it is fixed in that project's repository.
+ * this site fails the run. A broken link on a page of a proxied project, or a link from
+ * this site into a proxied project that fails, is listed as a warning, by project: it is
+ * fixed in that project's repository, or that project's deployment is down or protected.
  *
  * Links to other hosts are left out in both modes, so that the result does not depend on
  * third-party sites.
@@ -49,6 +50,20 @@ function owner(page) {
   if (!live || !page) return 'website'
 
   return new URL(page).pathname.match(PROXIED)?.[1] ?? 'website'
+}
+
+// The project a broken link is reported under: the proxied project that it points into,
+// or else the project of the page that it is on
+function reportedUnder(link) {
+  const url = new URL(link.url)
+
+  if (live && url.host === live.host) {
+    const project = url.pathname.match(PROXIED)?.[1]
+
+    if (project) return project
+  }
+
+  return owner(link.parent)
 }
 
 // `vercel.json` routes `/static/*` by the `Referer` header, which linkinator does not
@@ -112,7 +127,7 @@ const missing = candidates.filter((_, index) => !found[index])
 const missingUrls = new Set(missing.map((link) => link.url))
 const broken = missing.filter((link) => !missingUrls.has(link.parent))
 
-const byOwner = Map.groupBy(broken, (link) => owner(link.parent))
+const byOwner = Map.groupBy(broken, reportedUnder)
 const checked = links.filter((link) => link.state !== LinkState.SKIPPED).length
 
 // One line per broken URL, with the number of pages that link to it and one of them

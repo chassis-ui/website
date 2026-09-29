@@ -19,7 +19,7 @@ describes. There is no on-call rota and no status page.
 | Signal                                      | Where                                                                                                                                        |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | A deployment fails                          | Vercel's email, and the deployment in the Vercel dashboard                                                                                   |
-| A broken link after a deployment            | The Links workflow in GitHub Actions. A link of a proxied project is a warning, not a failure                                                |
+| A broken link after a deployment            | The Links workflow in GitHub Actions. A link of a proxied project, or into one, is a warning, not a failure                                  |
 | Accessibility or performance after a deploy | The Lighthouse workflow in GitHub Actions                                                                                                    |
 | A content security policy violation         | The function log of the website project in Vercel. Search for `CSP violation`. Vercel keeps it for one hour on Hobby, see D23 of the roadmap |
 | Abuse of the contact form                   | The firewall overview of the website project in Vercel, rule "Contact form rate limit". It counts requests on staging and production alike   |

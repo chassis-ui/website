@@ -193,7 +193,7 @@ deployed sites reference each other's _built output_ directly over CDN:
 Each project (including chassis-website itself) deploys independently to Vercel, and
 `chassis-ui.com` proxies `/css/*`, `/tokens/*`, `/assets/*`, `/icons/*`, `/figma/*` and
 `/react/*` to the corresponding project's deployment, with a staging mirror per project.
-chassis-react has no staging deployment yet.
+chassis-react's staging deployment is behind Vercel's deployment protection, so it cannot be seen through the staging site.
 
 - Full URL table and release process: [DEPLOYMENT.md](DEPLOYMENT.md)
 - How the host-header rewrites actually work: [VERCEL_CONFIG.md](VERCEL_CONFIG.md)

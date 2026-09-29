@@ -81,7 +81,9 @@ Chrome installed.
 `pnpm site:lint:links` checks every link, anchor and asset of the built site that stays on
 it. Given a deployment, such as `pnpm site:lint:links https://staging.chassis-ui.com`, it
 crawls that instead, the proxied projects included. It fails on a broken link of this
-site's own pages, and lists those of the proxied projects as warnings.
+site's own pages. A broken link on a page of a proxied project, and a link from this site
+into a proxied project that fails, such as `/react/` while its deployment is down, are
+listed as warnings under that project.
 
 `pnpm install` also installs a pre-commit hook. It runs ESLint and Prettier on the staged
 files of `packages/website` and `packages/docs`, fixes what they can, and stops the commit
