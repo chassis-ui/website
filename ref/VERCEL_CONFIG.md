@@ -199,6 +199,8 @@ build and per site.
 
 Browsers send each violation to `/api/csp-report`, which writes one line per violation to
 the function log of the website project: `CSP violation {"directive":…,"blocked":…,"page":…}`.
+Vercel keeps that log for one hour on the Hobby plan, so it shows what happens now, not a
+history. Where to keep the reports is decision D23 of the [roadmap](ROADMAP.md).
 Violations of the sibling pages arrive there as well.
 
 **To add a source,** add it to the right directive, and add a row to the table above. **To
@@ -225,8 +227,10 @@ posts to `/api/contact/` directly, so that a message counts once. The expression
 both paths, so a client that posts without the slash counts twice and is limited sooner.
 The form tells the visitor to wait when it gets a 429. Hobby allows one rate-limit rule per
 project, and this is it. To create it: the website project, **Firewall**, **Configure**,
-**New Rule**, then **Review Changes** and **Publish**, which applies it to the production
-deployment. It was created on 2026-09-29.
+**New Rule**, then **Review Changes** and **Publish**. It was created on 2026-09-29, and it
+applies to staging as well as production: six test requests on staging from one address
+got a 429 on 2026-09-29. Testing the endpoint on staging therefore uses up the limit of the
+tester's network for ten minutes, for production too.
 
 ## 📦 Functions
 

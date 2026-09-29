@@ -150,6 +150,7 @@ last sibling has been upgraded and deployed.
 | F60 | The "View Documentation" button of the icons section led to a 404. Found and fixed in session 4.2.                                                                                            | It linked `/icons/docs/`. The icons site has no docs section. It now links the Usage section of `/icons/`.                                                                                                                                                                                                                                                                              | 4     |
 | F61 | Performance on the home page is held back by the design. Found in session 4.4.                                                                                                                | The hero text moves by 0.19 (CLS) when Inter replaces the fallback font. Fallback faces with the metrics of Inter and Fira Code removed the shift, measured locally, and were reverted, since they change the font stack. Swiper and GSAP load from jsDelivr, its stylesheet blocks rendering.                                                                                          | 4     |
 | F62 | Code blocks that scroll sideways could not be scrolled with a keyboard. Found and fixed in session 4.4.                                                                                       | Axe `scrollable-region-focusable` on the Installation page. `<pre>` now has `tabindex="0"`, from a Shiki transformer and in the `Code` shortcode.                                                                                                                                                                                                                                       | 4     |
+| F63 | The reports of the content security policy are kept for one hour. Found in session 4.4.                                                                                                       | `/api/csp-report` writes them to the function log, and Vercel keeps runtime logs for 1 hour on Hobby and 1 day on Pro. The enforcement task needs two weeks of them. See D23.                                                                                                                                                                                                           | 4     |
 | F34 | The package has no stated versioning policy.                                                                                                                                                  | It is at 0.5.0 with seven consumers. Nothing says what counts as a breaking change or what 1.0 requires.                                                                                                                                                                                                                                                                                | 2     |
 
 ### How the sibling repositories consume this one
@@ -573,12 +574,20 @@ performance, and CI holds it there.
 - [x] Add an `.env.example` that names `RESEND_API_KEY`, `RESEND_FROM_EMAIL` and
       `RESEND_TO_EMAIL`.
 
-### Left for you
+### Checked on staging
 
-- After the next staging deploy, check that `curl -sI` shows the headers on
-  `staging.chassis-ui.com/` and on one page of each sibling, and that `/api/contact.test`
-  answers 404. A POST to `/api/contact` with the site's `Origin` and no fields must answer
-  400, not 403. It sends no email.
+On 2026-09-29, after `develop` went to `staging`:
+
+- The five headers are on `staging.chassis-ui.com/` and on `/css/`, `/tokens/`, `/icons/`,
+  `/figma/` and `/assets/`. The browser reported no violation of the policy on the home
+  page, the ratio page of chassis-css and the icons page. `/api/csp-report` answers 204.
+- `/api/contact.test` answers 404.
+- The contact endpoint answered 500 on staging, because `RESEND_API_KEY` and the other two
+  variables were set for Production only, and the Resend client throws without a key when
+  the function loads. It was so before this project. The maintainer added the variables
+  for Preview and redeployed. Then a POST with no fields answered 400, another origin and
+  no origin 403, a filled honeypot 200 without mail, and `GET` 405.
+- The firewall rule counts staging too: the sixth POST from one address answered 429.
 
 ### Session 4.2: routing
 
@@ -596,8 +605,9 @@ performance, and CI holds it there.
       once the package has an option for the prefix of static URLs, the next task.
 - [ ] Add an option to `@chassis-ui/docs` for the prefix of static URLs. The package writes
       `/static/` in about fifteen places: the head, the header, the footer, the `Icon`
-      shortcode and three scripts. Task A6 of the siblings waits on it. Left out of session
-      4.2 at the maintainer's choice.
+      shortcode and three scripts. Task A6 of the siblings waits on it. Deferred in session
+      4.2 on a recommendation that took it for out of scope, and left until the siblings
+      are upgraded.
 - [x] Add a link checker over the built site and the proxied routes.
       `build/check-links.js`, with linkinator, checks links, anchors and assets. On the
       built site it runs in the Build job of CI, from every page, since the guide is
@@ -633,10 +643,11 @@ performance, and CI holds it there.
       maintainer, who reviews the design separately. Axe's contrast rule is off until then.
 - [x] Make Lighthouse on staging test `staging.chassis-ui.com` with fewer URLs or runs,
       so that it is not throttled. See F40. The URLs of the sitemap are moved to the
-      environment's domain, and staging runs each once. Check it on the next staging
-      deploy.
+      environment's domain, and staging runs each once. On the first staging run, 15 URLs
+      ran without a 403.
 - [ ] Bring Lighthouse performance to the 0.9 target on the home page and one docs page.
-      Production's home page scored 0.56 from a local run on 2026-09-29. Done so far,
+      Production's home page scored 0.56 from a local run on 2026-09-29. Lighthouse on
+      staging, the same day, scored the 15 URLs between 0.66 and 0.83. Done so far,
       without changing how the pages look: Google Analytics loads only after consent
       (session 4.3), and the Google Fonts stylesheet is a link in the head, not an
       `@import` in the styles. See F61 for what is left, which touches the design. Measure
@@ -651,7 +662,9 @@ performance, and CI holds it there.
       proxied sibling.
 - [ ] Enforce the content security policy: rename the header to
       `Content-Security-Policy` when the log of `/api/csp-report` has shown no unexplained
-      violation for two weeks of production traffic.
+      violation for two weeks of production traffic. It starts when the report-only policy
+      reaches production. The log cannot hold two weeks, see F63: decide first where the
+      reports are kept, decision D23.
 - [x] Write `ref/OPERATIONS.md`: how to roll back a deployment, what to do when a
       proxied site is down, how to rotate the Resend and npm credentials. It also says who
       is told, how problems are noticed, how to roll back a release of the package, and
@@ -746,6 +759,7 @@ Considered and left out for now. Each needs a reason to come back.
 | D20 | What does 1.0 require?                                                                   | Every sibling uses the integration. Tests and fixture builds gate each release. Releases are automated and have provenance.                                                                                                                                                                                                                                                                                                                                         | decided |
 | D21 | Are the keys of `sidebar.yml` and of the frontmatter renamed too?                        | Yes, in 0.6.0: `iconColor`, `showBadge`, `extraJs`. The old names fail the build.                                                                                                                                                                                                                                                                                                                                                                                   | decided |
 | D22 | Does the integration put the default `chassis-tokens` on the Sass load path?             | Yes. The integration adds `scss/vendor` of `@chassis-ui/css` as the last load path, after the site's own. Decided in session 2.4.                                                                                                                                                                                                                                                                                                                                   | decided |
+| D23 | Where are the reports of the content security policy kept until the policy is enforced?  | Open, decided when the policy reaches production. Store each report from `/api/csp-report` in a durable store, such as Upstash Redis or Vercel's storage. Or send them to an external collector, such as report-uri.com, which the privacy page then names. Or check by hand with the browser console on the six sites, and treat the log as live only.                                                                                                             | open    |
 | D16 | How is 0.5.1 released?                                                                   | Push `develop` to `staging`, check CI and the staging deploy, then push the same commit to `main`. That publishes to npm and deploys production.                                                                                                                                                                                                                                                                                                                    | decided |
 
 ### Note on D10
@@ -788,6 +802,7 @@ go here, in session 5.2.
 | 2026-09-29 | 3.1      | Top-level `lint`, `format`, `preview`, `spellcheck` and `vendor` scripts, and `build` as Vercel runs it. `pnpm dev` no longer moves the submodule pin. Node 24 in `.nvmrc`, `engines` at `>=22.12.0`, CI reads `.nvmrc`. cspell runs in the Lint job, and CI runs on pull requests against `develop`, the branch contributors target. Setup and commands live in `CONTRIBUTING.md` only. `README.md`, `ref/DEVELOPMENT.md`, `ref/ARCHITECTURE.md` and `ref/DEPLOYMENT.md` rewritten, with chassis-react. The docs section is a Getting started guide of three pages. `vanilla-html` rewritten for Chassis CSS 0.5 and served at `/examples/vanilla-html/`, `react-app` deleted. Search covers the blog posts and the guide. Fixed the repository links of the About page and the domain of the callouts. Decided D7, D12 and D13. Added F52 to F54, CSS7 and ICO9. The local and remote `app/docs` branches are left for the maintainer. |
 | 2026-09-29 | 3.2      | Code of conduct, security policy, `CODEOWNERS`, pull request template and issue forms for bug, feature and docs, in `.github/`. Private vulnerability reporting and Discussions on, homepage set to chassis-ui.com, area and triage labels added. Pre-commit hook with simple-git-hooks and lint-staged. Dependabot weekly into `develop`, grouped. `ref/CHASSIS_CSS.md` matches Chassis CSS 0.5.2. Decided D10. The issues and milestones for the roadmap were not created, at the maintainer's choice.                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | 2026-09-29 | 4.1      | Security headers in `vercel.json`, with the content security policy in report-only mode and reports logged by the new endpoint `/api/csp-report`. The policy was written from a crawl of the six sites and checked through a local proxy with it enforced. The contact endpoint checks the origin, caps the body and the fields, keeps the subject on one line and escapes the message. The form sets `maxlength` and explains a 429. Rate limiting is a Vercel firewall rule, chosen by the maintainer and created in the dashboard. `.env.example` added. Tests of the endpoints are no longer deployed as functions. Added F55, F56, S16, A22 and CSS8.                                                                                                                                                                                                                                                                               |
-| 2026-09-29 | 4.2      | `/react` routed to `chassis-react.vercel.app`, which the maintainer made the project's domain, with its sitemap in the website's index and referrer-based `/static/*` rules. Path-based `/<project>/static/*` rewrites for all six projects, before their catch-all rules. The package option that lets a project use them is a task of its own, at the maintainer's choice. Link checker `build/check-links.js`: on the built site in the Build job, on a deployment in the new workflow `links.yml`. It found four bugs, fixed: F57 to F60. Two of them are in the package, with changesets for a patch release. Added RCT9 and A23, updated A6, A22 and RCT7.                                                                                                                                                                                                                                                                         |
+| 2026-09-29 | 4.2      | `/react` routed to `chassis-react.vercel.app`, which the maintainer made the project's domain, with its sitemap in the website's index and referrer-based `/static/*` rules. Path-based `/<project>/static/*` rewrites for all six projects, before their catch-all rules. The package option that lets a project use them is a task of its own, deferred until the siblings are upgraded. Link checker `build/check-links.js`: on the built site in the Build job, on a deployment in the new workflow `links.yml`. It found four bugs, fixed: F57 to F60. Two of them are in the package, with changesets for a patch release. Added RCT9 and A23, updated A6, A22 and RCT7.                                                                                                                                                                                                                                                           |
 | 2026-09-29 | 4.3      | Consent banner for Google Analytics in the package, which replaces `Analytics.astro`, with a "Cookie settings" button and a "Privacy" link in the footer. Privacy page at `/privacy/`, linked from the footer and the contact form. Fonts stay on Google Fonts. F28 settled, no notice. Decided D14 and D15. Fixed the FAQ "suitable for sm teams". Changeset for a patch release. Updated A15.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | 2026-09-29 | 4.4      | Axe on the built site in CI, `build/check-a11y.js`, with the contrast rule off at the maintainer's request: design changes made to pass it were reverted. Code blocks take focus (F62). Lighthouse on staging tests the staging domain, once per URL (F40). The Google Fonts stylesheet is linked from the head. Added F61, and the axe results to F35. Wrote `ref/OPERATIONS.md`, which fixes F33. Performance, the manual pass, uptime monitoring and the CSP enforcement are left.                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| 2026-09-29 | 4.1, 4.2 | Pushed `develop` and `staging`. CI green. Checked the headers, the endpoints, the Links workflow and Lighthouse on staging. The contact endpoint needed the Resend variables for Preview, which the maintainer added. The firewall rule applies to staging too. `main` stays unpushed until the maintainer has reviewed the design.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
