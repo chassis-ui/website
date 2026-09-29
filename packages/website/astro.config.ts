@@ -1,23 +1,20 @@
 import path from 'node:path'
 import { defineConfig } from 'astro/config'
+import { loadConfig } from '@chassis-ui/docs'
+import { chassisDocs } from '@chassis-ui/docs/integration'
 import { chassis } from './src/libs/astro'
-import { getConfig } from './src/libs/config'
-import { remarkCxConfig, remarkCxDocsref } from './src/libs/remark'
-import { chassisAutoImportPlugin } from './src/libs/shortcode'
-import { getSiteUrl, getDocsMarkdownConfig } from '@chassis-ui/docs'
+import { siteConfigSchema } from './src/libs/config'
+
+const root = import.meta.dirname
+const config = loadConfig({ root, schema: siteConfigSchema })
 
 // https://astro.build/config
 export default defineConfig({
-  site: getSiteUrl(getConfig()),
   outDir: '../../_site',
   build: {
     assets: `static/astro`
   },
-  integrations: [chassis()],
-  markdown: getDocsMarkdownConfig({
-    anchors: getConfig().anchors,
-    remarkPlugins: [chassisAutoImportPlugin(), remarkCxConfig, remarkCxDocsref]
-  }),
+  integrations: [chassisDocs({ config }), chassis({ config, root })],
   vite: {
     environments: {
       client: {

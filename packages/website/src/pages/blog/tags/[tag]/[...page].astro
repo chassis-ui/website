@@ -2,7 +2,8 @@
 import type { GetStaticPathsOptions } from 'astro'
 import BlogLayout from '@layouts/BlogLayout.astro'
 import BlogPostCard from '@components/blog/BlogPostCard.astro'
-import { getConfig } from '@libs/config'
+import { getConfig } from '@chassis-ui/docs/site'
+import type { SiteConfig } from '@libs/config'
 import { blogPages } from '@libs/content'
 import { tagsToArray } from '@libs/blog'
 import Pagination from '@components/blog/Pagination.astro'
@@ -11,7 +12,7 @@ import type { CollectionEntry } from 'astro:content'
 type BlogPost = CollectionEntry<'blog'>
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
-  const config = getConfig()
+  const config = getConfig<SiteConfig>()
 
   const tags = new Set<string>()
   blogPages.forEach((page: BlogPost) => {

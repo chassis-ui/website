@@ -25,12 +25,17 @@
   "files": [
     "src",
     "index.ts",
+    "virtual.d.ts",
     "README.md",
+    "UPGRADING.md",
     "LICENSE"
   ],
   "main": "index.ts",
   "exports": {
     ".": "./index.ts",
+    "./integration": "./src/integration.ts",
+    "./schema": "./src/libs/schema.ts",
+    "./site": "./src/site.ts",
     "./components/*": "./src/components/*",
     "./shortcodes/*": "./src/components/shortcodes/*",
     "./layouts/*": "./src/layouts/*",
@@ -59,18 +64,22 @@
     "shiki": "^4.3.1"
   },
   "dependencies": {
+    "@types/hast": "^3.0.5",
+    "@types/mdast": "^4.0.4",
+    "clipboard": "^2.0.11",
     "github-slugger": "^2.0.0",
     "image-size": "^2.0.4",
+    "js-yaml": "^5.4.2",
     "mdast-util-from-markdown": "^2.0.3",
+    "mdast-util-mdx-jsx": "^3.2.0",
     "mdast-util-to-string": "^4.0.0",
     "medium-zoom": "^1.1.0",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
+    "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
-    "@types/hast": "^3.0.5",
-    "astro": "^7.3.5",
-    "unified": "^11.0.5"
+    "astro": "^7.3.5"
   }
 }

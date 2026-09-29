@@ -1,8 +1,7 @@
 ---
 import fs from 'node:fs'
-import path from 'node:path'
 import * as sass from 'sass'
-import { getSourceFsPath } from '../../libs/source'
+import { getNodeModulesPaths, getSourceFsPath } from '../../site'
 import Code from './Code.astro'
 
 // Prints everything between `// scss-docs-start "name"` and `// scss-docs-end "name"`
@@ -16,7 +15,7 @@ interface Props {
   name: string
   /**
    * File path that contains the content to display, relative to the `sourceDir` of the site's
-   * `config.yml` (the working directory of the build when it is not set).
+   * `config.yml` (the site's root when it is not set).
    */
   file: string
   /**
@@ -113,7 +112,7 @@ try {
         // Vite's own Sass importer resolves bare npm specifiers (e.g. `@chassis-ui/tokens/...`)
         // through its module resolver, independent of `loadPaths`. This raw Sass JS API call
         // bypasses Vite, so `node_modules` must be added here explicitly.
-        path.resolve(process.cwd(), 'node_modules')
+        ...getNodeModulesPaths()
       ],
       // Match the same deprecation silencing used in astro.config.ts / vite scss options
       silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'] as any

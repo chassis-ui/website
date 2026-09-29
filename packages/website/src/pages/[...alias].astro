@@ -1,8 +1,7 @@
 ---
 import RedirectLayout from '@chassis-ui/docs/layouts/RedirectLayout.astro'
-import { getChassisDocsPath } from '@libs/path'
 import { trimLeadingAndTrailingSlashes } from '@chassis-ui/docs'
-import { replaceConfigInText, replaceDocsrefInText } from '@libs/remark'
+import { getDocsPath, resolveConfigRefs, resolveDocsrefs } from '@chassis-ui/docs/site'
 import { aliasedDocsPages } from '@libs/content'
 
 export async function getStaticPaths() {
@@ -13,7 +12,7 @@ export async function getStaticPaths() {
   function getAliasStaticPath(alias: string, path: string) {
     return {
       params: {
-        alias: trimLeadingAndTrailingSlashes(replaceDocsrefInText(replaceConfigInText(alias)))
+        alias: trimLeadingAndTrailingSlashes(resolveDocsrefs(resolveConfigRefs(alias)))
       },
       props: { path }
     }
@@ -38,4 +37,4 @@ type Props = { path: string }
 const { path } = Astro.props
 ---
 
-<RedirectLayout path={getChassisDocsPath(path)} />
+<RedirectLayout path={getDocsPath(path)} />

@@ -5,11 +5,9 @@
  * Social media meta tags (Open Graph, Twitter Cards).
  */
 
-import path from 'node:path'
-import { getConfig } from '@libs/config'
-import { getDocsPublicFsPath } from '@libs/path'
 import { getRemoteImageSize, getStaticImageSize } from '../../libs/image'
 import type { Layout } from '../../libs/layout'
+import { getConfig, getPublicFsPath } from '../../site'
 
 interface Props {
   /** Page description */
@@ -28,12 +26,13 @@ const socialImageUrl = new URL(thumbnail, Astro.site)
 const isRemoteThumbnail = /^https?:\/\//i.test(thumbnail)
 const socialImageSize = isRemoteThumbnail
   ? await getRemoteImageSize(thumbnail)
-  : await getStaticImageSize(path.join(getDocsPublicFsPath(), thumbnail))
+  : await getStaticImageSize(getPublicFsPath(thumbnail))
+const { xUsername } = getConfig()
 ---
 
 <meta name="twitter:card" content="summary_lg_image" />
-<meta name="twitter:site" content=`@${getConfig().x_username}` />
-<meta name="twitter:creator" content=`@${getConfig().x_username}` />
+{xUsername && <meta name="twitter:site" content={`@${xUsername}`} />}
+{xUsername && <meta name="twitter:creator" content={`@${xUsername}`} />}
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={socialImageUrl} />

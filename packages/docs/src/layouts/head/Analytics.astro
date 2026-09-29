@@ -2,16 +2,18 @@
 /**
  * Analytics
  *
- * Analytics script tags for Fathom and Google Analytics.
+ * Google Analytics script tags. Rendered in production builds, when `analytics.googleId` is
+ * set in `config.yml`.
  */
 
-import { getConfig } from '@libs/config'
+import { getConfig } from '../../site'
+
 const isProd = import.meta.env.PROD
-const googleId = getConfig().analytics.google_id
+const { googleId } = getConfig().analytics
 ---
 
 {
-  isProd && (
+  isProd && googleId && (
     <>
       <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${googleId}`} />
       <script

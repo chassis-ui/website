@@ -3,14 +3,15 @@ import type { GetStaticPathsOptions } from 'astro'
 import BlogLayout from '@layouts/BlogLayout.astro'
 import BlogPostCard from '@components/blog/BlogPostCard.astro'
 import { blogPages } from '@libs/content'
-import { getConfig } from '@libs/config'
+import { getConfig } from '@chassis-ui/docs/site'
+import type { SiteConfig } from '@libs/config'
 import Pagination from '@components/blog/Pagination.astro'
 import type { CollectionEntry } from 'astro:content'
 
 type BlogPost = CollectionEntry<'blog'>
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
-  const config = getConfig()
+  const config = getConfig<SiteConfig>()
 
   // Sort blog posts by publication date (newest first)
   const sortedPosts = blogPages.sort((a: BlogPost, b: BlogPost) => {

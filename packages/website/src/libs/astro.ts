@@ -3,17 +3,21 @@ import path from 'node:path'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import type { AstroIntegration } from 'astro'
-import { getConfig } from './config'
 import {
-  getDocsFsPath,
   getChassisAssetsFsPath,
   getChassisCSSFsPath,
-  getChassisIconsFsPath,
-  getDocsPublicFsPath,
-  getDocsStaticFsPath,
-  validateChassisDocsPaths
-} from './path'
-import { chassisAutoImportIntegration } from './shortcode'
+  getChassisIconsFsPath
+} from '@chassis-ui/docs'
+import type { SiteConfig } from './config'
+
+// Directories that the site copies files from and to.
+interface SitePaths {
+  assets: string
+  css: string
+  icons: string
+  public: string
+  static: string
+}
 
 // Static file paths that will be aliased (copied) to a different destination path.
 const staticFileAliases = {
@@ -29,15 +33,29 @@ const sitemapExcludes = ['/404', '/docs']
 // under chassis-ui.com/<project>/.
 const subProjectPaths = ['/tokens', '/css', '/figma', '/icons', '/assets']
 
+interface ChassisOptions {
+  /** The parsed `config.yml`. */
+  config: SiteConfig
+  /** The site's root: the directory that holds `astro.config.ts`. */
+  root: string
+}
+
 /**
- * Returns the full set of Astro integrations used by the Chassis docs site.
+ * Returns the site's own Astro integrations. They come after `chassisDocs()` of
+ * `@chassis-ui/docs` in `astro.config.ts`.
  *
- * Includes the core `chassis-integration` (asset copying, remark/rehype plugins,
- * post-build validation), MDX support, the sitemap generator, and a
- * post-process integration that injects sub-project sitemap references.
+ * Includes the `chassis-integration` (asset copying), MDX support, the sitemap generator,
+ * and a post-process integration that injects sub-project sitemap references.
  */
-export function chassis(): AstroIntegration[] {
-  const config = getConfig()
+export function chassis({ config, root }: ChassisOptions): AstroIntegration[] {
+  const paths: SitePaths = {
+    assets: getChassisAssetsFsPath({ root }),
+    css: getChassisCSSFsPath({ root }),
+    icons: getChassisIconsFsPath({ root }),
+    public: path.join(root, 'public'),
+    static: path.join(root, 'static')
+  }
+  const baseURL = config.baseURL.replace(/\/$/, '')
   const sitemapExcludedUrls = sitemapExcludes.map((url) => `${config.baseURL}${url}/`)
 
   // `astro check` / `astro sync` doesn't need static assets copied into _site.
@@ -45,41 +63,37 @@ export function chassis(): AstroIntegration[] {
   let cmd = 'dev'
 
   return [
-    chassisAutoImportIntegration(),
     {
       name: 'chassis-integration',
       hooks: {
         'astro:config:setup': ({ addWatchFile, command }) => {
           cmd = command
           // Reload the config when the integration is modified.
-          addWatchFile(path.join(getDocsFsPath(), 'src/libs/astro.ts'))
+          addWatchFile(path.join(root, 'src/libs/astro.ts'))
         },
         'astro:config:done': () => {
           if (cmd === 'sync') return
-          cleanPublicDirectory()
-          copyStatic()
-          copyChassisAssets()
-          copyChassisCSS()
-          copyChassisIcons()
-          aliasStatic()
-          copyPagefindIndex()
-        },
-        'astro:build:done': ({ dir }) => {
-          validateChassisDocsPaths(dir)
+          cleanPublicDirectory(paths)
+          copyStatic(paths)
+          copyChassisAssets(paths)
+          copyChassisCSS(paths)
+          copyChassisIcons(paths)
+          aliasStatic(paths)
+          copyPagefindIndex(root, paths)
         }
       }
     },
     // https://github.com/withastro/astro/issues/6475
     mdx() as AstroIntegration,
     sitemap({
-      filter: (page) => sitemapFilter(page, sitemapExcludedUrls)
+      filter: (page) => sitemapFilter(page, baseURL, sitemapExcludedUrls)
     }),
     {
       // Must run AFTER `@astrojs/sitemap` writes `sitemap-index.xml`.
       name: 'chassis-sitemap-postprocess',
       hooks: {
         'astro:build:done': ({ dir }) => {
-          injectSubProjectSitemaps(dir)
+          injectSubProjectSitemaps(dir, baseURL)
         }
       }
     }
@@ -91,10 +105,10 @@ export function chassis(): AstroIntegration[] {
  * into `public/pagefind/` so `astro dev` can serve search at `/pagefind/`.
  * No-op if no production build has been run yet — dev simply returns no results.
  */
-function copyPagefindIndex() {
-  const source = path.join(process.cwd(), '../..', '_site', 'pagefind')
+function copyPagefindIndex(root: string, paths: SitePaths) {
+  const source = path.join(root, '../..', '_site', 'pagefind')
   if (!fs.existsSync(source)) return
-  const destination = path.join(getDocsPublicFsPath(), 'pagefind')
+  const destination = path.join(paths.public, 'pagefind')
 
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(source, destination, { recursive: true })
@@ -107,8 +121,8 @@ function copyPagefindIndex() {
  * Errors on individual entries are intentionally swallowed — the directory may
  * contain locked or read-only files in some environments.
  */
-function cleanPublicDirectory() {
-  const dir = getDocsPublicFsPath()
+function cleanPublicDirectory(paths: SitePaths) {
+  const dir = paths.public
   if (!fs.existsSync(dir)) return
   for (const entry of fs.readdirSync(dir)) {
     const entryPath = path.join(dir, entry)
@@ -123,9 +137,9 @@ function cleanPublicDirectory() {
 /**
  * Copies the Chassis assets package output into `public/static/`.
  */
-function copyChassisAssets() {
-  const source = getChassisAssetsFsPath()
-  const destination = path.join(getDocsPublicFsPath(), 'static')
+function copyChassisAssets(paths: SitePaths) {
+  const source = paths.assets
+  const destination = path.join(paths.public, 'static')
 
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(source, destination, { recursive: true })
@@ -134,9 +148,9 @@ function copyChassisAssets() {
 /**
  * Copies the compiled Chassis CSS bundle into `public/static/`.
  */
-function copyChassisCSS() {
-  const source = getChassisCSSFsPath()
-  const destination = path.join(getDocsPublicFsPath(), 'static')
+function copyChassisCSS(paths: SitePaths) {
+  const source = paths.css
+  const destination = path.join(paths.public, 'static')
 
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(source, destination, { recursive: true })
@@ -146,9 +160,9 @@ function copyChassisCSS() {
  * Copies the `icons/` folder from the Chassis Icons package into
  * `public/static/icons/` so icons are served from `/static/icons/`.
  */
-function copyChassisIcons() {
-  const source = path.join(getChassisIconsFsPath(), 'icons')
-  const destination = path.join(getDocsPublicFsPath(), 'static', 'icons')
+function copyChassisIcons(paths: SitePaths) {
+  const source = path.join(paths.icons, 'icons')
+  const destination = path.join(paths.public, 'static', 'icons')
 
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(source, destination, { recursive: true })
@@ -158,9 +172,9 @@ function copyChassisIcons() {
  * Copies the contents of the `static/` source directory into `public/`
  * so files are served from the root URL (`/`).
  */
-function copyStatic() {
-  const source = getDocsStaticFsPath()
-  const destination = getDocsPublicFsPath()
+function copyStatic(paths: SitePaths) {
+  const source = paths.static
+  const destination = paths.public
 
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(source, destination, { recursive: true })
@@ -170,9 +184,9 @@ function copyStatic() {
  * Copies select static files from the Chassis assets package to alternative
  * destination paths (e.g. `apple-touch-icon.png` → `/apple-touch-icon.png`).
  */
-function aliasStatic() {
-  const source = getChassisAssetsFsPath()
-  const destination = getDocsPublicFsPath()
+function aliasStatic(paths: SitePaths) {
+  const source = paths.assets
+  const destination = paths.public
 
   for (const [aliasSource, aliasDestination] of Object.entries(staticFileAliases)) {
     fs.cpSync(path.join(source, aliasSource), path.join(destination, aliasDestination))
@@ -183,9 +197,7 @@ function aliasStatic() {
  * Returns `false` for pages that should be excluded from the sitemap:
  * explicitly excluded URLs, and any page under `/test` or `/docs/test`.
  */
-function sitemapFilter(page: string, excludedUrls: string[]) {
-  const baseURL = getConfig().baseURL.replace(/\/$/, '')
-
+function sitemapFilter(page: string, baseURL: string, excludedUrls: string[]) {
   if (
     excludedUrls.includes(page) ||
     page.startsWith(`${baseURL}/test`) ||
@@ -203,7 +215,7 @@ function sitemapFilter(page: string, excludedUrls: string[]) {
  * website's own pages; sub-project sitemaps are served from separate deployments
  * and proxied under `chassis-ui.com/<project>/sitemap-index.xml`.
  */
-function injectSubProjectSitemaps(dir: URL) {
+function injectSubProjectSitemaps(dir: URL, baseURL: string) {
   const sitemapIndexPath = path.join(new URL('.', dir).pathname, 'sitemap-index.xml')
 
   if (!fs.existsSync(sitemapIndexPath)) {
@@ -211,7 +223,6 @@ function injectSubProjectSitemaps(dir: URL) {
     return
   }
 
-  const baseURL = getConfig().baseURL.replace(/\/$/, '')
   const subProjectEntries = subProjectPaths
     .map((p) => `  <sitemap><loc>${baseURL}${p}/sitemap-index.xml</loc></sitemap>`)
     .join('\n')

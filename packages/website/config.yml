@@ -1,26 +1,25 @@
 title:                  "Chassis UI"
 baseURL:                "https://chassis-ui.com"
 
-docsDir:                "."
-docsPath:                "/docs"
+docsPath:               "/docs"
 
 subtitle:               "Design Systems that Scale & Sync"
 description:            "Build and scale multi-brand products with an open-source design system featuring design tokens, Figma libraries, semantic CSS, and asset management tools."
 authors:                "Ozgur Gunes and Chassis UI contributors"
 
-current_version:        "0.1.0"
+currentVersion:         "0.1.0"
 repo:                   "https://github.com/chassis-ui/website"
 
 # Where files live in the repository. Used by "View on GitHub" and the source-file shortcodes.
 sitePath:               "packages/website"
 sourcePath:             "packages/website"
 
-github_org:             "chassis-ui"
-figma_handle:           "chassis_ui"
-x_username:             "chassis_ui"
+githubOrg:              "chassis-ui"
+figmaHandle:            "chassis_ui"
+xUsername:              "chassis_ui"
 
 analytics:
-  google_id:            "G-QGR8C28VYN"
+  googleId:             "G-QGR8C28VYN"
 
 anchors:
   min:                  2

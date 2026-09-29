@@ -5,9 +5,9 @@
  * Main layout wrapper for all pages with configurable HTML attributes and layout modes.
  */
 
-import type { CollectionEntry } from 'astro:content'
-import { getConfig } from '@libs/config'
 import type { Layout, LayoutOverridesHTMLAttributes } from '../libs/layout'
+import type { DocsFrontmatter } from '../libs/schema'
+import { getConfig } from '../site'
 import Head from './head/Head.astro'
 import Header from './header/Header.astro'
 import Scripts from './footer/Scripts.astro'
@@ -42,11 +42,11 @@ type Props = {
 // The following props are automatically set by Astro (if defined) based on the markdown frontmatter when rendering a
 // markdown page. They can be accessed through the `Astro.props.frontmatter` object but note that they won't be set when
 // not rendering a markdown page.
-type MarkdownProps = { frontmatter?: Partial<CollectionEntry<'docs'>['data']> }
+type MarkdownProps = { frontmatter?: DocsFrontmatter }
 
-// This type is used to define the shape of the `extra_js` frontmatter property which allows adding extra JavaScript
+// This type is used to define the shape of the `extraJs` frontmatter property which allows adding extra JavaScript
 // files to a page by passing an array of objects containing the `src` and `async` properties.
-type ExtraJS = NonNullable<CollectionEntry<'docs'>['data']['extra_js']>[number]
+type ExtraJS = NonNullable<DocsFrontmatter['extraJs']>[number]
 
 const { frontmatter, layout, overrides, robots } = Astro.props
 
@@ -96,10 +96,8 @@ const mainProps = overrides?.main ?? {}
     </Scripts>
 
     {
-      frontmatter?.extra_js &&
-        frontmatter.extra_js.map((js: ExtraJS) => (
-          <script is:inline async={js.async} src={js.src} />
-        ))
+      frontmatter?.extraJs &&
+        frontmatter.extraJs.map((js: ExtraJS) => <script is:inline async={js.async} src={js.src} />)
     }
 
     {

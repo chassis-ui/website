@@ -2,7 +2,7 @@
 import fs from 'node:fs'
 import { transformerNotationDiff, transformerNotationHighlight } from '@shikijs/transformers'
 import { highlightCode } from '../../libs/highlight'
-import { getSourceFsPath, getSourceUrl } from '../../libs/source'
+import { getSourceFsPath, getSourceUrl } from '../../site'
 import Icon from './Icon.astro'
 
 interface Props {
@@ -41,7 +41,7 @@ interface Props {
   fileMatch?: string
   /**
    * A path to the file containing the code to highlight, relative to the `sourceDir` of the
-   * site's `config.yml` (the working directory of the build when it is not set).
+   * site's `config.yml` (the site's root when it is not set).
    * This takes precedence over the `code` prop.
    */
   filePath?: string
@@ -147,7 +147,7 @@ if (codeToDisplay && detectedLang) {
 
 <script>
   import { Tooltip } from '@chassis-ui/css'
-  import { initCopyButtons } from '@libs/clipboard'
+  import { initCopyButtons } from '../../js/clipboard'
 
   document.querySelectorAll('.button-edit').forEach((button) => {
     Tooltip.getOrCreateInstance(button, { title: 'Edit on StackBlitz' })

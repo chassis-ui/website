@@ -1,11 +1,17 @@
-// Shared libraries for documentation sites
+// Library functions. They are safe to import anywhere: in `astro.config.ts`, in a site's own
+// integrations, and in pages. What pages read from the site is in `@chassis-ui/docs/site`.
+export * from './src/libs/config'
+export * from './src/libs/docs-path'
 export * from './src/libs/highlight'
 export * from './src/libs/image'
 export * from './src/libs/layout'
 export * from './src/libs/markdown'
+export * from './src/libs/paths'
 export * from './src/libs/placeholder'
 export * from './src/libs/rehype'
+export * from './src/libs/remark'
 export * from './src/libs/shortcodes'
 export * from './src/libs/site'
+export * from './src/libs/source'
 export * from './src/libs/toc'
 export * from './src/libs/utils'

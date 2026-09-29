@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import type { AstroIntegration } from 'astro'
+import { resolvePackageFilePath } from './paths'
 
 interface MdxjsEsmNode {
   type: 'mdxjsEsm'
@@ -8,9 +8,13 @@ interface MdxjsEsmNode {
   data: { estree: object }
 }
 
+function getComponentName(filePath: string): string {
+  return path.parse(filePath).name.replaceAll(/[^\w\d]/g, '')
+}
+
 function buildImportsNode(imports: string[]): MdxjsEsmNode {
   const body = imports.map((filePath) => {
-    const name = path.parse(filePath).name.replaceAll(/[^\w\d]/g, '')
+    const name = getComponentName(filePath)
     return {
       type: 'ImportDeclaration',
       specifiers: [{ type: 'ImportDefaultSpecifier', local: { type: 'Identifier', name } }],
@@ -26,89 +30,100 @@ function buildImportsNode(imports: string[]): MdxjsEsmNode {
 }
 
 export interface ChassisAutoImportOptions {
-  /** Absolute path to the docs site root (e.g. `getDocsFsPath()`). Used for the
-   *  site-local shortcodes directory and the type definitions output path. */
-  docsPath: string
-  /** Absolute path to the directory containing `node_modules`. Defaults to
-   *  `docsPath` when omitted — override when `node_modules` lives at the repo root. */
-  modulesPath?: string
+  /**
+   * The site's root.
+   * @default process.cwd()
+   */
+  root?: string
+  /**
+   * The site's own shortcodes, relative to `root`. A component here replaces the component
+   * of the package that has the same name.
+   * @default 'src/components/shortcodes'
+   */
+  dir?: string
+  /** Names of the only shortcodes of the package to import, e.g. `['Code', 'Callout']`. */
+  include?: string[]
+  /** Names of shortcodes of the package to leave out, e.g. `['Icon']`. */
+  exclude?: string[]
+  /**
+   * Absolute path of the package's shortcodes. Found from the package's own location when
+   * omitted.
+   */
+  packageDir?: string
 }
 
-function scanComponents({ docsPath, modulesPath = docsPath }: ChassisAutoImportOptions) {
-  const dirs = [
-    path.join(modulesPath, 'node_modules/@chassis-ui/docs/src/components/shortcodes'),
-    path.join(docsPath, 'src/components/shortcodes')
-  ]
+export interface ChassisAutoImport {
+  /** Import specifiers of the components, in import order. */
+  imports: string[]
+  /** Source of a declaration file that makes the components global in MDX files. */
+  typeDefinitions: string
+  /** Factory for the remark plugin that injects the imports into every `.mdx` file. */
+  plugin: () => ReturnType<typeof createAutoImportPlugin>
+}
 
-  const components: string[] = []
-  const definitions: string[] = []
+function listFiles(directory: string): string[] {
+  if (!fs.existsSync(directory)) return []
 
-  for (const dir of dirs) {
-    if (!fs.existsSync(dir)) continue
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (!entry.isFile()) continue
-      components.push(`${dir}/${entry.name}`)
-      if (entry.name.endsWith('.astro')) {
-        const importPath = dir.includes('@chassis-ui/docs')
-          ? `@chassis-ui/docs/shortcodes`
-          : `@shortcodes`
-        definitions.push(
-          `export const ${entry.name.replace('.astro', '')}: typeof import('${importPath}/${entry.name}').default`
-        )
-      }
-    }
-  }
-
-  return { components, definitions }
+  return fs
+    .readdirSync(directory, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && !entry.name.startsWith('.'))
+    .map((entry) => entry.name)
+    .sort()
 }
 
 /**
- * Astro integration that writes the auto-import type definitions file, and a
- * remark plugin factory for injecting shortcode imports into every MDX file.
- *
- * Replaces `astro-auto-import`, which triggers a deprecation warning in Astro 7.
- *
- * @example
- * ```ts
- * // astro.ts
- * const { integration, plugin } = chassisAutoImport({ docsPath: getDocsFsPath(), modulesPath: process.cwd() })
- *
- * // astro.config.ts
- * markdown: getDocsMarkdownConfig({ remarkPlugins: [plugin()] })
- * integrations: [integration()]
- * ```
+ * Finds the shortcodes of the package and of the site, and returns what is needed to import
+ * them into every MDX file. The `chassisDocs()` integration calls it. A site calls it only
+ * to build its own markdown configuration.
  */
-export function chassisAutoImport(options: ChassisAutoImportOptions): {
-  /** Astro integration that writes `src/types/auto-import.d.ts`. */
-  integration: () => AstroIntegration
-  /** Factory for the remark plugin that injects imports into every `.mdx` file. */
-  plugin: () => ReturnType<typeof createAutoImportPlugin>
-} {
-  const { components, definitions } = scanComponents(options)
-  const typeDefinitionsPath = path.join(options.docsPath, 'src/types/auto-import.d.ts')
+export function chassisAutoImport(options: ChassisAutoImportOptions = {}): ChassisAutoImport {
+  const {
+    root = process.cwd(),
+    dir = 'src/components/shortcodes',
+    include,
+    exclude = [],
+    packageDir = resolvePackageFilePath('shortcodes')
+  } = options
+
+  const siteDir = path.resolve(root, dir)
+  const siteFiles = listFiles(siteDir)
+  const siteNames = new Set(siteFiles.map(getComponentName))
+
+  const packageFiles = listFiles(packageDir).filter((file) => {
+    const name = getComponentName(file)
+
+    if (siteNames.has(name) || exclude.includes(name)) return false
+
+    return include ? include.includes(name) : true
+  })
+
+  // The package's components are imported by specifier, not by path. The path of an
+  // installed package is outside the site, where the dev server refuses to serve files.
+  const components = [
+    ...packageFiles.map((file) => ({ file, source: `@chassis-ui/docs/shortcodes/${file}` })),
+    ...siteFiles.map((file) => ({ file, source: path.join(siteDir, file) }))
+  ]
+
+  const definitions = components
+    .filter(({ file }) => file.endsWith('.astro'))
+    .map(
+      ({ file, source }) =>
+        `export const ${getComponentName(file)}: typeof import('${source}').default`
+    )
+
+  const imports = components.map(({ source }) => source)
 
   return {
-    integration: () => ({
-      name: 'chassis-auto-import',
-      hooks: {
-        'astro:config:setup': () => {
-          fs.writeFileSync(
-            typeDefinitionsPath,
-            `/**
- * DO NOT EDIT THIS FILE MANUALLY.
- *
- * This file is automatically generated by the Chassis Astro Integration.
- * It contains the type definitions for the components that are auto imported in all pages.
+    imports,
+    typeDefinitions: `/**
+ * Generated by the integration of @chassis-ui/docs.
+ * The components that are imported into every MDX file.
  */
 export declare global {
   ${definitions.join('\n  ')}
 }
-`
-          )
-        }
-      }
-    }),
-    plugin: () => createAutoImportPlugin(components)
+`,
+    plugin: () => createAutoImportPlugin(imports)
   }
 }
 

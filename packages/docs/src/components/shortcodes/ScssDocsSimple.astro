@@ -1,6 +1,6 @@
 ---
 import fs from 'node:fs'
-import { getSourceFsPath } from '../../libs/source'
+import { getSourceFsPath } from '../../site'
 import Code from './Code.astro'
 
 // Prints everything between `// scss-docs-start "name"` and `// scss-docs-end "name"`
@@ -13,7 +13,7 @@ interface Props {
   name: string
   /**
    * File path that contains the content to display, relative to the `sourceDir` of the site's
-   * `config.yml` (the working directory of the build when it is not set).
+   * `config.yml` (the site's root when it is not set).
    */
   file: string
 }

@@ -1,4 +1,7 @@
-// Local docs variables
+// The Sass variables and custom properties of the docs.
+//
+// This partial is public: a site may `@use "@chassis-ui/docs/scss/vars"` in its own
+// stylesheets. Removing or renaming a variable is a breaking change.
 @use "@chassis-ui/css/scss/functions" as *;
 @use "@chassis-ui/css/scss/mixins" as *;
 

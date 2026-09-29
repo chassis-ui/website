@@ -5,13 +5,13 @@
  * Navigation sidebar for documentation pages with hierarchical menu structure.
  */
 
-import { getData, type SidebarItem, type SidebarSubItem } from '@libs/data'
-import { getConfig } from '@libs/config'
-import { docsPages } from '@libs/content'
+import type { SidebarItem, SidebarSubItem } from '../libs/schema'
 import { getSlug } from '../libs/utils'
+import { getDocsPages, getDocsPath, getSidebar } from '../site'
 import Icon from './shortcodes/Icon.astro'
 
-const sidebar = getData('sidebar')
+const sidebar = getSidebar()
+const docsPages = await getDocsPages()
 ---
 
 <nav class="cxd-links w-100" id="cxd-docs-nav" aria-label="Docs navigation">
@@ -32,7 +32,7 @@ const sidebar = getData('sidebar')
                 {group.icon && (
                   <Icon
                     name={group.icon}
-                    style={group.icon_color && `color: var(--cx-${group.icon_color});`}
+                    style={group.iconColor && `color: var(--cx-${group.iconColor});`}
                   />
                 )}
                 {group.title}
@@ -48,7 +48,7 @@ const sidebar = getData('sidebar')
                           const docSlug = getSlug(page.title)
                           const unversionedPageSlug = `${groupSlug}/${docSlug}`
 
-                          const url = `${getConfig().docsPath}/${unversionedPageSlug}`
+                          const url = getDocsPath(unversionedPageSlug)
                           const active = Astro.params.slug === unversionedPageSlug
 
                           const generatedPage = docsPages.find(
@@ -58,7 +58,7 @@ const sidebar = getData('sidebar')
                           // This test should not be necessary, see comments for `getSlug()` in `src/libs/utils.ts`.
                           if (!generatedPage) {
                             throw new Error(
-                              `The page '${page.title}' referenced in 'site/data/sidebar.yml' does not exist at '${url}'.`
+                              `The page '${page.title}' referenced in 'data/sidebar.yml' does not exist at '${url}'.`
                             )
                           }
 
@@ -86,7 +86,7 @@ const sidebar = getData('sidebar')
                   const docSlug = getSlug(item.title)
                   const unversionedPageSlug = `${groupSlug}/${docSlug}`
 
-                  const url = `${getConfig().docsPath}/${unversionedPageSlug}`
+                  const url = getDocsPath(unversionedPageSlug)
                   const active = Astro.params.slug === unversionedPageSlug
 
                   const generatedPage = docsPages.find((page) => page.id === unversionedPageSlug)
@@ -120,7 +120,7 @@ const sidebar = getData('sidebar')
             <>
               <li class="cxd-links-span-all mt-2xs mb-md mx-lg border-top" />
               <a
-                href={`${getConfig().docsPath}/${groupSlug}/`}
+                href={getDocsPath(`${groupSlug}/`)}
                 class:list={['cxd-links-link cxd-links-span-all', { active }]}
                 aria-current={active ? 'page' : undefined}
               >

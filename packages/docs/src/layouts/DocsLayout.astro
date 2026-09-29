@@ -6,13 +6,10 @@
  */
 
 import type { MarkdownHeading } from 'astro'
-import type { CollectionEntry } from 'astro:content'
-import { getConfig } from '@libs/config'
-import { docsPages } from '@libs/content'
-import { getChassisDocsPath } from '@libs/path'
 import type { LayoutOverridesHTMLAttributes } from '../libs/layout'
-import { getSiteFileUrl } from '../libs/source'
+import type { DocsFrontmatter } from '../libs/schema'
 import { getSlug, processMarkdownToHtml } from '../libs/utils'
+import { getConfig, getDocsPages, getDocsPath, getSiteFileUrl } from '../site'
 import BaseLayout from './BaseLayout.astro'
 import DocsSidebar from '../components/DocsSidebar.astro'
 import TableOfContents from '../components/TableOfContents.astro'
@@ -20,11 +17,11 @@ import Icon from '../components/shortcodes/Icon.astro'
 
 interface Props {
   /** Frontmatter data from the docs collection */
-  frontmatter: CollectionEntry<'docs'>['data']
+  frontmatter: DocsFrontmatter
   /** Markdown headings for table of contents */
   headings?: MarkdownHeading[]
   /** Document ID from the docs collection */
-  id: CollectionEntry<'docs'>['id']
+  id: string
   /**
    * Path of the page's source file from the site's root. Looked up from the docs collection
    * by `id` when omitted.
@@ -36,7 +33,8 @@ const { frontmatter, headings, id } = Astro.props
 
 // "View on GitHub" links to the page's own source file. The old link, which assumed the
 // file sat at `<id>.mdx` in the repository root, is kept only when no file path is known.
-const filePath = Astro.props.filePath ?? docsPages.find((page) => page.id === id)?.filePath
+const filePath =
+  Astro.props.filePath ?? (await getDocsPages()).find((page) => page.id === id)?.filePath
 const githubUrl = filePath ? getSiteFileUrl(filePath) : `${getConfig().repo}/blob/${id}.mdx`
 
 type DocSection = NonNullable<typeof frontmatter.sections>[number]
@@ -86,11 +84,11 @@ if (frontmatter.toc) {
           <div class="md:d-flex md:flex-row-reverse justify-content-between align-items-start">
             <div class="mb-md md:mb-0 d-flex text-nowrap">
               {
-                // This is needed because we want to show the badge if show_badge isn't present or is set to false
+                // This is needed because we want to show the badge if showBadge isn't present or is set to false
                 frontmatter.added &&
-                  ((frontmatter.added.show_badge !== undefined &&
-                    frontmatter.added.show_badge === true) ||
-                    frontmatter.added.show_badge === undefined) && (
+                  ((frontmatter.added.showBadge !== undefined &&
+                    frontmatter.added.showBadge === true) ||
+                    frontmatter.added.showBadge === undefined) && (
                     <span class="badge success smooth rounded-md me-xs">
                       Added in v{frontmatter.added.version}
                     </span>
@@ -153,7 +151,7 @@ if (frontmatter.toc) {
                 <div class="md:col-6">
                   <a
                     class="d-block text-decoration-none"
-                    href={getChassisDocsPath(
+                    href={getDocsPath(
                       `${parentDirectory ? parentDirectory + '/' : ''}${section.slug ? section.slug : getSlug(section.title)}/`
                     )}
                   >

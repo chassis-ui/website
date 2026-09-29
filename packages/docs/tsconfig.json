@@ -1,22 +1,7 @@
 {
   "extends": "astro/tsconfigs/base",
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      // Mirror website's path aliases so editors and astro check can resolve imports in ../website/src
-      "@components/*": ["../website/src/components/*"],
-      "@layouts/*": ["../website/src/layouts/*"],
-      "@libs/*": ["../website/src/libs/*"],
-      "@scss/*": ["../website/src/scss/*"],
-      "@shortcodes/*": ["../website/src/components/shortcodes/*"]
-    }
+    "ignoreDeprecations": "6.0"
   },
-  "include": [
-    "index.ts",
-    "src/**/*",
-    // Include website source so editors and astro check see its types alongside docs types
-    "../website/src/**/*"
-  ]
+  "include": [".astro/types.d.ts", "env.d.ts", "virtual.d.ts", "index.ts", "src/**/*"]
 }

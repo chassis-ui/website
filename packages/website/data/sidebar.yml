@@ -3,7 +3,7 @@
 - title: Test Category
   section: Section 1
   icon: rocket-solid
-  icon_color: primary
+  iconColor: primary
   pages:
     - title: Test Page
     - title: Test Page 2
@@ -12,7 +12,7 @@
 - title: Test Category 2
   section: Section 2
   icon: rocket-solid
-  icon_color: secondary
+  iconColor: secondary
   pages:
     - title: Test Page
     - title: Test Page 2
