@@ -192,7 +192,7 @@ Example:
 }
 ```
 
-See [VERCEL_CONFIG.md](VERCEL_CONFIG.md) for the full rewrite set (including `/static/*` referer-based rules) and [INDEXING.md](INDEXING.md) for the full indexing strategy.
+See [VERCEL_CONFIG.md](VERCEL_CONFIG.md) for the full rewrite set (including `/static/*` referer-based rules), the security headers and the firewall rule of the contact endpoint, and [INDEXING.md](INDEXING.md) for the full indexing strategy.
 
 ### Environment Detection
 
@@ -273,7 +273,7 @@ pnpm install
 pnpm check:astro
 
 # Environment variables missing
-# → Check Vercel dashboard settings
+# → Check Vercel dashboard settings. .env.example names them
 ```
 
 ### Submodule Issues

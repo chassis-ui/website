@@ -142,6 +142,8 @@ last sibling has been upgraded and deployed.
 | F52 | `ref/CHASSIS_CSS.md` uses size names that the compiled CSS does not have. Found in session 3.1.                                                                                               | It writes breakpoints as `medium:` and sizes as `xlarge` and `button large`. Chassis CSS 0.5.2 ships `md:`, `3xs` to `6xl`, and `sm` and `lg` for buttons and badges. The vanilla-html example was written against the compiled CSS instead.                                                                                                            | 3     |
 | F53 | The About page linked to six repositories that do not exist. Found and fixed in session 3.1.                                                                                                  | `ContributeSection.astro` built `github.com/chassis-ui/chassis-tokens` and so on. The repositories are `chassis-ui/tokens`, `chassis-ui/css` and so on, and each old link returned 404. chassis-react was missing from the list.                                                                                                                        | 3     |
 | F54 | Four local branches hold work that is not merged. Found in session 3.1.                                                                                                                       | `dev/blog` and `dev/update` point to one commit, a colour-system blog post. `dev/figma` has the first part of the Figma docs, 140 files. `dev/site` has updates for css and tokens 0.4. They were kept.                                                                                                                                                 | 3     |
+| F55 | The tests of the contact endpoint were deployed as a function. Found and fixed in session 4.1.                                                                                                | Vercel turns every file in `api/` into a function. `https://chassis-ui.com/api/contact.test` answered 500. `.vercelignore` now leaves out `api/*.test.ts`.                                                                                                                                                                                              | 4     |
+| F56 | The contact endpoint accepted `constructor` and `toString` as topics. Found and fixed in session 4.1.                                                                                         | The check looked the topic up on a plain object, so an inherited property passed, and its value went into the subject. It now uses `Object.hasOwn`.                                                                                                                                                                                                     | 4     |
 | F34 | The package has no stated versioning policy.                                                                                                                                                  | It is at 0.5.0 with seven consumers. Nothing says what counts as a breaking change or what 1.0 requires.                                                                                                                                                                                                                                                | 2     |
 
 ### How the sibling repositories consume this one
@@ -182,6 +184,7 @@ sibling's part is in [SIBLING_TASKS.md](SIBLING_TASKS.md).
 | S12 | Tooling maturity is split in two.                                                              | tokens, css and react have Changesets, provenance publishing, Dependabot and full community files. assets, icons and figma have a README, a license and a changelog. This repository sits in between. | 3    |
 | S13 | `chassis-icons` CI is broken by design.                                                        | `.github/workflows/ci.yml:35` runs `pnpm validate`. `package.json` has no such script. The job uses Node 18 and 20 and pnpm 9.                                                                        | none |
 | S14 | `chassis-figma` has no CI and no tags.                                                         | No `.github/workflows` directory.                                                                                                                                                                     | none |
+| S16 | The sitemaps of the siblings point to the wrong place. Found in session 4.1.                   | Each `sitemap-index.xml` lists the website's `sitemap-0.xml`. The chassis-css sitemap lists seven URLs without `/css` that return 404. Tasks A22 and CSS8.                                            | none |
 | S15 | No consumer accepts `@chassis-ui/tokens` 0.6.0.                                                | Every range is `^0.5.x`, including the website's.                                                                                                                                                     | 5    |
 
 [CONTRACT_REVIEW.md](CONTRACT_REVIEW.md) lists every difference between the copies behind
@@ -544,15 +547,32 @@ performance, and CI holds it there.
 
 ### Session 4.1: security
 
-- [ ] Add headers in `vercel.json`: `Content-Security-Policy`,
+- [x] Add headers in `vercel.json`: `Content-Security-Policy`,
       `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`,
       `X-Frame-Options` or `frame-ancestors`. Start the policy in report-only mode.
       Headers set here also apply to the proxied sibling pages, so test one page of each.
-- [ ] In `api/contact.ts`: escape every value that goes into the HTML, cap field lengths,
+      The policy comes from a crawl of every sitemap URL of the six sites. Served through
+      a local proxy with the policy enforced, 21 pages across the six sites, search
+      included, gave no violation. Reports go to `/api/csp-report`, which logs them.
+      `X-Frame-Options` is `SAMEORIGIN`, since `frame-ancestors` does nothing in
+      report-only mode. [VERCEL_CONFIG.md](VERCEL_CONFIG.md) explains each source and
+      how to enforce the policy.
+- [x] In `api/contact.ts`: escape every value that goes into the HTML, cap field lengths,
       strip line breaks from the subject, check the `Origin` header, and add rate
-      limiting or a challenge.
-- [ ] Add an `.env.example` that names `RESEND_API_KEY`, `RESEND_FROM_EMAIL` and
+      limiting or a challenge. The body is capped at 8 KB and the fields at 100, 254 and
+      100 characters, which the form sets as `maxlength`. The origin must be the host the
+      request was sent to. Rate limiting is a rule of the Vercel firewall, 5 requests per
+      10 minutes per IP, described in [VERCEL_CONFIG.md](VERCEL_CONFIG.md). It was created
+      in the dashboard. The form posts to `/api/contact/`, so a message counts once. Fixes F23 and F56.
+- [x] Add an `.env.example` that names `RESEND_API_KEY`, `RESEND_FROM_EMAIL` and
       `RESEND_TO_EMAIL`.
+
+### Left for you
+
+- After the next staging deploy, check that `curl -sI` shows the headers on
+  `staging.chassis-ui.com/` and on one page of each sibling, and that `/api/contact.test`
+  answers 404. A POST to `/api/contact` with the site's `Origin` and no fields must answer
+  400, not 403. It sends no email.
 
 ### Session 4.2: routing
 
@@ -583,6 +603,9 @@ performance, and CI holds it there.
 - [ ] Do one manual pass with a keyboard and a screen reader. Record the result.
 - [ ] Add uptime monitoring for the site, the contact endpoint and one page of each
       proxied sibling.
+- [ ] Enforce the content security policy: rename the header to
+      `Content-Security-Policy` when the log of `/api/csp-report` has shown no unexplained
+      violation for two weeks of production traffic.
 - [ ] Write `ref/OPERATIONS.md`: how to roll back a deployment, what to do when a
       proxied site is down, how to rotate the Resend and npm credentials.
 
@@ -716,3 +739,4 @@ go here, in session 5.2.
 | 2026-09-29 | 2.4      | Release pipeline: Changesets on `develop`, split changelogs, trusted publishing with provenance, a publish gate that reads the checks on the commit, CI on `develop` only. The integration puts the default tokens on the Sass load path, and `exports` is narrowed. Decided D5, D11 and D22. Published `0.6.0-next.0` to `next`, then 0.6.0 to `latest`. Two fixes on the way: the fixture needed a stand-in for the chassis-assets build on CI, and `setup-node` looked for pnpm in the publish job.                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | 2026-09-29 | 3.1      | Top-level `lint`, `format`, `preview`, `spellcheck` and `vendor` scripts, and `build` as Vercel runs it. `pnpm dev` no longer moves the submodule pin. Node 24 in `.nvmrc`, `engines` at `>=22.12.0`, CI reads `.nvmrc`. cspell runs in the Lint job, and CI runs on pull requests against `develop`, the branch contributors target. Setup and commands live in `CONTRIBUTING.md` only. `README.md`, `ref/DEVELOPMENT.md`, `ref/ARCHITECTURE.md` and `ref/DEPLOYMENT.md` rewritten, with chassis-react. The docs section is a Getting started guide of three pages. `vanilla-html` rewritten for Chassis CSS 0.5 and served at `/examples/vanilla-html/`, `react-app` deleted. Search covers the blog posts and the guide. Fixed the repository links of the About page and the domain of the callouts. Decided D7, D12 and D13. Added F52 to F54, CSS7 and ICO9. The local and remote `app/docs` branches are left for the maintainer. |
 | 2026-09-29 | 3.2      | Code of conduct, security policy, `CODEOWNERS`, pull request template and issue forms for bug, feature and docs, in `.github/`. Private vulnerability reporting and Discussions on, homepage set to chassis-ui.com, area and triage labels added. Pre-commit hook with simple-git-hooks and lint-staged. Dependabot weekly into `develop`, grouped. `ref/CHASSIS_CSS.md` matches Chassis CSS 0.5.2. Decided D10. The issues and milestones for the roadmap were not created, at the maintainer's choice.                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| 2026-09-29 | 4.1      | Security headers in `vercel.json`, with the content security policy in report-only mode and reports logged by the new endpoint `/api/csp-report`. The policy was written from a crawl of the six sites and checked through a local proxy with it enforced. The contact endpoint checks the origin, caps the body and the fields, keeps the subject on one line and escapes the message. The form sets `maxlength` and explains a 429. Rate limiting is a Vercel firewall rule, chosen by the maintainer and created in the dashboard. `.env.example` added. Tests of the endpoints are no longer deployed as functions. Added F55, F56, S16, A22 and CSS8.                                                                                                                                                                                                                                                                               |

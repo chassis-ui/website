@@ -1,7 +1,7 @@
 # Vercel Configuration Guide
 
 > **Document Purpose:** Technical reference for Vercel proxy routing configuration
-> **Last Updated:** July 2026 (verified against current `vercel.json`; no routing changes found)
+> **Last Updated:** September 2026 (security headers and the contact firewall rule added)
 > **Audience:** Developers working on chassis-website deployment
 
 This document describes how environment-specific URL routing works for the Chassis ecosystem using Vercel rewrites and conditional headers.
@@ -129,6 +129,80 @@ The same pattern is repeated for each project (`/css/`, `/icons/`, `/tokens/`, `
 
 This stops staging from being indexed even if external backlinks point at it. See [INDEXING.md](INDEXING.md) for the full per-host indexing strategy.
 
+## 🔒 Security headers
+
+The first entry of `headers` in `vercel.json` applies to every path. Vercel adds the
+headers of this project to the responses of external rewrites too, so they cover the
+proxied sibling pages as well as the website's own.
+
+| Header                                | Value                                               | Why                                                                                                                                                  |
+| ------------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Content-Security-Policy-Report-Only` | See below                                           | Reports what the policy would block and blocks nothing yet.                                                                                          |
+| `X-Content-Type-Options`              | `nosniff`                                           | A script or stylesheet must be served with its own type.                                                                                             |
+| `X-Frame-Options`                     | `SAMEORIGIN`                                        | Other sites cannot frame a page. It is set on its own because `frame-ancestors` has no effect in a report-only policy.                              |
+| `Referrer-Policy`                     | `strict-origin-when-cross-origin`                   | Other sites see the origin only. Requests to the site itself keep the full URL, which the referrer-based `/static/*` rewrites need. Do not use `no-referrer`, `origin` or `strict-origin`: they break those rewrites. |
+| `Permissions-Policy`                  | `camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()` | No page uses these. Leave `fullscreen` and `autoplay` alone: the YouTube embed of the chassis-css docs uses them.                           |
+
+HSTS is not set here. Vercel sends it for every custom domain.
+
+### The content security policy
+
+The policy was written from a crawl of every sitemap URL of the six sites on 2026-09-29,
+then checked by serving production through a local proxy with the policy enforced. Each
+source is there for a reason:
+
+| Directive     | Sources beyond `'self'`                                                                        | Needed by                                                                                                                  |
+| ------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `script-src`  | `'unsafe-inline'`, `'wasm-unsafe-eval'`, `cdn.jsdelivr.net`, `*.googletagmanager.com`          | Inline scripts of Astro and the `onclick` examples of chassis-css. Pagefind, which is WebAssembly. GSAP and Swiper on the home page, Fuse on chassis-icons. Google Analytics. |
+| `style-src`   | `'unsafe-inline'`, `cdn.jsdelivr.net`, `fonts.googleapis.com`                                  | `style` attributes throughout the docs. The Swiper stylesheet. Google Fonts.                                              |
+| `font-src`    | `data:`, `fonts.gstatic.com`                                                                   | The icon font inside the Swiper stylesheet. Google Fonts.                                                                  |
+| `img-src`     | `data:`, `i.pravatar.cc`, `github.com`, `avatars.githubusercontent.com`, Google Analytics hosts | Inline images of the docs. The avatar examples and the team page of chassis-css.                                          |
+| `connect-src` | Google Analytics hosts                                                                         | The analytics hits. Search, the contact form and the Pagefind index are on the site itself.                               |
+| `frame-src`   | `www.youtube.com`, `www.youtube-nocookie.com`                                                  | The ratio example of chassis-css.                                                                                          |
+| `worker-src`  | none                                                                                           | The Pagefind worker.                                                                                                       |
+
+`object-src 'none'`, `base-uri 'self'`, `form-action 'self'` and `frame-ancestors 'self'`
+close the rest. `'unsafe-inline'` stays as long as the sites have inline scripts and
+event handlers: a static site behind a proxy cannot use nonces, and hashes would differ per
+build and per site.
+
+Browsers send each violation to `/api/csp-report`, which writes one line per violation to
+the function log of the website project: `CSP violation {"directive":…,"blocked":…,"page":…}`.
+Violations of the sibling pages arrive there as well.
+
+**To add a source,** add it to the right directive, and add a row to the table above. **To
+enforce the policy,** rename the header to `Content-Security-Policy` once the log has shown
+no unexplained violations for a while. `frame-ancestors` then takes effect, and
+`X-Frame-Options` can stay for older browsers.
+
+## 🧱 Firewall rule for the contact endpoint
+
+The contact form posts to `/api/contact`. The endpoint checks the origin, the size and the
+fields, and escapes what it puts into the email. Counting requests needs state that an Edge
+function does not have, so the rate limit is a rule of the Vercel Web Application Firewall,
+set in the dashboard, not in this repository:
+
+| Setting    | Value                                                          |
+| ---------- | -------------------------------------------------------------- |
+| Name       | Contact form rate limit                                        |
+| If         | Request Path matches the expression `^/api/contact/?$`, and Method equals `POST` |
+| Then       | Rate Limit, Fixed Window, 10 minutes, 5 requests, key IP       |
+| Action     | Default (429)                                                  |
+
+The site redirects `/api/contact` to `/api/contact/`, because of `trailingSlash`. The form
+posts to `/api/contact/` directly, so that a message counts once. The expression matches
+both paths, so a client that posts without the slash counts twice and is limited sooner.
+The form tells the visitor to wait when it gets a 429. Hobby allows one rate-limit rule per
+project, and this is it. To create it: the website project, **Firewall**, **Configure**,
+**New Rule**, then **Review Changes** and **Publish**, which applies it to the production
+deployment. It was created on 2026-09-29.
+
+## 📦 Functions
+
+Vercel turns every file in `api/` into a function. `.vercelignore` leaves out
+`api/*.test.ts`, so that the tests next to the endpoints are not deployed. A module shared
+by two endpoints would need a name that starts with `_` for the same reason.
+
 ## ⚠️ Vercel Deployment Protection
 
 **Disable Deployment Protection** on every sub-project that the website rewrites to (Vercel project Settings → Deployment Protection → *Disabled*). When it is enabled, Vercel intercepts proxied requests and 401-redirects them to a Vercel SSO page, which collapses the rewrite into a visible browser redirect to the underlying `*.vercel.app` URL.
@@ -198,7 +272,7 @@ curl -sI https://chassis-tokens.vercel.app/tokens/
 
 ## Configuration Files Reference
 
-- **`vercel.json`** (chassis-website) — main rewrites + staging `X-Robots-Tag` header.
+- **`vercel.json`** (chassis-website) — main rewrites, security headers, staging `X-Robots-Tag` header.
 - **`vercel.json`** (each sub-project) — `X-Robots-Tag` for `*-staging.vercel.app` hosts only.
 - **`packages/website/src/pages/robots.txt.ts`** — host-aware robots for the website.
 - **`<sub-project>/site/src/pages/robots.txt.ts`** — always emits `Disallow: /` (sub-projects are never user-facing).
