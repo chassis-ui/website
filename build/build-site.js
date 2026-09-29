@@ -3,7 +3,8 @@
 /*!
  * Site Builder Script for Chassis Website
  *
- * Builds the chassis-ui.com site: vendor assets, the Astro site, and output validation.
+ * Builds the chassis-ui.com site: vendor assets, the examples, the Astro site, and output
+ * validation.
  * Vendor assets are built from the vendor/assets commit pinned in this repository.
  * To move the pin, run `pnpm sync-submodules` and commit the new submodule pointer.
  *
@@ -12,7 +13,7 @@
  *
  * Commands:
  *   (none)    Full build process (default)
- *   site      Build Astro documentation site only
+ *   site      Build the examples and the Astro site only
  *   vendor    Build vendor assets at the pinned submodule commit
  *   clean     Remove build artifacts and node_modules
  *   validate  Validate build output
@@ -139,6 +140,10 @@ class ChassisBuilder {
     // Install dependencies using pnpm
     this.log('Installing dependencies...', 'info')
     this.runCommand('pnpm install')
+
+    // The site serves the examples under /examples/, from their build output
+    this.log('Building examples...', 'info')
+    this.runCommand('pnpm examples:build')
 
     // Build Astro site (outputs directly to _site via outDir config)
     this.log('Building Astro site...', 'info')
@@ -324,7 +329,7 @@ Usage:
 
 Commands:
   (none)    Full build process (default)
-  site      Build Astro documentation site only
+  site      Build the examples and the Astro site only
   vendor    Build vendor assets at the pinned submodule commit
   clean     Remove build artifacts and node_modules
   validate  Validate build output

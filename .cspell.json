@@ -1,13 +1,7 @@
 {
   "version": "0.2",
-  "words": [
-    "chassis"
-  ],
-  "language": "en-US",
-  "files": [
-    "**/*.md",
-    "**/*.mdx",
-  ],
+  "language": "en,en-GB",
+  "files": ["**/*.md", "**/*.mdx"],
   "ignorePaths": [
     ".cspell.json",
     "**/tests/**",
@@ -18,5 +12,39 @@
     "packages/website/public/",
     "vendor/"
   ],
-  "useGitignore": true
+  "useGitignore": true,
+  "words": [
+    "backlinks",
+    "chassis",
+    "deinit",
+    "docsref",
+    "docsrefs",
+    "Eames",
+    "flexbox",
+    "frontmatter",
+    "GSAP",
+    "Gunes",
+    "Güneş",
+    "gstatic",
+    "hdrs",
+    "HSTS",
+    "lockfiles",
+    "oklch",
+    "offcanvas",
+    "Ozgur",
+    "Özgür",
+    "recompiles",
+    "referer",
+    "robotstxt",
+    "shiki",
+    "shikijs",
+    "Sigstore",
+    "SLSA",
+    "softprops",
+    "subpaths",
+    "unpushed",
+    "xlarge",
+    "xsmall",
+    "zoomable"
+  ]
 }

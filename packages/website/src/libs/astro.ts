@@ -83,6 +83,7 @@ export function chassis({ config, root }: ChassisOptions): AstroIntegration[] {
           copyChassisCSS(paths)
           copyChassisIcons(paths)
           aliasStatic(paths)
+          copyExamples(root, paths, cmd === 'build')
           copyPagefindIndex(root, paths)
         }
       }
@@ -102,6 +103,30 @@ export function chassis({ config, root }: ChassisOptions): AstroIntegration[] {
       }
     }
   ]
+}
+
+/**
+ * Copies the build output of each example in `examples/` into `public/examples/<folder>/`.
+ * `pnpm examples:build` writes it, and the site build runs that first. A build fails when
+ * an example has no output. The dev server serves the examples that have one.
+ */
+function copyExamples(root: string, paths: SitePaths, required: boolean) {
+  const examplesDir = path.join(root, '../..', 'examples')
+  if (!fs.existsSync(examplesDir)) return
+
+  for (const entry of fs.readdirSync(examplesDir, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue
+    const source = path.join(examplesDir, entry.name, 'dist')
+
+    if (!fs.existsSync(source)) {
+      const message = `No build output for examples/${entry.name}. Run \`pnpm examples:build\`.`
+      if (required) throw new Error(message)
+      console.warn(`[chassis] ${message}`)
+      continue
+    }
+
+    fs.cpSync(source, path.join(paths.public, 'examples', entry.name), { recursive: true })
+  }
 }
 
 /**
@@ -199,14 +224,10 @@ function aliasStatic(paths: SitePaths) {
 
 /**
  * Returns `false` for pages that should be excluded from the sitemap:
- * explicitly excluded URLs, and any page under `/test` or `/docs/test`.
+ * explicitly excluded URLs, and any page under `/test`.
  */
 function sitemapFilter(page: string, baseURL: string, excludedUrls: string[]) {
-  if (
-    excludedUrls.includes(page) ||
-    page.startsWith(`${baseURL}/test`) ||
-    page.startsWith(`${baseURL}/docs/test`)
-  ) {
+  if (excludedUrls.includes(page) || page.startsWith(`${baseURL}/test`)) {
     return false
   }
 

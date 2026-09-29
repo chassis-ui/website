@@ -1,0 +1,244 @@
+<!-- prettier-ignore -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A plain HTML page styled with Chassis CSS and Chassis Icons, with no framework or bundler."
+    />
+    <title>Vanilla HTML example · Chassis</title>
+    <link rel="stylesheet" href="./vendor/css/chassis.min.css" />
+    <link rel="stylesheet" href="./vendor/icons/chassis-icons.min.css" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <header class="border-bottom">
+      <div
+        class="container d-flex flex-wrap align-items-center justify-content-between gap-sm py-md"
+      >
+        <a class="brand d-inline-flex align-items-center gap-xs font-title" href="./">
+          <span class="icon icon-lg cx-swatchbook-solid" aria-hidden="true"></span>
+          <span>Chassis example</span>
+        </a>
+        <nav aria-label="Main">
+          <ul class="bulletless d-flex gap-md mb-0">
+            <li><a href="https://chassis-ui.com/css/">Documentation</a></li>
+            <li>
+              <a href="https://github.com/chassis-ui/website/tree/main/examples/vanilla-html">
+                Source
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="py-3xl md:py-6xl text-center">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-12 lg:col-8">
+              <h1 class="font-hero mb-md">Vanilla HTML and Chassis CSS</h1>
+              <p class="font-lead fg-subtle mb-2xl">
+                One HTML file, two stylesheets and no framework. Every class on this page comes from
+                Chassis CSS, and every icon from Chassis Icons.
+              </p>
+              <div class="d-flex flex-wrap justify-content-center gap-sm">
+                <a class="button primary lg" href="https://chassis-ui.com/css/">
+                  <span class="icon cx-book-open-solid" aria-hidden="true"></span>
+                  <span>Read the docs</span>
+                </a>
+                <a
+                  class="button default lg"
+                  href="https://github.com/chassis-ui/website/tree/main/examples/vanilla-html"
+                >
+                  <span class="icon cx-github-brand" aria-hidden="true"></span>
+                  <span>View source</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="context alternate py-3xl md:py-5xl" aria-labelledby="contexts-title">
+        <div class="container">
+          <h2 id="contexts-title" class="text-center mb-sm">Context classes</h2>
+          <p class="fg-subtle text-center mb-2xl">
+            Add <code>context</code> and a color name to re-color an element and everything inside
+            it.
+          </p>
+          <div class="row g-lg">
+            <div class="col-12 md:col-6 lg:col-4">
+              <div class="card context primary h-100">
+                <div class="card-body text-center">
+                  <span class="icon icon-3xl cx-star-solid mx-auto" aria-hidden="true"></span>
+                  <h3 class="card-title mt-md">Primary</h3>
+                  <p>Brand identity and main actions.</p>
+                  <code class="mt-auto">context primary</code>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-4">
+              <div class="card context success h-100">
+                <div class="card-body text-center">
+                  <span
+                    class="icon icon-3xl cx-check-circle-solid mx-auto"
+                    aria-hidden="true"
+                  ></span>
+                  <h3 class="card-title mt-md">Success</h3>
+                  <p>Positive feedback and completed tasks.</p>
+                  <code class="mt-auto">context success</code>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-4">
+              <div class="card context warning h-100">
+                <div class="card-body text-center">
+                  <span
+                    class="icon icon-3xl cx-exclamation-triangle-solid mx-auto"
+                    aria-hidden="true"
+                  ></span>
+                  <h3 class="card-title mt-md">Warning</h3>
+                  <p>Anything that needs caution or attention.</p>
+                  <code class="mt-auto">context warning</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-3xl md:py-5xl" aria-labelledby="form-title">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-12 lg:col-8">
+              <div class="card">
+                <div class="card-header">
+                  <h2 id="form-title" class="font-heading mb-0">Contact form</h2>
+                </div>
+                <div class="card-body">
+                  <form id="contact-form" class="row g-md">
+                    <div class="form-field col-12 md:col-6">
+                      <label class="form-label" for="first-name">First name</label>
+                      <input
+                        class="form-input"
+                        type="text"
+                        id="first-name"
+                        name="first-name"
+                        autocomplete="given-name"
+                        required
+                      />
+                    </div>
+                    <div class="form-field col-12 md:col-6">
+                      <label class="form-label" for="last-name">Last name</label>
+                      <input
+                        class="form-input"
+                        type="text"
+                        id="last-name"
+                        name="last-name"
+                        autocomplete="family-name"
+                        required
+                      />
+                    </div>
+                    <div class="form-field col-12">
+                      <label class="form-label" for="email">Email</label>
+                      <input
+                        class="form-input"
+                        type="email"
+                        id="email"
+                        name="email"
+                        autocomplete="email"
+                        aria-describedby="email-help"
+                        required
+                      />
+                      <div class="form-help" id="email-help">
+                        This demo does not send anything anywhere.
+                      </div>
+                    </div>
+                    <div class="form-field col-12">
+                      <label class="form-label" for="role">Role</label>
+                      <select class="form-input" id="role" name="role">
+                        <option>Product</option>
+                        <option>Design</option>
+                        <option>Development</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                    <div class="form-field col-12">
+                      <label class="form-label" for="message">Message</label>
+                      <textarea class="form-input" id="message" name="message" rows="4"></textarea>
+                    </div>
+                    <div class="col-12 d-flex flex-wrap gap-sm">
+                      <button class="button primary" type="submit">
+                        <span class="icon cx-paper-plane-solid" aria-hidden="true"></span>
+                        <span>Send message</span>
+                      </button>
+                      <button class="button default" type="reset">Reset</button>
+                    </div>
+                    <div class="col-12" role="status">
+                      <p id="contact-status" class="notification success" hidden>
+                        Message sent. Nothing left this page; a real form would post it to a server.
+                      </p>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-even py-3xl md:py-5xl text-center" aria-labelledby="sizes-title">
+        <div class="container">
+          <h2 id="sizes-title" class="mb-2xl">Sizes and styles</h2>
+
+          <h3 class="font-title mb-md">Buttons</h3>
+          <div class="d-flex flex-wrap justify-content-center align-items-center gap-sm mb-md">
+            <button class="button primary sm" type="button">Small</button>
+            <button class="button primary" type="button">Medium</button>
+            <button class="button primary lg" type="button">Large</button>
+          </div>
+          <div class="d-flex flex-wrap justify-content-center align-items-center gap-sm mb-3xl">
+            <button class="button default" type="button">Default</button>
+            <button class="button success" type="button">Success</button>
+            <button class="button danger outline" type="button">Outline</button>
+            <button class="button info smooth" type="button">Smooth</button>
+            <button class="button primary link" type="button">Link</button>
+          </div>
+
+          <h3 class="font-title mb-md">Badges</h3>
+          <div class="d-flex flex-wrap justify-content-center align-items-center gap-sm mb-md">
+            <span class="badge primary sm">Small</span>
+            <span class="badge primary">Medium</span>
+            <span class="badge primary lg">Large</span>
+          </div>
+          <div class="d-flex flex-wrap justify-content-center align-items-center gap-sm">
+            <span class="badge default">Default</span>
+            <span class="badge success">Success</span>
+            <span class="badge danger outline">Outline</span>
+            <span class="badge info smooth">Smooth</span>
+            <span class="badge warning circle">3</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-top py-xl">
+      <div class="container d-flex flex-wrap align-items-center justify-content-between gap-md">
+        <p class="fg-subtle mb-0">A plain HTML example for the Chassis Design System.</p>
+        <ul class="bulletless d-flex gap-md mb-0">
+          <li><a href="https://chassis-ui.com/css/">Chassis CSS documentation</a></li>
+          <li>
+            <a href="https://github.com/chassis-ui/website/tree/main/examples/vanilla-html">
+              Source on GitHub
+            </a>
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>

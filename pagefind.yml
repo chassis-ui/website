@@ -4,5 +4,7 @@
 # Index special characters common in CSS / design-system docs so users can search
 # for things like `$primary`, `--cx-primary`, `&::before`, or `<details>`.
 include_characters: "$&-_<>:."
-glob: "{about/**/*.html,examples/**/*.html}"
+# Pages that search covers: About, the examples page, the blog posts and the docs guide.
+# The blog index, its tag pages, the /docs/ redirect and the example demos are left out.
+glob: "{about/**/*.html,examples/index.html,blog/[0-9]*/**/*.html,docs/*/**/*.html}"
 root_selector: "main"
