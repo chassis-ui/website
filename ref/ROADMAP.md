@@ -127,6 +127,7 @@ last sibling has been upgraded and deployed.
 | F37 | `pnpm dev` moves the submodule pin.                                                                                                                                                           | It runs `pnpm sync-submodules`, which updates `vendor/assets` to the latest `app/docs`. Each dev session can leave a changed pointer that a broad commit picks up. Since Phase 0 the pin decides what production builds.                                                                                                                                | 3     |
 | F38 | The version script replaces every occurrence of the old version.                                                                                                                              | `build/change-version.js:95-96`. Bumping 0.5.0 would also have turned the peer range `^0.5.0-0` into `^0.5.1-0`.                                                                                                                                                                                                                                        | 2     |
 | F39 | The website's source-file links point to a tag that does not exist.                                                                                                                           | `packages/website/config.yml` says `current_version: "0.1.0"`, and there is no `v0.1.0` tag. The links from the test page return 404. It follows from D11.                                                                                                                                                                                              | 2     |
+| F40 | Lighthouse on staging tests the preview deployment and gets throttled.                                                                                                                        | The staging sitemap lists `chassis-website-<hash>.vercel.app` URLs and the docs test pages, 20 URLs in all. The run on 2026-09-29 got a 403 on the twelfth URL, which loaded normally afterwards. Production, with 11 URLs, passed.                                                                                                                     | 4     |
 | F34 | The package has no stated versioning policy.                                                                                                                                                  | It is at 0.5.0 with seven consumers. Nothing says what counts as a breaking change or what 1.0 requires.                                                                                                                                                                                                                                                | 2     |
 
 ### How the sibling repositories consume this one
@@ -178,8 +179,7 @@ contract into the package. Each sibling then removes its copies in its own proje
 **Goal:** a red check means a real problem, and CI covers lint, types, the build and the
 audit.
 
-**Status:** done on `develop` on 2026-09-29, not yet pushed. The first push to `staging`
-runs the new CI and confirms the first exit criterion.
+**Status:** done on 2026-09-29. Released to `staging` and `main` together with Phase 1.
 
 ### Session 0.1: make CI pass
 
@@ -216,8 +216,7 @@ runs the new CI and confirms the first exit criterion.
 
 ### Exit criteria
 
-- [ ] CI is green on `main` and `staging`. Every job passes locally. Not confirmed on
-      GitHub until the next push.
+- [x] CI is green on `main` and `staging`, for the first time since 2026-07-21.
 - [x] A deliberate type error fails the type check.
 - [x] `pnpm audit --audit-level moderate` exits 0.
 - [x] A force push to `main` or `staging` is rejected.
@@ -233,6 +232,8 @@ runs the new CI and confirms the first exit criterion.
 
 **Goal:** close the two open issues with one naming scheme and release 0.5.1. This
 release is non-breaking.
+
+**Status:** done on 2026-09-29.
 
 Both issues have the same cause. The package assumes that the site is built from the
 repository root and that the source lives in that root. `chassis-tokens` and
@@ -286,14 +287,16 @@ does today.
       reaches its `main` branch.
 - [x] Bump to 0.5.1 by hand. `build/change-version.js` would also have rewritten the
       `@chassis-ui/css` peer range. See F38.
-- [ ] Release 0.5.1: push to `staging`, check, then push to `main`. Decided, see D16.
+- [x] Release 0.5.1: pushed to `staging`, checked CI, the deploy and the page in a
+      browser, then pushed to `main`. 0.5.1 is `latest` on npm. Production Lighthouse
+      passed for the first time. Decided, see D16.
 - [x] Write the upgrade steps for each sibling into
       [SIBLING_TASKS.md](SIBLING_TASKS.md).
 
 ### Exit criteria
 
-- [ ] Issues 1 and 2 are closed. They close when the fix reaches `main`.
-- [ ] 0.5.1 is on npm. It builds both scratch copies without a patch.
+- [x] Issues 1 and 2 are closed.
+- [x] 0.5.1 is on npm. It builds both scratch copies without a patch.
 - [x] Every sibling has its upgrade steps written down.
 
 ## Phase 2 — Package hardening
@@ -468,6 +471,8 @@ performance, and CI holds it there.
 ### Session 4.4: quality gates and operations
 
 - [ ] Fix the colour-contrast failure that every page shares. See F35.
+- [ ] Make Lighthouse on staging test `staging.chassis-ui.com` with fewer URLs or runs,
+      so that it is not throttled. See F40.
 - [ ] Bring Lighthouse performance to the 0.9 target on the home page and one docs page.
 - [ ] Add automated accessibility checks with axe against the built site.
 - [ ] Do one manual pass with a keyboard and a screen reader. Record the result.
@@ -592,3 +597,4 @@ go here, in session 5.2.
 | 2026-09-29 | Review   | Reworded F25 and session 3.1: `develop` is the local integration branch and stays unpushed.                                                                                                                 |
 | 2026-09-29 | 0.1, 0.2 | Phase 0 done on `develop`. CI fixed and extended, dependencies upgraded, build pinned, Lighthouse fixed, stale files removed, GitHub ruleset and security features on. Decided D1 and D3. Added F35 to F37. |
 | 2026-09-29 | 1.1, 1.2 | Fixed issues 1 and 2, documented the site contract, bumped to 0.5.1. Checked against chassis-css and chassis-tokens in scratch clones. Decided D2 and D16. Added F38 and F39. Release pending.              |
+| 2026-09-29 | 1.2      | Released 0.5.1 through `staging` and `main`. Issues 1 and 2 closed. CI green on both branches. Production Lighthouse passed. Added F40.                                                                     |
