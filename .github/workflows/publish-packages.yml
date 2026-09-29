@@ -92,10 +92,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REQUIRED: |
-            Lint
-            Type Check
+            Lint / Lint
+            Type Check / Type Check
             Test
-            Build
+            Build / Build
             Fixture Site (root)
             Fixture Site (packages)
         run: |

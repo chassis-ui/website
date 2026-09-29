@@ -19,69 +19,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Lint, Type Check and Build call the reusable workflows that the sibling repositories call
+  # too, so every push tests them. GitHub names their checks "Lint / Lint" and so on.
   lint:
     name: Lint
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: ESLint (website)
-        run: pnpm site:lint:eslint
-
-      - name: ESLint (docs)
-        run: pnpm docs:lint:eslint
-
-      - name: Stylelint (website)
-        run: pnpm site:lint:stylelint
-
-      - name: Stylelint (docs)
-        run: pnpm docs:lint:stylelint
-
-      - name: Prettier (website)
-        run: pnpm site:lint:prettier
-
-      - name: Prettier (docs)
-        run: pnpm docs:lint:prettier
-
-      - name: Spellcheck
-        run: pnpm spellcheck
+    uses: ./.github/workflows/reusable-lint.yml
 
   typecheck:
     name: Type Check
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Astro type check
-        run: pnpm check:astro
+    uses: ./.github/workflows/reusable-typecheck.yml
 
   test:
     name: Test
@@ -108,42 +54,15 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          # vendor/assets is built at the commit pinned in this repository
-          submodules: true
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build site
-        run: pnpm site:build
-
-      - name: Validate HTML (html-validate)
-        run: pnpm site:lint:html
-
-      - name: Validate HTML (Nu Html Checker)
-        run: pnpm site:lint:vnu
-
-      - name: Check links
-        run: pnpm site:lint:links
-
-      # axe in the Chrome that the runner has installed
-      - name: Check accessibility
-        run: pnpm site:lint:a11y
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      # vendor/assets is built at the commit pinned in this repository. Axe runs in the
+      # Chrome that the runner has installed
+      checks: |
+        pnpm site:lint:html
+        pnpm site:lint:vnu
+        pnpm site:lint:links
+        pnpm site:lint:a11y
 
   fixtures:
     name: Fixture Site (${{ matrix.layout }})

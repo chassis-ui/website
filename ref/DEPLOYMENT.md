@@ -85,8 +85,10 @@ or with a pull request. Then the same commit moves on to `staging` and `main`. N
 reaches `staging` or `main` that did not pass through `develop`.
 
 The ruleset "Protect main and staging" requires four jobs of `ci.yml` to pass on a commit
-before it reaches `staging` or `main`: Lint, Type Check, Test and Build. Security Audit
-runs and does not block.
+before it reaches `staging` or `main`: Lint, Type Check, Test and Build. Lint, Type Check
+and Build call [reusable workflows](#reusable-workflows), so GitHub names their checks
+`Lint / Lint`, `Type Check / Type Check` and `Build / Build`, and the ruleset requires those
+names. Security Audit runs and does not block.
 
 The rule applies to direct pushes and pull requests alike. GitHub accepts a direct push
 only when the commit already has passing checks, so a commit has to pass CI somewhere
@@ -137,16 +139,65 @@ vercel                     # Deploy to preview
 
 **Deploys are triggered directly by Vercel's git integration** — Vercel watches the `main` and `staging` branches and builds automatically on push. No Actions workflow performs the actual deploy.
 
-This repo's `.github/workflows/` currently has three workflows, none of which deploy:
+None of the workflows in `.github/workflows/` deploys:
 
-| Workflow               | Trigger                                                                    | Purpose                                                                                                                                                                                                                                                               |
-| ---------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ci.yml`               | Pushes to `develop`, pull requests against `develop`, `staging` and `main` | Lint, Type Check, Test and Build, which the ruleset requires, Fixture Site for both layouts, and Security Audit. Dependency Review on pull requests                                                                                                                   |
-| `lighthouse.yml`       | `deployment_status` events (or manual `workflow_dispatch`)                 | Runs Lighthouse CI against the resulting production or staging URL, using `lighthouse.json` thresholds                                                                                                                                                                |
-| `links.yml`            | `deployment_status` events (or manual `workflow_dispatch`)                 | Crawls the resulting production or staging URL, the proxied projects included, with `build/check-links.js`. Fails on a broken link of this site. Those of the proxied projects are warnings                                                                           |
-| `publish-packages.yml` | Push to `main`                                                             | Publishes the version in `packages/docs/package.json` when npm does not have it, after checking that CI passed on the commit. Trusted publishing with provenance. A prerelease goes to the dist-tag named by its version. See [Releases](../CONTRIBUTING.md#releases) |
+| Workflow                                                            | Trigger                                                                    | Purpose                                                                                                                                                                                                                                                               |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ci.yml`                                                            | Pushes to `develop`, pull requests against `develop`, `staging` and `main` | Lint, Type Check, Test and Build, which the ruleset requires, Fixture Site for both layouts, and Security Audit. Dependency Review on pull requests                                                                                                                   |
+| `lighthouse.yml`                                                    | `deployment_status` events (or manual `workflow_dispatch`)                 | Runs Lighthouse CI against the resulting production or staging URL, using `lighthouse.json` thresholds                                                                                                                                                                |
+| `links.yml`                                                         | `deployment_status` events (or manual `workflow_dispatch`)                 | Crawls the resulting production or staging URL, the proxied projects included, with `build/check-links.js`. Fails on a broken link of this site. Those of the proxied projects are warnings                                                                           |
+| `publish-packages.yml`                                              | Push to `main`                                                             | Publishes the version in `packages/docs/package.json` when npm does not have it, after checking that CI passed on the commit. Trusted publishing with provenance. A prerelease goes to the dist-tag named by its version. See [Releases](../CONTRIBUTING.md#releases) |
+| `reusable-lint.yml`, `reusable-typecheck.yml`, `reusable-build.yml` | Called by `ci.yml`, and by the sibling repositories                        | Lint, type check, and build a site and check its output. See below                                                                                                                                                                                                    |
 
 No workflow moves the `vendor/assets` pin. The build uses the pinned commit, and the pin moves only when someone runs `pnpm sync-submodules` and commits the result. See [DEVELOPMENT.md](DEVELOPMENT.md#the-vendorassets-submodule).
+
+### Reusable workflows
+
+The three `reusable-*.yml` workflows set up a Chassis repository the same way (checkout,
+pnpm from `packageManager`, Node.js from `.nvmrc`, `pnpm install --frozen-lockfile`) and run
+one command. `ci.yml` calls them, so every push to `develop` tests them. A sibling repository
+calls them from its own CI:
+
+```yaml
+jobs:
+  lint:
+    name: Lint
+    uses: chassis-ui/website/.github/workflows/reusable-lint.yml@<commit>
+    with:
+      command: pnpm lint
+
+  typecheck:
+    name: Type Check
+    uses: chassis-ui/website/.github/workflows/reusable-typecheck.yml@<commit>
+
+  build:
+    name: Build
+    uses: chassis-ui/website/.github/workflows/reusable-build.yml@<commit>
+    with:
+      command: pnpm site:build
+      checks: |
+        pnpm site:lint:html
+        pnpm site:lint:vnu
+```
+
+Pin a full commit SHA of this repository, so that a change here reaches a sibling only when
+it moves the pin. Take a commit that passed CI here.
+
+| Input               | Workflows | Default                                                                  |
+| ------------------- | --------- | ------------------------------------------------------------------------ |
+| `command`           | all       | `pnpm lint`, `pnpm check:astro`, `pnpm site:build`. One command per line |
+| `checks`            | build     | Empty. Commands that check the built site, one per line                  |
+| `submodules`        | build     | `'true'`, so that `chassis-docs vendor` can build `vendor/assets`        |
+| `node-version`      | all       | Empty, which reads `node-version-file`                                   |
+| `node-version-file` | all       | `.nvmrc`                                                                 |
+| `install-command`   | all       | `pnpm install --frozen-lockfile`                                         |
+
+Each job stops at the first command that fails. The runner of the build has Java, for
+`chassis-docs vnu`, and Google Chrome. The checks are named `<job> / Lint` and so on, after
+the name of the calling job.
+
+A change to an input or a default of these workflows is a change for every sibling that
+calls them. Add inputs, and keep the defaults, unless all siblings move together.
 
 ## 🔧 Vercel Configuration
 
