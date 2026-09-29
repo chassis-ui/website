@@ -51,6 +51,8 @@
     "astro:dev": "pnpm --filter chassis-website astro dev --port 4321 --host",
     "astro:build": "pnpm --filter chassis-website astro build",
     "astro:preview": "pnpm --filter chassis-website astro preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "check": "pnpm check:astro && pnpm check:pnpm",
     "check:astro": "pnpm run \"/^check:astro:(docs|site)$/\"",
     "check:astro:docs": "pnpm --filter @chassis-ui/docs astro check",
@@ -82,6 +84,7 @@
     "stylelint-config-twbs-bootstrap": "^16.1.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.0",
+    "vitest": "^5.0.2",
     "vnu-jar": "^26.9.27"
   },
   "packageManager": "pnpm@10.33.2+sha512.a90faf6feeab71ad6c6e57f94e0fe1a12f5dcc22cd754db40ae9593eb6a3e0b6b12e3540218bb37ae083404b1f2ce6db2a4121e979829b4aff94b99f49da1cf8"

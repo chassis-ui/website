@@ -1,0 +1,15 @@
+// scss-docs-start spacers
+$spacer: 1rem !default;
+$spacers: (
+  1: $spacer * .25,
+  2: $spacer * .5
+) !default;
+// scss-docs-end spacers
+
+// scss-docs-start spacers-large
+$spacer-large: 2rem !default;
+// scss-docs-end spacers-large
+
+// scss-docs-start mixin-output
+@include sample-mixin();
+// scss-docs-end mixin-output

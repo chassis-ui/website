@@ -1,0 +1,9 @@
+- title: Getting started
+  icon: rocket
+  iconColor: primary
+  pages:
+    - title: Introduction
+    - group: Guides
+      pages:
+        - title: Install
+- title: Changelog

@@ -3,5 +3,14 @@
   "compilerOptions": {
     "ignoreDeprecations": "6.0"
   },
-  "include": [".astro/types.d.ts", "env.d.ts", "virtual.d.ts", "index.ts", "src/**/*"]
+  "include": [
+    ".astro/types.d.ts",
+    "env.d.ts",
+    "virtual.d.ts",
+    "index.ts",
+    "src/**/*",
+    "test/**/*",
+    "vitest.config.ts"
+  ],
+  "exclude": ["test/fixture/.astro"]
 }
