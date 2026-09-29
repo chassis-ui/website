@@ -35,6 +35,8 @@ Related sibling repos (separate git projects, not part of this monorepo):
 - Fixture sites: `pnpm test:fixtures` (packs `@chassis-ui/docs`, builds `packages/docs/starter` in two layouts)
 - Type/diagnostics check: `pnpm check` (runs `astro check` for both packages + `pnpm audit`)
 - The full table is under "Commands" in `CONTRIBUTING.md`.
+- A pre-commit hook (simple-git-hooks + lint-staged, installed by `pnpm install`) runs ESLint
+  and Prettier on staged files of both packages.
 
 Run the relevant lint/check command after making changes before considering a task done.
 

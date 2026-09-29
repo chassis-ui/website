@@ -18,7 +18,9 @@ with. This guide takes you from a fresh clone to a pull request.
 
 ## Code of Conduct
 
-We are committed to providing a welcoming and inspiring community for all. Please be respectful and constructive in your interactions.
+Everyone who takes part is expected to follow the [Code of Conduct](.github/CODE_OF_CONDUCT.md).
+Report a security vulnerability privately, as [SECURITY.md](.github/SECURITY.md) describes, not
+in an issue.
 
 ## Setup
 
@@ -70,6 +72,10 @@ Run them from the root of the repository.
 The scripts behind them are in `package.json`. `site:*` scripts act on `packages/website`,
 `docs:*` scripts on `packages/docs`, for example `pnpm site:lint:eslint`. `pnpm site` builds
 the site and validates its HTML, which the Build job of CI does too.
+
+`pnpm install` also installs a pre-commit hook. It runs ESLint and Prettier on the staged
+files of `packages/website` and `packages/docs`, fixes what they can, and stops the commit
+when a problem is left. `git commit --no-verify` skips it.
 
 `pnpm dev` does not touch the submodule. Moving the pin is a change of its own: run
 `pnpm sync-submodules`, check the site, and commit `vendor/assets` in a commit that does
@@ -331,6 +337,6 @@ GitHub release is marked as a prerelease. `latest` stays on the last stable vers
 
 - **Documentation**: https://chassis-ui.com
 - **Issues**: https://github.com/chassis-ui/website/issues
-- **Discussions**: https://github.com/chassis-ui/website/discussions
+- **Questions and ideas**: https://github.com/chassis-ui/website/discussions
 
 Thank you for contributing to Chassis UI! 🎉

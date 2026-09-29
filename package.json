@@ -32,6 +32,7 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "prepare": "simple-git-hooks",
     "dev": "pnpm astro:dev",
     "build": "pnpm site:build",
     "preview": "pnpm astro:preview",
@@ -89,10 +90,12 @@
     "globals": "^17.12.0",
     "globby": "^16.2.4",
     "html-validate": "^11.16.1",
+    "lint-staged": "^17.6.0",
     "pagefind": "^1.5.2",
     "picocolors": "^1.1.1",
     "prettier": "^3.9.9",
     "prettier-plugin-astro": "^0.14.1",
+    "simple-git-hooks": "^2.14.0",
     "stylelint": "^16.26.1",
     "stylelint-config-twbs-bootstrap": "^16.1.0",
     "typescript": "^6.0.3",
@@ -100,5 +103,15 @@
     "vitest": "^5.0.2",
     "vnu-jar": "^26.9.27"
   },
-  "packageManager": "pnpm@10.33.2+sha512.a90faf6feeab71ad6c6e57f94e0fe1a12f5dcc22cd754db40ae9593eb6a3e0b6b12e3540218bb37ae083404b1f2ce6db2a4121e979829b4aff94b99f49da1cf8"
+  "packageManager": "pnpm@10.33.2+sha512.a90faf6feeab71ad6c6e57f94e0fe1a12f5dcc22cd754db40ae9593eb6a3e0b6b12e3540218bb37ae083404b1f2ce6db2a4121e979829b4aff94b99f49da1cf8",
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged"
+  },
+  "lint-staged": {
+    "packages/{website,docs}/**/*.{js,mjs,ts,astro}": [
+      "eslint --cache --cache-location .cache/.eslintcache --fix",
+      "prettier --write"
+    ],
+    "packages/{website,docs}/**/*.{json,md,mdx,yml,yaml}": "prettier --write"
+  }
 }
