@@ -8,8 +8,10 @@
 import type { MarkdownHeading } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 import { getConfig } from '@libs/config'
+import { docsPages } from '@libs/content'
 import { getChassisDocsPath } from '@libs/path'
 import type { LayoutOverridesHTMLAttributes } from '../libs/layout'
+import { getSiteFileUrl } from '../libs/source'
 import { getSlug, processMarkdownToHtml } from '../libs/utils'
 import BaseLayout from './BaseLayout.astro'
 import DocsSidebar from '../components/DocsSidebar.astro'
@@ -23,9 +25,19 @@ interface Props {
   headings?: MarkdownHeading[]
   /** Document ID from the docs collection */
   id: CollectionEntry<'docs'>['id']
+  /**
+   * Path of the page's source file from the site's root. Looked up from the docs collection
+   * by `id` when omitted.
+   */
+  filePath?: string
 }
 
 const { frontmatter, headings, id } = Astro.props
+
+// "View on GitHub" links to the page's own source file. The old link, which assumed the
+// file sat at `<id>.mdx` in the repository root, is kept only when no file path is known.
+const filePath = Astro.props.filePath ?? docsPages.find((page) => page.id === id)?.filePath
+const githubUrl = filePath ? getSiteFileUrl(filePath) : `${getConfig().repo}/blob/${id}.mdx`
 
 type DocSection = NonNullable<typeof frontmatter.sections>[number]
 
@@ -86,7 +98,7 @@ if (frontmatter.toc) {
               }
               <a
                 class="button default sm"
-                href={`${getConfig().repo}/blob/${id}.mdx`}
+                href={githubUrl}
                 title="View and edit this file on GitHub"
                 target="_blank"
                 rel="noopener"

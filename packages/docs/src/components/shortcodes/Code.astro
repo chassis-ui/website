@@ -1,9 +1,8 @@
 ---
 import fs from 'node:fs'
-import path from 'node:path'
 import { transformerNotationDiff, transformerNotationHighlight } from '@shikijs/transformers'
-import { getConfig } from '@libs/config'
 import { highlightCode } from '../../libs/highlight'
+import { getSourceFsPath, getSourceUrl } from '../../libs/source'
 import Icon from './Icon.astro'
 
 interface Props {
@@ -41,7 +40,8 @@ interface Props {
    */
   fileMatch?: string
   /**
-   * A path to the file containing the code to highlight relative to the root of the repository.
+   * A path to the file containing the code to highlight, relative to the `sourceDir` of the
+   * site's `config.yml` (the working directory of the build when it is not set).
    * This takes precedence over the `code` prop.
    */
   filePath?: string
@@ -87,9 +87,7 @@ const {
   hasPreview = false
 } = Astro.props
 
-const fileUrl = file
-  ? `${getConfig().repo}/blob/v${getConfig().current_version}/${file}`.replaceAll('\\', '/')
-  : null
+const fileUrl = file ? getSourceUrl(file) : null
 
 // Extract language from multiple possible sources (for markdown code blocks)
 // Priority: lang prop > data-language attribute > className pattern
@@ -121,7 +119,7 @@ const displayLang = detectedLang
   : ''
 
 let codeToDisplay = filePath
-  ? fs.readFileSync(path.join(process.cwd(), filePath), 'utf8')
+  ? fs.readFileSync(getSourceFsPath(filePath), 'utf8')
   : Array.isArray(code)
     ? code.join('\n')
     : code

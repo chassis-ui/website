@@ -25,6 +25,11 @@ const configSchema = z.object({
   figma_handle: z.string(),
   github_org: z.string(),
   repo: z.url(),
+  // Where files live, read by `@chassis-ui/docs` (see its `src/libs/source.ts`)
+  siteBranch: z.string().optional(),
+  sitePath: z.string().optional(),
+  sourceDir: z.string().optional(),
+  sourcePath: z.string().optional(),
   subtitle: z.string(),
   title: z.string(),
   toc: z.object({

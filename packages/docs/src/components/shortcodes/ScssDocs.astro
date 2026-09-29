@@ -2,6 +2,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import * as sass from 'sass'
+import { getSourceFsPath } from '../../libs/source'
 import Code from './Code.astro'
 
 // Prints everything between `// scss-docs-start "name"` and `// scss-docs-end "name"`
@@ -14,7 +15,8 @@ interface Props {
    */
   name: string
   /**
-   * File path that contains the content to display relative to the root of the repository.
+   * File path that contains the content to display, relative to the `sourceDir` of the site's
+   * `config.yml` (the working directory of the build when it is not set).
    */
   file: string
   /**
@@ -74,7 +76,7 @@ let content: string
 let lang: string = 'scss'
 
 try {
-  const fileContent = fs.readFileSync(file, 'utf8')
+  const fileContent = fs.readFileSync(getSourceFsPath(file), 'utf8')
 
   const matches = fileContent.match(
     new RegExp(`// scss-docs-start ${name}\n((?:.|\n)*)// scss-docs-end ${name}`, 'm')
@@ -90,7 +92,7 @@ try {
 
   if (compile) {
     // Derive the SCSS load path from the file argument (e.g. "scss/_foo.scss" → "scss/")
-    const scssLoadPath = path.resolve(process.cwd(), file.split('/')[0])
+    const scssLoadPath = getSourceFsPath(file.split('/')[0])
 
     const scssInput = [
       '@use "config" as *;',
@@ -107,7 +109,7 @@ try {
     const result = await sass.compileStringAsync(scssInput, {
       loadPaths: [
         scssLoadPath,
-        path.resolve(process.cwd(), 'scss/vendor'),
+        getSourceFsPath('scss/vendor'),
         // Vite's own Sass importer resolves bare npm specifiers (e.g. `@chassis-ui/tokens/...`)
         // through its module resolver, independent of `loadPaths`. This raw Sass JS API call
         // bypasses Vite, so `node_modules` must be added here explicitly.

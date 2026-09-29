@@ -11,6 +11,10 @@ authors:                "Ozgur Gunes and Chassis UI contributors"
 current_version:        "0.1.0"
 repo:                   "https://github.com/chassis-ui/website"
 
+# Where files live in the repository. Used by "View on GitHub" and the source-file shortcodes.
+sitePath:               "packages/website"
+sourcePath:             "packages/website"
+
 github_org:             "chassis-ui"
 figma_handle:           "chassis_ui"
 x_username:             "chassis_ui"

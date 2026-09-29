@@ -1,5 +1,6 @@
 ---
 import fs from 'node:fs'
+import { getSourceFsPath } from '../../libs/source'
 import Code from './Code.astro'
 
 // Prints everything between `// scss-docs-start "name"` and `// scss-docs-end "name"`
@@ -11,7 +12,8 @@ interface Props {
    */
   name: string
   /**
-   * File path that contains the content to display relative to the root of the repository.
+   * File path that contains the content to display, relative to the `sourceDir` of the site's
+   * `config.yml` (the working directory of the build when it is not set).
    */
   file: string
 }
@@ -29,7 +31,7 @@ if (!name || !file) {
 let content: string
 
 try {
-  const fileContent = fs.readFileSync(file, 'utf8')
+  const fileContent = fs.readFileSync(getSourceFsPath(file), 'utf8')
 
   const matches = fileContent.match(
     new RegExp(`// scss-docs-start ${name}\n((?:.|\n)*)// scss-docs-end ${name}`, 'm')
