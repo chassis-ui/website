@@ -1,5 +1,16 @@
 # @chassis-ui/docs
 
+## 0.6.1
+
+### Patch Changes
+
+- A code block can take focus, so that a keyboard can scroll one that is wider than the page. The Google Fonts stylesheet is linked from the head instead of imported by the styles, so the browser requests it with the page, not after the stylesheet that imported it.
+- Google Analytics loads only after the visitor accepts. When `analytics.googleId` is set, production builds show a consent banner at the bottom of the page, and nothing is sent to Google and no cookie is set before the visitor accepts. The choice is kept in `localStorage`, so the sites served from one host share it. The footer has a "Cookie settings" button that opens the banner again, and a "Privacy" link to `/privacy/`. Declining stops Google Analytics and deletes its cookies.
+- The head no longer links `safari-pinned-tab.svg` as a `mask-icon`. The docs build of chassis-assets has no such file, so every page asked for one that returned 404. Safari has used the regular favicon for pinned tabs since version 12.
+- The header and the footer link Chassis React: "React" in the navigation of the header, "React Components" among the docs of the footer and "Chassis React" among its GitHub links. The footer lists the projects in the order of the header. The "Privacy" link and the "Cookie settings" button moved from the last column of the footer to below the license.
+- The package installs a `chassis-docs` command with the build steps that every Chassis site shares, so that a site no longer needs its own copies of them. `chassis-docs vendor` builds the `vendor/assets` submodule at the pinned commit. `chassis-docs sync-submodules` moves it to the latest `app/docs` and builds it, and works on a fresh CI checkout too. `chassis-docs html-validate` and `chassis-docs vnu` validate the built HTML. The two validators need `html-validate` and `vnu-jar`, which are optional peer dependencies. See [Commands](https://github.com/chassis-ui/website/tree/main/packages/docs#commands) in the README.
+- The "Skip to main content" link of the header has a target on every page. `BaseLayout` gives its `<main>` the id `content`, which only the docs layout had set, on its title. A page that fills the `main` slot of `BaseLayout` sets the id on an element of its own.
+
 ## 0.6.0
 
 ### Minor Changes
