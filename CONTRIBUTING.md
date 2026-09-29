@@ -186,7 +186,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 import Hero from '@components/homepage/HeroSection.astro'
 
 // 5. Utilities
-import { generateTOC } from '@libs/toc'
+import { formatDate } from '@libs/blog'
 
 // 6. Styles
 import '@scss/home.scss'

@@ -56,6 +56,9 @@ area rather than re-deriving from source:
 - [ref/CHASSIS_CSS.md](ref/CHASSIS_CSS.md) — Bootstrap → Chassis CSS conversion guide (written for LLMs)
 - [ref/ROADMAP.md](ref/ROADMAP.md) — phased roadmap with findings, tasks and a session log; update
   it at the end of every session that works on it
+- [ref/CONTRACT_REVIEW.md](ref/CONTRACT_REVIEW.md) — what differed between the sites' copies of
+  `src/libs` before `@chassis-ui/docs` 0.6, and why; the contract itself is in
+  `packages/docs/README.md`
 - [ref/SIBLING_TASKS.md](ref/SIBLING_TASKS.md) — work that belongs in a sibling repo; record it
   there instead of editing the sibling from a session in this repo
 

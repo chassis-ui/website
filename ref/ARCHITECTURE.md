@@ -166,35 +166,47 @@ override once the change is published so `chassis-website` goes back to resolvin
 
 ## Shared Package: @chassis-ui/docs
 
-`@chassis-ui/docs` provides the reusable infrastructure every Chassis documentation site
-builds on: Astro components/layouts, image and markdown processing, table-of-contents
-generation, and general utilities.
+`@chassis-ui/docs` provides what every Chassis documentation site is built from: layouts,
+components, MDX shortcodes, styles, and the code that reads a site's configuration.
+
+A site connects to the package through one Astro integration. The integration reads the
+site's `config.yml` and `data/sidebar.yml`, validates them against schemas that the
+package owns, and hands them to the layouts and components. It also sets `site` and
+`markdown` of the Astro config and imports the shortcodes into every MDX file.
 
 ```typescript
-// From packages/docs/index.ts
-export * from './src/libs/chassis'    // Astro integration
-export * from './src/libs/image'      // Image optimization
-export * from './src/libs/layout'     // Layout utilities
-export * from './src/libs/rehype'     // Markdown processing
-export * from './src/libs/toc'        // Table of contents
-export * from './src/libs/utils'      // General utilities
-```
-
-Each project site imports it the same way, e.g. `chassis-css/site/astro.config.ts`:
-
-```typescript
+// astro.config.ts of a site
+import { loadConfig } from '@chassis-ui/docs'
+import { chassisDocs } from '@chassis-ui/docs/integration'
 import { chassis } from './src/libs/astro'
-import { getConfig } from './src/libs/config'
-import { getSiteUrl } from '@chassis-ui/docs'  // From shared package
+import { siteConfigSchema } from './src/libs/config'
 
-const site = getSiteUrl(getConfig())
+const root = import.meta.dirname
+const config = loadConfig({ root, schema: siteConfigSchema })
 
 export default defineConfig({
-  integrations: [chassis()],
-  site,
+  integrations: [chassisDocs({ config }), chassis({ config, root })]
   // ...
 })
 ```
+
+The package has four entry points:
+
+| Import path                    | For                                                                  |
+| ------------------------------ | -------------------------------------------------------------------- |
+| `@chassis-ui/docs`             | Library functions that work anywhere, including `astro.config.ts`    |
+| `@chassis-ui/docs/integration` | The integration                                                      |
+| `@chassis-ui/docs/schema`      | The schemas of `config.yml`, the sidebar and the content collections |
+| `@chassis-ui/docs/site`        | What pages and components read from the site, such as `getConfig()`  |
+
+What stays in each site is what differs between sites: `src/libs/astro.ts`, which copies
+the static files and adds `mdx()` and `sitemap()`, the schema of the site's own config
+keys, and plugins of its own.
+
+Until 0.6.0 the package imported five modules from the site through a `@libs/*` path
+alias, and each site carried its own copy of them. The copies drifted. The record of that
+is in [CONTRACT_REVIEW.md](CONTRACT_REVIEW.md). The package README is the reference for the
+current contract.
 
 ## Runtime Asset Sharing
 

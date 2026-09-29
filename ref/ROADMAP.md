@@ -128,6 +128,11 @@ last sibling has been upgraded and deployed.
 | F38 | The version script replaces every occurrence of the old version.                                                                                                                              | `build/change-version.js:95-96`. Bumping 0.5.0 would also have turned the peer range `^0.5.0-0` into `^0.5.1-0`.                                                                                                                                                                                                                                        | 2     |
 | F39 | The website's source-file links point to a tag that does not exist.                                                                                                                           | `packages/website/config.yml` says `current_version: "0.1.0"`, and there is no `v0.1.0` tag. The links from the test page return 404. It follows from D11.                                                                                                                                                                                              | 2     |
 | F40 | Lighthouse on staging tests the preview deployment and gets throttled.                                                                                                                        | The staging sitemap lists `chassis-website-<hash>.vercel.app` URLs and the docs test pages, 20 URLs in all. The run on 2026-09-29 got a 403 on the twelfth URL, which loaded normally afterwards. Production, with 11 URLs, passed.                                                                                                                     | 4     |
+| F41 | The package needed two more path aliases than F8 lists. Found in session 2.1.                                                                                                                 | `Head.astro` imported `@scss/docs.scss`. The generated shortcode declarations imported `@shortcodes/*`. Both are gone. See [CONTRACT_REVIEW.md](CONTRACT_REVIEW.md).                                                                                                                                                                                    | 2     |
+| F42 | Keys outside `config.yml` were snake_case too. Found and fixed in session 2.1.                                                                                                                | `icon_color` in `data/sidebar.yml`. `show_badge` and `extra_js` in the frontmatter of docs pages. Renamed by decision D21.                                                                                                                                                                                                                              | 2     |
+| F43 | Every sibling works around a problem that the package causes.                                                                                                                                 | Scripts of the package and of the site both import `@chassis-ui/css`. Two instances register every listener twice. Each sibling's `astro.ts` adds a Vite alias and leaves the package out of `optimizeDeps`. `chassis-css` does it in the build too. The website has no such workaround.                                                                | 2     |
+| F44 | The header of the package lists the sibling sites by name, and `chassis-react` is not one of them.                                                                                            | `packages/docs/src/layouts/header/Navigation.astro` has five fixed links. It follows from S11.                                                                                                                                                                                                                                                          | 4     |
+| F45 | The website has data files that nothing reads.                                                                                                                                                | `packages/website/data/core-team.yml` and `docs-versions.yml`. Their loader was deleted in session 2.1.                                                                                                                                                                                                                                                 | 3     |
 | F34 | The package has no stated versioning policy.                                                                                                                                                  | It is at 0.5.0 with seven consumers. Nothing says what counts as a breaking change or what 1.0 requires.                                                                                                                                                                                                                                                | 2     |
 
 ### How the sibling repositories consume this one
@@ -169,6 +174,9 @@ sibling's part is in [SIBLING_TASKS.md](SIBLING_TASKS.md).
 | S13 | `chassis-icons` CI is broken by design.                                                        | `.github/workflows/ci.yml:35` runs `pnpm validate`. `package.json` has no such script. The job uses Node 18 and 20 and pnpm 9.                                                                        | none |
 | S14 | `chassis-figma` has no CI and no tags.                                                         | No `.github/workflows` directory.                                                                                                                                                                     | none |
 | S15 | No consumer accepts `@chassis-ui/tokens` 0.6.0.                                                | Every range is `^0.5.x`, including the website's.                                                                                                                                                     | 5    |
+
+[CONTRACT_REVIEW.md](CONTRACT_REVIEW.md) lists every difference between the copies behind
+S3 to S8, and says whether it is a need of the site, a bug or an accident.
 
 The pattern behind S3 to S9 is one cause. The package cannot be used without code that it
 does not ship, so each site copies that code, and the copies drift. Phase 2 moves the
@@ -307,34 +315,54 @@ in this repository before it is published.
 This phase produces 0.6.0, which is a breaking release. See
 [Breaking changes](#breaking-changes).
 
+**Status:** session 2.1 done on 2026-09-29. The package version stays 0.5.1 until session
+2.4 releases 0.6.0, so nothing is published by accident.
+
 ### Session 2.1: own the contract
 
-- [ ] Read the seven copies of `src/libs/*`. For each difference, record whether it is a
-      bug, a real need of that site, or an accident. This is reading only.
-- [ ] Move the config schema into the package. Export a base Zod schema that each site
-      extends. Today each site copies `config.ts`, and `z.object` silently drops any key
-      a site forgot to add.
-- [ ] Replace the `@libs/*` alias contract. Design an Astro integration that the site
-      adds in `astro.config.ts` and that gives the package its config, data, content and
-      paths. Virtual modules are the expected mechanism. Remove every `@libs/*` import
-      from the package.
-- [ ] Export TypeScript types for everything a site passes to the integration.
-- [ ] Remove the mapping to `../website/src` from `packages/docs/tsconfig.json`, so that
-      the package type-checks on its own.
-- [ ] Add `clipboard.ts` to the package. It is identical in five sites and has no
-      site-specific part.
-- [ ] Add the two path helpers that drifted, `getChassisTokensFsPath()` and
-      `getChassisAssetsFsPath()`, as one implementation with options.
-- [ ] Resolve the shortcodes directory in `chassisAutoImport` from the package's own
-      location with `import.meta.url`, not from a `node_modules` path.
-- [ ] Add `include` and `exclude` options to `chassisAutoImport`.
-- [ ] Export a helper that returns the path of a file inside the package.
-- [ ] Make `scss/vars` a documented public partial, since a sibling already uses it.
-- [ ] Move the website to the new contract in the same change.
-- [ ] Write the versioning policy: what counts as breaking before 1.0 and what 1.0
-      requires.
-- [ ] Write the upgrade guide from 0.5 to 0.6 in the package. Add its steps to
+- [x] Read the seven copies of `src/libs/*`. The record is
+      [CONTRACT_REVIEW.md](CONTRACT_REVIEW.md). Most real needs have one cause: the
+      code found files from the working directory, and three sites are built from the
+      root of their repository.
+- [x] Move the config schema into the package. `@chassis-ui/docs/schema` exports
+      `configSchema`, which a site extends. The schema is strict, so an unknown key
+      fails the build. It also exports the schemas of the sidebar and of the `docs` and
+      `callouts` collections.
+- [x] Rename the keys of `config.yml` to camelCase. Decided, see D18. An old name fails
+      the build with a message that names the new one. `docsDir` is removed.
+- [x] Rename `icon_color` in `data/sidebar.yml`, and `show_badge` and `extra_js` in the
+      frontmatter of docs pages, in the same way. Decided, see D21.
+- [x] Replace the `@libs/*` alias contract. `chassisDocs()` from
+      `@chassis-ui/docs/integration` reads the site's files from the Astro root and
+      provides four virtual modules. Pages read them through `@chassis-ui/docs/site`.
+      The package has no `@libs/*` import and no `@scss/*` import. See F41.
+- [x] Move what reads the config into the package as well: the `[[config:]]` and
+      `[[docsref:]]` plugins, the check for broken docs links, the markdown
+      configuration and the site URL. Asset copying, `mdx()` and `sitemap()` stay in
+      each site. Decided, see D17.
+- [x] Export TypeScript types for everything a site passes to the integration.
+- [x] Remove the mapping to `../website/src` from `packages/docs/tsconfig.json`. The
+      package type-checks on its own.
+- [x] Add `clipboard.ts` to the package, as `js/clipboard.ts`.
+- [x] Add the path helpers as one implementation with options:
+      `getChassisTokensFsPath()`, `getChassisAssetsFsPath()`, `getChassisCSSFsPath()`
+      and `getChassisIconsFsPath()`. They search from the site's root up to the root of
+      the repository.
+- [x] Resolve the shortcodes directory in `chassisAutoImport` from the package's own
+      location. The shortcodes are imported by package path, not by file path.
+- [x] Add `include` and `exclude` options to `chassisAutoImport`. A shortcode of the
+      site replaces the package's shortcode of the same name.
+- [x] Export a helper that returns the path of a file inside the package:
+      `getPackageFilePath()`.
+- [x] Make `scss/vars` a documented public partial.
+- [x] Move the website to the new contract in the same change. Six of its files under
+      `src/libs` are deleted. The built site is byte-identical to the build before.
+- [x] Write the versioning policy, in the package README. Decided, see D19 and D20.
+- [x] Write the upgrade guide, `packages/docs/UPGRADING.md`. Its steps are in
       [SIBLING_TASKS.md](SIBLING_TASKS.md).
+- [x] Check the guide and the packed package against scratch clones of `chassis-tokens`
+      and `chassis-figma`, one for each site layout. Both build and type-check. The
+      only change in their output is the "View on GitHub" link that 0.5.1 fixed.
 
 ### Session 2.2: tests
 
@@ -356,6 +384,8 @@ This phase produces 0.6.0, which is a breaking release. See
 - [ ] Write the fixture so that it can be copied as the starting point of a new Chassis
       docs site. Link it from the package README.
 - [ ] Move the placeholder docs content of the website into the fixture.
+- [ ] Move the workaround for two instances of `@chassis-ui/css` into the integration,
+      and check it in the dev server of the fixture. See F43.
 
 ### Session 2.4: release pipeline
 
@@ -547,24 +577,29 @@ Considered and left out for now. Each needs a reason to come back.
 
 ## Decisions
 
-| ID  | Decision                                                                                 | Recommendation or outcome                                                                                                                                         | Status  |
-| --- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| D1  | How are `main` and `staging` protected?                                                  | No pull request. A ruleset blocks force push and deletion on `main` and `staging`. CI stays advisory.                                                             | decided |
-| D2  | Names of the config keys for issues 1 and 2.                                             | `sourceDir`, `sourcePath`, `sitePath`, `siteBranch`. All optional.                                                                                                | decided |
-| D3  | Does Lighthouse block a deployment or only report?                                       | Accessibility below 0.9 fails the run. The other categories only warn. The run cannot stop a deploy.                                                              | decided |
-| D4  | Keep the `@libs/*` alias contract or add an Astro integration with virtual modules?      | Clean break in 0.6.0. An Astro integration replaces the aliases. The siblings stay on 0.5 until they are upgraded.                                                | decided |
-| D5  | Changesets or the existing version script?                                               | Changesets. It handles prereleases, changelogs and the release pull request. tokens, css and react use it.                                                        | open    |
-| D6  | Replace referrer-based static routing?                                                   | Two steps. Add path-based rewrites in this project. Remove the referrer-based ones when the last sibling has been upgraded and deployed.                          | decided |
-| D7  | Which Node version does the ecosystem support?                                           | Node 24 for development and CI, `engines` at `>=22`.                                                                                                              | open    |
-| D8  | Where do the shared build scripts live?                                                  | In `@chassis-ui/docs` as `bin` entries. A second package is more to release for little gain.                                                                      | open    |
-| D9  | Does the website keep the assets submodule?                                              | Replace it with the files served from the assets deployment, if the site only needs the built docs assets. Check what the build reads from `vendor/assets` first. | open    |
-| D10 | Community files in each repository, or inherited from a `chassis-ui/.github` repository? | In each repository. See the note below.                                                                                                                           | open    |
-| D11 | Does the website have a version and a changelog?                                         | No version. The root changelog becomes the website's log by date. The package has its own.                                                                        | open    |
-| D12 | What is the docs section of the website for?                                             | Either a real "Getting started with Chassis" guide that links to the sibling docs, or nothing. Remove the route if nothing.                                       | open    |
-| D13 | Does `examples/` stay?                                                                   | Keep `vanilla-html` and build it in CI. Drop `react-app`, since `chassis-react` now covers it.                                                                    | open    |
-| D14 | How does analytics get consent?                                                          | A consent banner, or a switch to an analytics service that sets no cookies. This is a legal question first.                                                       | open    |
-| D15 | Where are fonts served from?                                                             | From `chassis-assets`. It removes a third-party request and a privacy question.                                                                                   | open    |
-| D16 | How is 0.5.1 released?                                                                   | Push `develop` to `staging`, check CI and the staging deploy, then push the same commit to `main`. That publishes to npm and deploys production.                  | decided |
+| ID  | Decision                                                                                 | Recommendation or outcome                                                                                                                                                                                       | Status  |
+| --- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| D1  | How are `main` and `staging` protected?                                                  | No pull request. A ruleset blocks force push and deletion on `main` and `staging`. CI stays advisory.                                                                                                           | decided |
+| D2  | Names of the config keys for issues 1 and 2.                                             | `sourceDir`, `sourcePath`, `sitePath`, `siteBranch`. All optional.                                                                                                                                              | decided |
+| D3  | Does Lighthouse block a deployment or only report?                                       | Accessibility below 0.9 fails the run. The other categories only warn. The run cannot stop a deploy.                                                                                                            | decided |
+| D4  | Keep the `@libs/*` alias contract or add an Astro integration with virtual modules?      | Clean break in 0.6.0. An Astro integration replaces the aliases. The siblings stay on 0.5 until they are upgraded.                                                                                              | decided |
+| D5  | Changesets or the existing version script?                                               | Changesets. It handles prereleases, changelogs and the release pull request. tokens, css and react use it.                                                                                                      | open    |
+| D6  | Replace referrer-based static routing?                                                   | Two steps. Add path-based rewrites in this project. Remove the referrer-based ones when the last sibling has been upgraded and deployed.                                                                        | decided |
+| D7  | Which Node version does the ecosystem support?                                           | Node 24 for development and CI, `engines` at `>=22`.                                                                                                                                                            | open    |
+| D8  | Where do the shared build scripts live?                                                  | In `@chassis-ui/docs` as `bin` entries. A second package is more to release for little gain.                                                                                                                    | open    |
+| D9  | Does the website keep the assets submodule?                                              | Replace it with the files served from the assets deployment, if the site only needs the built docs assets. Check what the build reads from `vendor/assets` first.                                               | open    |
+| D10 | Community files in each repository, or inherited from a `chassis-ui/.github` repository? | In each repository. See the note below.                                                                                                                                                                         | open    |
+| D11 | Does the website have a version and a changelog?                                         | No version. The root changelog becomes the website's log by date. The package has its own.                                                                                                                      | open    |
+| D12 | What is the docs section of the website for?                                             | Either a real "Getting started with Chassis" guide that links to the sibling docs, or nothing. Remove the route if nothing.                                                                                     | open    |
+| D13 | Does `examples/` stay?                                                                   | Keep `vanilla-html` and build it in CI. Drop `react-app`, since `chassis-react` now covers it.                                                                                                                  | open    |
+| D14 | How does analytics get consent?                                                          | A consent banner, or a switch to an analytics service that sets no cookies. This is a legal question first.                                                                                                     | open    |
+| D15 | Where are fonts served from?                                                             | From `chassis-assets`. It removes a third-party request and a privacy question.                                                                                                                                 | open    |
+| D17 | What does the integration take over in 0.6.0?                                            | The contract, and everything that reads the config: the remark plugins, the check for broken docs links, the markdown configuration and the site URL. Asset copying, `mdx()` and `sitemap()` stay in each site. | decided |
+| D18 | Are the keys of `config.yml` renamed in 0.6.0?                                           | Yes, to camelCase: `currentVersion`, `githubOrg`, `figmaHandle`, `xUsername`, `analytics.googleId`. The old names are not accepted.                                                                             | decided |
+| D19 | What counts as a breaking change before 1.0?                                             | A change to what the package README documents. A minor release may break, a patch may not. Markup, class names and undocumented files may change in a patch.                                                    | decided |
+| D20 | What does 1.0 require?                                                                   | Every sibling uses the integration. Tests and fixture builds gate each release. Releases are automated and have provenance.                                                                                     | decided |
+| D21 | Are the keys of `sidebar.yml` and of the frontmatter renamed too?                        | Yes, in 0.6.0: `iconColor`, `showBadge`, `extraJs`. The old names fail the build.                                                                                                                               | decided |
+| D16 | How is 0.5.1 released?                                                                   | Push `develop` to `staging`, check CI and the staging deploy, then push the same commit to `main`. That publishes to npm and deploys production.                                                                | decided |
 
 ### Note on D10
 
@@ -589,12 +624,13 @@ go here, in session 5.2.
 
 ## Session log
 
-| Date       | Session  | What was done                                                                                                                                                                                               |
-| ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-09-29 | Review   | Reviewed the repository, the sibling repositories and the open issues. Wrote this roadmap. No code changed.                                                                                                 |
-| 2026-09-29 | Review   | Added the model column. Limited the scope to this repository and moved sibling work to `SIBLING_TASKS.md`. Added findings F26 to F34, the compatibility rule, session 4.3 and decisions D10 to D15.         |
-| 2026-09-29 | Review   | Removed the compatibility rule at the maintainer's request. Breaking changes ship in 0.6.0 and the siblings are upgraded afterwards. Decided D4 and D6.                                                     |
-| 2026-09-29 | Review   | Reworded F25 and session 3.1: `develop` is the local integration branch and stays unpushed.                                                                                                                 |
-| 2026-09-29 | 0.1, 0.2 | Phase 0 done on `develop`. CI fixed and extended, dependencies upgraded, build pinned, Lighthouse fixed, stale files removed, GitHub ruleset and security features on. Decided D1 and D3. Added F35 to F37. |
-| 2026-09-29 | 1.1, 1.2 | Fixed issues 1 and 2, documented the site contract, bumped to 0.5.1. Checked against chassis-css and chassis-tokens in scratch clones. Decided D2 and D16. Added F38 and F39. Release pending.              |
-| 2026-09-29 | 1.2      | Released 0.5.1 through `staging` and `main`. Issues 1 and 2 closed. CI green on both branches. Production Lighthouse passed. Added F40.                                                                     |
+| Date       | Session  | What was done                                                                                                                                                                                                                                                                                                                                   |
+| ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-09-29 | Review   | Reviewed the repository, the sibling repositories and the open issues. Wrote this roadmap. No code changed.                                                                                                                                                                                                                                     |
+| 2026-09-29 | Review   | Added the model column. Limited the scope to this repository and moved sibling work to `SIBLING_TASKS.md`. Added findings F26 to F34, the compatibility rule, session 4.3 and decisions D10 to D15.                                                                                                                                             |
+| 2026-09-29 | Review   | Removed the compatibility rule at the maintainer's request. Breaking changes ship in 0.6.0 and the siblings are upgraded afterwards. Decided D4 and D6.                                                                                                                                                                                         |
+| 2026-09-29 | Review   | Reworded F25 and session 3.1: `develop` is the local integration branch and stays unpushed.                                                                                                                                                                                                                                                     |
+| 2026-09-29 | 0.1, 0.2 | Phase 0 done on `develop`. CI fixed and extended, dependencies upgraded, build pinned, Lighthouse fixed, stale files removed, GitHub ruleset and security features on. Decided D1 and D3. Added F35 to F37.                                                                                                                                     |
+| 2026-09-29 | 1.1, 1.2 | Fixed issues 1 and 2, documented the site contract, bumped to 0.5.1. Checked against chassis-css and chassis-tokens in scratch clones. Decided D2 and D16. Added F38 and F39. Release pending.                                                                                                                                                  |
+| 2026-09-29 | 2.1      | The package owns its contract: integration, schemas, `site` module, path helpers, remark plugins, clipboard. Website moved to it with identical output. Wrote the README contract, the upgrade guide, the versioning policy and `CONTRACT_REVIEW.md`. Checked against scratch clones of tokens and figma. Decided D17 to D21. Added F41 to F45. |
+| 2026-09-29 | 1.2      | Released 0.5.1 through `staging` and `main`. Issues 1 and 2 closed. CI green on both branches. Production Lighthouse passed. Added F40.                                                                                                                                                                                                         |
