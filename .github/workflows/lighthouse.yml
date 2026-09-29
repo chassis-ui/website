@@ -11,6 +11,9 @@ on:
         type: choice
         options: [production, staging]
 
+permissions:
+  contents: read
+
 concurrency:
   group: lighthouse-${{ github.event.deployment.environment || github.event.inputs.environment || 'manual' }}
   cancel-in-progress: true
@@ -70,7 +73,9 @@ jobs:
 
       - name: Run Lighthouse
         id: lighthouse
-        uses: treosh/lighthouse-ci-action@v10
+        # 12.x: Lighthouse 10 in v10 cannot parse oklch() colours, so the accessibility
+        # category of every Chassis page came back without a score.
+        uses: treosh/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18 # 12.6.2
         with:
           urls: ${{ steps.sitemap.outputs.urls }}
           configPath: './lighthouse.json'
