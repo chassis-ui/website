@@ -50,10 +50,9 @@ Each Chassis project deploys independently:
 | chassis-assets | `chassis-assets.vercel.app` | `chassis-assets-staging.vercel.app` |
 | chassis-icons  | `chassis-icons.vercel.app`  | `chassis-icons-staging.vercel.app`  |
 | chassis-figma  | `chassis-figma.vercel.app`  | `chassis-figma-staging.vercel.app`  |
-| chassis-react  | not routed yet              | not routed yet                      |
+| chassis-react  | `chassis-react.vercel.app`  | none yet                            |
 
-chassis-react builds its site for `chassis-ui.com/react`, but this repository has no
-`/react/*` rewrite yet. It is planned in session 4.2 of the [roadmap](ROADMAP.md).
+chassis-react has no staging deployment yet, so `staging.chassis-ui.com/react/` answers 404.
 
 ### Unified Routing
 
@@ -65,6 +64,7 @@ The main website (`chassis-ui.com`) proxies requests to project sites via Vercel
 /assets/*        → chassis-assets.vercel.app
 /icons/*         → chassis-icons.vercel.app
 /figma/*         → chassis-figma.vercel.app
+/react/*         → chassis-react.vercel.app
 ```
 
 See [VERCEL_CONFIG.md](VERCEL_CONFIG.md) for details on request routing.
@@ -143,6 +143,7 @@ This repo's `.github/workflows/` currently has three workflows, none of which de
 | ---------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ci.yml`               | Pushes to `develop`, pull requests against `develop`, `staging` and `main` | Lint, Type Check, Test and Build, which the ruleset requires, Fixture Site for both layouts, and Security Audit. Dependency Review on pull requests                                                                                                                   |
 | `lighthouse.yml`       | `deployment_status` events (or manual `workflow_dispatch`)                 | Runs Lighthouse CI against the resulting production or staging URL, using `lighthouse.json` thresholds                                                                                                                                                                |
+| `links.yml`            | `deployment_status` events (or manual `workflow_dispatch`)                 | Crawls the resulting production or staging URL, the proxied projects included, with `build/check-links.js`. Fails on a broken link of this site. Those of the proxied projects are warnings                                                                           |
 | `publish-packages.yml` | Push to `main`                                                             | Publishes the version in `packages/docs/package.json` when npm does not have it, after checking that CI passed on the commit. Trusted publishing with provenance. A prerelease goes to the dist-tag named by its version. See [Releases](../CONTRIBUTING.md#releases) |
 
 No workflow moves the `vendor/assets` pin. The build uses the pinned commit, and the pin moves only when someone runs `pnpm sync-submodules` and commits the result. See [DEVELOPMENT.md](DEVELOPMENT.md#the-vendorassets-submodule).
@@ -340,7 +341,7 @@ Access via Vercel dashboard for each project.
 - **Assets Docs:** https://chassis-ui.com/assets/
 - **Icons Docs:** https://chassis-ui.com/icons/
 - **Figma Docs:** https://chassis-ui.com/figma/
-- **React Docs:** not routed yet, see above
+- **React Docs:** https://chassis-ui.com/react/
 
 ### Staging URLs
 
@@ -350,6 +351,7 @@ Access via Vercel dashboard for each project.
 - **Icons Docs:** https://staging.chassis-ui.com/icons/
 - **Figma Docs:** https://staging.chassis-ui.com/figma/
 - **Assets Docs:** https://staging.chassis-ui.com/assets/
+- **React Docs:** none yet, see above
 
 > ⚠️ Staging is excluded from search engines via `robots.txt` (`Disallow: /`) and `X-Robots-Tag: noindex, nofollow`. See [INDEXING.md](INDEXING.md).
 
@@ -362,6 +364,7 @@ Useful for debugging routing:
 - https://chassis-assets.vercel.app
 - https://chassis-icons.vercel.app
 - https://chassis-figma.vercel.app
+- https://chassis-react.vercel.app
 
 ## 📚 Related Documentation
 

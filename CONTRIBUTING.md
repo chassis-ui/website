@@ -71,7 +71,12 @@ Run them from the root of the repository.
 
 The scripts behind them are in `package.json`. `site:*` scripts act on `packages/website`,
 `docs:*` scripts on `packages/docs`, for example `pnpm site:lint:eslint`. `pnpm site` builds
-the site and validates its HTML, which the Build job of CI does too.
+the site, validates its HTML and checks its links, which the Build job of CI does too.
+
+`pnpm site:lint:links` checks every link, anchor and asset of the built site that stays on
+it. Given a deployment, such as `pnpm site:lint:links https://staging.chassis-ui.com`, it
+crawls that instead, the proxied projects included. It fails on a broken link of this
+site's own pages, and lists those of the proxied projects as warnings.
 
 `pnpm install` also installs a pre-commit hook. It runs ESLint and Prettier on the staged
 files of `packages/website` and `packages/docs`, fixes what they can, and stops the commit

@@ -138,6 +138,9 @@ jobs:
       - name: Validate HTML (Nu Html Checker)
         run: pnpm site:lint:vnu
 
+      - name: Check links
+        run: pnpm site:lint:links
+
   fixtures:
     name: Fixture Site (${{ matrix.layout }})
     runs-on: ubuntu-latest

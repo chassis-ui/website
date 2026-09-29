@@ -29,6 +29,7 @@
     "gstatic",
     "hdrs",
     "HSTS",
+    "linkinator",
     "lockfiles",
     "oklch",
     "nosniff",
