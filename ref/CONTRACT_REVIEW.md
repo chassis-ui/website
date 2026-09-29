@@ -203,4 +203,4 @@ The review of the package itself found assumptions that the README of 0.5.1 did 
 | The layouts link to fixed URLs under `/static/`                                   | Unchanged, and listed in the README                                     |
 | The styles need `chassis-tokens` on the Sass load path. Found in session 2.3      | Listed in the README. Each site still sets it. See F49 and D22          |
 | The build needs the docs build of `chassis-assets`. Found in session 2.3          | Unchanged. See F51                                                      |
-| The header lists five sibling sites by name, without `chassis-react`              | Unchanged. See F44                                                      |
+| The header lists five sibling sites by name, without `chassis-react`              | Fixed in 0.6.1. See F44                                                 |
