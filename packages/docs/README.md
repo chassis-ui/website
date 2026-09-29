@@ -27,7 +27,7 @@ npm install @chassis-ui/docs
 ```json
 {
   "@astrojs/markdown-remark": "^7.0.0",
-  "@chassis-ui/css": ">=0.3.2",
+  "@chassis-ui/css": "^0.5.0-0",
   "@pagefind/component-ui": "^1.0.0",
   "@shikijs/transformers": "^4.3.1",
   "astro": "^7.0.0",
@@ -51,13 +51,60 @@ import SingleLayout from '@chassis-ui/docs/layouts/SingleLayout.astro'
 import TableOfContents from '@chassis-ui/docs/components/TableOfContents.astro'
 import ThemeToggler from '@chassis-ui/docs/components/ThemeToggler.astro'
 
-import { generateTOC, processImage } from '@chassis-ui/docs'
+import { generateToc, getStaticImageSize } from '@chassis-ui/docs'
 ---
 
 <SingleLayout title="About" description="…">
   <slot />
 </SingleLayout>
 ```
+
+## What a site must provide
+
+The layouts and components read from the consuming site. A site must provide the
+following, or the build fails.
+
+### Modules behind the `@libs/*` path alias
+
+The site maps `@libs/*` to its own `src/libs/*` in `tsconfig.json`, and each module
+exports:
+
+| Module            | Exports                                                                         | Read by                                |
+| ----------------- | ------------------------------------------------------------------------------- | -------------------------------------- |
+| `@libs/config`    | `getConfig()`, returning the parsed `config.yml`                                | most layouts and components            |
+| `@libs/content`   | `docsPages`, the `docs` collection. `getCalloutByName(name)` and `CalloutName`. | `DocsLayout`, `DocsSidebar`, `Callout` |
+| `@libs/data`      | `getData('sidebar')`, and the types `SidebarItem` and `SidebarSubItem`          | `DocsSidebar`                          |
+| `@libs/path`      | `getChassisDocsPath(path)` and `getDocsPublicFsPath()`                          | `DocsLayout`, `Social`                 |
+| `@libs/clipboard` | `initCopyButtons(selector, getText)`                                            | `Code`                                 |
+
+The site also defines a `docs` content collection. Its entry type is used by
+`BaseLayout` and `DocsLayout`.
+
+### Keys in `config.yml`
+
+`getConfig()` must return these keys:
+
+- `title`, `subtitle`, `description`, `authors`
+- `repo`, `current_version`, `docsPath`
+- `github_org`, `figma_handle`, `x_username`
+- `anchors.min`, `anchors.max`
+- `analytics.google_id`
+
+These keys are optional. They say where files live when the site is not built from the
+root of its repository:
+
+| Key          | Meaning                                                                                                           | Example           |
+| ------------ | ----------------------------------------------------------------------------------------------------------------- | ----------------- |
+| `sourceDir`  | Directory that the `file` props of the source-file shortcodes are relative to, from the build's working directory | `"../css"`        |
+| `sourcePath` | The same directory, from the root of the repository                                                               | `"packages/css"`  |
+| `sitePath`   | The site's root, from the root of the repository                                                                  | `"packages/site"` |
+| `siteBranch` | The branch that "View on GitHub" links to. Defaults to `main`.                                                    | `"main"`          |
+
+The source-file shortcodes are `<ScssDocs>`, `<ScssDocsSimple>`, `<JsDocs>` and
+`<Code filePath>`. They link to their files at the tag `v<current_version>`.
+
+A site that validates `config.yml` with `z.object` must add the optional keys to its
+schema. Otherwise they are dropped silently.
 
 ## Exports
 
