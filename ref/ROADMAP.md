@@ -506,18 +506,30 @@ the release pipeline.
 
 ### Session 3.2: repository hygiene
 
-- [ ] Add `CODE_OF_CONDUCT.md`, `SECURITY.md`, `CODEOWNERS`, a pull request template and
+- [x] Add `CODE_OF_CONDUCT.md`, `SECURITY.md`, `CODEOWNERS`, a pull request template and
       issue forms for bug, feature and docs. They live in this repository. See decision
-      D10.
-- [ ] Add labels for area (`pkg:docs`, `site`, `ci`) and for triage.
-- [ ] Enable Discussions or remove the link from `CONTRIBUTING.md`.
-- [ ] Add a pre-commit hook that runs Prettier and ESLint on staged files.
-- [ ] Add Renovate or Dependabot. Group the `@chassis-ui/*` packages and the Astro
-      packages.
+      D10. They are in `.github/`, as in tokens, css and react. `SECURITY.md` points to
+      private vulnerability reporting, which is now on. Blank issues are off, and the
+      chooser links to Discussions, the sibling repositories and private reporting. Fixes
+      F17 with the tasks below.
+- [x] Add labels for area (`pkg:docs`, `site`, `ci`) and for triage. Also `examples`, and
+      `needs-triage`, `needs-info` and `confirmed`. The issue forms add `needs-triage`.
+      `dependencies` and `github_actions` are there for Dependabot.
+- [x] Enable Discussions or remove the link from `CONTRIBUTING.md`. Enabled.
+- [x] Add a pre-commit hook that runs Prettier and ESLint on staged files.
+      simple-git-hooks and lint-staged. `pnpm install` installs the hook, and skips it where
+      there is no `.git`, as on Vercel.
+- [x] Add Renovate or Dependabot. Group the `@chassis-ui/*` packages and the Astro
+      packages. Dependabot, as in the siblings: weekly into `develop`, with groups for
+      `@chassis-ui/*`, for Astro, for the other minor and patch updates, and for the
+      actions. Each pull request runs CI.
 - [ ] Turn each open session of this roadmap into a GitHub issue and each phase into a
-      milestone. Label two or three of them `good first issue`.
-- [ ] Bring `ref/CHASSIS_CSS.md` in line with the compiled CSS of `@chassis-ui/css`. See
-      F52.
+      milestone. Label two or three of them `good first issue`. Not done in session 3.2, at
+      the maintainer's choice.
+- [x] Bring `ref/CHASSIS_CSS.md` in line with the compiled CSS of `@chassis-ui/css`. See
+      F52. Checked against 0.5.2: breakpoint prefixes and widths, spacing and font sizes,
+      button and badge sizes, headings, notifications, and the toggle values `dialog`,
+      `drawer` and `menu`. Every Chassis name in its code now exists in `dist/`.
 
 ### Exit criteria
 
@@ -651,7 +663,7 @@ Considered and left out for now. Each needs a reason to come back.
 | D7  | Which Node version does the ecosystem support?                                           | Node 24 for development and CI, `engines` at `>=22.12.0`, the minimum of Astro 7. In place here since session 3.1: `.nvmrc` says 24 and CI reads it. The siblings follow in session 5.2.                                                                                                                                                                                                                                                                            | decided |
 | D8  | Where do the shared build scripts live?                                                  | In `@chassis-ui/docs` as `bin` entries. A second package is more to release for little gain.                                                                                                                                                                                                                                                                                                                                                                        | open    |
 | D9  | Does the website keep the assets submodule?                                              | Replace it with the files served from the assets deployment, if the site only needs the built docs assets. Check what the build reads from `vendor/assets` first.                                                                                                                                                                                                                                                                                                   | open    |
-| D10 | Community files in each repository, or inherited from a `chassis-ui/.github` repository? | In each repository. See the note below.                                                                                                                                                                                                                                                                                                                                                                                                                             | open    |
+| D10 | Community files in each repository, or inherited from a `chassis-ui/.github` repository? | In each repository, in `.github/`. See the note below. Done here in session 3.2.                                                                                                                                                                                                                                                                                                                                                                                    | decided |
 | D11 | Does the website have a version and a changelog?                                         | No version. The root changelog is the website's log by date. The package has its own, `packages/docs/CHANGELOG.md`, with the history up to 0.5.1. Decided in session 2.4.                                                                                                                                                                                                                                                                                           | decided |
 | D12 | What is the docs section of the website for?                                             | A "Getting started with Chassis" guide of three pages: Introduction, Installation, Next steps. It links to the docs of each project. The test pages are gone. Decided in session 3.1.                                                                                                                                                                                                                                                                               | decided |
 | D13 | Does `examples/` stay?                                                                   | Keep `vanilla-html`, rewritten for the current Chassis CSS and Icons from npm. It is a workspace package, the site build builds it, and the site serves it at `/examples/vanilla-html/`. `react-app` is deleted, since `chassis-react` covers it. Decided in session 3.1.                                                                                                                                                                                           | decided |
@@ -703,3 +715,4 @@ go here, in session 5.2.
 | 2026-09-29 | 2.3      | Added the starter site `packages/docs/starter` and `build/fixture-sites.js`, which packs the package and builds the starter in two layouts, and the CI job "Fixture Site". Copied the website's placeholder docs into it. The integration now keeps one copy of `@chassis-ui/css`. Added F49 to F51 and D22.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | 2026-09-29 | 2.4      | Release pipeline: Changesets on `develop`, split changelogs, trusted publishing with provenance, a publish gate that reads the checks on the commit, CI on `develop` only. The integration puts the default tokens on the Sass load path, and `exports` is narrowed. Decided D5, D11 and D22. Published `0.6.0-next.0` to `next`, then 0.6.0 to `latest`. Two fixes on the way: the fixture needed a stand-in for the chassis-assets build on CI, and `setup-node` looked for pnpm in the publish job.                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | 2026-09-29 | 3.1      | Top-level `lint`, `format`, `preview`, `spellcheck` and `vendor` scripts, and `build` as Vercel runs it. `pnpm dev` no longer moves the submodule pin. Node 24 in `.nvmrc`, `engines` at `>=22.12.0`, CI reads `.nvmrc`. cspell runs in the Lint job, and CI runs on pull requests against `develop`, the branch contributors target. Setup and commands live in `CONTRIBUTING.md` only. `README.md`, `ref/DEVELOPMENT.md`, `ref/ARCHITECTURE.md` and `ref/DEPLOYMENT.md` rewritten, with chassis-react. The docs section is a Getting started guide of three pages. `vanilla-html` rewritten for Chassis CSS 0.5 and served at `/examples/vanilla-html/`, `react-app` deleted. Search covers the blog posts and the guide. Fixed the repository links of the About page and the domain of the callouts. Decided D7, D12 and D13. Added F52 to F54, CSS7 and ICO9. The local and remote `app/docs` branches are left for the maintainer. |
+| 2026-09-29 | 3.2      | Code of conduct, security policy, `CODEOWNERS`, pull request template and issue forms for bug, feature and docs, in `.github/`. Private vulnerability reporting and Discussions on, homepage set to chassis-ui.com, area and triage labels added. Pre-commit hook with simple-git-hooks and lint-staged. Dependabot weekly into `develop`, grouped. `ref/CHASSIS_CSS.md` matches Chassis CSS 0.5.2. Decided D10. The issues and milestones for the roadmap were not created, at the maintainer's choice.                                                                                                                                                                                                                                                                                                                                                                                                                                 |
