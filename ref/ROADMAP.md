@@ -122,6 +122,9 @@ last sibling has been upgraded and deployed.
 | F31 | A spell check is configured and never run.                                                                                                                                                    | `.cspell.json` exists. No script and no workflow calls `cspell`.                                                                                                                                                                                                                                                                                        | 3     |
 | F32 | The example projects are not built, checked or linked.                                                                                                                                        | `examples/react-app` and `examples/vanilla-html`. `src/pages/examples.astro` does not link to them. The React example predates `chassis-react`.                                                                                                                                                                                                         | 3     |
 | F33 | There is no operations documentation.                                                                                                                                                         | Nothing describes how to roll back a deployment, what to do when a proxied sibling site is down, or who is told. There is no monitoring.                                                                                                                                                                                                                | 4     |
+| F35 | Every page fails the colour-contrast audit. Found in Phase 0.                                                                                                                                 | Lighthouse 12 on all 11 sitemap URLs. The accessibility score is still 0.96. The same failure on every page points to a shared element.                                                                                                                                                                                                                 | 4     |
+| F36 | Search indexes two pages. This may be deliberate.                                                                                                                                             | `pagefind.yml` limits the index to `about/` and `examples/`, so the home page and the blog are not searchable.                                                                                                                                                                                                                                          | 3     |
+| F37 | `pnpm dev` moves the submodule pin.                                                                                                                                                           | It runs `pnpm sync-submodules`, which updates `vendor/assets` to the latest `app/docs`. Each dev session can leave a changed pointer that a broad commit picks up. Since Phase 0 the pin decides what production builds.                                                                                                                                | 3     |
 | F34 | The package has no stated versioning policy.                                                                                                                                                  | It is at 0.5.0 with seven consumers. Nothing says what counts as a breaking change or what 1.0 requires.                                                                                                                                                                                                                                                | 2     |
 
 ### How the sibling repositories consume this one
@@ -170,45 +173,59 @@ contract into the package. Each sibling then removes its copies in its own proje
 
 ## Phase 0 — Green baseline
 
-**Goal:** a red check means a real problem, and nothing reaches `main` without passing.
+**Goal:** a red check means a real problem, and CI covers lint, types, the build and the
+audit.
+
+**Status:** done on `develop` on 2026-09-29, not yet pushed. The first push to `staging`
+runs the new CI and confirms the first exit criterion.
 
 ### Session 0.1: make CI pass
 
-- [ ] Run Prettier with `--write` over `packages/website` and `packages/docs`. Commit the
+- [x] Run Prettier with `--write` over `packages/website` and `packages/docs`. Commit the
       12 files as a formatting-only change.
-- [ ] Upgrade `astro` to the latest 7.x in both packages. Upgrade `@astrojs/*`, `postcss`,
-      `image-size`, `html-validate`, `eslint`, `stylelint`, `js-yaml` to clear the audit.
-- [ ] For advisories that remain in dev-only transitive dependencies, either add a pnpm
-      override or list them in `auditConfig.ignoreGhsas` with a comment that says why.
-- [ ] Build the site and compare the output with the current production build before
-      merging the upgrade.
+- [x] Upgrade dependencies within their ranges. Astro is at 7.3.5. The audit went from
+      34 advisories to none, with no overrides or exceptions.
+- [x] Build the site and compare the output with the build before the upgrade. The HTML
+      is identical apart from whitespace and the generator tag.
+- [x] The upgrade also moved the website from the `@chassis-ui/css` and
+      `@chassis-ui/tokens` 0.5.0-0 prereleases to 0.5.2 and 0.5.3. This changes colours,
+      border radii and dark-mode backgrounds. Taken in the same commit by decision.
 
 ### Session 0.2: make CI mean something
 
-- [ ] Replace the `&` and `wait` pattern in `check` and `check:astro` with
-      `pnpm run --parallel` or sequential `&&`, so a failure exits non-zero.
-- [ ] Add a build job to CI: `pnpm site:build`, then `pnpm site:lint:html`. It needs
-      `submodules: recursive` on checkout.
-- [ ] Make the build use the pinned submodule commit. Remove `--remote` from the build
-      path in `build/build-site.js`. Keep it in `pnpm sync-submodules`, which is the
-      deliberate way to move the pin.
-- [ ] Fix the Lighthouse accessibility assertion. Find out why the category has no score,
-      then decide whether the job gates or only reports. See decision D3.
-- [ ] Add a top-level `permissions: contents: read` to `ci.yml` and `lighthouse.yml`. Pin
-      third-party actions by commit. Add dependency review on pull requests.
-- [ ] Add a ruleset for `main` and `staging`: pull request required, the CI jobs required,
-      no force push. See decision D1.
-- [ ] Turn on secret scanning, push protection, Dependabot alerts and security updates.
-- [ ] Delete the files in F19. The multi-platform content of `build/README.md` stays
+- [x] Make `check` and `check:astro` exit non-zero on failure. A deliberate type error
+      now fails both.
+- [x] Add a Build job to CI: the full production build, then html-validate and the Nu
+      Html Checker.
+- [x] Make the build use the pinned submodule commit. The pin moved to `04fd3a7`, the
+      commit production built with, so the deployed site does not change.
+      `pnpm sync-submodules` remains the deliberate way to move it.
+- [x] Fix the Lighthouse run. Lighthouse 10 in action v10 could not parse `oklch()`
+      colours, so the accessibility category had no score. The action is now 12.6.2.
+      Every sitemap URL scores 0.96 for accessibility.
+- [x] Set read-only token permissions on `ci.yml` and `lighthouse.yml`. Pin third-party
+      actions by commit, in all three workflows. Add dependency review on pull requests.
+- [x] Add the ruleset "Protect main and staging": no force push, no deletion. Decided,
+      see D1.
+- [x] Turn on secret scanning, push protection and Dependabot alerts. Dependabot
+      security updates stay off by decision.
+- [x] Delete the files in F19. The multi-platform content of `build/README.md` stays
       reachable at commit `24aa677` for `chassis-assets` to take.
 
 ### Exit criteria
 
-- CI is green on `main` and `staging`.
-- A deliberate type error in a scratch branch fails the "Type Check" job.
-- `pnpm audit --audit-level moderate` exits 0, or every exception is written down.
-- A direct push to `main` is rejected.
-- Two builds of the same commit produce the same site.
+- [ ] CI is green on `main` and `staging`. Every job passes locally. Not confirmed on
+      GitHub until the next push.
+- [x] A deliberate type error fails the type check.
+- [x] `pnpm audit --audit-level moderate` exits 0.
+- [x] A force push to `main` or `staging` is rejected.
+- [x] Two builds of the same commit produce the same site.
+
+### Left for you
+
+- A second ruleset named "Branch protection" appeared on 2026-09-29 at 10:46. It is
+  disabled and targets the default branch with the same two rules. It was not created by
+  the Phase 0 session. Delete it or keep it.
 
 ## Phase 1 — Open issues and the consumer contract
 
@@ -375,6 +392,9 @@ This phase produces 0.6.0, which is a breaking release. See
 - [ ] Decide whether `examples/` stays. See decision D13. If it stays, build it in CI
       and link it from the examples page.
 - [ ] Add a `spellcheck` script that runs `cspell`, and run it in CI.
+- [ ] Ask whether search should cover more than About and Examples. See F36.
+- [ ] Stop `pnpm dev` from moving the submodule pin. Make `sync-submodules` an explicit
+      step. See F37.
 - [ ] Delete the local `dev/*` branches that are merged. Keep `develop`: it is the local
       integration branch and stays unpushed. Delete the stale remote branch `app/docs`
       of this repository.
@@ -439,6 +459,7 @@ performance, and CI holds it there.
 
 ### Session 4.4: quality gates and operations
 
+- [ ] Fix the colour-contrast failure that every page shares. See F35.
 - [ ] Bring Lighthouse performance to the 0.9 target on the home page and one docs page.
 - [ ] Add automated accessibility checks with axe against the built site.
 - [ ] Do one manual pass with a keyboard and a screen reader. Record the result.
@@ -515,9 +536,9 @@ Considered and left out for now. Each needs a reason to come back.
 
 | ID  | Decision                                                                                 | Recommendation or outcome                                                                                                                                         | Status  |
 | --- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| D1  | Should `main` require a pull request, given one maintainer?                              | Yes, with zero required approvals and the CI jobs required. It keeps the gate and costs one click.                                                                | open    |
+| D1  | How are `main` and `staging` protected?                                                  | No pull request. A ruleset blocks force push and deletion on `main` and `staging`. CI stays advisory.                                                             | decided |
 | D2  | Names of the config keys for issues 1 and 2.                                             | `sourceDir`, `sourcePath`, `sitePath`, `siteBranch`. They match the patch already in use.                                                                         | open    |
-| D3  | Does Lighthouse block a deployment or only report?                                       | Accessibility blocks. Performance reports until Phase 4 brings it to target.                                                                                      | open    |
+| D3  | Does Lighthouse block a deployment or only report?                                       | Accessibility below 0.9 fails the run. The other categories only warn. The run cannot stop a deploy.                                                              | decided |
 | D4  | Keep the `@libs/*` alias contract or add an Astro integration with virtual modules?      | Clean break in 0.6.0. An Astro integration replaces the aliases. The siblings stay on 0.5 until they are upgraded.                                                | decided |
 | D5  | Changesets or the existing version script?                                               | Changesets. It handles prereleases, changelogs and the release pull request. tokens, css and react use it.                                                        | open    |
 | D6  | Replace referrer-based static routing?                                                   | Two steps. Add path-based rewrites in this project. Remove the referrer-based ones when the last sibling has been upgraded and deployed.                          | decided |
@@ -554,9 +575,10 @@ go here, in session 5.2.
 
 ## Session log
 
-| Date       | Session | What was done                                                                                                                                                                                       |
-| ---------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-09-29 | Review  | Reviewed the repository, the sibling repositories and the open issues. Wrote this roadmap. No code changed.                                                                                         |
-| 2026-09-29 | Review  | Added the model column. Limited the scope to this repository and moved sibling work to `SIBLING_TASKS.md`. Added findings F26 to F34, the compatibility rule, session 4.3 and decisions D10 to D15. |
-| 2026-09-29 | Review  | Removed the compatibility rule at the maintainer's request. Breaking changes ship in 0.6.0 and the siblings are upgraded afterwards. Decided D4 and D6.                                             |
-| 2026-09-29 | Review  | Reworded F25 and session 3.1: `develop` is the local integration branch and stays unpushed.                                                                                                         |
+| Date       | Session  | What was done                                                                                                                                                                                               |
+| ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-09-29 | Review   | Reviewed the repository, the sibling repositories and the open issues. Wrote this roadmap. No code changed.                                                                                                 |
+| 2026-09-29 | Review   | Added the model column. Limited the scope to this repository and moved sibling work to `SIBLING_TASKS.md`. Added findings F26 to F34, the compatibility rule, session 4.3 and decisions D10 to D15.         |
+| 2026-09-29 | Review   | Removed the compatibility rule at the maintainer's request. Breaking changes ship in 0.6.0 and the siblings are upgraded afterwards. Decided D4 and D6.                                                     |
+| 2026-09-29 | Review   | Reworded F25 and session 3.1: `develop` is the local integration branch and stays unpushed.                                                                                                                 |
+| 2026-09-29 | 0.1, 0.2 | Phase 0 done on `develop`. CI fixed and extended, dependencies upgraded, build pinned, Lighthouse fixed, stale files removed, GitHub ruleset and security features on. Decided D1 and D3. Added F35 to F37. |
