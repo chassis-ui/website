@@ -11,6 +11,7 @@ Thank you for your interest in contributing to the Chassis Website! This documen
 - [Style Guide](#style-guide)
 - [Commit Conventions](#commit-conventions)
 - [Pull Request Process](#pull-request-process)
+- [Releases](#releases)
 
 ## Code of Conduct
 
@@ -269,6 +270,7 @@ ensure animations work correctly on that section.
 3. **Test your changes**: Run `pnpm test`, then build and preview locally
 4. **Update documentation**: If adding features or changing APIs
 5. **Write tests**: If applicable
+6. **Add a changeset** if the change affects `@chassis-ui/docs`: run `pnpm changeset`. See [Releases](#releases)
 
 ### PR Description Template
 
@@ -306,6 +308,53 @@ If applicable, add screenshots
    - Build succeeds
 3. **Changes requested** must be addressed
 4. **Squash and merge** preferred for clean history
+
+## Releases
+
+`@chassis-ui/docs` is released with [Changesets](https://changesets.dev). The website has no
+version. Its changes go into the root `CHANGELOG.md`, by date.
+
+### Describe a change
+
+A change to `packages/docs` adds a changeset:
+
+```bash
+pnpm changeset
+```
+
+It asks for the bump and a summary, and writes a Markdown file to `.changeset/`. Commit it
+with the change. Before 1.0, a breaking change is a `minor` bump, and its summary starts with
+`**Breaking.**`. Everything else is a `patch`. The
+[versioning policy](packages/docs/README.md#versioning) says what counts as breaking.
+
+### Release a version
+
+On `develop`:
+
+```bash
+pnpm changeset version
+git add .
+git commit -m "chore(release): @chassis-ui/docs <version>"
+```
+
+`changeset version` bumps `packages/docs/package.json`, writes the entry in
+`packages/docs/CHANGELOG.md` and deletes the changesets. Then push the commit to `develop`,
+`staging` and `main`, as for any change. The push to `main` runs
+`.github/workflows/publish-packages.yml`. It publishes the version when npm does not have it
+yet and every check of CI passed on the commit, then creates the GitHub release.
+
+### Prereleases
+
+```bash
+pnpm changeset pre enter next   # versions become 0.6.0-next.0, 0.6.0-next.1, …
+pnpm changeset version
+# commit, push to develop, staging and main
+pnpm changeset pre exit         # when the version is ready
+pnpm changeset version          # 0.6.0
+```
+
+A prerelease is published under the dist-tag named by its version, `next` here, and its
+GitHub release is marked as a prerelease. `latest` stays on the last stable version.
 
 ## Questions?
 

@@ -270,19 +270,22 @@ pnpm dev
 **Publishing updates:**
 
 ```bash
-# 1. Bump version (run from repo root; updates packages/docs/package.json + README.md)
-node build/change-version.js --patch   # or --minor / --major
+# 1. With the change, describe it for the changelog
+pnpm changeset
 
-# 2. Commit and push to main
-git add .
-git commit -m "feat(docs): add new component"
-git push origin main
-# → .github/workflows/publish-packages.yml detects the bump and publishes @chassis-ui/docs to npm
+# 2. To release, on develop: bump the version and write the changelog
+pnpm changeset version
+git commit -am "chore(release): @chassis-ui/docs <version>"
 
-# 3. Other projects can update
+# 3. Push the commit to develop, staging and main
+# → .github/workflows/publish-packages.yml publishes the version from main
+
+# 4. Other projects can update
 # In chassis-css, chassis-tokens, etc.
 pnpm add @chassis-ui/docs@latest
 ```
+
+See [Releases](../CONTRIBUTING.md#releases) in the contributing guide.
 
 ## 🎨 Working with Styles
 

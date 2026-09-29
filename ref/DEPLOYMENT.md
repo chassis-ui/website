@@ -78,7 +78,9 @@ runs and does not block.
 The rule applies to direct pushes and pull requests alike. GitHub accepts a direct push
 only when the commit already has passing checks, so a commit has to pass CI somewhere
 first. That is what `develop` is for: CI runs on every push to it, and Vercel does not
-deploy it.
+deploy it. CI does not run again when the same commit is pushed to `staging` and `main`: the
+results of the `develop` run belong to the commit, and the ruleset and the publish workflow
+read them there.
 
 ### Releasing chassis-website
 
@@ -126,9 +128,9 @@ This repo's `.github/workflows/` currently has three workflows, none of which de
 
 | Workflow | Trigger | Purpose |
 |---|---|---|
-| `ci.yml` | Pushes to `develop`, `staging` and `main`, pull requests against `staging` and `main` | Lint, Type Check, Test and Build, which the ruleset requires, and Security Audit. Dependency Review on pull requests |
+| `ci.yml` | Pushes to `develop`, pull requests against `staging` and `main` | Lint, Type Check, Test and Build, which the ruleset requires, Fixture Site for both layouts, and Security Audit. Dependency Review on pull requests |
 | `lighthouse.yml` | `deployment_status` events (or manual `workflow_dispatch`) | Runs Lighthouse CI against the resulting production or staging URL, using `lighthouse.json` thresholds |
-| `publish-packages.yml` | Push to `main` | Detects a version bump in `packages/docs/package.json` and publishes `@chassis-ui/docs` to npm automatically |
+| `publish-packages.yml` | Push to `main` | Publishes the version in `packages/docs/package.json` when npm does not have it, after checking that CI passed on the commit. Trusted publishing with provenance. A prerelease goes to the dist-tag named by its version. See [Releases](../CONTRIBUTING.md#releases) |
 
 Submodule syncing (`vendor/assets`) is handled by `build/sync-submodules.js`, invoked via `pnpm sync-submodules` (part of `pnpm dev` and `pnpm build`) — not a scheduled or triggered GitHub Action.
 
@@ -199,13 +201,14 @@ The commands are under [Releasing chassis-website](#releasing-chassis-website).
 
 When deploying changes that affect multiple projects:
 
-1. **Update @chassis-ui/docs** (if shared components changed) — run from the repo root:
+1. **Release @chassis-ui/docs** (if shared components changed) — run from the repo root:
    ```bash
-   node build/change-version.js --patch   # or --minor / --major, or: node build/change-version.js <old> <new>
-   git commit -m "feat(docs): update shared component"
+   pnpm changeset version   # applies the changesets in .changeset/
+   git commit -am "chore(release): @chassis-ui/docs <version>"
    # Push through develop and staging to main, as above
-   # → .github/workflows/publish-packages.yml detects the version bump on main and publishes to npm
+   # → .github/workflows/publish-packages.yml publishes a version that npm does not have yet
    ```
+   See [Releases](../CONTRIBUTING.md#releases) for changesets and prereleases.
 
 2. **Update dependent projects**
    ```bash
@@ -229,7 +232,7 @@ Before pushing to `main`:
 - [ ] Submodules are up to date: `git submodule status`
 - [ ] Dependencies are up to date
 - [ ] Breaking changes documented
-- [ ] Version numbers updated (if releasing @chassis-ui/docs)
+- [ ] `pnpm changeset version` run and committed (if releasing @chassis-ui/docs)
 
 ## 🐛 Troubleshooting Deployments
 

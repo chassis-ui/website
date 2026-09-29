@@ -1,116 +1,163 @@
 name: Publish Packages
 
+# On a push to main, publishes the version in packages/docs/package.json when npm does not
+# have it yet, then creates its GitHub release from its CHANGELOG entry. The version and the
+# CHANGELOG are made on develop with Changesets. See "Releases" in CONTRIBUTING.md.
+#
+# The checks of ci.yml ran on this commit when it was pushed to develop, and the ruleset of
+# main requires them before the commit can reach main. This workflow does not run them again.
+# It reads their results and stops unless each one passed.
+#
+# npm trusted publishing: the package trusts this workflow file of chassis-ui/website, so no
+# npm token is needed, and every version has provenance.
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
+# Never cancel a run that may be publishing
 concurrency:
-  group: publish-packages-${{ github.ref }}
+  group: publish-packages
   cancel-in-progress: false
 
 jobs:
-  detect-changes:
+  detect:
+    name: Detect Version
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
-      docs-changed: ${{ steps.changes.outputs.docs-changed }}
-      docs-version: ${{ steps.version.outputs.docs-version }}
+      version: ${{ steps.version.outputs.version }}
+      dist-tag: ${{ steps.version.outputs.dist-tag }}
+      prerelease: ${{ steps.version.outputs.prerelease }}
+      publish: ${{ steps.npm.outputs.publish }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          fetch-depth: 0 # Need full history to diff against github.event.before
+          persist-credentials: false
 
-      - name: Check for package changes
-        id: changes
-        run: |
-          BEFORE_SHA="${{ github.event.before }}"
-
-          # On workflow_dispatch, or a push with no known previous commit
-          # (e.g. first push to the branch), fall back to comparing against
-          # the immediate parent commit.
-          if [ -z "$BEFORE_SHA" ] || [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
-            BEFORE_SHA="HEAD~1"
-          fi
-
-          # Check if docs package.json version changed
-          if git diff "$BEFORE_SHA" HEAD --name-only | grep -q "packages/docs/package.json"; then
-            CURRENT_VERSION=$(node -p "require('./packages/docs/package.json').version")
-            PREVIOUS_VERSION=$(git show "$BEFORE_SHA":packages/docs/package.json | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).version")
-
-            echo "Current version: $CURRENT_VERSION"
-            echo "Previous version: $PREVIOUS_VERSION"
-
-            if [ "$CURRENT_VERSION" != "$PREVIOUS_VERSION" ]; then
-              echo "docs-changed=true" >> $GITHUB_OUTPUT
-            else
-              echo "docs-changed=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "docs-changed=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Get current version
+      # A prerelease such as 0.6.0-next.0 goes to the dist-tag `next`, and a version without a
+      # prerelease part to `latest`. A numeric prerelease such as 0.6.0-0 goes to `next`,
+      # because npm rejects a dist-tag that is a version range.
+      - name: Read the version
         id: version
         run: |
           VERSION=$(node -p "require('./packages/docs/package.json').version")
-          echo "docs-version=$VERSION" >> $GITHUB_OUTPUT
+          PRERELEASE=${VERSION#*-}
 
-  publish-docs:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.docs-changed == 'true'
+          if [ "$PRERELEASE" = "$VERSION" ]; then
+            DIST_TAG=latest
+          else
+            DIST_TAG=${PRERELEASE%%.*}
+            case "$DIST_TAG" in
+              '' | *[!0-9A-Za-z-]* | [0-9]*) DIST_TAG=next ;;
+            esac
+          fi
+
+          {
+            echo "version=$VERSION"
+            echo "dist-tag=$DIST_TAG"
+            echo "prerelease=$([ "$DIST_TAG" = latest ] && echo false || echo true)"
+          } >> "$GITHUB_OUTPUT"
+          echo "Version $VERSION, dist-tag $DIST_TAG"
+
+      - name: Check whether npm has the version
+        id: npm
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if npm view "@chassis-ui/docs@$VERSION" version 2>/dev/null | grep -qx "$VERSION"; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "npm has $VERSION. Nothing to publish."
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "npm does not have $VERSION. It will be published."
+          fi
+
+  checks:
+    name: Checks Passed
+    needs: detect
+    if: needs.detect.outputs.publish == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      checks: read
+
+    steps:
+      - name: Read the results of CI on this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUIRED: |
+            Lint
+            Type Check
+            Test
+            Build
+            Fixture Site (root)
+            Fixture Site (packages)
+        run: |
+          RESULTS=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs?per_page=100" \
+            --jq '.check_runs[] | select(.conclusion == "success") | .name')
+          MISSING=0
+
+          while IFS= read -r NAME; do
+            [ -z "$NAME" ] && continue
+
+            if printf '%s\n' "$RESULTS" | grep -qxF "$NAME"; then
+              echo "passed: $NAME"
+            else
+              echo "::error::The check '$NAME' has not passed on $GITHUB_SHA"
+              MISSING=1
+            fi
+          done <<< "$REQUIRED"
+
+          exit $MISSING
+
+  publish:
+    name: Publish @chassis-ui/docs
+    needs: [detect, checks]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # to create the GitHub release and its tag
+      id-token: write # for npm trusted publishing and provenance
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-
+      # Node.js 24 ships npm 11, which trusted publishing needs (11.5.1 or later)
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
-          cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Check if version already published on npm
-        id: npm-check
-        run: |
-          VERSION="${{ needs.detect-changes.outputs.docs-version }}"
-          if npm view "@chassis-ui/docs@$VERSION" version 2>/dev/null | grep -q "$VERSION"; then
-            echo "already-published=true" >> $GITHUB_OUTPUT
-            echo "Version $VERSION already on npm, skipping publish"
-          else
-            echo "already-published=false" >> $GITHUB_OUTPUT
-            echo "Version $VERSION not on npm, will publish"
-          fi
-
-      - name: Publish @chassis-ui/docs
-        if: steps.npm-check.outputs.already-published == 'false'
-        working-directory: packages/docs
-        run: npm publish --access public
+      # Before publishing, so a version without a CHANGELOG entry is not published
+      - name: Release notes
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_CHASSIS_UI }}
+          VERSION: ${{ needs.detect.outputs.version }}
+        run: node build/release-notes.js "$VERSION" > "$RUNNER_TEMP/release-notes.md"
 
-      - name: Create GitHub Release
+      - name: Publish to npm
+        working-directory: packages/docs
+        env:
+          DIST_TAG: ${{ needs.detect.outputs.dist-tag }}
+        run: npm publish --provenance --access public --tag "$DIST_TAG"
+
+      # Runs only when the publish step succeeded
+      - name: Create the GitHub release
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
-          tag_name: "@chassis-ui/docs@${{ needs.detect-changes.outputs.docs-version }}"
-          name: "@chassis-ui/docs v${{ needs.detect-changes.outputs.docs-version }}"
-          body: |
-            Published @chassis-ui/docs v${{ needs.detect-changes.outputs.docs-version }} to npm.
-
-            Install with:
-            ```bash
-            npm install @chassis-ui/docs@${{ needs.detect-changes.outputs.docs-version }}
-            ```
+          tag_name: '@chassis-ui/docs@${{ needs.detect.outputs.version }}'
+          name: '@chassis-ui/docs v${{ needs.detect.outputs.version }}'
+          body_path: ${{ runner.temp }}/release-notes.md
+          target_commitish: ${{ github.sha }}
+          prerelease: ${{ needs.detect.outputs.prerelease == 'true' }}
+          make_latest: ${{ needs.detect.outputs.prerelease == 'true' && 'false' || 'true' }}
           draft: false
-          prerelease: false

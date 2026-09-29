@@ -3,8 +3,10 @@ name: CI
 on:
   push:
     # A commit reaches `staging` and `main` only after these checks passed on it, so they
-    # run on `develop` first. See ref/DEPLOYMENT.md.
-    branches: [develop, staging, main]
+    # run on `develop` first. Their results belong to the commit, and the ruleset and the
+    # publish workflow read them there, so pushing the same commit to `staging` and `main`
+    # does not run them again. See ref/DEPLOYMENT.md.
+    branches: [develop]
   pull_request:
     branches: [staging, main]
 
