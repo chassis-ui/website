@@ -2,7 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [staging, main]
+    # A commit reaches `staging` and `main` only after these checks passed on it, so they
+    # run on `develop` first. See ref/DEPLOYMENT.md.
+    branches: [develop, staging, main]
   pull_request:
     branches: [staging, main]
 

@@ -63,36 +63,50 @@ See [VERCEL_CONFIG.md](VERCEL_CONFIG.md) for details on request routing.
 
 ## 🚀 Deployment Process
 
-### Automatic Deployment (Recommended)
+### Branches and required checks
 
-#### For chassis-website:
+| Branch    | On GitHub | Deploys                  | Protected                                              |
+| --------- | --------- | ------------------------ | ------------------------------------------------------ |
+| `develop` | yes       | nothing                  | no                                                     |
+| `staging` | yes       | `staging.chassis-ui.com` | no force push, no deletion, required checks            |
+| `main`    | yes       | `chassis-ui.com`, npm    | no force push, no deletion, required checks            |
 
-**To Staging:**
+The ruleset "Protect main and staging" requires four jobs of `ci.yml` to pass on a commit
+before it reaches `staging` or `main`: Lint, Type Check, Test and Build. Security Audit
+runs and does not block.
+
+The rule applies to direct pushes and pull requests alike. GitHub accepts a direct push
+only when the commit already has passing checks, so a commit has to pass CI somewhere
+first. That is what `develop` is for: CI runs on every push to it, and Vercel does not
+deploy it.
+
+### Releasing chassis-website
+
+Work is merged into `develop`. Then:
+
 ```bash
-git checkout staging
-git merge feature-branch
-git push origin staging
-# → Automatically deploys to staging.chassis-ui.com
+git push origin develop
+# → CI runs on develop. Wait until it is green.
+
+git push origin develop:staging
+# → Deploys to staging.chassis-ui.com. Check it.
+
+git push origin develop:main
+# → Deploys to chassis-ui.com, and publishes @chassis-ui/docs when its version changed
 ```
 
-**To Production:**
-```bash
-git checkout main
-git merge staging
-git push origin main
-# → Automatically deploys to chassis-ui.com
-```
+Each push moves the branch to the same commit, so the checks that passed on `develop`
+count for `staging` and `main`. A push is rejected when CI failed, is still running, or
+has not run on that commit, for example after a local merge commit. Push that commit to
+`develop` first.
 
-#### For Other Projects:
+A pull request into `staging` or `main` works as well. It merges once the checks pass on
+the pull request.
 
-Each project follows the same pattern:
-```bash
-# Staging
-git push origin staging
+### Other projects
 
-# Production
-git push origin main
-```
+Each Chassis project deploys from its own `staging` and `main` branches. Their branch
+rules are set in their own repositories.
 
 ### Manual Deployment
 
@@ -112,7 +126,7 @@ This repo's `.github/workflows/` currently has three workflows, none of which de
 
 | Workflow | Trigger | Purpose |
 |---|---|---|
-| `ci.yml` | PRs against `main`/`staging`, pushes to `staging` | ESLint, Stylelint, Prettier, `astro check` (both `packages/website` and `packages/docs`), `pnpm audit` |
+| `ci.yml` | Pushes to `develop`, `staging` and `main`, pull requests against `staging` and `main` | Lint, Type Check, Test and Build, which the ruleset requires, and Security Audit. Dependency Review on pull requests |
 | `lighthouse.yml` | `deployment_status` events (or manual `workflow_dispatch`) | Runs Lighthouse CI against the resulting production or staging URL, using `lighthouse.json` thresholds |
 | `publish-packages.yml` | Push to `main` | Detects a version bump in `packages/docs/package.json` and publishes `@chassis-ui/docs` to npm automatically |
 
@@ -174,31 +188,12 @@ Vercel automatically sets environment variables:
 
 ### Typical Development Cycle
 
-1. **Feature Development**
-   ```bash
-   git checkout -b feature/new-component
-   # Make changes
-   git commit -m "feat: add new component"
-   git push origin feature/new-component
-   # → Creates preview deployment on Vercel
-   ```
+1. Work on a local branch and merge it into `develop`.
+2. Push `develop` and wait for CI.
+3. Push the same commit to `staging` and check the staging site.
+4. Push the same commit to `main`.
 
-2. **Staging Deployment**
-   ```bash
-   git checkout staging
-   git merge feature/new-component
-   git push origin staging
-   # → Deploys to staging.chassis-ui.com
-   # Test on staging
-   ```
-
-3. **Production Deployment**
-   ```bash
-   git checkout main
-   git merge staging
-   git push origin main
-   # → Deploys to chassis-ui.com
-   ```
+The commands are under [Releasing chassis-website](#releasing-chassis-website).
 
 ### Version Coordination
 
@@ -208,8 +203,8 @@ When deploying changes that affect multiple projects:
    ```bash
    node build/change-version.js --patch   # or --minor / --major, or: node build/change-version.js <old> <new>
    git commit -m "feat(docs): update shared component"
-   git push origin main
-   # → .github/workflows/publish-packages.yml detects the version bump and publishes to npm automatically
+   # Push through develop and staging to main, as above
+   # → .github/workflows/publish-packages.yml detects the version bump on main and publishes to npm
    ```
 
 2. **Update dependent projects**
@@ -226,10 +221,9 @@ When deploying changes that affect multiple projects:
 
 ## 🧪 Pre-Deployment Checklist
 
-Before merging to `main`:
+Before pushing to `main`:
 
-- [ ] Code passes linting: `pnpm site:lint`
-- [ ] Build succeeds: `pnpm build`
+- [ ] CI is green on the commit. GitHub rejects the push otherwise
 - [ ] Preview deployment works correctly
 - [ ] Staging deployment tested (if applicable)
 - [ ] Submodules are up to date: `git submodule status`
