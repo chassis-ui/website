@@ -59,6 +59,7 @@ area rather than re-deriving from source:
 - [ref/ARCHITECTURE.md](ref/ARCHITECTURE.md) — hybrid monorepo + multi-repo ecosystem structure
 - [ref/DEVELOPMENT.md](ref/DEVELOPMENT.md) — detailed dev setup/workflow
 - [ref/DEPLOYMENT.md](ref/DEPLOYMENT.md) — environments, branches, deploy triggers
+- [ref/OPERATIONS.md](ref/OPERATIONS.md) — rollbacks, a proxied site that is down, credential rotation
 - [ref/VERCEL_CONFIG.md](ref/VERCEL_CONFIG.md) — Vercel proxy routing across ecosystem sites
 - [ref/INDEXING.md](ref/INDEXING.md) — search engine indexing rules per host/environment
 - [ref/CHASSIS_CSS.md](ref/CHASSIS_CSS.md) — Bootstrap → Chassis CSS conversion guide (written for LLMs)
