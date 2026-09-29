@@ -1,28 +1,10 @@
-# This file holds all sidebar menu's entries for Chassis Icons.
+# This file holds all sidebar menu's entries for the Chassis website docs.
+# A page's file name is the slug of its title: "Next steps" is `next-steps.mdx`.
 
-- title: Test Category
-  section: Section 1
+- title: Getting started
   icon: rocket-solid
   iconColor: primary
   pages:
-    - title: Test Page
-    - title: Test Page 2
-    - title: Test Page 3
-
-- title: Test Category 2
-  section: Section 2
-  icon: rocket-solid
-  iconColor: secondary
-  pages:
-    - title: Test Page
-    - title: Test Page 2
-    - group: Subsection 1
-      pages:
-        - title: Test Page
-        - title: Test Page 2
-        - title: Test Page 3
-    - group: Subsection 2
-      pages:
-        - title: Test Page
-        - title: Test Page 2
-        - title: Test Page 3
+    - title: Introduction
+    - title: Installation
+    - title: Next steps

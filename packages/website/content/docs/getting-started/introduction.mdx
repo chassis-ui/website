@@ -1,0 +1,48 @@
+---
+title: Introduction
+description: What Chassis is, the projects it is made of, and which of them you install.
+toc: true
+---
+
+Chassis is an open-source design system toolkit for products with several brands and platforms. It is made of separate projects, each in its own repository and each under the MIT license. The design tokens come first, and the other projects build on them.
+
+## The projects
+
+### Chassis Tokens
+
+Chassis Tokens holds the design tokens of Chassis in [Tokens Studio](https://tokens.studio) format, synced with Figma. A [Style Dictionary](https://styledictionary.com) build turns them into SCSS variables for the web, Swift constants for iOS and resources for Android. The output is published to npm as `@chassis-ui/tokens`. iOS apps can also install it as a Swift package, and Android apps as a library from the GitHub releases. To use tokens of your own, fork the repository and build your own brands.
+
+### Chassis CSS
+
+Chassis CSS is a CSS framework built on the tokens. It has components, utility classes, context classes that change the color palette of an element (`primary`, `success`, `danger` and others), and JavaScript plugins, typed with TypeScript, for the interactive components. It ships compiled CSS, the Sass source and an entry for Tailwind CSS v4. It is published to npm as `@chassis-ui/css`. Chassis CSS is derived from [Bootstrap](https://getbootstrap.com/).
+
+### Chassis Icons
+
+Chassis Icons is a toolkit that builds an icon library from a folder of SVG files: an SVG sprite, an icon font with its CSS and SCSS, and optimized SVGs. The package on npm, `@chassis-ui/icons`, holds the Chassis icon set built this way. To make an icon library of your own, clone the repository and replace the SVG files.
+
+### Chassis Assets
+
+Chassis Assets copies, renames and distributes design assets, such as fonts, images and illustrations, for each brand, app and platform: web, iOS and Android. It is not published to npm. Clone the repository, or add it to your project as a Git submodule. It stores the binary files with [Git LFS](https://git-lfs.com).
+
+### Chassis Figma
+
+Chassis Figma documents the Chassis component library in Figma: how the components map to design tokens and to code. It is documentation only, and there is nothing to install.
+
+### Chassis React
+
+Chassis React is a library of React components, written in TypeScript, built on [React Aria](https://react-spectrum.adobe.com/react-aria/) and styled with Chassis CSS. It is published to npm as `@chassis-ui/react` and needs React and React DOM 18 or later.
+
+## At a glance
+
+<CxTable>
+| Project | Repository | npm package |
+| --- | --- | --- |
+| Chassis Tokens | [chassis-ui/tokens](https://github.com/chassis-ui/tokens) | `@chassis-ui/tokens` |
+| Chassis CSS | [chassis-ui/css](https://github.com/chassis-ui/css) | `@chassis-ui/css` |
+| Chassis Icons | [chassis-ui/icons](https://github.com/chassis-ui/icons) | `@chassis-ui/icons` |
+| Chassis Assets | [chassis-ui/assets](https://github.com/chassis-ui/assets) | None |
+| Chassis Figma | [chassis-ui/figma](https://github.com/chassis-ui/figma) | None |
+| Chassis React | [chassis-ui/react](https://github.com/chassis-ui/react) | `@chassis-ui/react` |
+</CxTable>
+
+To add Chassis to a web project, continue with [Installation]([[docsref:/getting-started/installation]]).
