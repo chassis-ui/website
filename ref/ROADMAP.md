@@ -136,6 +136,9 @@ last sibling has been upgraded and deployed.
 | F46 | `<ScssDocs>`, `<ScssDocsSimple>` and `<JsDocs>` showed too much when one name started another. Found and fixed in session 2.2.                                                                | The pattern was greedy, so `make-col` ran on to the end marker of `make-col-auto`. The chassis-css grid page shows `make-col-auto` and `make-col-offset` inside the `make-col` snippet today, with their marker comments. Fixed in 0.6.0.                                                                                                               | 2     |
 | F47 | A table of contents nested an `<h2>` under an `<h3>` that came first. Found and fixed in session 2.2.                                                                                         | `generateToc()` only started a new top-level entry at the same depth, not at a shallower one.                                                                                                                                                                                                                                                           | 2     |
 | F48 | The line transformer of `highlightCode()` does nothing.                                                                                                                                       | It should leave comment lines of shell snippets unmarked. It looks for a `comment` class, but the dual-theme tokens carry inline styles, and Shiki marks every line anyway. The output is correct. The code can go.                                                                                                                                     | 2     |
+| F49 | The styles of the package need `chassis-tokens` on the Sass load path, and the README did not say so. Found in session 2.3.                                                                   | `@chassis-ui/css/scss/config` forwards `chassis-tokens`, which each site resolves with `loadPaths`. All seven sites set it, with a path that differs by layout. The fixture failed to build without it. The README now lists it as step 5. See D22.                                                                                                     | 2     |
+| F50 | The package's scripts import `clipboard`, a CommonJS module. Served from source, it has no default export. Found and fixed in session 2.3.                                                    | In the dev server of the fixture, `js/clipboard.ts` failed with "does not provide an export named 'default'". Siblings did not see it, because each used its own copy of `clipboard.ts`. The integration pre-bundles `clipboard`.                                                                                                                       | 2     |
+| F51 | A site cannot be built from npm packages alone. The layouts need the docs build of `chassis-assets`.                                                                                          | `BaseLayout` reads the size of `/static/images/social-image.png`, and the build fails when it is missing. `chassis-assets` is not on npm, so every site has the `vendor/assets` submodule. The fixture links the submodule of this repository.                                                                                                          | 5     |
 | F34 | The package has no stated versioning policy.                                                                                                                                                  | It is at 0.5.0 with seven consumers. Nothing says what counts as a breaking change or what 1.0 requires.                                                                                                                                                                                                                                                | 2     |
 
 ### How the sibling repositories consume this one
@@ -318,7 +321,7 @@ in this repository before it is published.
 This phase produces 0.6.0, which is a breaking release. See
 [Breaking changes](#breaking-changes).
 
-**Status:** sessions 2.1 and 2.2 done on 2026-09-29. The package version stays 0.5.1 until session
+**Status:** sessions 2.1 to 2.3 done on 2026-09-29. The package version stays 0.5.1 until session
 2.4 releases 0.6.0, so nothing is published by accident.
 
 ### Session 2.1: own the contract
@@ -384,19 +387,30 @@ This phase produces 0.6.0, which is a breaking release. See
 
 ### Session 2.3: fixture sites
 
-- [ ] Add a minimal fixture site that consumes the package the way a sibling will. It
-      uses the integration and has its own `config.yml`. The fixture of the component
-      tests, `packages/docs/test/fixture`, is not built and imports the package by
-      relative path. Decide whether it grows into this site or stays separate.
-- [ ] Build it in two layouts in CI: from the repository root, and from `packages/site`
-      with `sourceDir` set. Issue 2 would have been caught by the second.
-- [ ] Install the package into the fixture from `pnpm pack` output, not from the
-      workspace, so that the `files` and `exports` fields are tested too.
-- [ ] Write the fixture so that it can be copied as the starting point of a new Chassis
-      docs site. Link it from the package README.
-- [ ] Move the placeholder docs content of the website into the fixture.
-- [ ] Move the workaround for two instances of `@chassis-ui/css` into the integration,
-      and check it in the dev server of the fixture. See F43.
+- [x] Add a minimal fixture site that consumes the package the way a sibling will. It
+      uses the integration and has its own `config.yml`. It is the starter site,
+      `packages/docs/starter`. The fixture of the component tests stays separate: it
+      imports the package from source so that `pnpm test` needs no packing, and it holds
+      stand-in files that a starter should not have.
+- [x] Build it in two layouts in CI: `root`, with the site in `site/` built from the
+      repository root, and `packages`, with the site in `packages/site` built with
+      `pnpm --filter`. In both, `sourceDir` points outside the site. The job is "Fixture
+      Site", and `pnpm test:fixtures` runs it locally. Reverting the fix for issue 2 fails
+      both layouts. The `packages` layout also runs `astro check`.
+- [x] Install the package into the fixture from `pnpm pack` output, not from the
+      workspace, so that the `files` and `exports` fields are tested too. Each layout is a
+      repository of its own in a temporary directory, outside the workspace.
+- [x] Write the fixture so that it can be copied as the starting point of a new Chassis
+      docs site. Link it from the package README. It has a README of its own.
+- [x] Copy the placeholder docs content of the website into the fixture. Copied, not
+      moved, by decision: the website keeps its pages until D12 is decided.
+- [x] Move the workaround for two instances of `@chassis-ui/css` into the integration,
+      and check it in the dev server of the fixture. See F43. The integration keeps both
+      packages out of pre-bundling and dedupes `@chassis-ui/css`. No alias is needed. A
+      dialog opened and closed at once before the change, and opens after it, also with
+      a script of the site that imports `@chassis-ui/css`. The website's build output is
+      unchanged.
+- [x] Fix what the fixture found: F49 is documented, F50 is fixed, F51 is recorded.
 
 ### Session 2.4: release pipeline
 
@@ -611,6 +625,7 @@ Considered and left out for now. Each needs a reason to come back.
 | D19 | What counts as a breaking change before 1.0?                                             | A change to what the package README documents. A minor release may break, a patch may not. Markup, class names and undocumented files may change in a patch.                                                                                                                                                                                                                              | decided |
 | D20 | What does 1.0 require?                                                                   | Every sibling uses the integration. Tests and fixture builds gate each release. Releases are automated and have provenance.                                                                                                                                                                                                                                                               | decided |
 | D21 | Are the keys of `sidebar.yml` and of the frontmatter renamed too?                        | Yes, in 0.6.0: `iconColor`, `showBadge`, `extraJs`. The old names fail the build.                                                                                                                                                                                                                                                                                                         | decided |
+| D22 | Does the integration put the default `chassis-tokens` on the Sass load path?             | Recommended: yes, as the last entry, so that a folder of the site with its own `_chassis-tokens.scss` still comes first. Every site would drop a line that differs by layout. It changes what the integration owns, so it needs a Fable session or your decision before 0.6.0. See F49.                                                                                                   | open    |
 | D16 | How is 0.5.1 released?                                                                   | Push `develop` to `staging`, check CI and the staging deploy, then push the same commit to `main`. That publishes to npm and deploys production.                                                                                                                                                                                                                                          | decided |
 
 ### Note on D10
@@ -648,3 +663,4 @@ go here, in session 5.2.
 | 2026-09-29 | 2.2      | Added Vitest with 209 unit, component and endpoint tests, and a CI job. The tests found two bugs, fixed: F46 and F47. Added F48.                                                                                                                                                                                                                |
 | 2026-09-29 | D1       | Revised D1: Lint, Type Check, Test and Build are required on `main` and `staging`, for pushes and pull requests alike. CI runs on `develop`, which is now pushed. Vercel does not deploy it. Reworded F25 and session 3.1.                                                                                                                      |
 | 2026-09-29 | 1.2      | Released 0.5.1 through `staging` and `main`. Issues 1 and 2 closed. CI green on both branches. Production Lighthouse passed. Added F40.                                                                                                                                                                                                         |
+| 2026-09-29 | 2.3      | Added the starter site `packages/docs/starter` and `build/fixture-sites.js`, which packs the package and builds the starter in two layouts, and the CI job "Fixture Site". Copied the website's placeholder docs into it. The integration now keeps one copy of `@chassis-ui/css`. Added F49 to F51 and D22.                                    |
