@@ -90,6 +90,31 @@ function foundWithReferrer(link) {
   return referrerChecks.get(key)
 }
 
+// A project behind Vercel's deployment protection redirects every request to Vercel's login,
+// which answers 200, so linkinator counts the links into it as working. Its root is
+// requested once, following redirects only while they stay on the deployment. See F64 in
+// ref/ROADMAP.md.
+async function isBehindVercelLogin(project) {
+  let url = new URL(`/${project}/`, live)
+
+  for (let hop = 0; hop < 5; hop++) {
+    const response = await fetch(url, { redirect: 'manual' })
+    const location = response.headers.get('location')
+
+    await response.body?.cancel()
+
+    if (response.status < 300 || response.status >= 400 || !location) return false
+
+    url = new URL(location, url)
+
+    if (url.host !== live.host) {
+      return url.hostname === 'vercel.com' || url.hostname.endsWith('.vercel.com')
+    }
+  }
+
+  return false
+}
+
 // Pagefind's files and the preview page of chassis-icons are not pages of the site
 const startPages = live
   ? [live.href]
@@ -144,12 +169,36 @@ for (const [project, list] of byOwner) {
   }
 }
 
+// The proxied projects that the crawl reached
+const reached = new Set(
+  live
+    ? links
+        .map((link) => new URL(link.url))
+        .filter((url) => url.host === live.host)
+        .map((url) => url.pathname.match(PROXIED)?.[1])
+        .filter(Boolean)
+    : []
+)
+const behindLogin = []
+
+for (const project of reached) {
+  if (await isBehindVercelLogin(project)) behindLogin.push(project)
+}
+
+for (const project of behindLogin) {
+  console.warn(
+    `\nBehind Vercel's login: the ${project} site\n    ${live.origin}/${project}/ redirects to ` +
+      `Vercel's login, so its links cannot be checked and visitors cannot read it`
+  )
+}
+
 const own = new Set(byOwner.get('website')?.map((link) => link.url)).size
 const others = new Set(broken.map((link) => link.url)).size - own
 
 console.log(
   `\n${checked} links on ${crawled} pages of ${live ? live.origin : '_site'}: ` +
-    `${own} broken on this site, ${others} on proxied sites`
+    `${own} broken on this site, ${others} on proxied sites` +
+    (behindLogin.length > 0 ? `, behind Vercel's login: ${behindLogin.join(', ')}` : '')
 )
 
 process.exitCode = own ? 1 : 0

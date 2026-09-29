@@ -70,8 +70,8 @@ Each service has two rewrite rules per route:
 
 chassis-react-staging.vercel.app is behind Vercel's deployment protection, unlike the
 other five staging deployments, so `staging.chassis-ui.com/react/` shows Vercel's login.
-The Links workflow on staging lists the `/react` link of the header and footer as a
-warning for react until it is reachable. The maintainer keeps the protection. See task RCT2.
+The Links workflow on staging warns that the react site is behind Vercel's login until it
+is reachable. The maintainer keeps the protection. See task RCT2.
 The route sends staging to it, so that staging never shows production content.
 
 ### Sitemap routes

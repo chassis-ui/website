@@ -83,7 +83,8 @@ it. Given a deployment, such as `pnpm site:lint:links https://staging.chassis-ui
 crawls that instead, the proxied projects included. It fails on a broken link of this
 site's own pages. A broken link on a page of a proxied project, and a link from this site
 into a proxied project that fails, such as `/react/` while its deployment is down, are
-listed as warnings under that project.
+listed as warnings under that project. So is a proxied project whose deployment
+redirects to Vercel's login, whose links cannot be checked.
 
 `pnpm install` also installs a pre-commit hook. It runs ESLint and Prettier on the staged
 files of `packages/website` and `packages/docs`, fixes what they can, and stops the commit
