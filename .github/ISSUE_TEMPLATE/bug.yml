@@ -1,0 +1,50 @@
+name: Bug report
+description: Something on chassis-ui.com or in @chassis-ui/docs looks or behaves wrong, or a build fails
+labels: [bug, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This repository holds chassis-ui.com and the `@chassis-ui/docs` package. A problem in the docs of another Chassis project, for example under chassis-ui.com/css/, belongs in [that project's repository](https://github.com/chassis-ui).
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where
+      options:
+        - The website, chassis-ui.com
+        - The package, @chassis-ui/docs, in a site of my own
+        - An example under /examples/
+        - Building or running this repository
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you saw. Include the exact error message or console output if there was one.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: How to reproduce it
+      description: The page URL, or the steps and the smallest config that shows the problem. For the package, the relevant part of `astro.config.ts` and `config.yml`.
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: For the package, the versions of `@chassis-ui/docs`, `astro` and Node.js.
+      placeholder: '@chassis-ui/docs 0.6.0, astro 7.3.5, Node.js 24.8'
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: Safari 18 on iOS

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea
+    url: https://github.com/chassis-ui/website/discussions
+    about: Ask a question or talk an idea through before it becomes an issue.
+  - name: Chassis CSS, Tokens, Icons, Assets, Figma or React
+    url: https://github.com/chassis-ui
+    about: A problem in one of those projects, or in its docs under chassis-ui.com, belongs in its own repository.
+  - name: Security vulnerability
+    url: https://github.com/chassis-ui/website/security/advisories/new
+    about: Report it privately, not as a public issue.
