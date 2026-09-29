@@ -6,12 +6,13 @@
  */
 
 const repos = [
-  { name: 'chassis-tokens', description: 'Design tokens & transformers' },
-  { name: 'chassis-css', description: 'CSS framework' },
-  { name: 'chassis-figma', description: 'Figma component library' },
-  { name: 'chassis-icons', description: 'Icon library & sprites' },
-  { name: 'chassis-assets', description: 'Asset distribution' },
-  { name: 'chassis-website', description: 'This site & shared docs' }
+  { name: 'chassis-tokens', repo: 'tokens', description: 'Design tokens & transformers' },
+  { name: 'chassis-css', repo: 'css', description: 'CSS framework' },
+  { name: 'chassis-react', repo: 'react', description: 'React components' },
+  { name: 'chassis-figma', repo: 'figma', description: 'Figma component library' },
+  { name: 'chassis-icons', repo: 'icons', description: 'Icon library & sprites' },
+  { name: 'chassis-assets', repo: 'assets', description: 'Asset distribution' },
+  { name: 'chassis-website', repo: 'website', description: 'This site & shared docs' }
 ]
 ---
 
@@ -40,7 +41,7 @@ const repos = [
             repos.map((repo) => (
               <li class="list-item">
                 <a
-                  href={`https://github.com/chassis-ui/${repo.name}`}
+                  href={`https://github.com/chassis-ui/${repo.repo}`}
                   class="text-decoration-none d-flex align-items-center gap-md"
                   target="_blank"
                   rel="noopener noreferrer"
