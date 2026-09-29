@@ -25,7 +25,8 @@ type Props = {
   overrides?: {
     body?: LayoutOverridesHTMLAttributes<'body'>
     // Note that main can also be overridden by the Astro slot named "main" and that the slot will take precedence over
-    // any override.
+    // any override. `<main>` has `id="content"`, the target of the skip link in the header. A page that fills the "main"
+    // slot gives that id to an element of its own.
     main?: LayoutOverridesHTMLAttributes<'main'>
   }
   // An override for the page title. If not defined, the title will either be the content of the `title` frontmatter
@@ -61,7 +62,7 @@ const thumbnail = frontmatter?.thumbnail
   : 'static/images/social-image.png'
 
 const bodyProps = overrides?.body ?? {}
-const mainProps = overrides?.main ?? {}
+const mainProps = { id: 'content', ...overrides?.main }
 ---
 
 <!doctype html>
