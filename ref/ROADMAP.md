@@ -125,6 +125,8 @@ last sibling has been upgraded and deployed.
 | F35 | Every page fails the colour-contrast audit. Found in Phase 0.                                                                                                                                 | Lighthouse 12 on all 11 sitemap URLs. The accessibility score is still 0.96. The same failure on every page points to a shared element.                                                                                                                                                                                                                 | 4     |
 | F36 | Search indexes two pages. This may be deliberate.                                                                                                                                             | `pagefind.yml` limits the index to `about/` and `examples/`, so the home page and the blog are not searchable.                                                                                                                                                                                                                                          | 3     |
 | F37 | `pnpm dev` moves the submodule pin.                                                                                                                                                           | It runs `pnpm sync-submodules`, which updates `vendor/assets` to the latest `app/docs`. Each dev session can leave a changed pointer that a broad commit picks up. Since Phase 0 the pin decides what production builds.                                                                                                                                | 3     |
+| F38 | The version script replaces every occurrence of the old version.                                                                                                                              | `build/change-version.js:95-96`. Bumping 0.5.0 would also have turned the peer range `^0.5.0-0` into `^0.5.1-0`.                                                                                                                                                                                                                                        | 2     |
+| F39 | The website's source-file links point to a tag that does not exist.                                                                                                                           | `packages/website/config.yml` says `current_version: "0.1.0"`, and there is no `v0.1.0` tag. The links from the test page return 404. It follows from D11.                                                                                                                                                                                              | 2     |
 | F34 | The package has no stated versioning policy.                                                                                                                                                  | It is at 0.5.0 with seven consumers. Nothing says what counts as a breaking change or what 1.0 requires.                                                                                                                                                                                                                                                | 2     |
 
 ### How the sibling repositories consume this one
@@ -255,38 +257,44 @@ does today.
 
 ### Session 1.1: the fix
 
-- [ ] Confirm the config keys above. See decision D2.
-- [ ] [chassis-ui/website#2](https://github.com/chassis-ui/website/issues/2): add
-      `src/libs/source.ts` with `getSourceFsPath()` and `getSourceUrl()`. Use them in
-      `Code.astro`, `JsDocs.astro`, `ScssDocs.astro` and `ScssDocsSimple.astro`. The patch
-      in the issue applies to 0.5.0 unchanged.
-- [ ] [chassis-ui/website#1](https://github.com/chassis-ui/website/issues/1): build the
-      "View on GitHub" link in `DocsLayout.astro:91` from the entry's `filePath`, as
-      `<repo>/blob/<siteBranch>/<sitePath>/<filePath>`. Pass `filePath` from the page
-      routes. This also fixes pages written in `.md`. When a route passes no `filePath`,
-      keep the old link. A fresh install in a sibling can resolve to 0.5.1.
-- [ ] Add the four keys to the schema in `packages/website/src/libs/config.ts`.
-- [ ] Add a page to the website's test docs that uses each of the four file components,
-      so that the build in CI exercises them.
+- [x] Confirm the config keys above. Decided, see D2.
+- [x] [chassis-ui/website#2](https://github.com/chassis-ui/website/issues/2): add
+      `src/libs/source.ts` with `getSourceFsPath()` and `getSourceUrl()`, used in
+      `Code.astro`, `JsDocs.astro`, `ScssDocs.astro` and `ScssDocsSimple.astro`. The
+      `chassis-css` patch applied unchanged.
+- [x] [chassis-ui/website#1](https://github.com/chassis-ui/website/issues/1): "View on
+      GitHub" links to `<repo>/blob/<siteBranch>/<sitePath>/<filePath>`. `DocsLayout`
+      looks the entry's `filePath` up in `docsPages` by `id`, so page routes need no
+      change. A `filePath` prop can override it. The old link remains only when no file
+      path is found.
+- [x] Add the four keys to the schema in `packages/website/src/libs/config.ts`. The
+      website sets `sitePath` and `sourcePath` to `packages/website`.
+- [x] The website's test page uses all four file components, so the CI build exercises
+      them.
 
 ### Session 1.2: the release
 
-- [ ] Write the consumer contract into `packages/docs/README.md`: the five `@libs/*`
-      modules, the symbols each must export, the content collections and the config keys
-      the package reads.
-- [ ] Correct the peer dependency list in the README.
-- [ ] Add a `LICENSE` file and `engines` to `packages/docs`.
-- [ ] Check the release against `chassis-css` and `chassis-tokens` in a scratch copy,
-      outside their working trees: pack the package, install it, build the site.
-- [ ] Release 0.5.1.
-- [ ] Write the upgrade steps for each sibling into
+- [x] Write the consumer contract into `packages/docs/README.md`.
+- [x] Correct the peer dependency list in the README, and the example imports, which
+      named functions that do not exist.
+- [x] Add a `LICENSE` file to the package, and `engines` equal to Astro's own Node
+      requirement.
+- [x] Check the release against `chassis-css` and `chassis-tokens` in scratch clones.
+      Both build with the packed package and no patch. The only change in the output is
+      the "View on GitHub" link on each docs page. The new links resolve for
+      chassis-tokens. For chassis-css they resolve once its `packages/site` layout
+      reaches its `main` branch.
+- [x] Bump to 0.5.1 by hand. `build/change-version.js` would also have rewritten the
+      `@chassis-ui/css` peer range. See F38.
+- [ ] Release 0.5.1: push to `staging`, check, then push to `main`. Decided, see D16.
+- [x] Write the upgrade steps for each sibling into
       [SIBLING_TASKS.md](SIBLING_TASKS.md).
 
 ### Exit criteria
 
-- Issues 1 and 2 are closed.
-- 0.5.1 is on npm and builds both scratch copies without a patch.
-- Every sibling has its upgrade steps written down.
+- [ ] Issues 1 and 2 are closed. They close when the fix reaches `main`.
+- [ ] 0.5.1 is on npm. It builds both scratch copies without a patch.
+- [x] Every sibling has its upgrade steps written down.
 
 ## Phase 2 — Package hardening
 
@@ -349,9 +357,9 @@ This phase produces 0.6.0, which is a breaking release. See
 ### Session 2.4: release pipeline
 
 - [ ] Adopt Changesets, or extend `change-version.js` to handle prerelease versions.
-      See decision D5.
+      See decision D5. Either way, fix F38.
 - [ ] Give the package its own `CHANGELOG.md`. Decide what the root changelog and the
-      website version mean. See decision D11.
+      website version mean. See decision D11 and F39.
 - [ ] Publish with npm trusted publishing and provenance. Remove the `NPM_CHASSIS_UI`
       secret afterwards.
 - [ ] Publish prereleases under a dist-tag derived from the version. Mark their GitHub
@@ -537,7 +545,7 @@ Considered and left out for now. Each needs a reason to come back.
 | ID  | Decision                                                                                 | Recommendation or outcome                                                                                                                                         | Status  |
 | --- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | D1  | How are `main` and `staging` protected?                                                  | No pull request. A ruleset blocks force push and deletion on `main` and `staging`. CI stays advisory.                                                             | decided |
-| D2  | Names of the config keys for issues 1 and 2.                                             | `sourceDir`, `sourcePath`, `sitePath`, `siteBranch`. They match the patch already in use.                                                                         | open    |
+| D2  | Names of the config keys for issues 1 and 2.                                             | `sourceDir`, `sourcePath`, `sitePath`, `siteBranch`. All optional.                                                                                                | decided |
 | D3  | Does Lighthouse block a deployment or only report?                                       | Accessibility below 0.9 fails the run. The other categories only warn. The run cannot stop a deploy.                                                              | decided |
 | D4  | Keep the `@libs/*` alias contract or add an Astro integration with virtual modules?      | Clean break in 0.6.0. An Astro integration replaces the aliases. The siblings stay on 0.5 until they are upgraded.                                                | decided |
 | D5  | Changesets or the existing version script?                                               | Changesets. It handles prereleases, changelogs and the release pull request. tokens, css and react use it.                                                        | open    |
@@ -551,6 +559,7 @@ Considered and left out for now. Each needs a reason to come back.
 | D13 | Does `examples/` stay?                                                                   | Keep `vanilla-html` and build it in CI. Drop `react-app`, since `chassis-react` now covers it.                                                                    | open    |
 | D14 | How does analytics get consent?                                                          | A consent banner, or a switch to an analytics service that sets no cookies. This is a legal question first.                                                       | open    |
 | D15 | Where are fonts served from?                                                             | From `chassis-assets`. It removes a third-party request and a privacy question.                                                                                   | open    |
+| D16 | How is 0.5.1 released?                                                                   | Push `develop` to `staging`, check CI and the staging deploy, then push the same commit to `main`. That publishes to npm and deploys production.                  | decided |
 
 ### Note on D10
 
@@ -582,3 +591,4 @@ go here, in session 5.2.
 | 2026-09-29 | Review   | Removed the compatibility rule at the maintainer's request. Breaking changes ship in 0.6.0 and the siblings are upgraded afterwards. Decided D4 and D6.                                                     |
 | 2026-09-29 | Review   | Reworded F25 and session 3.1: `develop` is the local integration branch and stays unpushed.                                                                                                                 |
 | 2026-09-29 | 0.1, 0.2 | Phase 0 done on `develop`. CI fixed and extended, dependencies upgraded, build pinned, Lighthouse fixed, stale files removed, GitHub ruleset and security features on. Decided D1 and D3. Added F35 to F37. |
+| 2026-09-29 | 1.1, 1.2 | Fixed issues 1 and 2, documented the site contract, bumped to 0.5.1. Checked against chassis-css and chassis-tokens in scratch clones. Decided D2 and D16. Added F38 and F39. Release pending.              |
