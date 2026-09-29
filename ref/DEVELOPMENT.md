@@ -1,618 +1,160 @@
-# Development Guide
+# Development reference
 
-This guide provides detailed information for developers working on the Chassis ecosystem.
+How the parts of this repository work. The setup, the commands and the branch flow are in
+[CONTRIBUTING.md](../CONTRIBUTING.md). How the Chassis repositories fit together is in
+[ARCHITECTURE.md](ARCHITECTURE.md).
 
-## 🏗 Project Context
+## The workspace
 
-**chassis-website** is a pnpm monorepo that:
-- Contains the main website (`packages/website`)
-- Provides shared documentation infrastructure (`packages/docs`)
-- Serves as the hub for the Chassis ecosystem
+`pnpm-workspace.yaml` lists two groups of packages:
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for the complete ecosystem structure.
+| Path               | Package                     | Published |
+| ------------------ | --------------------------- | --------- |
+| `packages/website` | `chassis-website`, the site | no        |
+| `packages/docs`    | `@chassis-ui/docs`          | npm       |
+| `examples/*`       | one package per example     | no        |
 
-## 📋 Prerequisites
+The website depends on `@chassis-ui/docs` as `workspace:*`, so it always uses the source in
+`packages/docs`. A change there shows in `pnpm dev` at once. The package has no build
+step: sites consume its `.astro` and `.ts` files directly.
 
-### System Requirements
+`@chassis-ui/css`, `@chassis-ui/tokens` and `@chassis-ui/icons` come from npm, at the
+ranges in `packages/website/package.json`.
 
-- **macOS, Linux, or Windows** with WSL2
-- **Node.js** 18.0.0 or higher (recommend using nvm/fnm)
-- **pnpm** 10.0.0 or higher
-- **Git** (the `vendor/assets` submodule is fetched over HTTPS by default — see `.gitmodules`; SSH keys are only needed if you've configured Git to rewrite GitHub URLs to SSH globally)
+## How the site is built
 
-### Initial Setup
+`pnpm build` runs `pnpm site:build`, which Vercel runs too. It calls
+`build/build-site.js` and then Pagefind:
 
-#### 1. Configure Git SSH Keys (optional, for GitHub SSH access)
+1. **Checks** that `pnpm` and `git` are installed.
+2. **Vendor assets.** Checks out `vendor/assets` at the commit this repository pins, pulls
+   its Git LFS files, installs its dependencies and runs its `pnpm assets:site`. The output
+   is `vendor/assets/dist/web/docs/chassis`.
+3. **Site.** Runs `pnpm install`, then `pnpm examples:build`, then `astro build` in
+   `packages/website`. Astro writes to `_site/`.
+4. **Validation.** Checks that `_site/index.html` and the built assets exist.
+5. **Search.** `pagefind --site _site` indexes the pages that `pagefind.yml` selects.
+
+`build/build-site.js` also takes a command: `vendor` runs step 2 only, which is
+`pnpm vendor`. `site` runs step 3 only. `validate` runs step 4. `clean` deletes `_site`,
+and the `.astro`, `node_modules` and `public` folders of the website.
+
+`pnpm site` builds and then validates the HTML with the Nu Html Checker. CI's Build job
+runs `pnpm site:build`, then `pnpm site:lint:html` and `pnpm site:lint:vnu`.
+
+### What the site copies into `public/`
+
+Before each dev or build run, the site's integration in `packages/website/src/libs/astro.ts`
+empties `packages/website/public/` and fills it again:
+
+| From                                     | To                    |
+| ---------------------------------------- | --------------------- |
+| `packages/website/static/`               | `/`                   |
+| The docs build of `vendor/assets`        | `/static/`            |
+| `dist` of `@chassis-ui/css`              | `/static/`            |
+| `icons` of `@chassis-ui/icons`           | `/static/icons/`      |
+| `dist` of each example                   | `/examples/<folder>/` |
+| `_site/pagefind/`, when a build made one | `/pagefind/`          |
+
+`public/` is generated. Change the sources, not the copies.
+
+### Search
+
+`pagefind.yml` selects the pages that search covers: About, the examples page, the blog
+posts and the docs guide. The dev server has search only after a build, because it serves
+the index of the last build.
+
+## The `vendor/assets` submodule
+
+`vendor/assets` is [chassis-assets](https://github.com/chassis-ui/assets) at a commit that
+this repository pins. Every build uses that commit, so the same commit of this repository
+always builds the same site.
+
+- `pnpm vendor` builds the pinned commit. Run it after cloning and whenever the pin
+  changes, for example after a pull.
+- `pnpm sync-submodules` moves the pin to the latest commit of the `app/docs` branch of
+  chassis-assets and builds it. `SUBMODULE_BRANCH=<branch>` picks another branch. Check
+  the site, then commit `vendor/assets` on its own.
+- `pnpm dev` does not touch the submodule.
+
+Changes to the assets belong in the chassis-assets repository, not in `vendor/assets`.
+
+## Examples
+
+Each folder in `examples/` is a workspace package with a `build` script that writes
+`dist/`. `pnpm examples:build` builds them all, and the site build runs it before
+`astro build`. The site serves each `dist/` under `/examples/<folder>/`, and the examples
+page links to it.
+
+To add an example, create the folder with a `package.json` whose `build` script writes
+`dist/`, and link it from `packages/website/src/pages/examples.astro`.
+
+## Working on `@chassis-ui/docs`
+
+The package README, [packages/docs/README.md](../packages/docs/README.md), is the contract
+with the sites that use it. Update it with any change to what it describes.
+
+- `pnpm test` runs the package's unit and component tests.
+- `pnpm test:fixtures` packs the package and builds the starter site in
+  `packages/docs/starter` from the tarball, the way a sibling installs it.
+- `pnpm check:astro:docs` type-checks the package without the website.
+- A change to the package needs a changeset. See
+  [Releases](../CONTRIBUTING.md#releases).
+
+### Trying a change in a sibling project
+
+Pack the package and install the tarball in the sibling:
 
 ```bash
-# Generate SSH key if you don't have one
-ssh-keygen -t ed25519 -C "your_email@example.com"
-
-# Add to SSH agent
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
-
-# Add public key to GitHub account
-cat ~/.ssh/id_ed25519.pub
-# Copy and add to https://github.com/settings/keys
+cd packages/docs
+pnpm pack --pack-destination /tmp
+cd ../../../chassis-css
+pnpm add -D /tmp/chassis-ui-docs-<version>.tgz
 ```
 
-#### 2. Install pnpm
+Revert the sibling's `package.json` and lockfile afterwards.
 
-```bash
-# Via npm
-npm install -g pnpm
+### Using an unpublished Chassis CSS or Icons
 
-# Or via Homebrew (macOS)
-brew install pnpm
-
-# Verify installation
-pnpm --version
-```
-
-#### 3. Clone Repository
-
-```bash
-# Clone with submodules
-git clone --recursive https://github.com/chassis-ui/website.git chassis-website
-cd chassis-website
-
-# If you already cloned without --recursive
-git submodule update --init --recursive
-```
-
-#### 4. Install Dependencies
-
-```bash
-# Install all workspace dependencies
-pnpm install
-```
-
-## 🚀 Development Workflow
-
-### Starting Development
-
-```bash
-# Start website development server (runs packages/website)
-pnpm dev
-
-# Or explicitly
-pnpm astro:dev
-```
-
-This starts the Astro dev server at `http://localhost:4321` with hot module replacement.
-
-### Building
-
-```bash
-# Build entire site
-pnpm build
-
-# Clean and rebuild
-pnpm clean
-pnpm build
-
-# Preview production build
-pnpm preview
-```
-
-### Validation & Linting
-
-```bash
-# Run all validators
-pnpm validate
-
-# Lint website code
-pnpm site:lint              # Run all linters
-pnpm site:lint:eslint       # ESLint only
-pnpm site:lint:stylelint    # Stylelint only
-pnpm site:lint:prettier     # Prettier only
-pnpm site:lint:vnu          # HTML validation
-
-# Format code
-pnpm site:format
-
-# Lint docs package
-pnpm docs:lint
-pnpm docs:lint:prettier
-```
-
-## 📦 Monorepo Structure
-
-### Workspaces
-
-The monorepo uses pnpm workspaces defined in `pnpm-workspace.yaml`:
+To try a change of `chassis-css` or `chassis-icons` in the website before it is
+published, override the dependency with a sibling checkout, next to this one on disk:
 
 ```yaml
+# pnpm-workspace.yaml
 packages:
   - 'packages/*'
+  - 'examples/*'
+overrides:
+  '@chassis-ui/css': link:../chassis-css/packages/css
+  '@chassis-ui/icons': link:../chassis-icons
 ```
 
-### Package Overview
+Run `pnpm install`. Remove the override before you commit.
 
-#### packages/docs (`@chassis-ui/docs`)
+## Styles
 
-Shared documentation infrastructure used by all Chassis projects.
+- `packages/website/src/scss/docs.scss` is loaded on every page. It loads the Chassis CSS
+  configuration and mixins, then the styles of the package, `@chassis-ui/docs/scss/main`.
+- `home.scss` and `blog.scss` are imported by the pages that need them.
+- The package's own partials are in `packages/docs/src/scss/`.
 
-**Location:** `packages/docs/`  
-**Purpose:** Reusable Astro components, layouts, and utilities  
-**Published:** Yes, to npm registry (automatically, via `.github/workflows/publish-packages.yml` when its `package.json` version changes on `main`)  
-**Version:** independently versioned — see `packages/docs/package.json` for the current number  
+Chassis CSS uses `@use`, not `@import`. A breakpoint is a prefix of a utility class, as in
+`md:py-6xl`. [CHASSIS_CSS.md](CHASSIS_CSS.md) has the full mapping from Bootstrap.
 
-**Development:**
-```bash
-cd packages/docs
+## Troubleshooting
 
-# Install dependencies
-pnpm install
+**The dev server stops with "Could not find the docs build of chassis-assets".** The
+vendor assets are not built. Run `pnpm vendor`.
 
-# No build step (TypeScript source imported directly)
-```
+**Images are missing or broken.** Git LFS was not installed when the submodule was
+checked out, so the images are pointer files. Run `git lfs install`, then `pnpm vendor`.
 
-**Exports:**
-- Components: `@chassis-ui/docs/components/*`
-- Layouts: `@chassis-ui/docs/layouts/*`
-- Libs: `@chassis-ui/docs` (chassis, image, toc, utils)
-- Styles: `@chassis-ui/docs/scss/*`
+**The build uses stale files.** Run `pnpm clean`, then `pnpm install` and `pnpm build`.
 
-#### packages/website (Main Site)
+**Type errors.** `pnpm check:astro:site` and `pnpm check:astro:docs` check each package on
+its own.
 
-The main chassis-ui.com website.
+## Editor
 
-**Location:** `packages/website/`  
-**Purpose:** Main website with documentation content  
-**Published:** No (private)  
-**Build output:** `../../_site/`  
-
-**Development:**
-```bash
-cd packages/website
-
-# Start dev server
-pnpm dev
-
-# Build
-pnpm build
-```
-
-**Key files:**
-- `astro.config.ts` - Astro configuration
-- `config.yml` - Site configuration
-- `src/pages/` - File-based routing
-- `src/content/` - MDX/Markdown content
-- `src/components/` - Site-specific components
-- `src/plugins/` - Vite plugins (Algolia, StackBlitz)
-
-## 🔧 Working on Website Content
-
-### Adding New Pages
-
-Pages use file-based routing in `packages/website/src/pages/`:
-
-```astro
----
-// packages/website/src/pages/getting-started.astro
-import Layout from '@chassis-ui/docs/layouts/BaseLayout.astro'
----
-
-<Layout title="Getting Started">
-  <section class="container py-xlarge">
-    <h1>Getting Started</h1>
-    <p>Your content here...</p>
-  </section>
-</Layout>
-```
-
-### Adding Documentation Content
-
-Content lives in `packages/website/content/`:
-
-```markdown
----
-title: Introduction
-description: Getting started with Chassis
----
-
-# Introduction
-
-Your MDX content here...
-```
-
-### Adding Components
-
-Site-specific components go in `packages/website/src/components/`:
-
-```astro
----
-// packages/website/src/components/Hero.astro
-export interface Props {
-  title: string
-  subtitle?: string
-}
-
-const { title, subtitle } = Astro.props
----
-
-<section class="hero">
-  <h1>{title}</h1>
-  {subtitle && <p>{subtitle}</p>}
-</section>
-```
-
-## 🔧 Working on Shared Components
-
-### Editing @chassis-ui/docs
-
-When you need to modify shared documentation infrastructure:
-
-**Location:** `packages/docs/src/`
-
-```bash
-cd packages/docs
-
-# Make your changes in src/
-# Components: src/components/
-# Layouts: src/layouts/
-# Libs: src/libs/
-```
-
-**Testing changes:**
-
-Since packages/website depends on `workspace:*`, changes are automatically reflected:
-
-```bash
-# In root directory
-pnpm dev
-
-# Your changes in packages/docs are immediately available to packages/website
-```
-
-**Publishing updates:**
-
-```bash
-# 1. With the change, describe it for the changelog
-pnpm changeset
-
-# 2. To release, on develop: bump the version and write the changelog
-pnpm changeset version
-git commit -am "chore(release): @chassis-ui/docs <version>"
-
-# 3. Push the commit to develop, staging and main
-# → .github/workflows/publish-packages.yml publishes the version from main
-
-# 4. Other projects can update
-# In chassis-css, chassis-tokens, etc.
-pnpm add @chassis-ui/docs@latest
-```
-
-See [Releases](../CONTRIBUTING.md#releases) in the contributing guide.
-
-## 🎨 Working with Styles
-
-### SCSS Structure
-
-- `packages/website/src/scss/` — site-level stylesheets: `docs.scss` (main stylesheet,
-  used across doc/content pages), `home.scss` (homepage-specific), `blog.scss`
-  (blog-specific). Imported directly by layouts, e.g.
-  `packages/website/src/layouts/Layout.astro`.
-- `packages/docs/src/scss/` — shared partials (layout, navbar, sidebar, toc, search,
-  callouts, syntax highlighting, etc.) consumed as a group via
-  `@chassis-ui/docs/scss/main`. Check the directory directly for the current file list
-  rather than trusting a list here — it grows as shared UI grows.
-
-### Import Pattern
-
-Site stylesheets use Sass's `@use` module system (not `@import`). `docs.scss` pulls in
-Chassis CSS's config/mixins, then the shared docs styles, then site-specific overrides:
-
-```scss
-@use "@chassis-ui/css/scss/config" as *;
-@use "@chassis-ui/css/scss/functions" as *;
-@use "@chassis-ui/css/scss/maps" as *;
-@use "@chassis-ui/css/scss/mixins" as *;
-@use "@chassis-ui/docs/scss/main";
-
-// site-specific overrides below
-```
-
-`@chassis-ui/css/scss/config` forwards tokens and defaults internally, so those don't
-need separate `@use` statements.
-
-### Responsive Breakpoints
-
-Chassis CSS utility classes use a `{breakpoint}:` **prefix**, not a Bootstrap-style
-infix — e.g. `medium:p-large`, not `p-medium-large`. See
-[CHASSIS_CSS.md](CHASSIS_CSS.md#-breakpoint-prefix-syntax-v020) for the full mapping.
-
-### Adding Component Styles
-
-When a component needs styles beyond what Chassis CSS utility classes cover:
-1. **One-off/small** — inline `<style>` tag in the `.astro` component
-2. **Shared across components** — add a partial under `packages/docs/src/scss/`
-3. **Large/standalone** — a dedicated SCSS file
-
-### Using Chassis CSS
-
-The website depends on Chassis CSS (and Icons, Tokens) via published semver ranges:
-
-```json
-// packages/website/package.json
-{
-  "devDependencies": {
-    "@chassis-ui/css": "^x.y.z",
-    "@chassis-ui/icons": "^x.y.z",
-    "@chassis-ui/tokens": "^x.y.z"
-  }
-}
-```
-(css/icons/tokens release in lockstep — check `packages/website/package.json` for the exact current ranges)
-
-For local development, `pnpm-workspace.yaml` overrides `@chassis-ui/css` and `@chassis-ui/icons` to resolve from sibling checkouts on disk (`link:../chassis-css`, `link:../chassis-icons`) instead of npm, so edits in those sibling repos show up immediately in `pnpm dev`. See [ARCHITECTURE.md](ARCHITECTURE.md#local-development-via-pnpm-workspace-overrides) for details. `@chassis-ui/tokens` always resolves from npm.
-
-## 🧩 Working with Submodules
-
-Currently only `vendor/assets` is a submodule:
-
-```bash
-# Check submodule status
-git submodule status
-
-# Update submodule to latest
-git submodule update --remote vendor/assets
-
-# Commit submodule reference update  
-git add vendor/assets
-git commit -m "chore: update assets submodule"
-```
-
-## 🔄 Working with Other Chassis Projects
-
-### Testing Local Changes Across Projects
-
-To test changes in @chassis-ui/docs with another Chassis project:
-
-```bash
-# In chassis-website/packages/docs
-pnpm link --global
-
-# In chassis-css (or another project)
-cd /path/to/chassis-css
-pnpm link --global @chassis-ui/docs
-
-# Now chassis-css uses your local @chassis-ui/docs
-
-# To unlink
-pnpm unlink --global @chassis-ui/docs
-pnpm install --force
-```
-
-### Understanding Project Dependencies
-
-Each Chassis project (`chassis-css`, `chassis-tokens`, etc.) depends on `@chassis-ui/docs`:
-
-```json
-// chassis-css/package.json
-{
-  "devDependencies": {
-    "@chassis-ui/docs": "^x.y.z"
-  }
-}
-```
-
-Their documentation sites (`site/` folder) import shared components:
-
-```typescript
-// chassis-css/site/astro.config.ts
-import { getSiteUrl } from '@chassis-ui/docs'
-```
-
-## 🛠 Build System
-
-### Root Build Scripts
-
-```bash
-# Defined in root package.json
-pnpm build              # Build complete site
-pnpm clean              # Remove build artifacts
-pnpm dev                # Start website dev server
-pnpm preview            # Preview production build
-pnpm validate           # Run validators
-```
-
-### Build Process
-
-`pnpm build` runs `node build/build-site.js all`, which:
-
-1. **Checks dependencies** — verifies `vendor/`, `packages/website`, and that `pnpm`/`git` are available
-2. **Updates vendor assets** — syncs the `vendor/assets` submodule to the `app/docs` branch (override with the `VENDOR_BRANCH` env var), runs `git lfs pull`, installs its dependencies, and runs its `pnpm assets:site` build
-3. **Builds the site** — `pnpm install` then `pnpm astro:build`, output to `_site/`
-4. **Validates output** — confirms `_site/index.html` and built assets exist
-
-`build/build-site.js` also accepts explicit sub-commands: `site` (Astro build only), `vendor` (submodule sync + build only), `clean` (removes `_site`, `.astro`, `node_modules`, `public`), and `validate` (output check only). Vercel's own build uses `pnpm site:build` (`build-site.js` + `pnpm site:pagefind`), not the bare `pnpm build` alias — see [DEPLOYMENT.md](DEPLOYMENT.md).
-
-### Build Output
-
-```
-_site/                   # Production build output
-├── index.html           # Homepage
-├── static/              # Hashed CSS/JS/assets
-│   ├── css/
-│   ├── js/
-│   ├── fonts/
-│   └── images/
-├── docs/                # Documentation pages
-├── blog/                # Blog posts
-└── collections/         # Collection schemas
-```
-
-## 🧪 Testing
-
-### Manual Testing
-
-```bash
-# Development testing
-pnpm dev
-# Visit http://localhost:4321
-
-# Production build testing
-pnpm build
-pnpm preview
-# Visit http://localhost:4321
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-#### Port Already in Use
-
-```bash
-# Change port
-pnpm dev -- --port 3000
-```
-
-#### pnpm Install Fails
-
-```bash
-# Clear pnpm cache
-pnpm store prune
-
-# Remove node_modules and reinstall
-rm -rf node_modules packages/*/node_modules
-pnpm install
-```
-
-#### Submodule Authentication Errors
-
-```bash
-# Verify SSH connection
-ssh -T git@github.com
-
-# Convert HTTPS to SSH globally
-git config --global url."git@github.com:".insteadOf "https://github.com/"
-```
-
-#### Build Cache Issues
-
-```bash
-# Clean Astro cache
-rm -rf packages/website/.astro
-
-# Clean build output
-pnpm clean
-
-# Rebuild
-pnpm install
-pnpm build
-```
-
-#### TypeScript Errors
-
-```bash
-# Check TypeScript
-cd packages/website
-pnpm astro check
-
-# Restart TS server in VS Code
-# Cmd+Shift+P → "TypeScript: Restart TS Server"
-```
-
-### Debug Mode
-
-```bash
-# Enable Astro verbose logging
-pnpm dev -- --verbose
-
-# Check Astro version
-pnpm list astro
-```
-
-## 📝 Git Workflow
-
-### Branch Strategy
-
-- **main** - Production-ready code
-- **staging** - Staging environment (optional)
-- **feature/** - Feature branches
-- **fix/** - Bug fix branches
-
-### Commit Convention
-
-Use conventional commits:
-
-```bash
-# Features
-git commit -m "feat: add new component page"
-git commit -m "feat(docs): add table of contents"
-
-# Fixes
-git commit -m "fix: resolve mobile navigation issue"
-
-# Documentation
-git commit -m "docs: update development guide"
-
-# Chores
-git commit -m "chore: update dependencies"
-git commit -m "chore: update submodules"
-
-# Refactoring
-git commit -m "refactor: reorganize component structure"
-```
-
-### Pull Request Process
-
-Branch → commit → push → open a PR against `main` or `staging`. CI (`ci.yml`) runs
-lint, `astro check`, and `pnpm audit` automatically — see the GitHub Actions table in
-[DEPLOYMENT.md](DEPLOYMENT.md) for exactly what it checks. Test locally first with
-`pnpm build && pnpm preview`.
-
-## 🎯 IDE Setup
-
-### VS Code (Recommended)
-
-#### Required Extensions
-
-- **Astro** (`astro-build.astro-vscode`)
-- **Prettier** (`esbenp.prettier-vscode`)
-- **ESLint** (`dbaeumer.vscode-eslint`)
-
-#### Recommended Extensions
-
-- **TypeScript** (`ms-vscode.vscode-typescript-next`)
-- **SCSS IntelliSense** (`mrmlnc.vscode-scss`)
-- **Path Intellisense** (`christian-kohler.path-intellisense`)
-
-#### Settings
-
-Create `.vscode/settings.json`:
-
-```json
-{
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-  "[astro]": {
-    "editor.defaultFormatter": "astro-build.astro-vscode"
-  },
-  "astro.typescript.allowArbitraryAttributes": true,
-  "files.associations": {
-    "*.astro": "astro"
-  }
-}
-```
-
-## 🔗 Related Documentation
-
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Ecosystem architecture
-- [DEPLOYMENT.md](DEPLOYMENT.md) - Deployment process
-- [VERCEL_CONFIG.md](VERCEL_CONFIG.md) - Vercel configuration details
-- [CHASSIS_CSS.md](CHASSIS_CSS.md) - CSS framework migration guide
-
-## 📚 External Resources
-
-- [Astro Documentation](https://docs.astro.build/)
-- [pnpm Documentation](https://pnpm.io/)
-- [Vercel Documentation](https://vercel.com/docs)
-- [Chassis UI Website](https://chassis-ui.com)
+The `.vscode` folder recommends the Astro, ESLint, Stylelint, EditorConfig and Code
+Spell Checker extensions, and fixes ESLint and Stylelint problems on save.

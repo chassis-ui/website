@@ -2,6 +2,6 @@
 
 > The Astro application that builds [chassis-ui.com](https://chassis-ui.com).
 
-This is a private package inside the [`chassis-website`](https://github.com/chassis-ui/website) monorepo. It consumes [`@chassis-ui/docs`](../docs/README.md) for shared layouts and components, and the rest of the Chassis ecosystem (`@chassis-ui/css`, `@chassis-ui/tokens`, `@chassis-ui/icons`, `@chassis-ui/assets`) for design tokens, styling, icons, and assets.
+This is a private package inside the [`chassis-website`](https://github.com/chassis-ui/website) monorepo. It uses [`@chassis-ui/docs`](../docs/README.md) for its layouts and components, `@chassis-ui/css`, `@chassis-ui/tokens` and `@chassis-ui/icons` from npm, and the docs build of chassis-assets from the `vendor/assets` submodule.
 
-For setup, scripts, project structure, deployment, and troubleshooting, see the [root README](../../README.md).
+Run its commands from the root of the repository. For setup and commands, see [CONTRIBUTING.md](../../CONTRIBUTING.md#setup).

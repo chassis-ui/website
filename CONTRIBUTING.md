@@ -1,89 +1,112 @@
 # Contributing to Chassis Website
 
-Thank you for your interest in contributing to the Chassis Website! This document provides guidelines and best practices for contributors.
+This repository holds the chassis-ui.com website (`packages/website`) and the
+`@chassis-ui/docs` package (`packages/docs`) that every Chassis documentation site is built
+with. This guide takes you from a fresh clone to a pull request.
 
 ## Table of Contents
 
 - [Code of Conduct](#code-of-conduct)
-- [Getting Started](#getting-started)
-- [Development Workflow](#development-workflow)
+- [Setup](#setup)
+- [Commands](#commands)
+- [Branches and pull requests](#branches-and-pull-requests)
+- [Tests](#tests)
 - [Component Guidelines](#component-guidelines)
 - [Style Guide](#style-guide)
 - [Commit Conventions](#commit-conventions)
-- [Pull Request Process](#pull-request-process)
 - [Releases](#releases)
 
 ## Code of Conduct
 
 We are committed to providing a welcoming and inspiring community for all. Please be respectful and constructive in your interactions.
 
-## Getting Started
+## Setup
 
-###Prerequisites
+You need:
 
-- Node.js 18.0.0 or higher
-- pnpm 8.0.0 or higher
-- Git with SSH access (for submodules)
+- Node.js 24. The version is in `.nvmrc`, so `nvm use` or `fnm use` picks it. Node 22.12
+  or later works too, see `engines` in `package.json`.
+- pnpm, at the version that `packageManager` in `package.json` names. `corepack enable`
+  sets it up. Do not use npm or Yarn.
+- Git and [Git LFS](https://git-lfs.com). The images of the `vendor/assets` submodule are
+  stored with LFS.
 
-### Installation
+Then:
 
 ```bash
-# Clone the repository with submodules
-git clone --recursive https://github.com/chassis-ui/website.git
+git clone --recursive https://github.com/chassis-ui/website.git chassis-website
 cd chassis-website
-
-# Install dependencies
 pnpm install
-
-# Start development server
+pnpm vendor
 pnpm dev
 ```
 
-## Development Workflow
+The site runs at `http://localhost:4321`.
 
-### Running the Development Server
+`pnpm vendor` builds the docs assets of the `vendor/assets` submodule: logo, favicons and
+fonts. The site cannot start without them. It builds the commit that this repository pins,
+so run it again when that pin changes. If you cloned without `--recursive`, it checks the
+submodule out first.
 
-```bash
-# Start dev server at localhost:4321
-pnpm dev
+## Commands
 
-# Build for production
-pnpm build
+Run them from the root of the repository.
 
-# Preview production build
-pnpm preview
-```
+| Command                | What it does                                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `pnpm dev`             | Starts the dev server at `http://localhost:4321`                                                             |
+| `pnpm build`           | Builds the vendor assets, the examples and the site into `_site/`, then the search index. Vercel runs it too |
+| `pnpm preview`         | Serves `_site/` after a build                                                                                |
+| `pnpm lint`            | ESLint, Stylelint and Prettier on both packages, then the spell check. What the Lint job of CI runs          |
+| `pnpm format`          | Formats both packages with Prettier                                                                          |
+| `pnpm spellcheck`      | Checks the spelling of the Markdown and MDX files with cspell. Add new words to `.cspell.json`               |
+| `pnpm test`            | Runs the unit and component tests once. `pnpm test:watch` runs them on every change                          |
+| `pnpm test:fixtures`   | Builds the starter site from the packed package, in both layouts. See [Tests](#tests)                        |
+| `pnpm check`           | `astro check` on both packages, then `pnpm audit`                                                            |
+| `pnpm vendor`          | Builds the `vendor/assets` submodule at the pinned commit                                                    |
+| `pnpm sync-submodules` | Moves the `vendor/assets` pin to the latest `app/docs` of chassis-assets, and builds it                      |
+| `pnpm changeset`       | Describes a change to `@chassis-ui/docs` for its changelog. See [Releases](#releases)                        |
 
-### Code Quality Commands
+The scripts behind them are in `package.json`. `site:*` scripts act on `packages/website`,
+`docs:*` scripts on `packages/docs`, for example `pnpm site:lint:eslint`. `pnpm site` builds
+the site and validates its HTML, which the Build job of CI does too.
 
-```bash
-# Run all linters
-pnpm site:lint
+`pnpm dev` does not touch the submodule. Moving the pin is a change of its own: run
+`pnpm sync-submodules`, check the site, and commit `vendor/assets` in a commit that does
+nothing else.
 
-# Format code
-pnpm site:format
+## Branches and pull requests
 
-# Run ESLint
-pnpm site:lint:eslint
+| Branch    | What it is                                                                                   |
+| --------- | -------------------------------------------------------------------------------------------- |
+| `develop` | The integration branch. Every change is merged here first, and CI runs on it                 |
+| `staging` | Deploys `staging.chassis-ui.com`. It receives the commits of `develop` once CI has passed    |
+| `main`    | Deploys `chassis-ui.com` and publishes `@chassis-ui/docs`. It receives the same commits next |
 
-# Run Stylelint
-pnpm site:lint:stylelint
+Open your pull request against `develop`:
 
-# Run Prettier
-pnpm site:lint:prettier
+1. Fork the repository and create a branch from `develop`.
+2. Make your change. Run `pnpm lint`, `pnpm check` and `pnpm test`. Build with `pnpm build`
+   and look at the result with `pnpm preview` when the change shows on the site.
+3. If the change affects `@chassis-ui/docs`, add a changeset with `pnpm changeset`. See
+   [Releases](#releases).
+4. Open the pull request against `develop`. CI runs Lint, Type Check, Test, Build, the
+   fixture sites and a dependency review on it.
 
-# Validate HTML
-pnpm site:lint:vnu
+A maintainer reviews the pull request and merges it into `develop`. From there the same
+commit goes to `staging` and then to `main`. `staging` and `main` accept only commits that
+passed Lint, Type Check, Test and Build. [ref/DEPLOYMENT.md](ref/DEPLOYMENT.md) describes
+that part.
 
-# Run the unit and component tests
-pnpm test
+### Before you submit
 
-# Run them again on every change
-pnpm test:watch
+- Update the documentation when you change a command, a config key or anything the
+  package README describes.
+- Add tests when you change the package.
+- Describe how you tested the change in the pull request, with screenshots for visual
+  changes.
 
-# Build the starter site from the packed package, in both layouts
-pnpm test:fixtures
-```
+## Tests
 
 The tests of `@chassis-ui/docs` are in `packages/docs/test`. Component tests render in a
 small site in `packages/docs/test/fixture`. The tests of the contact endpoint are next to it,
@@ -104,9 +127,9 @@ All Astro components should follow this structure:
 ---
 /**
  * Component Name
- * 
+ *
  * Brief description of what the component does.
- * 
+ *
  * @slot slotName - Description of the slot
  */
 
@@ -139,14 +162,12 @@ const { propName, optionalProp = false } = Astro.props
 1. **Use utility-first approach** with Chassis CSS classes
 2. **Build class arrays** for complex conditional classes:
    ```typescript
-   const classes = [
-     'base-class',
-     'utility-class',
-     condition && 'conditional-class',
-     customClasses
-   ].filter(Boolean).join(' ')
+   const classes = ['base-class', 'utility-class', condition && 'conditional-class', customClasses]
+     .filter(Boolean)
+     .join(' ')
    ```
-3. **Follow responsive patterns**: `class-name class-medium-value class-large-value`
+3. **Follow responsive patterns**: a breakpoint is a prefix, as in `py-3xl md:py-6xl`. See
+   [ref/CHASSIS_CSS.md](ref/CHASSIS_CSS.md)
 4. **Avoid inline styles** unless absolutely necessary
 
 ### Accessibility
@@ -181,11 +202,9 @@ const { propName, optionalProp = false } = Astro.props
 
 ### Code Formatting
 
-- **Use Prettier** for code formatting (configured in project)
-- **2 spaces** for indentation
-- **Single quotes** for strings (Prettier enforced)
-- **Semicolons**: Optional, follow project convention
-- **Max line length**: 100 characters
+Prettier formats the code and `pnpm lint` checks it. The settings are in
+`.prettierrc.json`: two spaces, single quotes, no semicolons, lines up to 100 characters.
+Stylelint checks the SCSS, with the settings in `stylelint.config.js`.
 
 ### Import Organization
 
@@ -260,54 +279,6 @@ fix(homepage): correct GSAP animation exclusion
 Remove #figma-section from GSAP exclusion selector to
 ensure animations work correctly on that section.
 ```
-
-## Pull Request Process
-
-### Before Submitting
-
-1. **Run all linters**: `pnpm site:lint`
-2. **Format code**: `pnpm site:format`
-3. **Test your changes**: Run `pnpm test`, then build and preview locally
-4. **Update documentation**: If adding features or changing APIs
-5. **Write tests**: If applicable
-6. **Add a changeset** if the change affects `@chassis-ui/docs`: run `pnpm changeset`. See [Releases](#releases)
-
-### PR Description Template
-
-```markdown
-## Description
-Brief description of what this PR does
-
-## Type of Change
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Breaking change
-- [ ] Documentation update
-
-## Testing
-Describe how you tested your changes
-
-## Screenshots
-If applicable, add screenshots
-
-## Checklist
-- [ ] Code follows style guidelines
-- [ ] Self-review completed
-- [ ] Documentation updated
-- [ ] No new warnings
-- [ ] Tests added/updated
-```
-
-### Review Process
-
-1. **One approval required** for merge
-2. **All checks must pass**:
-   - ESLint
-   - Stylelint
-   - Prettier
-   - Build succeeds
-3. **Changes requested** must be addressed
-4. **Squash and merge** preferred for clean history
 
 ## Releases
 

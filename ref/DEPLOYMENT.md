@@ -5,16 +5,18 @@ This document describes the deployment process for the Chassis ecosystem.
 ## 🌐 Deployment Environments
 
 ### Production
+
 - **Branch:** `main`
 - **URL:** `chassis-ui.com`
 - **Trigger:** Push to `main` branch or manual deployment
 
 ### Staging
-- **Branch:** `staging`  
+
+- **Branch:** `staging`
 - **URL:** `staging.chassis-ui.com`
 - **Trigger:** Push to `staging` branch
 
-Each Chassis project (css, tokens, assets, icons, figma) has its own staging and production deployments.
+Each Chassis project (tokens, css, icons, assets, figma, react) has its own staging and production deployments.
 
 ## 🏗 Deployment Architecture
 
@@ -22,15 +24,17 @@ Each Chassis project (css, tokens, assets, icons, figma) has its own staging and
 
 **Repository:** `chassis-ui/website`  
 **Hosting:** Vercel  
-**Build Command:** `pnpm site:build` (per `vercel.json` — runs `build/build-site.js` then `pnpm site:pagefind`; the plain `pnpm build` script does the same site build plus a vendor-asset sync and is meant for local/manual full builds)  
-**Output Directory:** `_site`  
+**Build Command:** `pnpm site:build` (per `vercel.json`). `pnpm build` runs the same. See [How the site is built](DEVELOPMENT.md#how-the-site-is-built)  
+**Output Directory:** `_site`
 
 **Production:**
+
 - URL: `chassis-ui.com`
 - Vercel Project: `chassis-website`
 - Deployment URL: `chassis-website.vercel.app`
 
 **Staging:**
+
 - URL: `staging.chassis-ui.com`
 - Vercel Project: Same (different branch)
 - Deployment URL: `chassis-website-git-staging.vercel.app`
@@ -39,13 +43,17 @@ Each Chassis project (css, tokens, assets, icons, figma) has its own staging and
 
 Each Chassis project deploys independently:
 
-| Project | Production URL | Staging URL |
-|---------|---------------|-------------|
-| chassis-css | `chassis-css.vercel.app` | `chassis-css-staging.vercel.app` |
+| Project        | Production URL              | Staging URL                         |
+| -------------- | --------------------------- | ----------------------------------- |
+| chassis-css    | `chassis-css.vercel.app`    | `chassis-css-staging.vercel.app`    |
 | chassis-tokens | `chassis-tokens.vercel.app` | `chassis-tokens-staging.vercel.app` |
 | chassis-assets | `chassis-assets.vercel.app` | `chassis-assets-staging.vercel.app` |
-| chassis-icons | `chassis-icons.vercel.app` | `chassis-icons-staging.vercel.app` |
-| chassis-figma | `chassis-figma.vercel.app` | `chassis-figma-staging.vercel.app` |
+| chassis-icons  | `chassis-icons.vercel.app`  | `chassis-icons-staging.vercel.app`  |
+| chassis-figma  | `chassis-figma.vercel.app`  | `chassis-figma-staging.vercel.app`  |
+| chassis-react  | not routed yet              | not routed yet                      |
+
+chassis-react builds its site for `chassis-ui.com/react`, but this repository has no
+`/react/*` rewrite yet. It is planned in session 4.2 of the [roadmap](ROADMAP.md).
 
 ### Unified Routing
 
@@ -65,11 +73,16 @@ See [VERCEL_CONFIG.md](VERCEL_CONFIG.md) for details on request routing.
 
 ### Branches and required checks
 
-| Branch    | On GitHub | Deploys                  | Protected                                              |
-| --------- | --------- | ------------------------ | ------------------------------------------------------ |
-| `develop` | yes       | nothing                  | no                                                     |
-| `staging` | yes       | `staging.chassis-ui.com` | no force push, no deletion, required checks            |
-| `main`    | yes       | `chassis-ui.com`, npm    | no force push, no deletion, required checks            |
+| Branch    | Receives                                   | Deploys                  | Protected                                   |
+| --------- | ------------------------------------------ | ------------------------ | ------------------------------------------- |
+| `develop` | Every change, from pull requests or merges | nothing                  | no                                          |
+| `staging` | The commits of `develop`, once CI passed   | `staging.chassis-ui.com` | no force push, no deletion, required checks |
+| `main`    | The same commits, after staging            | `chassis-ui.com`, npm    | no force push, no deletion, required checks |
+
+Work is merged into `develop`. Outside contributors open their pull requests against
+`develop`, and CI runs on them. Maintainers merge their own branches into `develop` locally
+or with a pull request. Then the same commit moves on to `staging` and `main`. No commit
+reaches `staging` or `main` that did not pass through `develop`.
 
 The ruleset "Protect main and staging" requires four jobs of `ci.yml` to pass on a commit
 before it reaches `staging` or `main`: Lint, Type Check, Test and Build. Security Audit
@@ -84,7 +97,7 @@ read them there.
 
 ### Releasing chassis-website
 
-Work is merged into `develop`. Then:
+With the work merged into `develop`:
 
 ```bash
 git push origin develop
@@ -102,8 +115,8 @@ count for `staging` and `main`. A push is rejected when CI failed, is still runn
 has not run on that commit, for example after a local merge commit. Push that commit to
 `develop` first.
 
-A pull request into `staging` or `main` works as well. It merges once the checks pass on
-the pull request.
+A pull request from `develop` into `staging` or `main` works as well. It merges once the
+checks pass on it.
 
 ### Other projects
 
@@ -126,25 +139,27 @@ vercel                     # Deploy to preview
 
 This repo's `.github/workflows/` currently has three workflows, none of which deploy:
 
-| Workflow | Trigger | Purpose |
-|---|---|---|
-| `ci.yml` | Pushes to `develop`, pull requests against `staging` and `main` | Lint, Type Check, Test and Build, which the ruleset requires, Fixture Site for both layouts, and Security Audit. Dependency Review on pull requests |
-| `lighthouse.yml` | `deployment_status` events (or manual `workflow_dispatch`) | Runs Lighthouse CI against the resulting production or staging URL, using `lighthouse.json` thresholds |
-| `publish-packages.yml` | Push to `main` | Publishes the version in `packages/docs/package.json` when npm does not have it, after checking that CI passed on the commit. Trusted publishing with provenance. A prerelease goes to the dist-tag named by its version. See [Releases](../CONTRIBUTING.md#releases) |
+| Workflow               | Trigger                                                                    | Purpose                                                                                                                                                                                                                                                               |
+| ---------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ci.yml`               | Pushes to `develop`, pull requests against `develop`, `staging` and `main` | Lint, Type Check, Test and Build, which the ruleset requires, Fixture Site for both layouts, and Security Audit. Dependency Review on pull requests                                                                                                                   |
+| `lighthouse.yml`       | `deployment_status` events (or manual `workflow_dispatch`)                 | Runs Lighthouse CI against the resulting production or staging URL, using `lighthouse.json` thresholds                                                                                                                                                                |
+| `publish-packages.yml` | Push to `main`                                                             | Publishes the version in `packages/docs/package.json` when npm does not have it, after checking that CI passed on the commit. Trusted publishing with provenance. A prerelease goes to the dist-tag named by its version. See [Releases](../CONTRIBUTING.md#releases) |
 
-Submodule syncing (`vendor/assets`) is handled by `build/sync-submodules.js`, invoked via `pnpm sync-submodules` (part of `pnpm dev` and `pnpm build`) — not a scheduled or triggered GitHub Action.
+No workflow moves the `vendor/assets` pin. The build uses the pinned commit, and the pin moves only when someone runs `pnpm sync-submodules` and commits the result. See [DEVELOPMENT.md](DEVELOPMENT.md#the-vendorassets-submodule).
 
 ## 🔧 Vercel Configuration
 
 ### vercel.json
 
 The main site's `vercel.json` handles:
+
 - Build configuration
 - Rewrite rules for project proxying
 - Environment-specific routing
 - Headers and redirects
 
 Example:
+
 ```json
 {
   "buildCommand": "pnpm site:build",
@@ -182,6 +197,7 @@ See [VERCEL_CONFIG.md](VERCEL_CONFIG.md) for the full rewrite set (including `/s
 ### Environment Detection
 
 Vercel automatically sets environment variables:
+
 - `VERCEL_ENV`: `production`, `preview`, or `development`
 - `VERCEL_URL`: Deployment URL
 - `VERCEL_GIT_COMMIT_REF`: Branch name
@@ -202,15 +218,18 @@ The commands are under [Releasing chassis-website](#releasing-chassis-website).
 When deploying changes that affect multiple projects:
 
 1. **Release @chassis-ui/docs** (if shared components changed) — run from the repo root:
+
    ```bash
    pnpm changeset version   # applies the changesets in .changeset/
    git commit -am "chore(release): @chassis-ui/docs <version>"
    # Push through develop and staging to main, as above
    # → .github/workflows/publish-packages.yml publishes a version that npm does not have yet
    ```
+
    See [Releases](../CONTRIBUTING.md#releases) for changesets and prereleases.
 
 2. **Update dependent projects**
+
    ```bash
    # In chassis-css, chassis-tokens, etc.
    pnpm add @chassis-ui/docs@latest
@@ -229,7 +248,7 @@ Before pushing to `main`:
 - [ ] CI is green on the commit. GitHub rejects the push otherwise
 - [ ] Preview deployment works correctly
 - [ ] Staging deployment tested (if applicable)
-- [ ] Submodules are up to date: `git submodule status`
+- [ ] The `vendor/assets` pin is the commit you mean to deploy: `git submodule status`
 - [ ] Dependencies are up to date
 - [ ] Breaking changes documented
 - [ ] `pnpm changeset version` run and committed (if releasing @chassis-ui/docs)
@@ -239,6 +258,7 @@ Before pushing to `main`:
 ### Build Fails on Vercel
 
 **Check build logs:**
+
 1. Go to Vercel dashboard
 2. Click on failed deployment
 3. View build logs
@@ -250,7 +270,7 @@ Before pushing to `main`:
 pnpm install
 
 # TypeScript errors
-pnpm astro check
+pnpm check:astro
 
 # Environment variables missing
 # → Check Vercel dashboard settings
@@ -259,20 +279,19 @@ pnpm astro check
 ### Submodule Issues
 
 ```bash
-# Ensure submodules are initialized
-git submodule update --init --recursive
+# Build vendor/assets at the pinned commit, as Vercel does
+pnpm vendor
 
-# Update to latest
-git submodule update --remote
-
-# Commit the update
+# Move the pin to the latest app/docs of chassis-assets, then commit it on its own
+pnpm sync-submodules
 git add vendor/assets
-git commit -m "chore: update submodules"
+git commit -m "chore: update the assets submodule"
 ```
 
 ### Proxy Routing Not Working
 
 Check `vercel.json` configuration:
+
 1. Verify rewrite rules are correct
 2. Ensure target URLs are accessible
 3. Check host header conditions for staging
@@ -282,12 +301,14 @@ See [VERCEL_CONFIG.md](VERCEL_CONFIG.md) for detailed routing configuration.
 ### Cache Issues
 
 Clear Vercel build cache:
+
 1. Go to Vercel dashboard
 2. Settings → General
 3. Clear build cache
 4. Redeploy
 
 Or use CLI:
+
 ```bash
 vercel redeploy --no-cache
 ```
@@ -297,6 +318,7 @@ vercel redeploy --no-cache
 ### Vercel Analytics
 
 Vercel automatically provides:
+
 - Build logs and history
 - Deployment previews
 - Real-time analytics
@@ -318,6 +340,7 @@ Access via Vercel dashboard for each project.
 - **Assets Docs:** https://chassis-ui.com/assets/
 - **Icons Docs:** https://chassis-ui.com/icons/
 - **Figma Docs:** https://chassis-ui.com/figma/
+- **React Docs:** not routed yet, see above
 
 ### Staging URLs
 
@@ -333,6 +356,7 @@ Access via Vercel dashboard for each project.
 ### Direct Project URLs
 
 Useful for debugging routing:
+
 - https://chassis-css.vercel.app
 - https://chassis-tokens.vercel.app
 - https://chassis-assets.vercel.app

@@ -12,25 +12,29 @@ other Chassis doc sites.
 packages/
   website/   # Main Astro site (src/components, content, layouts, libs, pages, styles)
   docs/      # Shared @chassis-ui/docs utilities (TypeScript)
-examples/    # Example implementations consuming Chassis
+examples/    # Workspace packages built into dist/, served at /examples/<folder>/
 build/       # Build scripts (build-site.js, sync-submodules.js, etc.)
 vendor/      # Git submodule(s), e.g. vendor/assets (chassis-ui/assets)
 ```
 
 Related sibling repos (separate git projects, not part of this monorepo):
-`chassis-tokens`, `chassis-css`, `chassis-assets`, `chassis-icons`, `chassis-figma`.
+`chassis-tokens`, `chassis-css`, `chassis-assets`, `chassis-icons`, `chassis-figma`,
+`chassis-react`.
 
 ## Setup & commands
 
 - Package manager: **pnpm** (see `packageManager` in package.json). Do not use npm/yarn.
-- Install: `pnpm install`
-- Dev server: `pnpm dev` (syncs submodules, then Astro dev at `localhost:4321`)
-- Build: `pnpm build` / `pnpm site` (build + pagefind + vnu HTML lint)
+- Node: 24 (`.nvmrc`); `engines` allows `>=22.12.0`.
+- Install: `pnpm install`, then `pnpm vendor` once (builds `vendor/assets` at the pinned commit)
+- Dev server: `pnpm dev` (Astro dev at `localhost:4321`; does not touch the submodule)
+- Build: `pnpm build` (vendor assets + examples + site + pagefind, as Vercel); `pnpm site` adds vnu HTML lint
+- Preview: `pnpm preview` (serves `_site/`)
+- Lint: `pnpm lint` (eslint + stylelint + prettier for both packages, then `pnpm spellcheck`)
+- Format: `pnpm format` (prettier --write for both packages)
 - Tests: `pnpm test` (Vitest: `packages/docs/test` and `api/*.test.ts`)
 - Fixture sites: `pnpm test:fixtures` (packs `@chassis-ui/docs`, builds `packages/docs/starter` in two layouts)
 - Type/diagnostics check: `pnpm check` (runs `astro check` for both packages + `pnpm audit`)
-- Lint: `pnpm site:lint` (eslint + stylelint + prettier + html validation), `pnpm docs:lint`
-- Format: `pnpm docs:format` (prettier --write for packages/docs)
+- The full table is under "Commands" in `CONTRIBUTING.md`.
 
 Run the relevant lint/check command after making changes before considering a task done.
 
@@ -68,5 +72,5 @@ area rather than re-deriving from source:
 
 - Never commit or push without being asked.
 - Don't edit generated output in `_site/`, `.cache/`, or `node_modules/`.
-- Submodule sync (`pnpm sync-submodules`) pulls from the `app/docs` branch of
+- Submodule sync (`pnpm sync-submodules`) moves the pin to the latest `app/docs` of
   `chassis-ui/assets` — be aware changes there originate from a different repo.
