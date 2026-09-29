@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2026-09-29
+
+### Added
+
+- `packages/docs`: four optional `config.yml` keys say where files live when a site is not built from the root of its repository: `sourceDir`, `sourcePath`, `sitePath` and `siteBranch`. A site that sets none behaves as before. See the package README.
+- `packages/docs`: the README lists what a site must provide: the `@libs/*` modules, the `config.yml` keys and the `docs` content collection.
+- `packages/docs`: the package ships its `LICENSE` and declares Astro's Node requirement in `engines`.
+
+### Fixed
+
+- `packages/docs`: `<ScssDocs>`, `<ScssDocsSimple>`, `<JsDocs>` and `<Code filePath>` read and link source files relative to `sourceDir` and `sourcePath`, so they work for a site in `packages/site` ([#2](https://github.com/chassis-ui/website/issues/2)).
+- `packages/docs`: "View on GitHub" links to the page's own source file. It linked to `<repo>/blob/<id>.mdx`, which never existed ([#1](https://github.com/chassis-ui/website/issues/1)).
+- `packages/docs`: the README named example imports that do not exist and an outdated `@chassis-ui/css` peer range.
+
+### Changed
+
+- Website: moved to `@chassis-ui/css` 0.5.2 and `@chassis-ui/tokens` 0.5.3, which changes colours, border radii and dark-mode backgrounds.
+- Updated dependencies within their ranges, including Astro 7.3.5. This clears every `pnpm audit` advisory, including a critical one in Astro.
+- The production build uses the `vendor/assets` commit pinned in this repository instead of the latest `app/docs`.
+- CI builds the site and validates its HTML. The Lighthouse run works again.
+
+### Removed
+
+- Stale files: `PROJECT_REVIEW.md`, the multi-platform sync tooling under `build/`, and committed build output under `examples/`.
+
 ## [0.5.0] - 2026-09-19
 
 ### Changed
