@@ -1,8 +1,8 @@
 # Bootstrap to Chassis CSS Migration Guide for LLMs
 
 > **Document Purpose:** This is an LLM instruction guide for converting Bootstrap CSS to Chassis CSS.  
-> **Last Updated:** 2026-07-19, verified line-by-line against `@chassis-ui/css@0.3.4` source (breakpoint pixel values, card/list/drawer class names) — check `package.json` for the exact current version; the prefix syntax itself has been stable since `v0.2.0`  
-> **Status:** Living document - Chassis CSS is under active development  
+> **Last Updated:** 2026-09-29, verified against the compiled `dist/css/chassis.css` and `dist/js/chassis.js` of `@chassis-ui/css@0.5.2` (class names, breakpoint prefixes and widths, size names, data attributes) — check `package.json` for the exact current version; the prefix syntax dates from `v0.2.0`, the short size and breakpoint names (`sm`, `md`, `lg`, …) from `v0.5.0`  
+> **Status:** Living document - Chassis CSS is under active development
 
 **Target Audience**: LLMs, AI assistants, and automated code conversion tools
 
@@ -11,9 +11,10 @@
 ## Overview
 
 Chassis CSS is part of the Chassis UI ecosystem:
+
 - **Repository:** https://github.com/chassis-ui/css
 - **Package:** `@chassis-ui/css`
-- **Documentation:** https://chassis-ui.com/docs/css/
+- **Documentation:** https://chassis-ui.com/css/
 - **Dependencies:** Built on tokens from `@chassis-ui/tokens`
 
 ## Quick Reference for LLMs
@@ -22,37 +23,38 @@ When processing Bootstrap code, apply these transformations:
 
 1. **Components**: `btn` → `button` (see the Component Classes table below — most card/card-body classes are unchanged)
 2. **Colors**: `text-{color}` → `fg-{color}`, `text-muted` → `fg-subtle`
-3. **Typography**: `display-{n}` → `font-display font-{size}xlarge`
-4. **Spacing**: Numeric (`p-1`, `m-3`) → Semantic (`p-xsmall`, `m-medium`)
-5. **Breakpoints**: Abbreviated (`sm`, `md`, `lg`, `xl`, `xxl`) → Semantic (`small`, `medium`, `large`, `xlarge`, `2xlarge`)
-6. **Responsive utilities**: Bootstrap infix (`d-md-flex`, `col-md-6`) → Chassis CSS **prefix** (`medium:d-flex`, `medium:col-6`) — see [Breakpoint Prefix Syntax](#-breakpoint-prefix-syntax-v020) below
+3. **Typography**: `display-{n}` → `font-display font-{size}` (`display-1` → `font-display font-5xl`)
+4. **Spacing**: Numeric (`p-1`, `m-3`) → size names (`p-2xs`, `m-md`)
+5. **Breakpoints**: Same abbreviations (`sm`, `md`, `lg`, `xl`) except `xxl` → `2xl`; the widths from `lg` up differ (see [Responsive Breakpoints](#responsive-breakpoints))
+6. **Responsive utilities**: Bootstrap infix (`d-md-flex`, `col-md-6`) → Chassis CSS **prefix** (`md:d-flex`, `md:col-6`) — see [Breakpoint Prefix Syntax](#-breakpoint-prefix-syntax-v020) below
 7. **Data attributes**: `data-bs-*` → `data-cx-*`
 
 ## ⚠️ Breakpoint Prefix Syntax (v0.2.0+)
 
 As of `@chassis-ui/css@0.2.0`, every responsive utility class uses a Tailwind-style **prefix** (`{breakpoint}:{utility}`), not Bootstrap's **infix** (`{utility}-{breakpoint}`). This applies uniformly to spacing, display, flex, grid columns, and all other responsive utilities:
 
-Most utilities use an **up** (min-width) prefix — active *at and above* the named breakpoint — e.g. `large:p-xlarge`, `medium:d-flex`, `medium:col-6`, `medium:offset-3`. Never emit a hyphenated infix like `col-medium-6` or `d-medium-flex` — that was Chassis's own pre-0.2.0 syntax and is invalid today.
+Most utilities use an **up** (min-width) prefix — active _at and above_ the named breakpoint — e.g. `lg:p-xl`, `md:d-flex`, `md:col-6`, `md:offset-3`. Never emit a hyphenated infix like `col-medium-6` or `d-medium-flex` — that was Chassis's own pre-0.2.0 syntax and is invalid today. Never emit the long breakpoint names either (`medium:col-6`, `large:p-xlarge`): `@chassis-ui/css@0.5.0` renamed every breakpoint and size to its short form.
 
-A few components instead use a **down** (max-width) variant — active *below* the named breakpoint — which gets its own `max-` prefix (`max-{breakpoint}:{utility}`), confirmed against the compiled `dist/css/chassis.css`:
+A few components instead use a **down** (max-width) variant — active _below_ the named breakpoint — which gets its own `max-` prefix (`max-{breakpoint}:{utility}`), confirmed against the compiled `dist/css/chassis.css`:
 
-| Bootstrap | Chassis CSS |
-|---|---|
-| `offcanvas-large` | `max-large:drawer` |
-| `table-responsive-large` | `max-large:table-responsive` |
-| `fullscreen-large-down` | `max-large:fullscreen` |
+| Bootstrap                  | Chassis CSS               |
+| -------------------------- | ------------------------- |
+| `offcanvas-lg`             | `max-lg:drawer`           |
+| `table-responsive-lg`      | `max-lg:table-responsive` |
+| `modal-fullscreen-lg-down` | `max-lg:fullscreen`       |
 
-Note that Bootstrap's **Offcanvas** component was renamed to **Drawer** in Chassis CSS — the class isn't just re-prefixed, the component itself is `.drawer` (see `_drawer.scss`), so a breakpoint-scoped offcanvas becomes `max-large:drawer`, not `large:offcanvas`.
+Note that Bootstrap's **Offcanvas** component was renamed to **Drawer** in Chassis CSS — the class isn't just re-prefixed, the component itself is `.drawer` (see `_drawer.scss`), so a breakpoint-scoped offcanvas becomes `max-lg:drawer`, not `lg:offcanvas`.
 
-A handful of components additionally moved from a hyphenated modifier to a **compound class** in the same release:
-| Old | Current |
-|---|---|
-| `.container-large` / `.container-fluid` | `.container.large` / `.container.fluid` |
-| `.image-fluid` / `.image-thumbnail` | `.image.fluid` / `.image.thumbnail` |
-| `.list-numbered` / `.list-flush` / `.list-plain` | `.list.numbered` / `.list.flush` / `.list.plain` |
-| `.list-horizontal-large` | `.list.large:horizontal` |
+A handful of components use a **compound class** where Bootstrap uses a hyphenated modifier:
 
-**When converting Bootstrap responsive classes, always emit the new prefix form** (e.g. `col-md-6` → `medium:col-6`, never `col-medium-6`). All examples below already use the current prefix syntax.
+| Bootstrap                                    | Chassis CSS                                                                    |
+| -------------------------------------------- | ------------------------------------------------------------------------------ |
+| `.container-lg` / `.container-fluid`         | `.container.lg` / `.container.fluid`                                           |
+| `.img-fluid` / `.img-thumbnail`              | `.image.fluid` / `.image.thumbnail`                                            |
+| `.list-group-numbered` / `.list-group-flush` | `.list.numbered` / `.list.flush`                                               |
+| `.list-group-horizontal-lg`                  | `.list.lg:horizontal` (a container query: wrap the list in `.contains-inline`) |
+
+**When converting Bootstrap responsive classes, always emit the new prefix form** (e.g. `col-md-6` → `md:col-6`, never `col-medium-6` or `medium:col-6`). All examples below already use the current prefix syntax.
 
 This comprehensive guide provides mappings from Bootstrap classes to their Chassis CSS equivalents.
 
@@ -76,80 +78,85 @@ When encountering Bootstrap code in user requests:
 ## LLM Class Mapping Tables
 
 ### Typography Classes
-| Bootstrap | Chassis CSS | Context |
-|-----------|-------------|---------|
-| `display-1` | `font-display font-5xlarge` | Largest display |
-| `display-2` | `font-display font-4xlarge` | Large display |
-| `display-3` | `font-display font-3xlarge` | Medium display |
-| `display-4` | `font-display font-2xlarge` | Small display |
-| `display-5` | `font-display font-xlarge` | XS display |
-| `display-6` | `font-display font-large` | Smallest display |
-| `h1`, `.h1` | `font-h1` or `font-5xlarge` | Primary heading |
-| `h2`, `.h2` | `font-h2` or `font-4xlarge` | Secondary heading |
-| `h3`, `.h3` | `font-h3` or `font-3xlarge` | Tertiary heading |
-| `h4`, `.h4` | `font-h4` or `font-2xlarge` | Quaternary heading |
-| `h5`, `.h5` | `font-h5` or `font-xlarge` | Quinary heading |
-| `h6`, `.h6` | `font-h6` or `font-large` | Senary heading |
-| `lead` | `font-lead` | Lead paragraph |
-| `small` | `font-small` | Small text |
-| `text-small` | `font-small` | Small utility |
-| `font-monospace` | `font-code` | Monospace/code |
+
+| Bootstrap        | Chassis CSS                                | Context            |
+| ---------------- | ------------------------------------------ | ------------------ |
+| `display-1`      | `font-display font-5xl`                    | Largest display    |
+| `display-2`      | `font-display font-4xl`                    | Large display      |
+| `display-3`      | `font-display font-3xl`                    | Medium display     |
+| `display-4`      | `font-display font-2xl`                    | Small display      |
+| `display-5`      | `font-display font-xl`                     | XS display         |
+| `display-6`      | `font-display font-lg`                     | Smallest display   |
+| `h1`, `.h1`      | `.h1` (unchanged) or `font-4xl`            | Primary heading    |
+| `h2`, `.h2`      | `.h2` (unchanged) or `font-3xl`            | Secondary heading  |
+| `h3`, `.h3`      | `.h3` (unchanged) or `font-2xl`            | Tertiary heading   |
+| `h4`, `.h4`      | `.h4` (unchanged) or `font-xl`             | Quaternary heading |
+| `h5`, `.h5`      | `.h5` (unchanged) or `font-lg`             | Quinary heading    |
+| `h6`, `.h6`      | `.h6` (unchanged) or `font-md`             | Senary heading     |
+| `lead`           | `font-lead`                                | Lead paragraph     |
+| `small`          | `text-sm`                                  | Small text         |
+| `font-monospace` | `font-code` (`font-monospace` also exists) | Monospace/code     |
 
 ### Color Classes
-| Bootstrap | Chassis CSS | Usage |
-|-----------|-------------|-------|
-| `text-primary` | `fg-primary` | Primary text color |
-| `text-secondary` | `fg-secondary` | Secondary text color |
-| `text-success` | `fg-success` | Success text color |
-| `text-danger` | `fg-danger` | Danger text color |
-| `text-warning` | `fg-warning` | Warning text color |
-| `text-info` | `fg-info` | Info text color |
-| `text-muted` | `fg-subtle` | Muted/subtle text |
-| `text-light` | `fg-slight` | Light text |
-| `text-dark` | `fg-main` | Dark/main text |
-| `bg-primary` | `bg-primary` | Primary background |
-| `bg-light` | `bg-main` | Light background |
-| `bg-dark` | `bg-inverse` | Dark background |
 
-### Spacing Classes  
-| Bootstrap | Chassis CSS | Size |
-|-----------|-------------|------|
-| `*-0` | `*-zero` | 0 |
-| `*-1` | `*-4xsmall` | ~0.25rem |
-| `*-2` | `*-xsmall` | ~0.5rem |
-| `*-3` | `*-medium` | ~1rem |
-| `*-4` | `*-large` | ~1.5rem |
-| `*-5` | `*-2xlarge` | ~3rem |
+| Bootstrap        | Chassis CSS    | Usage                |
+| ---------------- | -------------- | -------------------- |
+| `text-primary`   | `fg-primary`   | Primary text color   |
+| `text-secondary` | `fg-secondary` | Secondary text color |
+| `text-success`   | `fg-success`   | Success text color   |
+| `text-danger`    | `fg-danger`    | Danger text color    |
+| `text-warning`   | `fg-warning`   | Warning text color   |
+| `text-info`      | `fg-info`      | Info text color      |
+| `text-muted`     | `fg-subtle`    | Muted/subtle text    |
+| `text-light`     | `fg-slight`    | Light text           |
+| `text-dark`      | `fg-main`      | Dark/main text       |
+| `bg-primary`     | `bg-primary`   | Primary background   |
+| `bg-light`       | `bg-main`      | Light background     |
+| `bg-dark`        | `bg-inverse`   | Dark background      |
+
+### Spacing Classes
+
+| Bootstrap | Chassis CSS       | Size    |
+| --------- | ----------------- | ------- |
+| `*-0`     | `*-0` or `*-zero` | 0       |
+| `*-1`     | `*-2xs`           | 0.25rem |
+| `*-2`     | `*-xs`            | 0.5rem  |
+| `*-3`     | `*-md`            | 1rem    |
+| `*-4`     | `*-xl`            | 1.5rem  |
+| `*-5`     | `*-6xl`           | 3rem    |
 
 ### Component Classes
-| Bootstrap | Chassis CSS | Component |
-|-----------|-------------|-----------|
-| `btn` | `button` | Base button |
-| `btn-primary` | `button primary` | Primary button |
-| `btn-outline-*` | `button * outline` | Outline button |
-| `btn-sm` | `button small` | Small button |
-| `btn-lg` | `button large` | Large button |
-| `card-body` | `card-body` | Unchanged — Chassis kept Bootstrap's name for this element |
-| `card-text` | *(none — plain element)* | No dedicated class; use a plain element inside `.card-body` |
-| `badge bg-*` | `badge *` | Badge with color |
-| `alert alert-*` | `alert *` | Alert with type |
+
+| Bootstrap       | Chassis CSS              | Component                                                                            |
+| --------------- | ------------------------ | ------------------------------------------------------------------------------------ |
+| `btn`           | `button`                 | Base button                                                                          |
+| `btn-primary`   | `button primary`         | Primary button                                                                       |
+| `btn-outline-*` | `button * outline`       | Outline button                                                                       |
+| `btn-sm`        | `button sm`              | Small button                                                                         |
+| `btn-lg`        | `button lg`              | Large button                                                                         |
+| `card-body`     | `card-body`              | Unchanged — Chassis kept Bootstrap's name for this element                           |
+| `card-text`     | _(none — plain element)_ | No dedicated class; use a plain element inside `.card-body`                          |
+| `badge bg-*`    | `badge *`                | Badge with color                                                                     |
+| `alert alert-*` | `notification *`         | Status message with type (Chassis `.alert` is a blocking alert dialog, not a banner) |
 
 ### Font Weight Classes
-| Bootstrap | Chassis CSS | Weight |
-|-----------|-------------|--------|
-| `fw-light` | `font-elegant` | Light weight |
-| `fw-normal` | `font-normal` | Normal weight |
-| `fw-bold` | `font-strong` | Bold weight |
-| `fw-bolder` | `font-mass` | Heaviest weight |
+
+| Bootstrap   | Chassis CSS    | Weight          |
+| ----------- | -------------- | --------------- |
+| `fw-light`  | `font-elegant` | Light weight    |
+| `fw-normal` | `font-normal`  | Normal weight   |
+| `fw-bold`   | `font-strong`  | Bold weight     |
+| `fw-bolder` | `font-mass`    | Heaviest weight |
 
 ### Responsive Breakpoints
-| Bootstrap | Chassis CSS | Screen Width | Notes |
-|-----------|-------------|-------------|-------|
-| `sm` | `small` | ≥576px | Bootstrap infix (`col-sm-6`) → Chassis prefix (`small:col-6`) |
-| `md` | `medium` | ≥768px | `col-md-6` → `medium:col-6` |
-| `lg` | `large` | ≥992px | `col-lg-4` → `large:col-4` |
-| `xl` | `xlarge` | ≥1200px | `col-xl-3` → `xlarge:col-3` |
-| `xxl` | `2xlarge` | ≥1400px | `col-xxl-2` → `2xlarge:col-2` |
+
+| Bootstrap | Chassis CSS | Screen Width    | Notes                                                         |
+| --------- | ----------- | --------------- | ------------------------------------------------------------- |
+| `sm`      | `sm`        | ≥576px (36rem)  | Bootstrap infix (`col-sm-6`) → Chassis prefix (`sm:col-6`)    |
+| `md`      | `md`        | ≥768px (48rem)  | `col-md-6` → `md:col-6`                                       |
+| `lg`      | `lg`        | ≥1024px (64rem) | `col-lg-4` → `lg:col-4`; Bootstrap's `lg` starts at 992px     |
+| `xl`      | `xl`        | ≥1280px (80rem) | `col-xl-3` → `xl:col-3`; Bootstrap's `xl` starts at 1200px    |
+| `xxl`     | `2xl`       | ≥1536px (96rem) | `col-xxl-2` → `2xl:col-2`; Bootstrap's `xxl` starts at 1400px |
 
 ## Font Sizes & Typography
 
@@ -164,31 +171,31 @@ When encountering Bootstrap code in user requests:
 <small class="text-muted">Small muted text</small>
 
 <!-- Chassis CSS -->
-<div class="font-display font-5xlarge">Display 1</div>
-<div class="font-display font-large">Display 6</div>
-<h1 class="font-h1">Heading 1</h1>
+<div class="font-display font-5xl">Display 1</div>
+<div class="font-display font-lg">Display 6</div>
+<h1 class="h1">Heading 1</h1>
 <p class="font-lead">Lead text</p>
 <small class="fg-subtle">Small muted text</small>
 ```
 
 ### Font Size Scale Mapping
 
-| Bootstrap | Chassis CSS | Notes |
-|-----------|-------------|-------|
-| `display-1` | `font-display font-5xlarge` | Largest display size |
-| `display-2` | `font-display font-4xlarge` | |
-| `display-3` | `font-display font-3xlarge` | |
-| `display-4` | `font-display font-2xlarge` | |
-| `display-5` | `font-display font-xlarge` | |
-| `display-6` | `font-display font-large` | |
-| `h1` | `font-h1` or `font-5xlarge` | Semantic vs utility |
-| `h2` | `font-h2` or `font-4xlarge` | |
-| `h3` | `font-h3` or `font-3xlarge` | |
-| `h4` | `font-h4` or `font-2xlarge` | |
-| `h5` | `font-h5` or `font-xlarge` | |
-| `h6` | `font-h6` or `font-large` | |
-| `lead` | `font-lead` | Semantic class available |
-| `fs-1` to `fs-6` | `font-5xlarge` to `font-large` | Direct size utilities |
+| Bootstrap        | Chassis CSS             | Notes                                                           |
+| ---------------- | ----------------------- | --------------------------------------------------------------- |
+| `display-1`      | `font-display font-5xl` | Largest display size                                            |
+| `display-2`      | `font-display font-4xl` |                                                                 |
+| `display-3`      | `font-display font-3xl` |                                                                 |
+| `display-4`      | `font-display font-2xl` |                                                                 |
+| `display-5`      | `font-display font-xl`  |                                                                 |
+| `display-6`      | `font-display font-lg`  |                                                                 |
+| `h1`             | `.h1` or `font-4xl`     | Heading class vs size-only utility                              |
+| `h2`             | `.h2` or `font-3xl`     |                                                                 |
+| `h3`             | `.h3` or `font-2xl`     |                                                                 |
+| `h4`             | `.h4` or `font-xl`      |                                                                 |
+| `h5`             | `.h5` or `font-lg`      |                                                                 |
+| `h6`             | `.h6` or `font-md`      |                                                                 |
+| `lead`           | `font-lead`             | Semantic class available                                        |
+| `fs-1` to `fs-6` | `font-4xl` to `font-md` | Direct size utilities (the scale runs `font-2xs` to `font-5xl`) |
 
 ### Font Families
 
@@ -283,7 +290,7 @@ Chassis CSS provides more granular color control with context-specific variants:
 
 ### Spacing Scale
 
-Chassis CSS uses semantic naming instead of numeric scales:
+Chassis CSS uses size names instead of numeric scales. The full spacing scale is `zero`, `4xs`, `3xs`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl` and `2xl` to `6xl`:
 
 ```html
 <!-- Bootstrap -->
@@ -296,26 +303,26 @@ Chassis CSS uses semantic naming instead of numeric scales:
 
 <!-- Chassis CSS -->
 <div class="p-zero">No padding</div>
-<div class="p-4xsmall">Tiny padding</div>
-<div class="p-xsmall">Extra small padding</div>
-<div class="p-small">Small padding</div>
-<div class="p-medium">Medium padding</div>
-<div class="p-large">Large padding</div>
-<div class="p-xlarge">Extra large padding</div>
-<div class="p-2xlarge">2X large padding</div>
-<div class="p-6xlarge">6X large padding</div>
+<div class="p-2xs">Tiny padding</div>
+<div class="p-xs">Extra small padding</div>
+<div class="p-sm">Small padding</div>
+<div class="p-md">Medium padding</div>
+<div class="p-lg">Large padding</div>
+<div class="p-xl">Extra large padding</div>
+<div class="p-2xl">2X large padding</div>
+<div class="p-6xl">6X large padding</div>
 ```
 
 ### Spacing Mapping Table
 
-| Bootstrap | Chassis CSS | Description |
-|-----------|-------------|-------------|
-| `*-0` | `*-zero` | No spacing |
-| `*-1` | `*-4xsmall` | Tiny spacing |
-| `*-2` | `*-xsmall` or `*-small` | Small spacing |
-| `*-3` | `*-medium` | Medium spacing |
-| `*-4` | `*-large` | Large spacing |
-| `*-5` | `*-xlarge` or `*-2xlarge` | Extra large spacing |
+| Bootstrap | Chassis CSS       | Description                |
+| --------- | ----------------- | -------------------------- |
+| `*-0`     | `*-0` or `*-zero` | No spacing                 |
+| `*-1`     | `*-2xs`           | Tiny spacing (0.25rem)     |
+| `*-2`     | `*-xs`            | Small spacing (0.5rem)     |
+| `*-3`     | `*-md`            | Medium spacing (1rem)      |
+| `*-4`     | `*-xl`            | Large spacing (1.5rem)     |
+| `*-5`     | `*-6xl`           | Extra large spacing (3rem) |
 
 ### Sizing Utilities
 
@@ -335,7 +342,7 @@ Chassis CSS uses semantic naming instead of numeric scales:
 <div class="w-auto">Auto width</div>
 ```
 
-*Note: Sizing utilities remain largely the same*
+_Note: Sizing utilities remain largely the same_
 
 ## Components
 
@@ -353,8 +360,8 @@ Chassis CSS uses semantic naming instead of numeric scales:
 <button class="button primary">Primary</button>
 <button class="button secondary">Secondary</button>
 <button class="button primary outline">Outline Primary</button>
-<button class="button small">Small Button</button>
-<button class="button large">Large Button</button>
+<button class="button sm">Small Button</button>
+<button class="button lg">Large Button</button>
 ```
 
 ### Badges
@@ -406,7 +413,8 @@ Chassis CSS uses semantic naming instead of numeric scales:
 ## Layout & Grid
 
 ### Grid System
-The grid system remains largely compatible, but breakpoint names use semantic naming:
+
+The grid system remains largely compatible, but responsive classes use a breakpoint prefix:
 
 ```html
 <!-- Bootstrap -->
@@ -419,7 +427,7 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 <!-- Chassis CSS -->
 <div class="container">
   <div class="row">
-    <div class="col-12 medium:col-6 large:col-4">Content</div>
+    <div class="col-12 md:col-6 lg:col-4">Content</div>
   </div>
 </div>
 ```
@@ -432,8 +440,8 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 <div class="col-12 col-md-6 col-lg-4 col-xl-3">
 
 <!-- Chassis CSS -->
-<div class="d-none small:d-block medium:d-flex">
-<div class="col-12 medium:col-6 large:col-4 xlarge:col-3">
+<div class="d-none sm:d-block md:d-flex">
+<div class="col-12 md:col-6 lg:col-4 xl:col-3">
 ```
 
 ### Flexbox Utilities
@@ -450,7 +458,7 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 </div>
 ```
 
-*Note: Flexbox utilities are largely identical*
+_Note: Flexbox utilities are largely identical_
 
 ## Data Attributes
 
@@ -460,24 +468,28 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 <body data-bs-spy="scroll" data-bs-target="#navbar">
 
 <!-- Chassis CSS -->
-<div data-cx-toggle="modal" data-cx-target="#myModal">
+<div data-cx-toggle="dialog" data-cx-target="#myModal">
 <body data-cx-spy="scroll" data-cx-target="#navbar">
 ```
+
+Some `data-cx-toggle` values follow Chassis's component names rather than Bootstrap's: `modal` → `dialog` (a modal is a `<dialog class="modal dialog">`), `offcanvas` → `drawer`, `dropdown` → `menu`.
 
 ## LLM Code Transformation Examples
 
 ### Example 1: Button Conversion
+
 ```html
 <!-- INPUT (Bootstrap) -->
 <button class="btn btn-primary btn-lg">Click me</button>
 <button class="btn btn-outline-secondary btn-sm">Cancel</button>
 
 <!-- OUTPUT (Chassis CSS) -->
-<button class="button primary large">Click me</button>
-<button class="button secondary outline small">Cancel</button>
+<button class="button primary lg">Click me</button>
+<button class="button secondary outline sm">Cancel</button>
 ```
 
 ### Example 2: Typography Conversion
+
 ```html
 <!-- INPUT (Bootstrap) -->
 <h1 class="display-4 text-primary">Main Title</h1>
@@ -485,12 +497,13 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 <small class="text-secondary">Helper text</small>
 
 <!-- OUTPUT (Chassis CSS) -->
-<h1 class="font-display font-2xlarge fg-primary">Main Title</h1>
+<h1 class="font-display font-2xl fg-primary">Main Title</h1>
 <p class="font-lead fg-subtle">Subtitle text</p>
 <small class="fg-secondary">Helper text</small>
 ```
 
 ### Example 3: Card Component Conversion
+
 ```html
 <!-- INPUT (Bootstrap) -->
 <div class="card">
@@ -506,12 +519,13 @@ The grid system remains largely compatible, but breakpoint names use semantic na
   <div class="card-body">
     <h5 class="card-title fg-primary">Title</h5>
     <p class="fg-subtle">Content</p>
-    <a href="#" class="button primary small">Action</a>
+    <a href="#" class="button primary sm">Action</a>
   </div>
 </div>
 ```
 
 ### Example 4: Spacing Conversion
+
 ```html
 <!-- INPUT (Bootstrap) -->
 <div class="p-3 m-2 mb-4">
@@ -520,13 +534,14 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 </div>
 
 <!-- OUTPUT (Chassis CSS) -->
-<div class="p-medium m-xsmall mb-large">
-  <h2 class="mb-medium">Heading</h2>
-  <p class="mt-xsmall">Paragraph</p>
+<div class="p-md m-xs mb-xl">
+  <h2 class="mb-md">Heading</h2>
+  <p class="mt-xs">Paragraph</p>
 </div>
 ```
 
 ### Example 5: Responsive Grid Conversion
+
 ```html
 <!-- INPUT (Bootstrap) -->
 <div class="container">
@@ -540,9 +555,9 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 <!-- OUTPUT (Chassis CSS) -->
 <div class="container">
   <div class="row">
-    <div class="col-12 small:col-6 medium:col-4 large:col-3">Column 1</div>
-    <div class="col-12 small:col-6 medium:col-4 large:col-3">Column 2</div>
-    <div class="d-none medium:d-block medium:col-4 large:col-6">Column 3</div>
+    <div class="col-12 sm:col-6 md:col-4 lg:col-3">Column 1</div>
+    <div class="col-12 sm:col-6 md:col-4 lg:col-3">Column 2</div>
+    <div class="d-none md:d-block md:col-4 lg:col-6">Column 3</div>
   </div>
 </div>
 ```
@@ -550,6 +565,7 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 ## Complete Migration Example
 
 ### Before (Bootstrap)
+
 ```html
 <div class="card">
   <div class="card-body">
@@ -576,26 +592,27 @@ The grid system remains largely compatible, but breakpoint names use semantic na
 ```
 
 ### After (Chassis CSS)
+
 ```html
 <div class="card">
   <div class="card-body">
-    <h3 class="card-title font-display font-large fg-primary">Quick Stats</h3>
+    <h3 class="card-title font-display font-lg fg-primary">Quick Stats</h3>
     <div class="row text-center">
       <div class="col-4">
-        <div class="font-display font-2xlarge fg-primary">150</div>
-        <div class="fg-subtle font-small">Icons</div>
+        <div class="font-display font-2xl fg-primary">150</div>
+        <div class="fg-subtle text-sm">Icons</div>
       </div>
       <div class="col-4">
-        <div class="font-display font-2xlarge fg-success">98%</div>
-        <div class="fg-subtle font-small">Coverage</div>
+        <div class="font-display font-2xl fg-success">98%</div>
+        <div class="fg-subtle text-sm">Coverage</div>
       </div>
     </div>
-    <div class="mt-medium">
-      <a href="/browse" class="button primary outline small me-small">
+    <div class="mt-md">
+      <a href="/browse" class="button primary outline sm me-xs">
         Browse All
-        <span class="badge primary ms-xsmall">150</span>
+        <span class="badge primary ms-xs">150</span>
       </a>
-      <a href="/download" class="button primary small">Download</a>
+      <a href="/download" class="button primary sm">Download</a>
     </div>
   </div>
 </div>
@@ -615,12 +632,12 @@ When processing user requests involving CSS frameworks:
    - Use mapping tables above
    - Preserve HTML structure
    - Convert class names systematically
-   - Convert responsive breakpoints to semantic names (`sm` → `small`, `md` → `medium`)
+   - Move responsive breakpoints from infix to prefix (`col-md-6` → `md:col-6`) and rename `xxl` to `2xl`
 
 3. **Consider context enhancements**:
    - Suggest semantic improvements (`fg-subtle` vs basic colors)
    - Recommend design token usage
-   - Highlight Chassis CSS advantages (better color system, semantic spacing)
+   - Highlight Chassis CSS advantages (better color system, named spacing scale)
 
 4. **Validate output**:
    - Ensure all Bootstrap classes are converted
@@ -630,58 +647,67 @@ When processing user requests involving CSS frameworks:
 ## Migration Checklist
 
 ### Typography
-- [ ] Replace `display-*` with `font-display font-*xlarge`
+
+- [ ] Replace `display-*` with `font-display font-{size}` (`font-lg` to `font-5xl`)
 - [ ] Update `text-muted` to `fg-subtle`
 - [ ] Convert `text-{color}` to `fg-{color}`
 - [ ] Replace `fw-*` with `font-{weight}` (normal, strong, mass, elegant)
-- [ ] Update font family classes (`font-monospace` → `font-code`)
+- [ ] Update font family classes (`font-monospace` → `font-code`; `font-monospace` also still works)
 
 ### Colors
+
 - [ ] Change `text-*` color classes to `fg-*`
 - [ ] Update `bg-*` classes to use semantic variants when needed
 - [ ] Consider context-specific colors (`primary-fg-subtle`, etc.)
 - [ ] Replace `text-muted` with `fg-subtle` or `fg-slight`
 
 ### Spacing
-- [ ] Convert numeric spacing (`p-1`, `m-3`) to semantic names (`p-xsmall`, `m-medium`)
+
+- [ ] Convert numeric spacing (`p-1`, `m-3`) to size names (`p-2xs`, `m-md`)
 - [ ] Update spacing scales based on design requirements
 - [ ] Consider using responsive spacing utilities
 
 ### Components
-- [ ] Replace `btn` with `button`
+
+- [ ] Replace `btn` with `button`, and `btn-sm`/`btn-lg` with `sm`/`lg`
 - [ ] `card-body` is unchanged; drop `card-text` (no dedicated class, use a plain element)
 - [ ] Update badge background classes (`bg-primary` → `primary`)
-- [ ] Change alert modifier classes (`alert-primary` → `primary`)
+- [ ] Change alerts to notifications (`alert alert-primary` → `notification primary`)
 
 ### Data Attributes
+
 - [ ] Change `data-bs-*` to `data-cx-*`
 - [ ] Update JavaScript selectors if using custom code
 
 ### Layout
-- [ ] Convert breakpoint abbreviations to semantic names (`sm` → `small`, `md` → `medium`, etc.)
-- [ ] Convert infix to prefix syntax for every responsive utility (`col-md-6` → `medium:col-6`, `d-sm-block` → `small:d-block`)
-- [ ] Convert compound-class components (`container-large` → `container.large`, `image-fluid` → `image.fluid`)
+
+- [ ] Keep breakpoint abbreviations, but rename `xxl` to `2xl`
+- [ ] Convert infix to prefix syntax for every responsive utility (`col-md-6` → `md:col-6`, `d-sm-block` → `sm:d-block`)
+- [ ] Convert compound-class components (`container-lg` → `container lg`, `img-fluid` → `image fluid`)
 - [ ] Flexbox utilities remain largely the same (just apply the prefix convention when responsive)
 - [ ] Display utilities are compatible (same prefix convention when responsive)
 
 ## LLM Processing Notes
 
 ### Key Differences to Remember:
+
 - **Chassis CSS uses space-separated modifiers**: `button primary outline` not `btn btn-primary btn-outline`
-- **Semantic spacing names**: `medium`, `large`, `xlarge` instead of numbers
-- **Semantic breakpoint names**: `small`, `medium`, `large`, `xlarge`, `2xlarge` instead of `sm`, `md`, `lg`, `xl`, `xxl`
-- **Prefix, not infix, for responsive utilities**: `medium:p-large` / `medium:col-6` not `p-medium-large` / `col-medium-6` (see [Breakpoint Prefix Syntax](#-breakpoint-prefix-syntax-v020))
+- **Size names for spacing**: `md`, `lg`, `xl` instead of numbers
+- **Breakpoint names**: `sm`, `md`, `lg`, `xl`, `2xl` — Bootstrap's abbreviations except `xxl` → `2xl`, but `lg`, `xl` and `2xl` start at 1024px, 1280px and 1536px
+- **Prefix, not infix, for responsive utilities**: `md:p-lg` / `md:col-6` not `p-md-lg` / `col-md-6` (see [Breakpoint Prefix Syntax](#-breakpoint-prefix-syntax-v020))
 - **Comprehensive color system**: `fg-subtle`, `fg-slight`, `fg-main` for text variations
 - **Context-aware colors**: `primary-fg-subtle`, `secondary-bg-evident` for advanced usage
-- **Display fonts require two classes**: `font-display font-2xlarge` not just `display-4`
+- **Display fonts require two classes**: `font-display font-2xl` not just `display-4`
 
 ### What Stays the Same:
+
 - Grid system classes (`container`, `row`, `col-*`)
 - Most flexbox utilities (`d-flex`, `justify-content-*`)
 - Display utilities (`d-none`, `d-block`)
 - Position utilities (`position-relative`, `position-absolute`)
 
 ### LLM Optimization Tips:
+
 - Always convert all Bootstrap classes in a code snippet
 - Suggest improvements using Chassis CSS's advanced features
 - Explain the benefits of the semantic approach when relevant
@@ -704,7 +730,6 @@ Chassis CSS provides sophisticated context-aware color variants:
 
 <!-- Background variants -->
 <div class="primary-bg-main">Main primary background</div>
-<div class="primary-bg-subtle">Subtle primary background</div>
 <div class="primary-bg-evident">Evident primary background</div>
 ```
 
@@ -721,9 +746,9 @@ Chassis CSS provides sophisticated context-aware color variants:
 
 Chassis CSS is built on a comprehensive design token system that provides:
 
-- Consistent sizing scales (space-*, font-size-*, etc.)
+- Consistent sizing scales (`--cx-space-*`, `--cx-font-size-*`, etc.)
 - Semantic color naming with automatic contrast
-- Responsive typography with RFS (Responsive Font Sizes)
+- Fluid font sizes with CSS `clamp()`
 - Context-aware component styling
 
 This makes Chassis CSS more maintainable and provides better design consistency than Bootstrap's approach.
