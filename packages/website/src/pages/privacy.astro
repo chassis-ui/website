@@ -1,0 +1,85 @@
+---
+import SingleLayout from '@chassis-ui/docs/layouts/SingleLayout.astro'
+
+// Keep this page in step with what the sites load. See ref/VERCEL_CONFIG.md for the hosts
+// in the content security policy, and `Consent.astro` in the package for analytics.
+const updated = '29 September 2026'
+---
+
+<SingleLayout
+  title="Privacy"
+  description="What the Chassis sites collect, why, and what you can do about it."
+>
+  <section class="py-3xl md:py-6xl">
+    <div class="container 2xl">
+      <div class="row">
+        <div class="col lg:col-10 2xl:col-8">
+          <p class="fg-subtle">Last updated {updated}.</p>
+
+          <p>
+            This notice covers chassis-ui.com and the documentation of the Chassis projects it
+            serves: tokens, CSS, icons, assets, Figma and React. Chassis UI is responsible for them.
+            For any question or request about your data, write to{' '}
+            <a href="mailto:support@chassis-ui.com">support@chassis-ui.com</a>.
+          </p>
+
+          <h2>Analytics</h2>
+          <p>
+            With your consent, the sites use Google Analytics to count visits and see which pages
+            are read. Nothing is sent to Google, and no analytics cookie is set, until you accept in
+            the banner. Google Analytics then sets two cookies whose names start with _ga. They keep
+            a random identifier for up to two years, and sends Google the pages you visit, your
+            browser, your device type and your approximate location. Google does not store your IP
+            address. The data is kept for two months and then deleted. Google may process it in the
+            United States, under the EU-U.S. Data Privacy Framework.
+          </p>
+          <p>
+            Your choice is kept in your browser and covers all the Chassis sites. You can change it
+            at any time with "Cookie settings" at the bottom of every page. Declining removes the
+            analytics cookies.
+          </p>
+          <p hidden data-consent-open>
+            <button type="button" class="button default">Cookie settings</button>
+          </p>
+
+          <h2>Contact form</h2>
+          <p>
+            When you send the form on the home page, we receive your name, your email address, your
+            company if you give it, and the topic you choose. They reach us by email through our
+            email provider, Resend, and are used only to answer you. We keep the message as long as
+            the conversation needs it, and do not add your address to any list.
+          </p>
+
+          <h2>Fonts</h2>
+          <p>
+            The pages load their fonts from Google Fonts. Your browser requests them from Google's
+            servers, which see your IP address and your browser, as with any request. Google Fonts
+            sets no cookies.
+          </p>
+
+          <h2>Hosting</h2>
+          <p>
+            The sites are hosted by Vercel. To serve and protect them, Vercel handles your IP
+            address and the details of each request, and keeps request logs for a short time. The
+            contact form counts requests per IP address to stop abuse.
+          </p>
+
+          <h2>Stored in your browser</h2>
+          <p>
+            Besides the analytics cookies above, the sites keep two settings in your browser's local
+            storage: your colour theme and your analytics choice. They never leave your browser.
+          </p>
+
+          <h2>Your rights</h2>
+          <p>
+            You can ask what we hold about you, and ask us to correct or delete it. You can withdraw
+            your analytics consent at any time, without affecting what was collected before.
+            Analytics rests on your consent. The contact form rests on your request to be answered.
+            Hosting and fonts rest on our interest in running the sites. If you think we handle your
+            data wrongly, you can complain to the data protection authority where you live.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</SingleLayout>
