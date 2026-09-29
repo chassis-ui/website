@@ -45,12 +45,9 @@ jobs:
             echo "url=https://chassis-ui.com" >> $GITHUB_OUTPUT
           fi
           echo "env=$ENV" >> $GITHUB_OUTPUT
-          # Staging is checked once per URL, so that Vercel does not throttle the run
-          if [[ "$ENV" == "staging" ]]; then
-            echo "runs=1" >> $GITHUB_OUTPUT
-          else
-            echo "runs=3" >> $GITHUB_OUTPUT
-          fi
+          # Each URL is checked once. Three runs of 15 URLs made Vercel answer 403, on staging
+          # and then on production. See F40 in ref/ROADMAP.md
+          echo "runs=1" >> $GITHUB_OUTPUT
           echo "Testing $ENV: $(cat $GITHUB_OUTPUT | grep '^url=' | cut -d= -f2)"
 
       - name: Fetch URLs from sitemap
