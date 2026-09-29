@@ -12,8 +12,8 @@ This document describes how indexing is allowed on the production domain (`chass
 |---|---|
 | `chassis-ui.com/*` (production custom domain) | ✅ Yes |
 | `staging.chassis-ui.com/*` (staging custom domain) | ❌ No |
-| `chassis-{tokens,css,icons,figma,assets}.vercel.app/*` (production Vercel previews) | ❌ No |
-| `chassis-{tokens,css,icons,figma,assets}-staging.vercel.app/*` (staging Vercel previews) | ❌ No |
+| `chassis-{tokens,css,icons,figma,assets,react}.vercel.app/*` (production Vercel previews) | ❌ No |
+| `chassis-{tokens,css,icons,figma,assets,react}-staging.vercel.app/*` (staging Vercel previews) | ❌ No |
 
 The sub-project sites (`chassis-tokens`, `chassis-css`, etc.) exist only as proxy targets behind `chassis-ui.com`. Crawlers must never index those URLs directly.
 
@@ -71,7 +71,7 @@ const allowCrawling = import.meta.env.PROD && (!vercelEnv || vercelEnv === 'prod
 }
 ```
 
-### Sub-projects (chassis-tokens, chassis-css, chassis-icons, chassis-figma, chassis-assets)
+### Sub-projects (chassis-tokens, chassis-css, chassis-icons, chassis-figma, chassis-assets, chassis-react)
 
 **`site/src/pages/robots.txt.ts`** — always emits `Disallow: /`. These hosts are never user-facing; they only serve as proxy targets.
 
@@ -127,6 +127,7 @@ for h in \
   https://chassis-icons.vercel.app \
   https://chassis-figma.vercel.app \
   https://chassis-assets.vercel.app \
+  https://chassis-react.vercel.app \
   https://chassis-tokens-staging.vercel.app \
   https://chassis-css-staging.vercel.app \
   https://chassis-icons-staging.vercel.app \

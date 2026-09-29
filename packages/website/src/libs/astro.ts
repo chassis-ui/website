@@ -31,7 +31,7 @@ const sitemapExcludes = ['/404', '/docs']
 // Sub-project paths whose sitemaps are injected into the root sitemap-index.xml
 // after build. Each entry corresponds to a separate Astro deployment proxied
 // under chassis-ui.com/<project>/.
-const subProjectPaths = ['/tokens', '/css', '/figma', '/icons', '/assets']
+const subProjectPaths = ['/tokens', '/css', '/figma', '/icons', '/assets', '/react']
 
 interface ChassisOptions {
   /** The parsed `config.yml`. */

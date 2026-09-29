@@ -66,8 +66,10 @@ Each service has two rewrite rules per route:
 | `/tokens/*` | `chassis-tokens-staging.vercel.app/tokens/*` | `chassis-tokens.vercel.app/tokens/*` |
 | `/figma/*` | `chassis-figma-staging.vercel.app/figma/*` | `chassis-figma.vercel.app/figma/*` |
 | `/icons/*` | `chassis-icons-staging.vercel.app/icons/*` | `chassis-icons.vercel.app/icons/*` |
-| `/icons-assets/*` | `chassis-icons-staging.vercel.app/icons-assets/*` | `chassis-icons.vercel.app/icons-assets/*` |
-| `/tokens-assets/*` | `chassis-tokens-staging.vercel.app/tokens-assets/*` | `chassis-tokens.vercel.app/tokens-assets/*` |
+| `/react/*` | `chassis-react-staging.vercel.app/react/*` | `chassis-react.vercel.app/react/*` |
+
+chassis-react has no staging deployment yet, so `staging.chassis-ui.com/react/` answers 404
+until it has one. The route is there so that staging never shows production content.
 
 ### Sitemap routes
 
@@ -78,7 +80,8 @@ Each sub-project's sitemaps live at the **root** of their Vercel deployment (e.g
 { "source": "/css/sitemap(.*)",    "destination": "https://chassis-css.vercel.app/sitemap$1" },
 { "source": "/figma/sitemap(.*)",  "destination": "https://chassis-figma.vercel.app/sitemap$1" },
 { "source": "/icons/sitemap(.*)",  "destination": "https://chassis-icons.vercel.app/sitemap$1" },
-{ "source": "/assets/sitemap(.*)", "destination": "https://chassis-assets.vercel.app/sitemap$1" }
+{ "source": "/assets/sitemap(.*)", "destination": "https://chassis-assets.vercel.app/sitemap$1" },
+{ "source": "/react/sitemap(.*)",  "destination": "https://chassis-react.vercel.app/sitemap$1" }
 ```
 
 Each also has a staging variant (with `has: host = staging.chassis-ui.com`) immediately before the production fallback. After these rewrites, `chassis-ui.com/tokens/sitemap-index.xml` correctly proxies to the sub-project's sitemap.
@@ -105,7 +108,35 @@ Each sub-project's pages reference assets under `/static/...` (CSS, JS, images, 
 }
 ```
 
-The same pattern is repeated for each project (`/css/`, `/icons/`, `/tokens/`, `/figma/`, `/assets/`). Order matters — staging-specific rules must come before production fallbacks.
+The same pattern is repeated for each project (`/css/`, `/icons/`, `/tokens/`, `/figma/`, `/assets/`, `/react/`). Order matters — staging-specific rules must come before production fallbacks.
+
+A request without a `Referer`, or with one from another site, gets the website's own file,
+or a 404. That is why the rules are being replaced (decision D6 of the
+[roadmap](ROADMAP.md)).
+
+### `/<project>/static/*` rewrites (path-based)
+
+Next to the referrer-based rules, each project has a static prefix of its own, which needs
+no `Referer`:
+
+```json
+{ "source": "/css/static/(.*)", "destination": "https://chassis-css.vercel.app/static/$1" }
+```
+
+The files stay where they are, under `/static/` of the project's deployment. Only the URLs
+in the project's pages change. Each pair of rules sits before the project's catch-all rule,
+which would otherwise send `/css/static/…` to `/css/static/…` of the deployment, where
+nothing is.
+
+A project moves to its prefix in two steps, task A6 in [SIBLING_TASKS.md](SIBLING_TASKS.md):
+
+1. `@chassis-ui/docs` gets an option for the prefix of static URLs. The package writes
+   `/static/` today.
+2. The project sets it to `/<project>/static`, and adds a rewrite from
+   `/<project>/static/(.*)` to `/static/$1` in its own `vercel.json`, so that its
+   deployment still works when opened directly.
+
+When all six projects have moved, the referrer-based rules are removed.
 
 ## 🚫 Indexing-related headers
 
