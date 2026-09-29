@@ -17,14 +17,22 @@ const valid = {
   topic: 'figma-components'
 }
 
-function post(fields: Record<string, string>): Request {
+function post(
+  fields: Record<string, string>,
+  headers: Record<string, string> = {},
+  url = 'https://chassis-ui.com/api/contact'
+): Request {
   const body = new FormData()
 
   for (const [name, value] of Object.entries(fields)) {
     body.append(name, value)
   }
 
-  return new Request('https://chassis-ui.com/api/contact', { method: 'POST', body })
+  return new Request(url, {
+    method: 'POST',
+    headers: { Origin: new URL(url).origin, ...headers },
+    body
+  })
 }
 
 async function json(response: Response) {
@@ -109,7 +117,7 @@ describe('POST /api/contact', () => {
   test('rejects a body that is not form data', async () => {
     const request = new Request('https://chassis-ui.com/api/contact', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Origin: 'https://chassis-ui.com' },
       body: '{"name":"Ada"}'
     })
 
@@ -118,6 +126,83 @@ describe('POST /api/contact', () => {
       body: { error: 'Invalid request body' }
     })
   })
+
+  test('escapes the values in the message', async () => {
+    await handler(
+      post({
+        ...valid,
+        name: '<img src=x onerror=alert(1)>',
+        email: '"><b>@example.com',
+        company: 'A & B'
+      })
+    )
+
+    const { html } = send.mock.calls[0][0]
+
+    expect(html).toContain('<strong>Name:</strong> &lt;img src=x onerror=alert(1)&gt;</p>')
+    expect(html).toContain('href="mailto:&quot;&gt;&lt;b&gt;@example.com"')
+    expect(html).toContain('<strong>Company:</strong> A &amp; B</p>')
+    expect(html).not.toContain('<img')
+  })
+
+  test('keeps the subject on one line', async () => {
+    await handler(post({ ...valid, name: 'Ada\r\nBcc: victim@example.com' }))
+
+    expect(send.mock.calls[0][0].subject).toBe(
+      'Support inquiry: Figma Components from Ada Bcc: victim@example.com'
+    )
+  })
+
+  test.each([
+    ['name', 101],
+    ['email', 255],
+    ['company', 101]
+  ])('rejects a %s longer than %i characters', async (field, length) => {
+    const value = field === 'email' ? `${'a'.repeat(length - 12)}@example.com` : 'a'.repeat(length)
+    const response = await handler(post({ ...valid, [field]: value }))
+
+    expect(await json(response)).toEqual({
+      status: 400,
+      body: { error: 'One of the fields is too long.' }
+    })
+    expect(send).not.toHaveBeenCalled()
+  })
+
+  test('accepts fields at their limits', async () => {
+    const response = await handler(
+      post({
+        ...valid,
+        name: 'a'.repeat(100),
+        email: `${'a'.repeat(242)}@example.com`,
+        company: 'a'.repeat(100)
+      })
+    )
+
+    expect(response.status).toBe(200)
+  })
+
+  test('rejects an oversized body', async () => {
+    const response = await handler(post({ ...valid, company: 'a'.repeat(9000) }))
+
+    expect(await json(response)).toEqual({ status: 413, body: { error: 'Request too large' } })
+    expect(send).not.toHaveBeenCalled()
+  })
+
+  test('rejects an oversized body by its Content-Length', async () => {
+    const response = await handler(post(valid, { 'Content-Length': '9000' }))
+
+    expect(response.status).toBe(413)
+  })
+
+  test.each(['constructor', '__proto__', 'toString'])(
+    'rejects the inherited property %s as a topic',
+    async (topic) => {
+      const response = await handler(post({ ...valid, topic }))
+
+      expect(response.status).toBe(400)
+      expect(send).not.toHaveBeenCalled()
+    }
+  )
 
   test('answers 500 when Resend reports an error', async () => {
     send.mockResolvedValue({ data: null, error: { message: 'Invalid API key' } })
@@ -132,6 +217,33 @@ describe('POST /api/contact', () => {
       status: 500,
       body: { error: 'Failed to send message. Please try again.' }
     })
+  })
+})
+
+describe('origin', () => {
+  test('rejects a request from another site', async () => {
+    const response = await handler(post(valid, { Origin: 'https://evil.example' }))
+
+    expect(await json(response)).toEqual({ status: 403, body: { error: 'Forbidden' } })
+    expect(send).not.toHaveBeenCalled()
+  })
+
+  test('rejects a request without an origin', async () => {
+    const request = post(valid)
+    request.headers.delete('origin')
+
+    expect((await handler(request)).status).toBe(403)
+    expect(send).not.toHaveBeenCalled()
+  })
+
+  test('rejects an origin that is not a URL', async () => {
+    expect((await handler(post(valid, { Origin: 'null' }))).status).toBe(403)
+  })
+
+  test('accepts the host the request was sent to', async () => {
+    const request = post(valid, {}, 'https://staging.chassis-ui.com/api/contact')
+
+    expect((await handler(request)).status).toBe(200)
   })
 })
 

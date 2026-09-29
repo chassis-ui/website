@@ -52,6 +52,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
                 class="form-input lg"
                 id="nameInput"
                 name="name"
+                maxlength="100"
                 required
                 autocomplete="name"
               />
@@ -65,6 +66,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
                 class="form-input lg"
                 id="emailInput"
                 name="email"
+                maxlength="254"
                 required
                 autocomplete="email"
               />
@@ -76,6 +78,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
                 class="form-input lg"
                 id="companyInput"
                 name="company"
+                maxlength="100"
                 autocomplete="organization"
               />
             </div>
@@ -224,7 +227,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 
     let response: Response | undefined
     try {
-      response = await fetch('/api/contact', {
+      response = await fetch('/api/contact/', {
         method: 'POST',
         body: new FormData(form)
       })
@@ -250,7 +253,9 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
       messageEl.classList.add('success')
     } else {
       messageEl.textContent =
-        json?.error ?? `Something went wrong (${response.status}). Please try again.`
+        response.status === 429
+          ? 'Too many messages from your network. Please wait a few minutes and try again.'
+          : (json?.error ?? `Something went wrong (${response.status}). Please try again.`)
       messageEl.classList.add('danger')
       button.disabled = false
       button.textContent = originalText
