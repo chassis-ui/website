@@ -17,12 +17,20 @@ repositories use. See [`build/fixture-sites.js`](https://github.com/chassis-ui/w
    git submodule add -b app/docs https://github.com/chassis-ui/assets.git vendor/assets
    ```
 
-3. Install the dependencies and start the dev server.
+3. Install the dependencies, build the assets and start the dev server.
 
    ```sh
    pnpm install
+   pnpm vendor
    pnpm dev
    ```
+
+   `pnpm vendor` builds the docs build of chassis-assets at the commit that the repository
+   pins. Run it again when the pin moves.
+
+`pnpm lint:html` validates the built site. See
+[Commands](https://www.npmjs.com/package/@chassis-ui/docs#commands) in the README of the
+package.
 
 A site in `site/` whose dependencies are in the root of the repository runs
 `astro dev --root site` from the root instead.

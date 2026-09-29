@@ -66,14 +66,16 @@ const layouts = {
     sourcePath: 'source',
     sourceDir: '../source',
     build: ['exec', 'astro', 'build', '--root', 'site'],
-    check: false
+    check: false,
+    lint: ['exec', 'chassis-docs', 'html-validate', 'site/dist']
   },
   packages: {
     sitePath: 'packages/site',
     sourcePath: 'packages/source',
     sourceDir: '../source',
     build: ['--filter', 'chassis-docs-starter', 'build'],
-    check: ['--filter', 'chassis-docs-starter', 'check']
+    check: ['--filter', 'chassis-docs-starter', 'check'],
+    lint: ['--filter', 'chassis-docs-starter', 'lint:html']
   }
 }
 
@@ -271,6 +273,8 @@ try {
 
     run('pnpm', layout.build, repositoryDir)
     checkOutput(layout, siteDir)
+    // The command of the package, from the packed package, with its optional peer
+    run('pnpm', layout.lint, repositoryDir)
     console.log(`\nThe '${name}' layout built and passed its checks.`)
   }
 } finally {

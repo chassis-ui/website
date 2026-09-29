@@ -34,6 +34,8 @@ pnpm add @chassis-ui/docs
 }
 ```
 
+Two more are optional. They are needed by the [commands](#commands) that validate HTML: `html-validate` `^11.0.0` and `vnu-jar` `>=26.0.0`.
+
 A site also installs `@astrojs/mdx` and the rest of the Chassis stack, `@chassis-ui/tokens` and `@chassis-ui/icons`.
 
 ## Setup
@@ -187,6 +189,8 @@ The layouts link to files under `/static/`, which the site puts into its `public
 | `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css` | the `icons` folder of `@chassis-ui/icons` |
 | `/static/images/*`: logo, favicons, social image                     | the docs build of `chassis-assets`        |
 
+`chassis-docs vendor` builds the docs build of `chassis-assets` in the `vendor/assets` submodule. See [Commands](#commands).
+
 These helpers find the folders, whether `node_modules` is in the site's root or in the root of the repository: `getChassisCSSFsPath()`, `getChassisIconsFsPath()`, `getChassisAssetsFsPath()` and `getChassisTokensFsPath()`. Each takes `{ root, dir }`.
 
 A site that type-checks with `astro check` declares the `@chassis-ui/css` module, which has no types: `declare module '@chassis-ui/css'`.
@@ -238,6 +242,88 @@ chassisDocs({
 
 Code that runs while Astro loads its configuration uses the library functions of the root entry instead: `loadConfig()`, `loadData()`, `loadSidebar()` and the path helpers.
 
+## Commands
+
+The package installs a `chassis-docs` command with the build steps that every Chassis site shares. Call it from the scripts of `package.json`:
+
+```json
+{
+  "scripts": {
+    "vendor": "chassis-docs vendor",
+    "sync-submodules": "chassis-docs sync-submodules",
+    "lint:html": "chassis-docs html-validate _site",
+    "lint:vnu": "chassis-docs vnu _site"
+  }
+}
+```
+
+| Command                              | What it does                                                                                                                                                        |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chassis-docs vendor`                | Checks out the `vendor/assets` submodule at the commit that the repository pins, pulls its Git LFS files, installs its dependencies and runs its `pnpm assets:site` |
+| `chassis-docs sync-submodules`       | Moves `vendor/assets` to the latest commit of the `app/docs` branch and builds it. Commit the new pointer afterwards                                                |
+| `chassis-docs html-validate [paths]` | Validates the HTML files in `paths` with [html-validate](https://html-validate.org)                                                                                 |
+| `chassis-docs vnu [paths]`           | Validates `paths` with the [Nu Html Checker](https://validator.github.io/validator/). Skipped, with a warning, when Java is missing                                 |
+| `chassis-docs help`                  | Lists the commands and their options                                                                                                                                |
+
+`vendor` and `sync-submodules` work from any folder of the repository. They need Git, Git LFS and pnpm. `sync-submodules --branch <name>`, or the `SUBMODULE_BRANCH` variable, follows another branch.
+
+Each command exits with 1 when it fails, so a script or CI job stops there.
+
+### Validating HTML
+
+`html-validate` and `vnu` take any number of files and folders, `_site` when none is given. Paths are relative to the folder the script runs in, which for a site in `packages/site` is that folder when the script is in its `package.json`, and the repository root when it is in the root one.
+
+What a site can change:
+
+| To                                  | Use                                   | Validator     | Adds to the defaults or replaces them |
+| ----------------------------------- | ------------------------------------- | ------------- | ------------------------------------- |
+| Skip a file or folder               | `--ignore <path>`, repeatable         | both          | adds                                  |
+| Check `static/icons` too            | `--no-default-ignore`                 | both          | removes the default                   |
+| Turn a rule off or change it        | `rules` in the file of `--config`     | html-validate | overrides the rule                    |
+| Use more presets or plugins         | `extends` in the file of `--config`   | html-validate | adds                                  |
+| Allow custom elements or attributes | `elements` in the file of `--config`  | html-validate | replaces                              |
+| Leave out a message                 | `--filter <regex>` or `--filter-file` | vnu           | adds                                  |
+
+The defaults:
+
+- Both skip `static/icons` in each path, where a site copies `@chassis-ui/icons`, whose preview page is not the site's.
+- `html-validate` extends `html-validate:recommended` and `html-validate:document`. It turns off `void-style`, since Astro writes void elements with a slash, `no-inline-style`, since Shiki writes inline styles, and `require-sri`. `heading-level` lets a page start at `h2`, as the dialogs of the layouts do.
+- `vnu` fails on warnings as well as errors, and leaves out "Trailing slash on void elements", which Astro writes.
+
+A site with its own exceptions keeps them in files next to its `package.json`, and names them in its scripts:
+
+```json
+{
+  "scripts": {
+    "lint:html": "chassis-docs html-validate _site --ignore _site/examples --config html-validate.json",
+    "lint:vnu": "chassis-docs vnu _site --ignore _site/examples --filter-file vnu-filters.txt"
+  }
+}
+```
+
+`html-validate.json`:
+
+```json
+{
+  "rules": {
+    "prefer-native-element": ["error", { "exclude": ["region"] }],
+    "prefer-button": "off"
+  }
+}
+```
+
+`vnu-filters.txt`, one regular expression per line, where a line that starts with `#` is a comment:
+
+```text
+# The docs show autocomplete on inputs of every type
+Attribute “autocomplete” is only allowed when the input type is.*
+Bad value “heading” for attribute “role” on element “summary”.
+```
+
+A filter is matched against the message as the output shows it, curly quotes included: `“role”`. A line copied from the output works.
+
+A rule or filter applies to every file that the command checks. To make an exception for one page only, skip the page with `--ignore`, or disable the rule inside the page's markup with a comment of html-validate, such as `<!-- [html-validate-disable-next prefer-button] -->`.
+
 ## Exports
 
 These import paths are the public API.
@@ -270,6 +356,7 @@ A change is breaking when it changes something that this README documents:
 
 - the import paths listed under [Exports](#exports), and what they export
 - the options of the integration
+- the commands of `chassis-docs`, their options and their defaults
 - the keys of `config.yml`, and the schemas of the sidebar and the content collections
 - the props and slots of the layouts, components and shortcodes
 - the `[[config:]]` and `[[docsref:]]` syntax

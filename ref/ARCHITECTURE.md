@@ -158,6 +158,10 @@ The package has four entry points:
 | `@chassis-ui/docs/schema`      | The schemas of `config.yml`, the sidebar and the content collections |
 | `@chassis-ui/docs/site`        | What pages and components read from the site, such as `getConfig()`  |
 
+It also installs the `chassis-docs` command, with the build steps that every site shares:
+building and moving the `vendor/assets` submodule, and validating the built HTML. A site
+calls it from the scripts of its `package.json` instead of keeping copies of those scripts.
+
 What stays in each site is what differs between sites: `src/libs/astro.ts`, which copies
 the static files and adds `mdx()` and `sitemap()`, the schema of the site's own config
 keys, and plugins of its own.
@@ -200,7 +204,8 @@ chassis-react has no staging deployment yet.
 `vendor/assets` is the only submodule in chassis-website. It is `chassis-ui/assets` at a
 pinned commit of the `app/docs` branch. Builds use the pinned commit, so the same commit of
 this repository always builds the same site. `pnpm vendor` builds it, and
-`pnpm sync-submodules` moves the pin. See "The `vendor/assets` submodule" in
+`pnpm sync-submodules` moves the pin. Both run a command of `@chassis-ui/docs`, so every
+site handles the submodule the same way. See "The `vendor/assets` submodule" in
 [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Related Documentation

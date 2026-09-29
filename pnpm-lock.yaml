@@ -18,6 +18,9 @@ importers:
       '@changesets/cli':
         specifier: ^3.0.3
         version: 3.0.3
+      '@chassis-ui/docs':
+        specifier: workspace:*
+        version: link:packages/docs
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.11.0)
@@ -63,9 +66,6 @@ importers:
       pagefind:
         specifier: ^1.5.2
         version: 1.5.2
-      picocolors:
-        specifier: ^1.1.1
-        version: 1.1.1
       playwright-core:
         specifier: ^1.63.0
         version: 1.63.0
@@ -132,6 +132,9 @@ importers:
       github-slugger:
         specifier: ^2.0.0
         version: 2.0.0
+      html-validate:
+        specifier: ^11.0.0
+        version: 11.16.1(vitest@5.0.2(@types/node@24.19.0)(vite@8.3.1(@types/node@24.19.0)(esbuild@0.28.2)(sass@1.105.0)(yaml@2.9.1)))
       htmlparser2:
         specifier: ^12.0.0
         version: 12.0.0
@@ -174,6 +177,9 @@ importers:
       unist-util-visit:
         specifier: ^5.1.0
         version: 5.1.0
+      vnu-jar:
+        specifier: '>=26.0.0'
+        version: 26.9.27
     devDependencies:
       astro:
         specifier: ^7.3.5

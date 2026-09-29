@@ -23,24 +23,40 @@ ranges in `packages/website/package.json`.
 
 ## How the site is built
 
-`pnpm build` runs `pnpm site:build`, which Vercel runs too. It calls
-`build/build-site.js` and then Pagefind:
+`pnpm build` runs `pnpm site:build`, which Vercel runs too. It runs four steps in turn:
 
-1. **Checks** that `pnpm` and `git` are installed.
-2. **Vendor assets.** Checks out `vendor/assets` at the commit this repository pins, pulls
-   its Git LFS files, installs its dependencies and runs its `pnpm assets:site`. The output
-   is `vendor/assets/dist/web/docs/chassis`.
-3. **Site.** Runs `pnpm install`, then `pnpm examples:build`, then `astro build` in
-   `packages/website`. Astro writes to `_site/`.
-4. **Validation.** Checks that `_site/index.html` and the built assets exist.
-5. **Search.** `pagefind --site _site` indexes the pages that `pagefind.yml` selects.
+1. **Vendor assets.** `pnpm vendor` runs `chassis-docs vendor`, a command of
+   `@chassis-ui/docs`. It checks out `vendor/assets` at the commit this repository pins,
+   pulls its Git LFS files, installs its dependencies and runs its `pnpm assets:site`. The
+   output is `vendor/assets/dist/web/docs/chassis`.
+2. **Examples.** `pnpm examples:build` builds each workspace package in `examples/`.
+3. **Site.** `astro build` in `packages/website`. Astro writes to `_site/`.
+4. **Search.** `pagefind --site _site` indexes the pages that `pagefind.yml` selects.
 
-`build/build-site.js` also takes a command: `vendor` runs step 2 only, which is
-`pnpm vendor`. `site` runs step 3 only. `validate` runs step 4. `clean` deletes `_site`,
-and the `.astro`, `node_modules` and `public` folders of the website.
+`pnpm clean` deletes `_site`, and the `.astro`, `node_modules` and `public` folders of the
+website.
 
-`pnpm site` builds and then validates the HTML with the Nu Html Checker. CI's Build job
-runs `pnpm site:build`, then `pnpm site:lint:html` and `pnpm site:lint:vnu`.
+`pnpm site` builds, then validates the HTML with the Nu Html Checker and checks the links
+and the accessibility. CI's Build job runs `pnpm site:build`, then `pnpm site:lint:html`,
+`pnpm site:lint:vnu`, `pnpm site:lint:links` and `pnpm site:lint:a11y`.
+
+The validators are the `html-validate` and `vnu` commands of `@chassis-ui/docs`, which every
+Chassis site shares. The rules that only this site needs are in
+`packages/website/html-validate.json`. See [Commands](../packages/docs/README.md#commands)
+in the README of the package.
+
+When a validator fails, fix the markup if the error is real. When the markup is right on
+purpose, add an exception for this site:
+
+- A rule of html-validate: change it in `packages/website/html-validate.json`.
+- A file or folder that neither validator should check: add `--ignore <path>` to the
+  `site:lint:html` and `site:lint:vnu` scripts in the root `package.json`. The path is
+  relative to the root, for example `_site/examples`. `static/icons` stays skipped.
+- A message of the Nu Html Checker: add `--filter <regex>` to `site:lint:vnu`, copied from
+  the message. With more than two, move them to a filter file and pass `--filter-file`.
+
+Say in the commit message why the exception is right. See
+[Validating HTML](../packages/docs/README.md#validating-html) for what each option does.
 
 ### What the site copies into `public/`
 

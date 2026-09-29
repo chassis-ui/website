@@ -1,8 +1,10 @@
-# Review of the Copied Site Libraries
+# Review of the Copied Site Libraries and Scripts
 
 > **Purpose:** the record of roadmap session 2.1, task 1. Seven sites carried their own
 > copy of `src/libs/*`, because `@chassis-ui/docs` imported those modules from the site.
 > This document lists every difference between the copies and says what each one is.
+> [Build scripts](#build-scripts) does the same for the scripts under `build/`, the record
+> of session 5.1.
 >
 > **Baseline:** read on 2026-09-29. `chassis-website` at `c838de3`, `chassis-css` on its
 > `develop` branch, the other siblings on `main`. Nothing in a sibling was changed.
@@ -146,6 +148,47 @@ each site in 0.6, by decision D17.
 | Copies `svgs` as well as `icons`                                                         | icons        | need     |                                                                                                                                                                                                                                             |
 | Widens `server.fs.allow`, watches the React build and the examples                       | react        | need     | The first part is no longer needed. See `shortcode.ts`                                                                                                                                                                                      |
 | Passes `rehypeCxTable`, which `getDocsMarkdownConfig()` already adds                     | figma        | accident | The plugin ran twice                                                                                                                                                                                                                        |
+
+## Build scripts
+
+Read on 2026-09-29 for roadmap session 5.1: `chassis-website` at `486da54`, `chassis-css`
+on `develop`, `chassis-react` on `staging`, the other siblings on `main`. The website's
+copies are the reference. Session 5.1 replaced them with the `chassis-docs` commands of the
+package, and "In the command" says where each difference went.
+
+| Script               | Copies                                                                                        |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| `sync-submodules.js` | Identical in website, tokens, css, icons and figma. React forked it                           |
+| `html-validate.js`   | Identical in website, assets, icons, figma and react. Tokens and css differ                   |
+| `vnu-jar.js`         | Identical in website and react. Assets and icons share a second version. Figma and css differ |
+| `build-site.js`      | Website, react and assets, each different                                                     |
+| `change-version.js`  | Assets, icons and figma. Not replaced, see below                                              |
+
+| Difference                                                                                       | Where                     | Kind     | In the command                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------ | ------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sync-submodules` fetches the branch and creates it from `FETCH_HEAD` when the checkout has none | react                     | need     | Taken. A CI checkout has the submodule at a detached HEAD, and a bare `git checkout app/docs` failed                                                  |
+| `sync-submodules` checks the build output in `dist/web/chassis-docs`                             | react                     | bug      | The output is `dist/web/docs/chassis`. The command checks that, and fails when it is missing. Task RCT4                                               |
+| `git lfs install` without `--local`                                                              | all                       | bug      | It wrote to the user's global Git config. The command writes to the submodule's                                                                       |
+| `git pull` of the branch may merge                                                               | all                       | accident | `git pull --ff-only`, which stops on a diverged branch                                                                                                |
+| Uncommitted changes in the submodule skip the sync with a warning, and the script succeeds       | all                       | accident | The command fails and says so                                                                                                                         |
+| `pnpm install` in the submodule, with or without `--ignore-workspace`                            | all                       | accident | `--ignore-workspace` always, so the submodule's own lockfile decides                                                                                  |
+| Extra rules and `elements` for html-validate                                                     | css                       | need     | A JSON file passed with `--config`                                                                                                                    |
+| The rule for the home page slider, `prefer-native-element` without `region`                      | website                   | need     | `packages/website/html-validate.json`. The package's defaults keep only what its layouts need                                                         |
+| `packages/css/js/tests` validated with the site                                                  | css                       | need     | Passed as a second path                                                                                                                               |
+| "behaviour" or "behavior" in a comment                                                           | tokens                    | accident |                                                                                                                                                       |
+| Filters for duplicate `dt` names                                                                 | figma                     | need     | `--filter`                                                                                                                                            |
+| Eleven filters, one of them with `.` in place of quotes                                          | css                       | need     | A file passed with `--filter-file`. Quotes can be written as they are, since no shell reads the pattern                                               |
+| `spawn` with `shell: true` and quoted arguments                                                  | assets, icons, figma, css | accident | No shell, so a pattern needs no quoting                                                                                                               |
+| `--asciiquotes`, so the output shows `"` where a filter must match `“`                           | all                       | accident | Dropped. A line copied from the output works as a filter                                                                                              |
+| `static/icons` left out of both validators                                                       | all                       | need     | The default, per path. `--ignore` adds to it                                                                                                          |
+| `build-site` moves the pin with `--remote`, and falls back to `sync-submodules`                  | react                     | bug      | The same as F26 was here: the build did not use the pinned commit. `chassis-docs vendor` builds the pin. RCT3 deletes the script, which nothing calls |
+| `build-site` builds the examples                                                                 | website                   | need     | A step of the site's own `build` script                                                                                                               |
+| `build-site` builds the repository's own assets, and has no submodule                            | assets                    | need     | Stays in the site's own scripts. Only the vendor step is shared                                                                                       |
+| `build-site` checks that `pnpm` and `git` exist, and that `_site` has an `index.html`            | website, react, assets    | accident | Left out. The build fails without them, and the link checker reads every page                                                                         |
+
+`change-version.js` bumps a version across files. It is not a docs-site script, and the
+sites that have it publish nothing through this package. It stays with those three
+repositories, which can move to Changesets as tokens, css, react and this repository have.
 
 ## What the package assumed and did not say
 

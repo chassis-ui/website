@@ -13,7 +13,7 @@ packages/
   website/   # Main Astro site (src/components, content, layouts, libs, pages, styles)
   docs/      # Shared @chassis-ui/docs utilities (TypeScript)
 examples/    # Workspace packages built into dist/, served at /examples/<folder>/
-build/       # Build scripts (build-site.js, sync-submodules.js, etc.)
+build/       # Checks and release scripts (check-links.js, fixture-sites.js, etc.)
 vendor/      # Git submodule(s), e.g. vendor/assets (chassis-ui/assets)
 ```
 
@@ -66,8 +66,8 @@ area rather than re-deriving from source:
 - [ref/ROADMAP.md](ref/ROADMAP.md) — phased roadmap with findings, tasks and a session log; update
   it at the end of every session that works on it
 - [ref/CONTRACT_REVIEW.md](ref/CONTRACT_REVIEW.md) — what differed between the sites' copies of
-  `src/libs` before `@chassis-ui/docs` 0.6, and why; the contract itself is in
-  `packages/docs/README.md`
+  `src/libs` before `@chassis-ui/docs` 0.6, and of the build scripts before the `chassis-docs`
+  commands, and why; the contract itself is in `packages/docs/README.md`
 - [ref/SIBLING_TASKS.md](ref/SIBLING_TASKS.md) — work that belongs in a sibling repo; record it
   there instead of editing the sibling from a session in this repo
 
