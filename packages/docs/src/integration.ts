@@ -6,7 +6,7 @@ import type { z } from 'astro/zod'
 import { loadConfig, loadSidebar } from './libs/config'
 import { joinDocsPath } from './libs/docs-path'
 import { getDocsMarkdownConfig, type DocsMarkdownConfigOptions } from './libs/markdown'
-import { getPackageRoot } from './libs/paths'
+import { getInstalledPackageFsPath, getPackageRoot } from './libs/paths'
 import { remarkCxConfig, remarkCxDocsref } from './libs/remark'
 import { configSchema, type ChassisConfig, type Sidebar } from './libs/schema'
 import { chassisAutoImport, type ChassisAutoImportOptions } from './libs/shortcodes'
@@ -93,6 +93,16 @@ declare module 'virtual:chassis-docs/paths' {
 declare module 'virtual:chassis-docs/styles' {}
 `
 
+// The folder of `@chassis-ui/css` with its default `_chassis-tokens.scss`, when the site has
+// the package installed.
+function getDefaultTokensLoadPath(root: string): string | undefined {
+  try {
+    return path.join(getInstalledPackageFsPath('@chassis-ui/css', root), 'scss/vendor')
+  } catch {
+    return undefined
+  }
+}
+
 // Append `index.html` when the path names a page, and drop the hash.
 function toBuiltFilePath(docsPath: string): string {
   const withoutHash = docsPath.split('#')[0]
@@ -171,6 +181,8 @@ export function chassisDocs<TSchema extends z.ZodType = typeof configSchema>(
           packageRoot: getPackageRoot()
         }
 
+        const tokensLoadPath = getDefaultTokensLoadPath(root)
+
         const update: AstroUserConfig = {
           // A `site` that the Astro config sets itself is kept.
           ...(astroConfig.site ? {} : { site: getSiteUrl(config) }),
@@ -209,6 +221,12 @@ export function chassisDocs<TSchema extends z.ZodType = typeof configSchema>(
             resolve: {
               dedupe: ['@chassis-ui/css']
             },
+            // The styles of `@chassis-ui/css` load the design tokens as `chassis-tokens`. This
+            // adds its default as the last load path, after the site's own load paths, so a
+            // site with a `_chassis-tokens.scss` of its own puts that folder in its config.
+            ...(tokensLoadPath
+              ? { css: { preprocessorOptions: { scss: { loadPaths: [tokensLoadPath] } } } }
+              : {}),
             plugins: [
               virtualModules({
                 config: `export default ${JSON.stringify(config)}`,

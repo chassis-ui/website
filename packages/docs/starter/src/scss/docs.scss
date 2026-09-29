@@ -1,0 +1,13 @@
+// The stylesheet that every page loads. The integration of @chassis-ui/docs finds it here.
+
+// The docs' own Sass variables, for the site's styles below
+@use "@chassis-ui/docs/scss/vars" as *;
+
+// The styles of the layouts and shortcodes
+@use "@chassis-ui/docs/scss/main";
+
+// The site's own styles
+.example-gap-md {
+  display: flex;
+  gap: $cxd-gutter-x * .5;
+}

@@ -2,7 +2,7 @@
 
 > Shared Astro layouts, components, and utilities for Chassis documentation sites.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Version: 0.5.1](https://img.shields.io/badge/Version-0.5.1-blue.svg)](https://www.npmjs.com/package/@chassis-ui/docs) [![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
 
 ## Overview
 
@@ -38,9 +38,9 @@ A site also installs `@astrojs/mdx` and the rest of the Chassis stack, `@chassis
 
 ## Setup
 
-A site needs five things before it can use the layouts: the integration, a `config.yml`, two content collections, the static files that the layouts link to and a Sass load path.
+A site needs four things before it can use the layouts: the integration, a `config.yml`, two content collections and the static files that the layouts link to.
 
-The [starter site](starter/) has all five. Copy it to start a new site, and follow its README. CI builds it from the packed package on every push, so it works with the version of the package next to it.
+The [starter site](starter/) has all four. Copy it to start a new site, and follow its README. CI builds it from the packed package on every push, so it works with the version of the package next to it.
 
 ### 1. Add the integration
 
@@ -63,6 +63,7 @@ The integration:
 - imports the shortcodes into every MDX file
 - fails the build when a `[[docsref:]]` link points to a page that was not built
 - makes the scripts of the package and of the site share one copy of `@chassis-ui/css`, so that no listener is registered twice
+- puts the default design tokens of `@chassis-ui/css` on the Sass load path, which the styles need
 
 It finds every file from the Astro root, the directory that holds `astro.config.ts`. The working directory of the build does not matter.
 
@@ -76,6 +77,19 @@ It finds every file from the Astro root, the directory that holds `astro.config.
 | `shortcodes`     | all                                      | `{ dir, include, exclude }`. See [shortcodes](#shortcodes)                                         |
 | `markdown`       | none                                     | `{ remarkPlugins, rehypePlugins, remarkRehype }` of the site. They run after the package's plugins |
 | `brokenDocsrefs` | `'error'`                                | `'error'`, `'warn'` or `'ignore'`                                                                  |
+
+#### Tokens of your own
+
+The styles of `@chassis-ui/css` load the design tokens as `chassis-tokens`. The integration adds the folder with the default one, `scss/vendor` of `@chassis-ui/css`, as the last Sass load path. A site with tokens of its own adds the folder of its `_chassis-tokens.scss` in its Astro config, which comes first:
+
+```ts
+// astro.config.ts
+export default defineConfig({
+  vite: {
+    css: { preprocessorOptions: { scss: { loadPaths: ['src/scss/tokens'] } } }
+  }
+})
+```
 
 ### 2. Write `config.yml`
 
@@ -177,31 +191,7 @@ These helpers find the folders, whether `node_modules` is in the site's root or 
 
 A site that type-checks with `astro check` declares the `@chassis-ui/css` module, which has no types: `declare module '@chassis-ui/css'`.
 
-### 5. Put the tokens on the Sass load path
-
-The styles of the package use `@chassis-ui/css`, which loads the design tokens as `chassis-tokens`. The site puts a folder with a `_chassis-tokens.scss` on the Sass load path. The `scss/vendor` folder of `@chassis-ui/css` has the default one, which loads `@chassis-ui/tokens`:
-
-```ts
-// astro.config.ts
-import path from 'node:path'
-import { getInstalledPackageFsPath } from '@chassis-ui/docs'
-
-const chassisCss = getInstalledPackageFsPath('@chassis-ui/css', import.meta.dirname)
-
-export default defineConfig({
-  vite: {
-    css: {
-      preprocessorOptions: {
-        scss: { loadPaths: [path.join(chassisCss, 'scss/vendor')] }
-      }
-    }
-  }
-})
-```
-
-A site with tokens of its own puts the folder of its `_chassis-tokens.scss` before that one.
-
-### 6. Use the layouts
+### 5. Use the layouts
 
 ```astro
 ---
@@ -258,14 +248,14 @@ These import paths are the public API.
 | `@chassis-ui/docs/integration`  | `chassisDocs()` and the type of its options                                                                                                                                                                                        |
 | `@chassis-ui/docs/schema`       | `z`, `configSchema`, `sidebarSchema`, `docsSchema`, `calloutsSchema`, the version validators, and the types `ChassisConfig`, `Sidebar`, `SidebarItem`, `DocsFrontmatter`, `DocsPage`                                               |
 | `@chassis-ui/docs/site`         | What pages read from the site. See above                                                                                                                                                                                           |
-| `@chassis-ui/docs/layouts/*`    | `BaseLayout`, `DocsLayout`, `RedirectLayout`, `SingleLayout`                                                                                                                                                                       |
-| `@chassis-ui/docs/components/*` | `DocsSidebar`, `FeatureCard`, `NavLink`, `ResponsiveImage`, `TableOfContents`, `ThemeToggler`                                                                                                                                      |
+| `@chassis-ui/docs/layouts/*`    | `BaseLayout.astro`, `DocsLayout.astro`, `RedirectLayout.astro`, `SingleLayout.astro`                                                                                                                                               |
+| `@chassis-ui/docs/components/*` | `DocsSidebar.astro`, `FeatureCard.astro`, `NavLink.astro`, `ResponsiveImage.astro`, `TableOfContents.astro`, `ThemeToggler.astro`                                                                                                  |
 | `@chassis-ui/docs/shortcodes/*` | The MDX shortcodes                                                                                                                                                                                                                 |
 | `@chassis-ui/docs/js/*`         | Client-side scripts: `example-mode.js`, `clipboard.ts`, `color-modes.js` and others                                                                                                                                                |
-| `@chassis-ui/docs/scss/main`    | The styles of the package                                                                                                                                                                                                          |
+| `@chassis-ui/docs/scss/main`    | The styles of the package. The integration loads them when the site has no stylesheet of its own                                                                                                                                   |
 | `@chassis-ui/docs/scss/vars`    | The Sass variables and custom properties of the docs, for a site's own stylesheets                                                                                                                                                 |
 
-`package.json` still resolves other paths, such as `@chassis-ui/docs/libs/*` and the other partials under `scss/`. They are not public and will stop resolving.
+No other path resolves: `exports` in `package.json` lists these and nothing else. The layouts and components are listed by name, so the folders inside `layouts/` and `components/` are not reachable.
 
 The integration provides four modules: `virtual:chassis-docs/config`, `virtual:chassis-docs/sidebar`, `virtual:chassis-docs/paths` and `virtual:chassis-docs/styles`. Use the functions of `@chassis-ui/docs/site` instead of importing them.
 
@@ -273,7 +263,7 @@ The integration provides four modules: `virtual:chassis-docs/config`, `virtual:c
 
 The package follows [Semantic Versioning](https://semver.org/). Before 1.0 that means:
 
-- A minor release, 0.x.0, may contain breaking changes. Each one is listed in the changelog and has a step in [UPGRADING.md](UPGRADING.md).
+- A minor release, 0.x.0, may contain breaking changes. Each one is listed in [CHANGELOG.md](CHANGELOG.md) and has a step in [UPGRADING.md](UPGRADING.md).
 - A patch release, 0.x.y, contains none.
 
 A change is breaking when it changes something that this README documents:

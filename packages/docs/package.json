@@ -28,7 +28,8 @@
     "virtual.d.ts",
     "README.md",
     "UPGRADING.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "main": "index.ts",
   "exports": {
@@ -36,12 +37,23 @@
     "./integration": "./src/integration.ts",
     "./schema": "./src/libs/schema.ts",
     "./site": "./src/site.ts",
-    "./components/*": "./src/components/*",
+    "./layouts/BaseLayout.astro": "./src/layouts/BaseLayout.astro",
+    "./layouts/DocsLayout.astro": "./src/layouts/DocsLayout.astro",
+    "./layouts/RedirectLayout.astro": "./src/layouts/RedirectLayout.astro",
+    "./layouts/SingleLayout.astro": "./src/layouts/SingleLayout.astro",
+    "./components/DocsSidebar.astro": "./src/components/DocsSidebar.astro",
+    "./components/FeatureCard.astro": "./src/components/FeatureCard.astro",
+    "./components/NavLink.astro": "./src/components/NavLink.astro",
+    "./components/ResponsiveImage.astro": "./src/components/ResponsiveImage.astro",
+    "./components/TableOfContents.astro": "./src/components/TableOfContents.astro",
+    "./components/ThemeToggler.astro": "./src/components/ThemeToggler.astro",
     "./shortcodes/*": "./src/components/shortcodes/*",
-    "./layouts/*": "./src/layouts/*",
-    "./libs/*": "./src/libs/*",
     "./js/*": "./src/js/*",
-    "./scss/*": "./src/scss/*"
+    "./scss/main": "./src/scss/main.scss",
+    "./scss/main.scss": "./src/scss/main.scss",
+    "./scss/vars": "./src/scss/_vars.scss",
+    "./scss/_vars.scss": "./src/scss/_vars.scss",
+    "./package.json": "./package.json"
   },
   "publishConfig": {
     "access": "public"

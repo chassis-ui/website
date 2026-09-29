@@ -107,6 +107,9 @@ export default defineConfig({
 - Pass only your own remark and rehype plugins. `rehypeCxTable` is already included.
 - A site that does not need the config in `astro.config.ts` calls `chassisDocs()` with
   `configSchema` and does not call `loadConfig()`.
+- Remove the Sass load path that points to `@chassis-ui/css/scss/vendor`, the folder of the
+  default `_chassis-tokens.scss`. The integration adds it, after the site's own load paths.
+  Keep a load path that points to tokens of your own.
 
 ### 4. Replace the files in `src/libs`
 
@@ -176,6 +179,11 @@ export const getData = createDataLoader({
 | `getCalloutByName` from `@libs/content`             | `getCallout` from `@chassis-ui/docs/site`          |
 | A path into `node_modules/@chassis-ui/docs/src/`    | `getPackageFilePath('js/color-modes.js')`          |
 | `@chassis-ui/docs/components/shortcodes/Icon.astro` | `@chassis-ui/docs/shortcodes/Icon.astro`           |
+
+Only the paths that the README lists under "Exports" resolve. `@chassis-ui/docs/libs/*`, the
+folders inside `layouts/` and `components/`, and the partials under `scss/` other than `main`
+and `vars` fail with "not exported". Import a layout or component by its name, such as
+`@chassis-ui/docs/layouts/DocsLayout.astro`.
 
 `getConfig()` returns the keys of the package. For the keys of your own, name your type:
 `getConfig<SiteConfig>()`.

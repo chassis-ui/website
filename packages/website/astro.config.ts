@@ -1,4 +1,3 @@
-import path from 'node:path'
 import { defineConfig } from 'astro/config'
 import { loadConfig } from '@chassis-ui/docs'
 import { chassisDocs } from '@chassis-ui/docs/integration'
@@ -34,18 +33,6 @@ export default defineConfig({
       rolldownOptions: {
         output: {
           assetFileNames: 'static/astro/docs.[hash][extname]'
-        }
-      }
-    },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          loadPaths: [
-            // Custom override `_chassis-tokens.scss` if present in `src/scss`
-            // path.resolve(import.meta.dirname, 'src/scss'),
-            // Framework fallback `_chassis-tokens.scss` if no override above.
-            path.resolve(import.meta.dirname, 'node_modules/@chassis-ui/css/scss/vendor')
-          ]
         }
       }
     }

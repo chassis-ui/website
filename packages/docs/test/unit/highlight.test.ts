@@ -17,8 +17,6 @@ describe('highlightCode', () => {
     expect(html).toContain('github-dark')
   })
 
-  // Shiki marks every line itself. The transformer for shell languages was meant to leave
-  // comment lines out, but tokens carry inline styles, not classes, so it never does.
   test('marks every line of a shell snippet', async () => {
     const { html } = await highlightCode('# install\npnpm add @chassis-ui/docs', 'bash')
 

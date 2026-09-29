@@ -22,6 +22,7 @@ interface Update {
   vite?: {
     optimizeDeps: { exclude: string[]; include: string[] }
     resolve: { dedupe: string[] }
+    css?: { preprocessorOptions: { scss: { loadPaths: string[] } } }
     plugins: { resolveId: (_id: string) => unknown; load: (_id: string) => unknown }[]
   }
 }
@@ -217,6 +218,22 @@ describe('chassisDocs: one copy of @chassis-ui/css', () => {
     const { update } = await setUp({})
 
     expect(update.vite!.resolve.dedupe).toEqual(['@chassis-ui/css'])
+  })
+})
+
+describe('chassisDocs: Sass load path', () => {
+  test('adds the folder of the default chassis-tokens of @chassis-ui/css', async () => {
+    const { root, update } = await setUp({ 'node_modules/@chassis-ui/css/package.json': '{}' })
+
+    expect(update.vite!.css!.preprocessorOptions.scss.loadPaths).toEqual([
+      path.join(root, 'node_modules/@chassis-ui/css/scss/vendor')
+    ])
+  })
+
+  test('adds nothing when @chassis-ui/css is not installed', async () => {
+    const { update } = await setUp({})
+
+    expect(update.vite).not.toHaveProperty('css')
   })
 })
 
