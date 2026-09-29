@@ -131,12 +131,15 @@ jobs:
         with:
           persist-credentials: false
 
-      # Node.js 24 ships npm 11, which trusted publishing needs (11.5.1 or later)
+      # Node.js 24 ships npm 11, which trusted publishing needs (11.5.1 or later). No cache:
+      # this job installs nothing, and setup-node would otherwise look for pnpm, because the
+      # root package.json names it in `packageManager`.
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
 
       # Before publishing, so a version without a CHANGELOG entry is not published
       - name: Release notes
