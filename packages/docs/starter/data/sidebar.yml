@@ -1,0 +1,20 @@
+# The docs navigation. A page's URL is its category and its title, slugified:
+# "Getting started" > "Introduction" is `content/docs/getting-started/introduction.mdx`.
+
+- title: Getting started
+  section: Section 1
+  icon: rocket-solid
+  iconColor: primary
+  pages:
+    - title: Introduction
+    - title: Shortcodes
+
+- title: Guides
+  section: Section 2
+  icon: rocket-solid
+  iconColor: secondary
+  pages:
+    - title: Navigation
+    - group: Subsection
+      pages:
+        - title: Grouped Page

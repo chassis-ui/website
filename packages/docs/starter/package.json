@@ -1,0 +1,33 @@
+{
+  "name": "chassis-docs-starter",
+  "description": "A minimal Chassis documentation site, built on @chassis-ui/docs.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/markdown-remark": "^7.3.1",
+    "@astrojs/mdx": "^7.0.8",
+    "@chassis-ui/css": "^0.5.2",
+    "@chassis-ui/docs": "^0.6.0",
+    "@chassis-ui/icons": "^0.3.1",
+    "@chassis-ui/tokens": "^0.5.3",
+    "@floating-ui/dom": "^1.8.0",
+    "@pagefind/component-ui": "^1.5.2",
+    "@shikijs/transformers": "^4.4.3",
+    "@types/node": "^24.0.0",
+    "astro": "^7.3.5",
+    "htmlparser2": "^12.0.0",
+    "rehype-autolink-headings": "^7.1.0",
+    "sass": "^1.105.0",
+    "shiki": "^4.4.3",
+    "typescript": "^6.0.3",
+    "vanilla-calendar-pro": "^3.4.0"
+  }
+}

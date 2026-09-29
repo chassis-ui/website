@@ -1,0 +1,5 @@
+node_modules
+dist
+.astro
+# Copied from the Chassis packages by `src/libs/static.ts`
+public/static

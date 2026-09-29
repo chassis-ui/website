@@ -1,0 +1,14 @@
+---
+import SingleLayout from '@chassis-ui/docs/layouts/SingleLayout.astro'
+import { getConfig, getDocsPath } from '@chassis-ui/docs/site'
+
+const { description, title } = getConfig()
+---
+
+<SingleLayout title={title} description={description}>
+  <div class="container 2xl py-xl">
+    <a class="button primary" href={getDocsPath('/getting-started/introduction/')}>
+      Read the docs
+    </a>
+  </div>
+</SingleLayout>

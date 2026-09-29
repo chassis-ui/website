@@ -1,0 +1,17 @@
+# The keys that @chassis-ui/docs reads. See "Write config.yml" in its README.
+title: 'Chassis Docs Starter'
+subtitle: 'A documentation site built on @chassis-ui/docs'
+description: 'A minimal Chassis documentation site, to copy as the start of a new one.'
+authors: 'Chassis UI contributors'
+baseURL: 'https://example.com'
+docsPath: '/docs'
+repo: 'https://github.com/chassis-ui/website'
+currentVersion: '0.1.0'
+
+# Where `file` props are read from, from this directory. Point it at the code that the site
+# documents, e.g. '../css', and delete the `source` directory.
+sourceDir: 'source'
+# The same directory, and this site, from the root of the repository. "View on GitHub" and
+# the links to source files use them.
+sourcePath: 'packages/docs/starter/source'
+sitePath: 'packages/docs/starter'

@@ -1,0 +1,16 @@
+// A stand-in for the code that the site documents. `<ScssDocs>` shows the part between the
+// two marker comments of the same name.
+
+// scss-docs-start example-scss
+$example-spacers: (
+  sm: .5rem,
+  md: 1rem,
+  lg: 2rem
+) !default;
+
+@each $name, $value in $example-spacers {
+  .example-gap-#{$name} {
+    gap: $value;
+  }
+}
+// scss-docs-end example-scss

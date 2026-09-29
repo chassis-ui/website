@@ -79,11 +79,19 @@ pnpm test
 
 # Run them again on every change
 pnpm test:watch
+
+# Build the starter site from the packed package, in both layouts
+pnpm test:fixtures
 ```
 
 The tests of `@chassis-ui/docs` are in `packages/docs/test`. Component tests render in a
 small site in `packages/docs/test/fixture`. The tests of the contact endpoint are next to it,
 in `api/`.
+
+`pnpm test:fixtures` packs `@chassis-ui/docs`, installs it into copies of the starter site
+in `packages/docs/starter`, builds them and checks the output. It needs network access for
+the install and the `vendor/assets` submodule. Name a layout, `root` or `packages`, to build
+only that one.
 
 ## Component Guidelines
 

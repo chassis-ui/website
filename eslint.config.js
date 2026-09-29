@@ -15,6 +15,7 @@ export default defineConfig([
       '_site/',
       '**/.astro/',
       'packages/website/public/',
+      'packages/docs/starter/public/',
       '.cache/',
       'docs/',
       'vendor/'
@@ -91,6 +92,24 @@ export default defineConfig([
         parser: tseslint.parser,
         extraFileExtensions: ['.astro'],
         project: './packages/docs/tsconfig.json'
+      }
+    }
+  },
+  {
+    files: ['packages/docs/starter/**/*.ts', 'packages/docs/starter/**/*.astro/*.js'],
+    languageOptions: {
+      parserOptions: {
+        project: './packages/docs/starter/tsconfig.json'
+      }
+    }
+  },
+  {
+    files: ['packages/docs/starter/**/*.astro'],
+    languageOptions: {
+      parserOptions: {
+        parser: tseslint.parser,
+        extraFileExtensions: ['.astro'],
+        project: './packages/docs/starter/tsconfig.json'
       }
     }
   },

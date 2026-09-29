@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content'
+import RedirectLayout from '@chassis-ui/docs/layouts/RedirectLayout.astro'
+import { trimLeadingAndTrailingSlashes } from '@chassis-ui/docs'
+import { getDocsPath, resolveConfigRefs, resolveDocsrefs } from '@chassis-ui/docs/site'
+
+// A redirect for each path in the `aliases` of a docs page.
+export async function getStaticPaths() {
+  const docsPages = await getCollection('docs')
+
+  return docsPages.flatMap(({ data, id }) => {
+    const aliases = data.aliases ? [data.aliases].flat() : []
+
+    return aliases.map((alias) => ({
+      params: { alias: trimLeadingAndTrailingSlashes(resolveDocsrefs(resolveConfigRefs(alias))) },
+      props: { path: id }
+    }))
+  })
+}
+
+const { path } = Astro.props
+---
+
+<RedirectLayout path={getDocsPath(path)} />

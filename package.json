@@ -53,6 +53,7 @@
     "astro:preview": "pnpm --filter chassis-website astro preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:fixtures": "node build/fixture-sites.js",
     "check": "pnpm check:astro && pnpm check:pnpm",
     "check:astro": "pnpm run \"/^check:astro:(docs|site)$/\"",
     "check:astro:docs": "pnpm --filter @chassis-ui/docs astro check",

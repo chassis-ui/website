@@ -27,6 +27,7 @@ Related sibling repos (separate git projects, not part of this monorepo):
 - Dev server: `pnpm dev` (syncs submodules, then Astro dev at `localhost:4321`)
 - Build: `pnpm build` / `pnpm site` (build + pagefind + vnu HTML lint)
 - Tests: `pnpm test` (Vitest: `packages/docs/test` and `api/*.test.ts`)
+- Fixture sites: `pnpm test:fixtures` (packs `@chassis-ui/docs`, builds `packages/docs/starter` in two layouts)
 - Type/diagnostics check: `pnpm check` (runs `astro check` for both packages + `pnpm audit`)
 - Lint: `pnpm site:lint` (eslint + stylelint + prettier + html validation), `pnpm docs:lint`
 - Format: `pnpm docs:format` (prettier --write for packages/docs)

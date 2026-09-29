@@ -38,7 +38,9 @@ A site also installs `@astrojs/mdx` and the rest of the Chassis stack, `@chassis
 
 ## Setup
 
-A site needs four things before it can use the layouts: the integration, a `config.yml`, two content collections and the static files that the layouts link to.
+A site needs five things before it can use the layouts: the integration, a `config.yml`, two content collections, the static files that the layouts link to and a Sass load path.
+
+The [starter site](starter/) has all five. Copy it to start a new site, and follow its README. CI builds it from the packed package on every push, so it works with the version of the package next to it.
 
 ### 1. Add the integration
 
@@ -60,6 +62,7 @@ The integration:
 - sets `markdown`: heading anchors, Shiki themes, and the `[[config:key]]` and `[[docsref:/path]]` replacements
 - imports the shortcodes into every MDX file
 - fails the build when a `[[docsref:]]` link points to a page that was not built
+- makes the scripts of the package and of the site share one copy of `@chassis-ui/css`, so that no listener is registered twice
 
 It finds every file from the Astro root, the directory that holds `astro.config.ts`. The working directory of the build does not matter.
 
@@ -174,7 +177,31 @@ These helpers find the folders, whether `node_modules` is in the site's root or 
 
 A site that type-checks with `astro check` declares the `@chassis-ui/css` module, which has no types: `declare module '@chassis-ui/css'`.
 
-### 5. Use the layouts
+### 5. Put the tokens on the Sass load path
+
+The styles of the package use `@chassis-ui/css`, which loads the design tokens as `chassis-tokens`. The site puts a folder with a `_chassis-tokens.scss` on the Sass load path. The `scss/vendor` folder of `@chassis-ui/css` has the default one, which loads `@chassis-ui/tokens`:
+
+```ts
+// astro.config.ts
+import path from 'node:path'
+import { getInstalledPackageFsPath } from '@chassis-ui/docs'
+
+const chassisCss = getInstalledPackageFsPath('@chassis-ui/css', import.meta.dirname)
+
+export default defineConfig({
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: { loadPaths: [path.join(chassisCss, 'scss/vendor')] }
+      }
+    }
+  }
+})
+```
+
+A site with tokens of its own puts the folder of its `_chassis-tokens.scss` before that one.
+
+### 6. Use the layouts
 
 ```astro
 ---
