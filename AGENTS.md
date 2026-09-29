@@ -54,6 +54,10 @@ area rather than re-deriving from source:
 - [ref/VERCEL_CONFIG.md](ref/VERCEL_CONFIG.md) — Vercel proxy routing across ecosystem sites
 - [ref/INDEXING.md](ref/INDEXING.md) — search engine indexing rules per host/environment
 - [ref/CHASSIS_CSS.md](ref/CHASSIS_CSS.md) — Bootstrap → Chassis CSS conversion guide (written for LLMs)
+- [ref/ROADMAP.md](ref/ROADMAP.md) — phased roadmap with findings, tasks and a session log; update
+  it at the end of every session that works on it
+- [ref/SIBLING_TASKS.md](ref/SIBLING_TASKS.md) — work that belongs in a sibling repo; record it
+  there instead of editing the sibling from a session in this repo
 
 ## Cautions
 
