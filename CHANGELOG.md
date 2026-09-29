@@ -18,6 +18,12 @@ This becomes 0.6.0, a breaking release of `packages/docs`. [UPGRADING.md](packag
 - `packages/docs`: `js/clipboard.ts`, which every site carried a copy of.
 - `packages/docs`: `include` and `exclude` options for the shortcodes. A shortcode of the site replaces the package's shortcode of the same name.
 - `packages/docs`: a versioning policy in the README, and `scss/vars` as a public partial.
+- Unit tests for the library modules of `packages/docs`, component tests that render in a fixture site, and tests of the contact endpoint. `pnpm test` runs them, and so does CI.
+
+### Fixed
+
+- `packages/docs`: `<ScssDocs>`, `<ScssDocsSimple>` and `<JsDocs>` stop at the end marker of the part they show. A part whose name starts another name, such as `make-col` and `make-col-auto`, ran on to the end of the longer one.
+- `packages/docs`: a table of contents whose first heading is deeper than a later one, such as an `<h3>` before the first `<h2>`, nested the `<h2>` under the `<h3>`.
 
 ### Changed
 

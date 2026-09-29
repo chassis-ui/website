@@ -95,7 +95,7 @@ last sibling has been upgraded and deployed.
 | F4  | CI never builds the site. Vercel is the first thing to build a commit.                                                                                                                        | `.github/workflows/ci.yml` has lint, type check and audit only. HTML validation is not in CI either.                                                                                                                                                                                                                                                    | 0     |
 | F5  | `main` has no branch protection and no rulesets.                                                                                                                                              | `gh api repos/chassis-ui/website/branches/main/protection` returns 404. A push to `main` with a version bump publishes to npm.                                                                                                                                                                                                                          | 0     |
 | F6  | The Lighthouse workflow fails on every deployment.                                                                                                                                            | The accessibility assertion gets `NaN` on every URL. Performance scores are 0.68 to 0.86 against a 0.9 target.                                                                                                                                                                                                                                          | 0, 4  |
-| F7  | There are no tests of any kind.                                                                                                                                                               | No `*.test.*`, `*.spec.*`, Vitest or Playwright config in the repository.                                                                                                                                                                                                                                                                               | 2     |
+| F7  | There were no tests of any kind. Session 2.2 added them.                                                                                                                                      | No `*.test.*`, `*.spec.*`, Vitest or Playwright config in the repository.                                                                                                                                                                                                                                                                               | 2     |
 | F8  | `@chassis-ui/docs` imports five modules that the consuming site must supply through a `@libs/*` alias. It also expects `docs` and `callouts` content collections. None of this is documented. | `@libs/config` (9 imports), `@libs/content` (2), `@libs/path` (2), `@libs/data` (1), `@libs/clipboard` (1). The package reads 12 keys from `getConfig()`.                                                                                                                                                                                               | 1, 2  |
 | F9  | The package type-checks only against the website's implementation of that contract.                                                                                                           | `packages/docs/tsconfig.json` maps `@libs/*` to `../website/src/libs/*`. A sibling site with a different `config.ts` is never checked.                                                                                                                                                                                                                  | 2     |
 | F10 | Every file under `src/` is public API.                                                                                                                                                        | `exports` in `packages/docs/package.json` uses wildcards for all six subpaths. The package ships raw `.ts` and `.astro` with no `types` field.                                                                                                                                                                                                          | 2     |
@@ -133,6 +133,9 @@ last sibling has been upgraded and deployed.
 | F43 | Every sibling works around a problem that the package causes.                                                                                                                                 | Scripts of the package and of the site both import `@chassis-ui/css`. Two instances register every listener twice. Each sibling's `astro.ts` adds a Vite alias and leaves the package out of `optimizeDeps`. `chassis-css` does it in the build too. The website has no such workaround.                                                                | 2     |
 | F44 | The header of the package lists the sibling sites by name, and `chassis-react` is not one of them.                                                                                            | `packages/docs/src/layouts/header/Navigation.astro` has five fixed links. It follows from S11.                                                                                                                                                                                                                                                          | 4     |
 | F45 | The website has data files that nothing reads.                                                                                                                                                | `packages/website/data/core-team.yml` and `docs-versions.yml`. Their loader was deleted in session 2.1.                                                                                                                                                                                                                                                 | 3     |
+| F46 | `<ScssDocs>`, `<ScssDocsSimple>` and `<JsDocs>` showed too much when one name started another. Found and fixed in session 2.2.                                                                | The pattern was greedy, so `make-col` ran on to the end marker of `make-col-auto`. The chassis-css grid page shows `make-col-auto` and `make-col-offset` inside the `make-col` snippet today, with their marker comments. Fixed in 0.6.0.                                                                                                               | 2     |
+| F47 | A table of contents nested an `<h2>` under an `<h3>` that came first. Found and fixed in session 2.2.                                                                                         | `generateToc()` only started a new top-level entry at the same depth, not at a shallower one.                                                                                                                                                                                                                                                           | 2     |
+| F48 | The line transformer of `highlightCode()` does nothing.                                                                                                                                       | It should leave comment lines of shell snippets unmarked. It looks for a `comment` class, but the dual-theme tokens carry inline styles, and Shiki marks every line anyway. The output is correct. The code can go.                                                                                                                                     | 2     |
 | F34 | The package has no stated versioning policy.                                                                                                                                                  | It is at 0.5.0 with seven consumers. Nothing says what counts as a breaking change or what 1.0 requires.                                                                                                                                                                                                                                                | 2     |
 
 ### How the sibling repositories consume this one
@@ -315,7 +318,7 @@ in this repository before it is published.
 This phase produces 0.6.0, which is a breaking release. See
 [Breaking changes](#breaking-changes).
 
-**Status:** session 2.1 done on 2026-09-29. The package version stays 0.5.1 until session
+**Status:** sessions 2.1 and 2.2 done on 2026-09-29. The package version stays 0.5.1 until session
 2.4 releases 0.6.0, so nothing is published by accident.
 
 ### Session 2.1: own the contract
@@ -366,17 +369,25 @@ This phase produces 0.6.0, which is a breaking release. See
 
 ### Session 2.2: tests
 
-- [ ] Add Vitest. Unit-test the pure modules first: `toc`, `utils`, `site`, `source`,
-      `markdown`, `rehype`, `image`.
-- [ ] Test components with the Astro container API: the four file components, `Callout`,
-      `Example`, `DocsSidebar`.
-- [ ] Test `api/contact.ts`: valid request, missing fields, honeypot, wrong method.
-- [ ] Add `pnpm test` to CI and to the required checks.
+- [x] Add Vitest. Unit-test the pure modules: `toc`, `utils`, `site`, `source`,
+      `markdown`, `rehype`, `image`, and the modules of session 2.1: `config`, `schema`,
+      `paths`, `remark`, `shortcodes`, the integration's hooks, `highlight`, `icon` and
+      `placeholder`.
+- [x] Test components with the Astro container API: the four file components, `Callout`,
+      `Example`, `DocsSidebar`. They render in a small site in
+      `packages/docs/test/fixture`, which the tests sync before they run.
+- [x] Test `api/contact.ts`: valid request, missing fields, invalid email and topic,
+      honeypot, invalid body, Resend errors, wrong method. Resend is mocked.
+- [x] Add `pnpm test` to CI, as the job "Test". There are no required checks: CI stays
+      advisory by D1.
+- [x] Fix the two bugs that the tests found. See F46 and F47.
 
 ### Session 2.3: fixture sites
 
 - [ ] Add a minimal fixture site that consumes the package the way a sibling will. It
-      uses the integration and has its own `config.yml`.
+      uses the integration and has its own `config.yml`. The fixture of the component
+      tests, `packages/docs/test/fixture`, is not built and imports the package by
+      relative path. Decide whether it grows into this site or stays separate.
 - [ ] Build it in two layouts in CI: from the repository root, and from `packages/site`
       with `sourceDir` set. Issue 2 would have been caught by the second.
 - [ ] Install the package into the fixture from `pnpm pack` output, not from the
@@ -399,6 +410,7 @@ This phase produces 0.6.0, which is a breaking release. See
       releases as prereleases.
 - [ ] Gate the publish job on lint, type check, tests and the fixture builds.
 - [ ] Skip the GitHub release step when the publish step was skipped.
+- [ ] Remove the line transformer of `highlightCode()`. See F48.
 - [ ] Narrow `exports` to the supported import paths. Drop the wildcard for
       `components/*`, which is what makes `components/shortcodes/Icon.astro` resolve.
       List the supported paths in the README and the removed ones in the changelog.
@@ -633,4 +645,5 @@ go here, in session 5.2.
 | 2026-09-29 | 0.1, 0.2 | Phase 0 done on `develop`. CI fixed and extended, dependencies upgraded, build pinned, Lighthouse fixed, stale files removed, GitHub ruleset and security features on. Decided D1 and D3. Added F35 to F37.                                                                                                                                     |
 | 2026-09-29 | 1.1, 1.2 | Fixed issues 1 and 2, documented the site contract, bumped to 0.5.1. Checked against chassis-css and chassis-tokens in scratch clones. Decided D2 and D16. Added F38 and F39. Release pending.                                                                                                                                                  |
 | 2026-09-29 | 2.1      | The package owns its contract: integration, schemas, `site` module, path helpers, remark plugins, clipboard. Website moved to it with identical output. Wrote the README contract, the upgrade guide, the versioning policy and `CONTRACT_REVIEW.md`. Checked against scratch clones of tokens and figma. Decided D17 to D21. Added F41 to F45. |
+| 2026-09-29 | 2.2      | Added Vitest with 209 unit, component and endpoint tests, and a CI job. The tests found two bugs, fixed: F46 and F47. Added F48.                                                                                                                                                                                                                |
 | 2026-09-29 | 1.2      | Released 0.5.1 through `staging` and `main`. Issues 1 and 2 closed. CI green on both branches. Production Lighthouse passed. Added F40.                                                                                                                                                                                                         |

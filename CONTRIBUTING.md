@@ -73,7 +73,17 @@ pnpm site:lint:prettier
 
 # Validate HTML
 pnpm site:lint:vnu
+
+# Run the unit and component tests
+pnpm test
+
+# Run them again on every change
+pnpm test:watch
 ```
+
+The tests of `@chassis-ui/docs` are in `packages/docs/test`. Component tests render in a
+small site in `packages/docs/test/fixture`. The tests of the contact endpoint are next to it,
+in `api/`.
 
 ## Component Guidelines
 
@@ -248,7 +258,7 @@ ensure animations work correctly on that section.
 
 1. **Run all linters**: `pnpm site:lint`
 2. **Format code**: `pnpm site:format`
-3. **Test your changes**: Build and preview locally
+3. **Test your changes**: Run `pnpm test`, then build and preview locally
 4. **Update documentation**: If adding features or changing APIs
 5. **Write tests**: If applicable
 
