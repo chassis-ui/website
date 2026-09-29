@@ -122,7 +122,7 @@ describe('<ScssDocs compile>', () => {
     })
     const text = codeText(html)
 
-    expect(text).toContain('color: red;')
+    expect(text).toContain('display: block;')
     expect(text).toContain('--cx-gap: 1rem;')
     expect(text).toContain('.child {')
     expect(text).not.toContain('__cxd_docs_sentinel__')

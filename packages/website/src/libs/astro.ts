@@ -48,13 +48,6 @@ interface ChassisOptions {
  * and a post-process integration that injects sub-project sitemap references.
  */
 export function chassis({ config, root }: ChassisOptions): AstroIntegration[] {
-  const paths: SitePaths = {
-    assets: getChassisAssetsFsPath({ root }),
-    css: getChassisCSSFsPath({ root }),
-    icons: getChassisIconsFsPath({ root }),
-    public: path.join(root, 'public'),
-    static: path.join(root, 'static')
-  }
   const baseURL = config.baseURL.replace(/\/$/, '')
   const sitemapExcludedUrls = sitemapExcludes.map((url) => `${config.baseURL}${url}/`)
 
@@ -73,6 +66,17 @@ export function chassis({ config, root }: ChassisOptions): AstroIntegration[] {
         },
         'astro:config:done': () => {
           if (cmd === 'sync') return
+
+          // Found here, not when the config loads: `astro check` runs without the
+          // `vendor/assets` build, and the helpers fail when a folder is missing.
+          const paths: SitePaths = {
+            assets: getChassisAssetsFsPath({ root }),
+            css: getChassisCSSFsPath({ root }),
+            icons: getChassisIconsFsPath({ root }),
+            public: path.join(root, 'public'),
+            static: path.join(root, 'static')
+          }
+
           cleanPublicDirectory(paths)
           copyStatic(paths)
           copyChassisAssets(paths)

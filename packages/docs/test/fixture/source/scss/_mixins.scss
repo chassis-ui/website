@@ -1,6 +1,6 @@
 // Stand-in for the partial of the same name in chassis-css.
 @mixin sample-mixin() {
-  color: red;
+  display: block;
   --gap: 1rem;
 
   .child {
