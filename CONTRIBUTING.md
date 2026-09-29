@@ -133,6 +133,13 @@ in `packages/docs/starter`, builds them and checks the output. It needs network 
 the install. A stand-in replaces the docs build of chassis-assets. Name a layout, `root` or
 `packages`, to build only that one.
 
+`pnpm test:canary` builds the sites of the sibling repositories with the packed package:
+shallow clones of their default branches, each installing the tarball in place of the
+version it has. It skips a sibling whose range does not accept the version, unless
+`--all` is given. Name siblings, such as `css react`, to build only those. Run `pnpm vendor`
+first: the docs build of `vendor/assets` is copied into each sibling. How each sibling
+builds its site is in `build/canary.js`, and follows the `build` scripts of the siblings.
+
 ## Component Guidelines
 
 ### Astro Component Structure
@@ -325,8 +332,18 @@ git commit -m "chore(release): @chassis-ui/docs <version>"
 ```
 
 `changeset version` bumps `packages/docs/package.json`, writes the entry in
-`packages/docs/CHANGELOG.md` and deletes the changesets. Then push the commit to `develop`,
-`staging` and `main`, as for any change. The push to `main` runs
+`packages/docs/CHANGELOG.md` and deletes the changesets. Add a row for the version to
+[Compatibility](packages/docs/README.md#compatibility) in the package README, with the
+versions of Astro, `@chassis-ui/css` and `@chassis-ui/tokens` in `pnpm-lock.yaml`, and
+commit it with the rest.
+
+Push the commit to `develop`. Besides CI, the push runs the canary,
+`.github/workflows/canary.yml`: it builds the site of each Chassis repository whose range
+accepts the new version, with the packed package. Read its result before you go on. It
+does not block the release, so a failure is yours to judge: a break that the package causes
+needs a fix first, and one that a sibling causes on its own is that sibling's to fix.
+
+Then push the commit to `staging` and `main`, as for any change. The push to `main` runs
 `.github/workflows/publish-packages.yml`. It publishes the version when npm does not have it
 yet and every check of CI passed on the commit, then creates the GitHub release.
 

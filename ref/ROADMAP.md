@@ -723,15 +723,28 @@ change them.
 
 ### Session 5.3: canary and compatibility
 
-- [ ] Add a canary job that clones each sibling whose range accepts the version being
+- [x] Add a canary job that clones each sibling whose range accepts the version being
       released, installs the packed package into it and builds its site. It runs before
-      a release and reports. It does not push anything.
-- [ ] Publish a compatibility table: which `@chassis-ui/docs` version works with which
-      `@chassis-ui/css`, `@chassis-ui/tokens` and Astro versions.
-- [ ] Review [SIBLING_TASKS.md](SIBLING_TASKS.md) against the current state of each
-      sibling. Remove what is done.
+      a release and reports. It does not push anything. `build/canary.js`, run by
+      `canary.yml` on a push to `develop` that sets a version npm does not have, and by
+      hand. It reports only, by the maintainer's choice: nothing requires it. The docs
+      build of `vendor/assets` is built once and copied into each sibling. Today every
+      range is `^0.5`, so it skips all six. Forced on chassis-figma, it installed the
+      tarball and failed on the 0.6 API, as it should.
+- [x] Publish a compatibility table: which `@chassis-ui/docs` version works with which
+      `@chassis-ui/css`, `@chassis-ui/tokens` and Astro versions. "Compatibility" in the
+      package README, from the declared ranges of every published version and the
+      lockfile at each release tag. Tokens are not a dependency: the styles use the ones
+      that `@chassis-ui/css` carries. `CONTRIBUTING.md` adds a row at each release.
+- [x] Review [SIBLING_TASKS.md](SIBLING_TASKS.md) against the current state of each
+      sibling. Remove what is done. A10 was done in css, tokens and react, and is
+      narrowed to icons and figma. Nothing else was done. AST6, ICO4 and FIG4 repeated
+      A7 and were folded into it. A5 and A15 name 0.6.1.
 
 ### Exit criteria
+
+Met on 2026-09-29 except where noted. A6 needs a package option that is not scheduled
+yet, so it names no release.
 
 - The website carries no copy of a script or library that the package provides.
 - A release that a sibling's range accepts, and that would break its build, is reported
@@ -824,3 +837,4 @@ go here, in session 5.2.
 | 2026-09-29 | 4.1, 4.2 | Pushed `develop` and `staging`. CI green. Checked the headers, the endpoints, the Links workflow and Lighthouse on staging. The contact endpoint needed the Resend variables for Preview, which the maintainer added. The firewall rule applies to staging too. `main` stays unpushed until the maintainer has reviewed the design.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | 2026-09-29 | 5.1      | `chassis-docs` bin in the package: `vendor`, `sync-submodules`, `html-validate` and `vnu`, with tests and a changeset for a patch. The website's scripts call it, and `build/build-site.js`, `sync-submodules.js`, `html-validate.js` and `vnu-jar.js` are deleted. The build and both validators give the same result as before. The fixture runs the command from the packed package, and the starter has `vendor` and `lint:html` scripts. Decided D8. Rewrote A5. `git lfs install` is now `--local`: the copies wrote to the global Git config. vnu drops `--asciiquotes`, so a filter can be copied from the output. The README documents every option of the validators with an example, `ref/DEVELOPMENT.md` how to add an exception, and `ref/CONTRACT_REVIEW.md` every difference between the copied scripts.                                                                                                                  |
 | 2026-09-29 | 5.2      | Reusable workflows for lint, type check and site build, which `ci.yml` calls, so their checks are renamed `Lint / Lint` and so on. The publish gate reads the new names; the ruleset follows when this reaches `staging`. The website and the starter on `@chassis-ui/tokens` 0.6, with an identical build. The assets pin is already the tip of `app/docs`. D9 stays open at the maintainer's request: built assets are too large to ship, so each project keeps building them from source. Rewrote A7, A9, A10 and A14.                                                                                                                                                                                                                                                                                                                                                                                                                |
+| 2026-09-29 | 5.3      | Canary: `build/canary.js` and `canary.yml`, on release commits of `develop` and by hand, reporting only. Checked with a skipped run of all six and a forced run of figma. Compatibility table in the package README, and a release step in `CONTRIBUTING.md`. Reviewed every sibling task with three read-only agents: only A10 was done, in css, tokens and react. Folded AST6, ICO4 and FIG4 into A7, and named 0.6.1 in A5 and A15.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |

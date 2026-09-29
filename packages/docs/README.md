@@ -345,6 +345,23 @@ No other path resolves: `exports` in `package.json` lists these and nothing else
 
 The integration provides four modules: `virtual:chassis-docs/config`, `virtual:chassis-docs/sidebar`, `virtual:chassis-docs/paths` and `virtual:chassis-docs/styles`. Use the functions of `@chassis-ui/docs/site` instead of importing them.
 
+## Compatibility
+
+"Requires" is what `package.json` of each version declares. "Built with" is what the website in this repository resolved and built when the version was released. CI also builds the [starter site](starter/) with the newest versions that its ranges accept.
+
+| `@chassis-ui/docs` | Requires Astro             | Requires `@chassis-ui/css` | Requires Node | Built with                           |
+| ------------------ | -------------------------- | -------------------------- | ------------- | ------------------------------------ |
+| 0.6.0              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.5.3 |
+| 0.5.1              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.5.3 |
+| 0.5.0              | `^7.0.0`                   | `^0.5.0-0`                 | not declared  | not recorded                         |
+| 0.4.0              | `^7.0.0`                   | `^0.4.0`                   | not declared  | not recorded                         |
+| 0.3.0 to 0.3.10    | `^7.0.0`                   | `>=0.3.1` to `>=0.3.4`     | not declared  | not recorded                         |
+| 0.1.0 to 0.2.0     | `^5.0.0`, 0.1.0–0.1.1 `^4` | not declared               | not declared  | not recorded                         |
+
+`@chassis-ui/tokens` is not a dependency of the package. The styles take the design tokens that `@chassis-ui/css` carries: css 0.5 is built on tokens 0.5, css 0.4 on tokens 0.4. A site's own version of `@chassis-ui/tokens` matters only when the site puts it on the Sass load path in place of those. Tokens 0.6 renamed and removed some tokens, listed in its changelog.
+
+Before a release, the [canary](https://github.com/chassis-ui/website/blob/main/build/canary.js) builds the site of each Chassis repository whose range accepts the new version.
+
 ## Versioning
 
 The package follows [Semantic Versioning](https://semver.org/). Before 1.0 that means:

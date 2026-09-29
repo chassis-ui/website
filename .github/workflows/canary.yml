@@ -1,0 +1,97 @@
+name: Canary
+
+# Builds the sibling sites with the version of @chassis-ui/docs on this commit, before it
+# is published: each sibling whose range accepts the version installs the packed package
+# and builds its site. See build/canary.js.
+#
+# It runs on a push to develop that sets a version npm does not have, which is the commit
+# `pnpm changeset version` made, and on demand. It reports and blocks nothing: the ruleset
+# and the publish gate do not require it, so a sibling that is broken for reasons of its own
+# cannot hold a release back. Look at its result before pushing the release to staging.
+on:
+  push:
+    branches: [develop]
+    paths: ['packages/docs/package.json']
+  workflow_dispatch:
+    inputs:
+      siblings:
+        description: Siblings to build, separated by spaces. Empty builds all
+        type: string
+        default: ''
+      all:
+        description: Build every sibling, whether its range accepts the version or not
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: canary-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect:
+    name: Detect a release
+    runs-on: ubuntu-latest
+    outputs:
+      release: ${{ steps.version.outputs.release }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Check whether npm has the version
+        id: version
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          VERSION=$(node -p "require('./packages/docs/package.json').version")
+
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            echo "Started by hand: building with $VERSION."
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          elif npm view "@chassis-ui/docs@$VERSION" version > /dev/null 2>&1; then
+            echo "npm has $VERSION. This commit is not a release."
+            echo "release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "npm does not have $VERSION. Building the siblings with it."
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  canary:
+    name: Canary
+    needs: detect
+    if: needs.detect.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      # vendor/assets is built once here and copied into each sibling
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build vendor/assets
+        run: pnpm vendor
+
+      - name: Build the sibling sites
+        env:
+          SIBLINGS: ${{ inputs.siblings }}
+          ALL: ${{ inputs.all && '--all' || '' }}
+        run: |
+          # shellcheck disable=SC2086 # $SIBLINGS is split into names on purpose
+          pnpm test:canary $SIBLINGS $ALL
