@@ -131,7 +131,7 @@ export function chassisDocs<TSchema extends z.ZodType = typeof configSchema>(
     name: '@chassis-ui/docs',
     hooks: {
       'astro:config:setup': ({ config: astroConfig, command, updateConfig, addWatchFile }) => {
-        const root = fileURLToPath(astroConfig.root)
+        const root = path.resolve(fileURLToPath(astroConfig.root))
         const configFile = path.resolve(root, options.configFile ?? 'config.yml')
 
         config =
@@ -166,7 +166,7 @@ export function chassisDocs<TSchema extends z.ZodType = typeof configSchema>(
 
         const paths = {
           root,
-          publicDir: fileURLToPath(astroConfig.publicDir),
+          publicDir: path.resolve(fileURLToPath(astroConfig.publicDir)),
           sourceDir: path.resolve(root, config.sourceDir),
           packageRoot: getPackageRoot()
         }

@@ -1,6 +1,7 @@
 ---
 import fs from 'node:fs'
 import { getSourceFsPath } from '../../site'
+import { extractDocsSnippet } from '../../libs/snippet'
 import Code from './Code.astro'
 
 // Prints everything between `// scss-docs-start "name"` and `// scss-docs-end "name"`
@@ -33,17 +34,15 @@ let content: string
 try {
   const fileContent = fs.readFileSync(getSourceFsPath(file), 'utf8')
 
-  const matches = fileContent.match(
-    new RegExp(`// scss-docs-start ${name}\n((?:.|\n)*)// scss-docs-end ${name}`, 'm')
-  )
+  const snippet = extractDocsSnippet(fileContent, 'scss', name)
 
-  if (!matches || !matches[1]) {
+  if (!snippet) {
     throw new Error(
       `Failed to find the content named '${name}', make sure that '// scss-docs-start ${name}' and '// scss-docs-end ${name}' are defined.`
     )
   }
 
-  content = matches[1].replaceAll(' !default', '')
+  content = snippet.replaceAll(' !default', '')
 
   // Fix the identation by removing extra spaces at the beginning of each line
   const lines = content.split('\n')

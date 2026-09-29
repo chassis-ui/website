@@ -2,6 +2,7 @@
 import fs from 'node:fs'
 import * as sass from 'sass'
 import { getNodeModulesPaths, getSourceFsPath } from '../../site'
+import { extractDocsSnippet } from '../../libs/snippet'
 import Code from './Code.astro'
 
 // Prints everything between `// scss-docs-start "name"` and `// scss-docs-end "name"`
@@ -77,17 +78,15 @@ let lang: string = 'scss'
 try {
   const fileContent = fs.readFileSync(getSourceFsPath(file), 'utf8')
 
-  const matches = fileContent.match(
-    new RegExp(`// scss-docs-start ${name}\n((?:.|\n)*)// scss-docs-end ${name}`, 'm')
-  )
+  const snippet = extractDocsSnippet(fileContent, 'scss', name)
 
-  if (!matches || !matches[1]) {
+  if (!snippet) {
     throw new Error(
       `Failed to find the content named '${name}', make sure that '// scss-docs-start ${name}' and '// scss-docs-end ${name}' are defined.`
     )
   }
 
-  const rawContent = matches[1]
+  const rawContent = snippet
 
   if (compile) {
     // Derive the SCSS load path from the file argument (e.g. "scss/_foo.scss" → "scss/")

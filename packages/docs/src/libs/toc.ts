@@ -37,7 +37,9 @@ export function generateToc(allHeadings: MarkdownHeading[], config: TocConfig): 
 
     const previousEntry = toc[toc.length - 1]
 
-    if (heading.depth === previousEntry.depth) {
+    // A heading at the depth of the previous top-level entry, or shallower, starts a new
+    // top-level entry. A page whose first heading is an `<h3>` has later `<h2>`s here.
+    if (heading.depth <= previousEntry.depth) {
       toc.push({ ...heading, children: [] })
       continue
     }
