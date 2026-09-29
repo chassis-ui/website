@@ -157,6 +157,9 @@ export const getData = createDataLoader({
 - Replace `getDocsFsPath()` with `root`, `getDocsPublicFsPath()` with
   `path.join(root, 'public')`, and `getDocsStaticFsPath()` with
   `path.join(root, 'static')`.
+- Remove the Vite alias for `@chassis-ui/css` and `optimizeDeps: { exclude:
+['@chassis-ui/docs'] }`. The integration now makes every script use one copy of
+  `@chassis-ui/css`, in the dev server and in the build. It needs no alias.
 
 ### 5. Replace the imports in pages and components
 
@@ -218,6 +221,9 @@ another one.
 - **The header shows the Figma and GitHub links only when `figmaHandle` and `githubOrg`
   are set.** The same holds for the X meta tags and `xUsername`, and for Google Analytics
   and `analytics.googleId`.
+- **`@chassis-ui/docs` and `@chassis-ui/css` are not pre-bundled in the dev server.** Both
+  are served from source, so a script of the site and a script of the package import the
+  same copy of `@chassis-ui/css`. The dependency `clipboard` is still pre-bundled.
 - **The working directory of the build does not matter.** `config.yml`, `data/` and the
   `file` props are found from the Astro root. A site that is built with
   `astro build --root site` no longer names `./site/` in its paths.

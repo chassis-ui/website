@@ -19,7 +19,11 @@ currentVersion: '1.0.0'
 interface Update {
   site?: string
   markdown?: { processor: { options: { remarkPlugins: unknown[] } } }
-  vite?: { plugins: { resolveId: (_id: string) => unknown; load: (_id: string) => unknown }[] }
+  vite?: {
+    optimizeDeps: { exclude: string[]; include: string[] }
+    resolve: { dedupe: string[] }
+    plugins: { resolveId: (_id: string) => unknown; load: (_id: string) => unknown }[]
+  }
 }
 
 // Runs the setup hook of the integration in a site with the given files, and returns what it
@@ -193,6 +197,26 @@ describe('chassisDocs: styles and paths', () => {
     const { update } = await setUp({})
 
     expect(update.vite!.plugins[0].resolveId('virtual:chassis-docs/nope')).toBeUndefined()
+  })
+})
+
+describe('chassisDocs: one copy of @chassis-ui/css', () => {
+  test('serves both packages from source in the dev server', async () => {
+    const { update } = await setUp({})
+
+    expect(update.vite!.optimizeDeps.exclude).toEqual(['@chassis-ui/docs', '@chassis-ui/css'])
+  })
+
+  test('pre-bundles the CommonJS dependency of the scripts of the package', async () => {
+    const { update } = await setUp({})
+
+    expect(update.vite!.optimizeDeps.include).toEqual(['@chassis-ui/docs > clipboard'])
+  })
+
+  test("resolves every import of @chassis-ui/css to the site's copy", async () => {
+    const { update } = await setUp({})
+
+    expect(update.vite!.resolve.dedupe).toEqual(['@chassis-ui/css'])
   })
 })
 

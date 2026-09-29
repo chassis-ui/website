@@ -195,6 +195,20 @@ export function chassisDocs<TSchema extends z.ZodType = typeof configSchema>(
             remarkRehype: options.markdown?.remarkRehype
           }),
           vite: {
+            // Scripts of the package and of the site both import `@chassis-ui/css`, and two
+            // copies of it register every listener twice. In the dev server, a script of the
+            // package would be pre-bundled with a copy of its own, and a script of the site
+            // would get a pre-bundled copy while the package gets the source. Both packages
+            // are served from source, and every import resolves to the site's copy.
+            optimizeDeps: {
+              exclude: ['@chassis-ui/docs', '@chassis-ui/css'],
+              // The one CommonJS dependency of the package's scripts. It has no default export
+              // unless it is pre-bundled.
+              include: ['@chassis-ui/docs > clipboard']
+            },
+            resolve: {
+              dedupe: ['@chassis-ui/css']
+            },
             plugins: [
               virtualModules({
                 config: `export default ${JSON.stringify(config)}`,
