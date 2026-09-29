@@ -12,6 +12,7 @@ import Head from './head/Head.astro'
 import Header from './header/Header.astro'
 import Scripts from './footer/Scripts.astro'
 import Footer from './footer/Footer.astro'
+import Consent from './footer/Consent.astro'
 import { stripMarkdown } from '../libs/utils'
 
 // The following props can be directly passed to the base layout component from any page or layout extending it,
@@ -91,6 +92,7 @@ const mainProps = { id: 'content', ...overrides?.main }
     }
 
     <Footer />
+    <Consent />
 
     <Scripts layout={layout}>
       <slot name="scripts" slot="scripts" />

@@ -14,7 +14,8 @@
       }
     }
 
-    a {
+    a,
+    .cxd-footer-link {
       color: var(--cx-fg-color);
       text-decoration: none;
 
@@ -23,6 +24,15 @@
         color: var(--cx-hover-color);
         text-decoration: underline;
       }
+    }
+
+    // A button that looks like the links next to it
+    .cxd-footer-link {
+      padding: 0;
+      font: inherit;
+      cursor: pointer;
+      background: none;
+      border: 0;
     }
   }
 }

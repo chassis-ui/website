@@ -38,7 +38,7 @@ const zHeadingRange = z.object({
  * ```
  */
 export const configSchema = z.strictObject({
-  /** Google Analytics is loaded in production builds when `googleId` is set. */
+  /** Google Analytics is offered in production builds when `googleId` is set, and loads after the visitor accepts. */
   analytics: z.strictObject({ googleId: z.string().optional() }).default({}),
   /** Heading levels that get an anchor link. */
   anchors: zHeadingRange.default({ min: 2, max: 5 }),

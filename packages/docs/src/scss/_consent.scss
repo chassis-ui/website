@@ -1,0 +1,14 @@
+//
+// Consent
+//
+
+@layer custom {
+  // Above the sticky header, below dialogs and drawers
+  .cxd-consent {
+    position: fixed;
+    inset-block-end: 0;
+    inset-inline: 0;
+    z-index: 1030;
+    padding-block: var(--cx-space-md);
+  }
+}

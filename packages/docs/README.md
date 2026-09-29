@@ -114,7 +114,7 @@ currentVersion: '0.5.2'
 | `githubOrg`                                   | no       | GitHub organisation name, not a URL. The header links to it                                       |
 | `figmaHandle`                                 | no       | Figma Community handle. The header links to it                                                    |
 | `xUsername`                                   | no       | X handle. Used in the social meta tags                                                            |
-| `analytics.googleId`                          | no       | Google Analytics ID. Loaded in production builds only                                             |
+| `analytics.googleId`                          | no       | Google Analytics ID. In production builds, loaded after the visitor accepts in a consent banner   |
 | `anchors.min`, `anchors.max`                  | no       | Heading levels that get an anchor link. Default 2 to 5                                            |
 | `toc.min`, `toc.max`                          | no       | Heading levels in the table of contents. Default 2 to 6                                           |
 | `sourceDir`                                   | no       | Directory that `file` props are relative to, from the site's root, e.g. `"../css"`. Default `"."` |

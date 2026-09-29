@@ -1,0 +1,135 @@
+---
+/**
+ * Consent
+ *
+ * Asks before Google Analytics loads. Rendered in production builds, when
+ * `analytics.googleId` is set in `config.yml`. Nothing is loaded and no cookie is set until
+ * the visitor accepts. The choice is kept in `localStorage`, so every Chassis site served
+ * from the same host shares it. The "Cookie settings" button of the footer opens the
+ * banner again.
+ */
+
+import { getConfig } from '../../site'
+
+const isProd = import.meta.env.PROD
+const { googleId } = getConfig().analytics
+---
+
+{
+  isProd && googleId && (
+    <section class="cxd-consent" aria-label="Cookie consent" data-google-id={googleId} hidden>
+      <div class="container 2xl">
+        <div class="notification default shadow-lg d-flex flex-wrap align-items-center gap-md p-md">
+          <p class="mb-0 flex-grow-1">
+            We would like to count visits with Google Analytics, which sets cookies. Nothing is sent
+            to Google unless you accept. <a href="/privacy/">Privacy notice</a>
+          </p>
+          <div class="d-flex gap-sm">
+            <button type="button" class="button primary" data-consent="granted">
+              Accept
+            </button>
+            <button type="button" class="button default" data-consent="denied">
+              Decline
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  type AnalyticsWindow = Window &
+    Record<`ga-disable-${string}`, boolean> & {
+      dataLayer?: unknown[]
+      gtag?: (...args: unknown[]) => void
+    }
+
+  const KEY = 'chassis-analytics-consent'
+  const analytics = window as unknown as AnalyticsWindow
+  const banner = document.querySelector<HTMLElement>('.cxd-consent')
+  const googleId = banner?.dataset.googleId
+
+  function readChoice(): string | null {
+    try {
+      return localStorage.getItem(KEY)
+    } catch {
+      return null
+    }
+  }
+
+  function saveChoice(choice: string) {
+    try {
+      localStorage.setItem(KEY, choice)
+    } catch {
+      // Without storage the banner shows again on the next page
+    }
+  }
+
+  function loadAnalytics(id: string) {
+    analytics[`ga-disable-${id}`] = false
+    if (analytics.gtag) return
+
+    analytics.dataLayer ??= []
+    analytics.gtag = function () {
+      // gtag.js reads the `arguments` object, not an array
+      // eslint-disable-next-line prefer-rest-params
+      analytics.dataLayer!.push(arguments)
+    }
+    analytics.gtag('js', new Date())
+    analytics.gtag('config', id)
+
+    const script = document.createElement('script')
+    script.async = true
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(id)}`
+    document.head.append(script)
+  }
+
+  // Stops Google Analytics on this page and deletes its cookies, which it sets on the
+  // registrable domain, such as `.chassis-ui.com`
+  function stopAnalytics(id: string) {
+    analytics[`ga-disable-${id}`] = true
+
+    const labels = location.hostname.split('.')
+    const domains = labels.slice(0, -1).map((_, index) => labels.slice(index).join('.'))
+
+    for (const cookie of document.cookie.split(';')) {
+      const name = cookie.split('=')[0].trim()
+
+      if (!name.startsWith('_ga')) continue
+
+      for (const domain of ['', ...domains.map((d) => `; domain=.${d}`)]) {
+        document.cookie = `${name}=; max-age=0; path=/${domain}`
+      }
+    }
+  }
+
+  if (banner && googleId) {
+    const choice = readChoice()
+
+    if (choice === 'granted') loadAnalytics(googleId)
+    else if (choice !== 'denied') banner.hidden = false
+
+    banner.addEventListener('click', (event) => {
+      const button = (event.target as Element).closest<HTMLElement>('[data-consent]')
+
+      if (!button) return
+
+      const decision = button.dataset.consent!
+
+      saveChoice(decision)
+      banner.hidden = true
+
+      if (decision === 'granted') loadAnalytics(googleId)
+      else stopAnalytics(googleId)
+    })
+
+    for (const opener of document.querySelectorAll<HTMLElement>('[data-consent-open]')) {
+      opener.hidden = false
+      opener.addEventListener('click', () => {
+        banner.hidden = false
+        banner.querySelector<HTMLElement>('[data-consent]')?.focus()
+      })
+    }
+  }
+</script>

@@ -10,7 +10,6 @@ import type { Layout } from '../../libs/layout'
 import Stylesheet from './Stylesheet.astro'
 import Favicons from './Favicons.astro'
 import Social from './Social.astro'
-import Analytics from './Analytics.astro'
 import 'virtual:chassis-docs/styles'
 
 interface Props {
@@ -59,4 +58,3 @@ const pageTitle = isHome
 <slot name="styles" />
 <Favicons />
 <Social description={description} layout={layout} thumbnail={thumbnail} title={title} />
-<Analytics />
