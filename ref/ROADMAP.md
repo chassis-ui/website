@@ -321,8 +321,8 @@ in this repository before it is published.
 This phase produces 0.6.0, which is a breaking release. See
 [Breaking changes](#breaking-changes).
 
-**Status:** sessions 2.1 to 2.3 done on 2026-09-29. Session 2.4 has built the release pipeline.
-0.6.0 is published after a prerelease, 0.6.0-next.0, has proved it.
+**Status:** done on 2026-09-29. 0.6.0 is released, after a prerelease, 0.6.0-next.0, proved
+the release pipeline.
 
 ### Session 2.1: own the contract
 
@@ -423,10 +423,14 @@ This phase produces 0.6.0, which is a breaking release. See
       The unreleased entries became changesets. F39 stays: the schema requires
       `currentVersion`, so the website keeps `0.1.0`, and the source links on its placeholder
       pages go to a tag that does not exist. They go when D12 is decided.
-- [ ] Publish with npm trusted publishing and provenance. Remove the `NPM_CHASSIS_UI`
-      secret afterwards. The workflow is ready. It needs the trusted publisher on npmjs.com.
-- [ ] Publish prereleases under a dist-tag derived from the version. Mark their GitHub
-      releases as prereleases. The workflow is ready: `0.6.0-next.0` goes to `next`.
+- [x] Publish with npm trusted publishing and provenance. `0.6.0-next.0` was published
+      this way on 2026-09-29, with an SLSA provenance statement in the Sigstore log. This
+      repository no longer reads an npm token. `NPM_CHASSIS_UI` stays: it is not a secret of
+      this repository, and chassis-icons and chassis-react publish with it. The repository's
+      own secret `NPM_CHASSIS_DOCS` has been unused since 0.3.7 and can be deleted.
+- [x] Publish prereleases under a dist-tag derived from the version. Mark their GitHub
+      releases as prereleases. `0.6.0-next.0` is on `next`, `latest` stayed on 0.5.1, and its
+      GitHub release is a prerelease.
 - [x] Gate the publish job on lint, type check, tests and the fixture builds. It reads the
       results of CI on the commit, which ran when the commit was pushed to `develop`, and does
       not run CI again. Build is required too.
@@ -439,17 +443,19 @@ This phase produces 0.6.0, which is a breaking release. See
       removed ones do not.
 - [x] Put the default `chassis-tokens` on the Sass load path in the integration. Decided,
       see D22. The website and the starter no longer set it.
-- [ ] Release 0.6.0.
+- [x] Release 0.6.0: `pnpm changeset pre exit` and `pnpm changeset version`, then
+      `develop`, `staging` and `main`, as in "Releases" in `CONTRIBUTING.md`.
 
 ### Exit criteria
 
-- Reverting the fix for issue 2 fails CI.
-- A release needs no manual step after the pull request is merged.
-- The npm page shows a provenance badge.
-- The package contains no `@libs/*` import and type-checks without the website.
-- The website uses the integration, the package's schema, helpers and `clipboard.ts`, and
-  no longer carries copies of them.
-- 0.6.0 is on npm with an upgrade guide.
+- [x] Reverting the fix for issue 2 fails CI. Both fixture layouts fail.
+- [x] A release needs no manual step after the version commit reaches `main`. There is no
+      release pull request in this repository's flow, see D5.
+- [x] The npm page shows a provenance badge.
+- [x] The package contains no `@libs/*` import and type-checks without the website.
+- [x] The website uses the integration, the package's schema, helpers and `clipboard.ts`,
+      and no longer carries copies of them.
+- [x] 0.6.0 is on npm with an upgrade guide.
 
 ## Phase 3 — Contributor experience
 
@@ -662,16 +668,17 @@ go here, in session 5.2.
 
 ## Session log
 
-| Date       | Session  | What was done                                                                                                                                                                                                                                                                                                                                   |
-| ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-09-29 | Review   | Reviewed the repository, the sibling repositories and the open issues. Wrote this roadmap. No code changed.                                                                                                                                                                                                                                     |
-| 2026-09-29 | Review   | Added the model column. Limited the scope to this repository and moved sibling work to `SIBLING_TASKS.md`. Added findings F26 to F34, the compatibility rule, session 4.3 and decisions D10 to D15.                                                                                                                                             |
-| 2026-09-29 | Review   | Removed the compatibility rule at the maintainer's request. Breaking changes ship in 0.6.0 and the siblings are upgraded afterwards. Decided D4 and D6.                                                                                                                                                                                         |
-| 2026-09-29 | Review   | Reworded F25 and session 3.1: `develop` is the local integration branch and stays unpushed.                                                                                                                                                                                                                                                     |
-| 2026-09-29 | 0.1, 0.2 | Phase 0 done on `develop`. CI fixed and extended, dependencies upgraded, build pinned, Lighthouse fixed, stale files removed, GitHub ruleset and security features on. Decided D1 and D3. Added F35 to F37.                                                                                                                                     |
-| 2026-09-29 | 1.1, 1.2 | Fixed issues 1 and 2, documented the site contract, bumped to 0.5.1. Checked against chassis-css and chassis-tokens in scratch clones. Decided D2 and D16. Added F38 and F39. Release pending.                                                                                                                                                  |
-| 2026-09-29 | 2.1      | The package owns its contract: integration, schemas, `site` module, path helpers, remark plugins, clipboard. Website moved to it with identical output. Wrote the README contract, the upgrade guide, the versioning policy and `CONTRACT_REVIEW.md`. Checked against scratch clones of tokens and figma. Decided D17 to D21. Added F41 to F45. |
-| 2026-09-29 | 2.2      | Added Vitest with 209 unit, component and endpoint tests, and a CI job. The tests found two bugs, fixed: F46 and F47. Added F48.                                                                                                                                                                                                                |
-| 2026-09-29 | D1       | Revised D1: Lint, Type Check, Test and Build are required on `main` and `staging`, for pushes and pull requests alike. CI runs on `develop`, which is now pushed. Vercel does not deploy it. Reworded F25 and session 3.1.                                                                                                                      |
-| 2026-09-29 | 1.2      | Released 0.5.1 through `staging` and `main`. Issues 1 and 2 closed. CI green on both branches. Production Lighthouse passed. Added F40.                                                                                                                                                                                                         |
-| 2026-09-29 | 2.3      | Added the starter site `packages/docs/starter` and `build/fixture-sites.js`, which packs the package and builds the starter in two layouts, and the CI job "Fixture Site". Copied the website's placeholder docs into it. The integration now keeps one copy of `@chassis-ui/css`. Added F49 to F51 and D22.                                    |
+| Date       | Session  | What was done                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-09-29 | Review   | Reviewed the repository, the sibling repositories and the open issues. Wrote this roadmap. No code changed.                                                                                                                                                                                                                                                                                                                                                                                            |
+| 2026-09-29 | Review   | Added the model column. Limited the scope to this repository and moved sibling work to `SIBLING_TASKS.md`. Added findings F26 to F34, the compatibility rule, session 4.3 and decisions D10 to D15.                                                                                                                                                                                                                                                                                                    |
+| 2026-09-29 | Review   | Removed the compatibility rule at the maintainer's request. Breaking changes ship in 0.6.0 and the siblings are upgraded afterwards. Decided D4 and D6.                                                                                                                                                                                                                                                                                                                                                |
+| 2026-09-29 | Review   | Reworded F25 and session 3.1: `develop` is the local integration branch and stays unpushed.                                                                                                                                                                                                                                                                                                                                                                                                            |
+| 2026-09-29 | 0.1, 0.2 | Phase 0 done on `develop`. CI fixed and extended, dependencies upgraded, build pinned, Lighthouse fixed, stale files removed, GitHub ruleset and security features on. Decided D1 and D3. Added F35 to F37.                                                                                                                                                                                                                                                                                            |
+| 2026-09-29 | 1.1, 1.2 | Fixed issues 1 and 2, documented the site contract, bumped to 0.5.1. Checked against chassis-css and chassis-tokens in scratch clones. Decided D2 and D16. Added F38 and F39. Release pending.                                                                                                                                                                                                                                                                                                         |
+| 2026-09-29 | 2.1      | The package owns its contract: integration, schemas, `site` module, path helpers, remark plugins, clipboard. Website moved to it with identical output. Wrote the README contract, the upgrade guide, the versioning policy and `CONTRACT_REVIEW.md`. Checked against scratch clones of tokens and figma. Decided D17 to D21. Added F41 to F45.                                                                                                                                                        |
+| 2026-09-29 | 2.2      | Added Vitest with 209 unit, component and endpoint tests, and a CI job. The tests found two bugs, fixed: F46 and F47. Added F48.                                                                                                                                                                                                                                                                                                                                                                       |
+| 2026-09-29 | D1       | Revised D1: Lint, Type Check, Test and Build are required on `main` and `staging`, for pushes and pull requests alike. CI runs on `develop`, which is now pushed. Vercel does not deploy it. Reworded F25 and session 3.1.                                                                                                                                                                                                                                                                             |
+| 2026-09-29 | 1.2      | Released 0.5.1 through `staging` and `main`. Issues 1 and 2 closed. CI green on both branches. Production Lighthouse passed. Added F40.                                                                                                                                                                                                                                                                                                                                                                |
+| 2026-09-29 | 2.3      | Added the starter site `packages/docs/starter` and `build/fixture-sites.js`, which packs the package and builds the starter in two layouts, and the CI job "Fixture Site". Copied the website's placeholder docs into it. The integration now keeps one copy of `@chassis-ui/css`. Added F49 to F51 and D22.                                                                                                                                                                                           |
+| 2026-09-29 | 2.4      | Release pipeline: Changesets on `develop`, split changelogs, trusted publishing with provenance, a publish gate that reads the checks on the commit, CI on `develop` only. The integration puts the default tokens on the Sass load path, and `exports` is narrowed. Decided D5, D11 and D22. Published `0.6.0-next.0` to `next`, then 0.6.0 to `latest`. Two fixes on the way: the fixture needed a stand-in for the chassis-assets build on CI, and `setup-node` looked for pnpm in the publish job. |

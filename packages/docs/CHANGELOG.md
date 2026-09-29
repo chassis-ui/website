@@ -1,5 +1,35 @@
 # @chassis-ui/docs
 
+## 0.6.0
+
+### Minor Changes
+
+- **Breaking.** The package no longer imports `@libs/config`, `@libs/content`, `@libs/data`, `@libs/path`, `@libs/clipboard` or `@scss/docs.scss` from the site. A site adds the integration instead. [UPGRADING.md](https://github.com/chassis-ui/website/blob/main/packages/docs/UPGRADING.md) has the steps.
+- **Breaking.** The keys of `config.yml` are camelCase: `currentVersion`, `githubOrg`, `figmaHandle`, `xUsername` and `analytics.googleId`. An old name fails the build with a message that names the new one. The `docsDir` key is removed: the site root is the Astro root.
+- **Breaking.** Three more keys are camelCase: `iconColor` in `data/sidebar.yml`, and `added.showBadge` and `extraJs` in the frontmatter of docs pages. An old name fails the build.
+- **Breaking.** The schema of `config.yml` is strict. An unknown key fails the build. It was dropped silently.
+- **Breaking.** `exports` lists the supported import paths only: the root entry, `integration`, `schema`, `site`, the four layouts and six components by name, `shortcodes/*`, `js/*`, `scss/main` and `scss/vars`. These no longer resolve: `libs/*`, the other partials under `scss/`, the folders under `layouts/`, and `components/shortcodes/*`. Import a shortcode as `@chassis-ui/docs/shortcodes/Icon.astro`.
+- **Breaking.** `chassisAutoImport()` takes `{ root, dir, include, exclude }` and returns `{ imports, typeDefinitions, plugin }`. It finds the package's shortcodes from the package's own location, and the type declarations go to `.astro/`, not to `src/types/auto-import.d.ts`. Its `docsPath` and `modulesPath` options and its `integration()` are removed.
+- **Breaking.** `getSourceFsPath()`, `getSourceUrl()` and `getSiteFileUrl()` moved from `libs/source` to `@chassis-ui/docs/site`.
+- Add the `chassisDocs()` integration, at `@chassis-ui/docs/integration`. It reads `config.yml` and `data/sidebar.yml`, sets `site` and `markdown`, imports the shortcodes into MDX files and checks `[[docsref:]]` links. It finds every file from the Astro root, so the working directory of the build does not matter.
+- `@chassis-ui/docs/schema` exports the schemas of `config.yml`, the sidebar and the `docs` and `callouts` collections, with their types. A site extends `configSchema` for keys of its own.
+- `@chassis-ui/docs/site` exports what pages read from the site: `getConfig()`, `getSidebar()`, `getDocsPath()`, `getDocsPages()`, `getCallout()`, the path and URL helpers, `getPackageFilePath()` and `createDataLoader()`.
+- The root entry exports `loadConfig()`, `loadData()`, `loadSidebar()`, the remark plugins `remarkCxConfig` and `remarkCxDocsref`, and one implementation of `getChassisTokensFsPath()`, `getChassisAssetsFsPath()`, `getChassisCSSFsPath()` and `getChassisIconsFsPath()`.
+- The integration puts the default `chassis-tokens` of `@chassis-ui/css`, in its `scss/vendor` folder, on the Sass load path, after the site's own load paths. A site can delete the load path it set for it. A site with tokens of its own keeps the folder of its `_chassis-tokens.scss` in its config.
+- Add `include` and `exclude` options for the shortcodes. A shortcode of the site replaces the package's shortcode of the same name.
+- Add `js/clipboard.ts`, which every site carried a copy of.
+- `githubOrg`, `figmaHandle`, `xUsername` and `analytics.googleId` are optional. The header links, the X meta tags and Google Analytics are left out when their key is not set.
+- `anchors`, `toc`, `siteBranch` and `sourceDir` have defaults.
+- Add a versioning policy to the README, and make `scss/vars` a public partial.
+
+### Patch Changes
+
+- The scripts of the package and of the site share one copy of `@chassis-ui/css`. In the dev server of a site that installed the package, `example-mode.js` was pre-bundled with a copy of its own, which registered every listener twice: a dialog opened and closed at once. The integration keeps both packages out of pre-bundling and dedupes `@chassis-ui/css`, so a site needs no alias for it.
+- `<ScssDocs>`, `<ScssDocsSimple>` and `<JsDocs>` stop at the end marker of the part they show. A part whose name starts another name, such as `make-col` and `make-col-auto`, ran on to the end of the longer one.
+- A table of contents whose first heading is deeper than a later one, such as an `<h3>` before the first `<h2>`, nested the `<h2>` under the `<h3>`.
+- Packages whose types the shipped source imports are dependencies, not development dependencies.
+- The README links a starter site, `packages/docs/starter` in the repository, to copy as the start of a new Chassis docs site.
+
 ## 0.6.0-next.0
 
 ### Minor Changes
