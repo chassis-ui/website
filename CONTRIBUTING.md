@@ -91,8 +91,8 @@ in `api/`.
 
 `pnpm test:fixtures` packs `@chassis-ui/docs`, installs it into copies of the starter site
 in `packages/docs/starter`, builds them and checks the output. It needs network access for
-the install and the `vendor/assets` submodule. Name a layout, `root` or `packages`, to build
-only that one.
+the install. A stand-in replaces the docs build of chassis-assets. Name a layout, `root` or
+`packages`, to build only that one.
 
 ## Component Guidelines
 
