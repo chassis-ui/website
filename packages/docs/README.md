@@ -6,20 +6,16 @@
 
 ## Overview
 
-`@chassis-ui/docs` powers every documentation site in the Chassis ecosystem — the main `chassis-ui.com` website and the per-package docs for `chassis-css`, `chassis-tokens`, `chassis-icons`, `chassis-figma`, and `chassis-assets`. It ships pre-built layouts, navigation components, content-processing utilities, and SCSS helpers so each site stays consistent without duplicating code.
+`@chassis-ui/docs` powers every documentation site in the Chassis ecosystem: the main `chassis-ui.com` website and the docs of `chassis-css`, `chassis-tokens`, `chassis-icons`, `chassis-figma`, `chassis-assets` and `chassis-react`. It ships layouts, navigation components, shortcodes for MDX, content-processing utilities and SCSS, so each site stays consistent without copying code.
 
 > [!NOTE] This package is developed inside the [`chassis-website`](https://github.com/chassis-ui/website) monorepo at `packages/docs/` and published to npm. Source, issues, and pull requests live in that repository.
+
+Coming from 0.5? See [UPGRADING.md](UPGRADING.md).
 
 ## Installation
 
 ```sh
 pnpm add @chassis-ui/docs
-```
-
-or:
-
-```sh
-npm install @chassis-ui/docs
 ```
 
 ### Peer Dependencies
@@ -38,96 +34,238 @@ npm install @chassis-ui/docs
 }
 ```
 
-In practice, sites also install the rest of the Chassis stack — `@chassis-ui/tokens`, `@chassis-ui/icons` — to render the layouts and styles correctly.
+A site also installs `@astrojs/mdx` and the rest of the Chassis stack, `@chassis-ui/tokens` and `@chassis-ui/icons`.
 
-## Usage
+## Setup
+
+A site needs four things before it can use the layouts: the integration, a `config.yml`, two content collections and the static files that the layouts link to.
+
+### 1. Add the integration
+
+```ts
+// astro.config.ts
+import { defineConfig } from 'astro/config'
+import mdx from '@astrojs/mdx'
+import { chassisDocs } from '@chassis-ui/docs/integration'
+
+export default defineConfig({
+  integrations: [chassisDocs(), mdx()]
+})
+```
+
+The integration:
+
+- reads and validates `config.yml` and `data/sidebar.yml`, and gives them to the layouts and components
+- sets `site` from `baseURL`, unless the Astro config sets `site` itself
+- sets `markdown`: heading anchors, Shiki themes, and the `[[config:key]]` and `[[docsref:/path]]` replacements
+- imports the shortcodes into every MDX file
+- fails the build when a `[[docsref:]]` link points to a page that was not built
+
+It finds every file from the Astro root, the directory that holds `astro.config.ts`. The working directory of the build does not matter.
+
+| Option           | Default                                  | Meaning                                                                                            |
+| ---------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `config`         | none                                     | The config, when the site has loaded it itself with `loadConfig()`                                 |
+| `configFile`     | `'config.yml'`                           | Path of the config file, from the site's root                                                      |
+| `configSchema`   | `configSchema`                           | Schema of the config file. See [keys of your own](#keys-of-your-own)                               |
+| `sidebarFile`    | `'data/sidebar.yml'`, when it exists     | Path of the sidebar data, or `false` for no sidebar                                                |
+| `styles`         | `['src/scss/docs.scss']`, when it exists | Stylesheets that every page loads. Without one, the package's own styles are loaded                |
+| `shortcodes`     | all                                      | `{ dir, include, exclude }`. See [shortcodes](#shortcodes)                                         |
+| `markdown`       | none                                     | `{ remarkPlugins, rehypePlugins, remarkRehype }` of the site. They run after the package's plugins |
+| `brokenDocsrefs` | `'error'`                                | `'error'`, `'warn'` or `'ignore'`                                                                  |
+
+### 2. Write `config.yml`
+
+```yaml
+title: 'Chassis - CSS'
+subtitle: 'A Tokenized CSS Framework'
+description: 'An open-source, tokenized CSS framework.'
+authors: 'Ozgur Gunes'
+baseURL: 'https://chassis-ui.com/css'
+docsPath: '/css/docs'
+repo: 'https://github.com/chassis-ui/css'
+currentVersion: '0.5.2'
+```
+
+| Key                                           | Required | Meaning                                                                                           |
+| --------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `title`, `subtitle`, `description`, `authors` | yes      | Used in the page title and the meta tags                                                          |
+| `baseURL`                                     | yes      | Canonical URL of the site                                                                         |
+| `docsPath`                                    | yes      | URL path of the docs pages. Starts with `/`                                                       |
+| `repo`                                        | yes      | URL of the repository                                                                             |
+| `currentVersion`                              | yes      | Version that the site documents. Links to source files use the tag `v<currentVersion>`            |
+| `githubOrg`                                   | no       | GitHub organisation name, not a URL. The header links to it                                       |
+| `figmaHandle`                                 | no       | Figma Community handle. The header links to it                                                    |
+| `xUsername`                                   | no       | X handle. Used in the social meta tags                                                            |
+| `analytics.googleId`                          | no       | Google Analytics ID. Loaded in production builds only                                             |
+| `anchors.min`, `anchors.max`                  | no       | Heading levels that get an anchor link. Default 2 to 5                                            |
+| `toc.min`, `toc.max`                          | no       | Heading levels in the table of contents. Default 2 to 6                                           |
+| `sourceDir`                                   | no       | Directory that `file` props are relative to, from the site's root, e.g. `"../css"`. Default `"."` |
+| `sourcePath`                                  | no       | The same directory from the root of the repository, e.g. `"packages/css"`                         |
+| `sitePath`                                    | no       | The site's root from the root of the repository, e.g. `"packages/site"`                           |
+| `siteBranch`                                  | no       | The branch that "View on GitHub" links to. Default `main`                                         |
+
+`file` props are those of `<ScssDocs>`, `<ScssDocsSimple>`, `<JsDocs>` and `<Code filePath>`.
+
+The schema is strict. A key that it does not know fails the build, so a typing error cannot go unnoticed.
+
+#### Keys of your own
+
+Extend the schema and pass it to the integration. Use the `z` that the package exports, so that the site and the package share one copy of Zod.
+
+```ts
+// src/libs/config.ts
+import { configSchema, z } from '@chassis-ui/docs/schema'
+
+export const siteConfigSchema = configSchema.extend({
+  download: z.object({ dist: z.url(), source: z.url() })
+})
+
+export type SiteConfig = z.infer<typeof siteConfigSchema>
+```
+
+```ts
+// astro.config.ts
+integrations: [chassisDocs({ configSchema: siteConfigSchema })]
+```
 
 ```astro
 ---
-import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
-import DocsLayout from '@chassis-ui/docs/layouts/DocsLayout.astro'
+import { getConfig } from '@chassis-ui/docs/site'
+import type { SiteConfig } from '@libs/config'
+
+const { download } = getConfig<SiteConfig>()
+---
+```
+
+### 3. Define the content collections
+
+The layouts read the `docs` collection, and `<Callout name>` reads the `callouts` collection.
+
+```ts
+// src/content.config.ts
+import { defineCollection } from 'astro:content'
+import { glob } from 'astro/loaders'
+import { calloutsSchema, docsSchema } from '@chassis-ui/docs/schema'
+
+export const collections = {
+  docs: defineCollection({
+    loader: glob({ pattern: '**/*.{md,mdx}', base: './content/docs' }),
+    schema: docsSchema
+  }),
+  callouts: defineCollection({
+    loader: glob({ pattern: '**/*.md', base: './content/callouts' }),
+    schema: calloutsSchema
+  })
+}
+```
+
+### 4. Provide the static files
+
+The layouts link to files under `/static/`, which the site puts into its `public` directory:
+
+| URL                                                                  | From                                      |
+| -------------------------------------------------------------------- | ----------------------------------------- |
+| `/static/css/chassis.css`, `/static/css/chassis.min.css`             | the `dist` folder of `@chassis-ui/css`    |
+| `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css` | the `icons` folder of `@chassis-ui/icons` |
+| `/static/images/*`: logo, favicons, social image                     | the docs build of `chassis-assets`        |
+
+These helpers find the folders, whether `node_modules` is in the site's root or in the root of the repository: `getChassisCSSFsPath()`, `getChassisIconsFsPath()`, `getChassisAssetsFsPath()` and `getChassisTokensFsPath()`. Each takes `{ root, dir }`.
+
+A site that type-checks with `astro check` declares the `@chassis-ui/css` module, which has no types: `declare module '@chassis-ui/css'`.
+
+### 5. Use the layouts
+
+```astro
+---
 import SingleLayout from '@chassis-ui/docs/layouts/SingleLayout.astro'
-
-import TableOfContents from '@chassis-ui/docs/components/TableOfContents.astro'
-import ThemeToggler from '@chassis-ui/docs/components/ThemeToggler.astro'
-
-import { generateToc, getStaticImageSize } from '@chassis-ui/docs'
 ---
 
-<SingleLayout title="About" description="…">
-  <slot />
+<SingleLayout title="About" description="What Chassis is and who makes it.">
+  <p>Page content.</p>
 </SingleLayout>
 ```
 
-## What a site must provide
+## Shortcodes
 
-The layouts and components read from the consuming site. A site must provide the
-following, or the build fails.
+Every component in `@chassis-ui/docs/shortcodes/` is available in MDX files without an import. So is every component in the site's `src/components/shortcodes/`. A component of the site replaces the package's component of the same name.
 
-### Modules behind the `@libs/*` path alias
+```ts
+chassisDocs({
+  shortcodes: {
+    // Leave out shortcodes whose names the site uses for something else
+    exclude: ['Icon']
+  }
+})
+```
 
-The site maps `@libs/*` to its own `src/libs/*` in `tsconfig.json`, and each module
-exports:
+## What pages read from the site
 
-| Module            | Exports                                                                         | Read by                                |
-| ----------------- | ------------------------------------------------------------------------------- | -------------------------------------- |
-| `@libs/config`    | `getConfig()`, returning the parsed `config.yml`                                | most layouts and components            |
-| `@libs/content`   | `docsPages`, the `docs` collection. `getCalloutByName(name)` and `CalloutName`. | `DocsLayout`, `DocsSidebar`, `Callout` |
-| `@libs/data`      | `getData('sidebar')`, and the types `SidebarItem` and `SidebarSubItem`          | `DocsSidebar`                          |
-| `@libs/path`      | `getChassisDocsPath(path)` and `getDocsPublicFsPath()`                          | `DocsLayout`, `Social`                 |
-| `@libs/clipboard` | `initCopyButtons(selector, getText)`                                            | `Code`                                 |
+`@chassis-ui/docs/site` is for pages and components. It does not work in `astro.config.ts` or in the browser.
 
-The site also defines a `docs` content collection. Its entry type is used by
-`BaseLayout` and `DocsLayout`.
+| Function                                           | Returns                                                             |
+| -------------------------------------------------- | ------------------------------------------------------------------- |
+| `getConfig()`                                      | The parsed `config.yml`                                             |
+| `getSidebar()`                                     | The parsed `data/sidebar.yml`                                       |
+| `getDocsPath(path)`                                | URL path of a docs page                                             |
+| `getDocsPages()`                                   | The entries of the `docs` collection                                |
+| `getCallout(name)`                                 | An entry of the `callouts` collection                               |
+| `getSiteRoot()`, `getSiteFsPath(file)`             | Absolute path of the site's root, or of a file in it                |
+| `getPublicFsPath(file)`                            | Absolute path of a file in the `public` directory                   |
+| `getSourceFsPath(file)`                            | Absolute path of a file that a `file` prop names                    |
+| `getSourceUrl(file)`                               | URL of a source file on GitHub, at the tag of the current version   |
+| `getSiteFileUrl(filePath)`                         | URL of a file of the site on GitHub, on the site's branch           |
+| `getPackageFilePath(file)`                         | Absolute path of a file of this package, e.g. `'js/color-modes.js'` |
+| `resolveConfigRefs(text)`, `resolveDocsrefs(text)` | `text` with `[[config:]]` or `[[docsref:]]` replaced                |
+| `createDataLoader(definitions)`                    | A `getData(name)` function for the site's own YAML files in `data/` |
 
-### Keys in `config.yml`
-
-`getConfig()` must return these keys:
-
-- `title`, `subtitle`, `description`, `authors`
-- `repo`, `current_version`, `docsPath`
-- `github_org`, `figma_handle`, `x_username`
-- `anchors.min`, `anchors.max`
-- `analytics.google_id`
-
-These keys are optional. They say where files live when the site is not built from the
-root of its repository:
-
-| Key          | Meaning                                                                                                           | Example           |
-| ------------ | ----------------------------------------------------------------------------------------------------------------- | ----------------- |
-| `sourceDir`  | Directory that the `file` props of the source-file shortcodes are relative to, from the build's working directory | `"../css"`        |
-| `sourcePath` | The same directory, from the root of the repository                                                               | `"packages/css"`  |
-| `sitePath`   | The site's root, from the root of the repository                                                                  | `"packages/site"` |
-| `siteBranch` | The branch that "View on GitHub" links to. Defaults to `main`.                                                    | `"main"`          |
-
-The source-file shortcodes are `<ScssDocs>`, `<ScssDocsSimple>`, `<JsDocs>` and
-`<Code filePath>`. They link to their files at the tag `v<current_version>`.
-
-A site that validates `config.yml` with `z.object` must add the optional keys to its
-schema. Otherwise they are dropped silently.
+Code that runs while Astro loads its configuration uses the library functions of the root entry instead: `loadConfig()`, `loadData()`, `loadSidebar()` and the path helpers.
 
 ## Exports
 
-| Subpath                         | Contents                                                                                                                     |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `@chassis-ui/docs`              | Library functions: `highlight`, `image`, `layout`, `markdown`, `placeholder`, `rehype`, `shortcodes`, `site`, `toc`, `utils` |
-| `@chassis-ui/docs/layouts/*`    | `BaseLayout`, `DocsLayout`, `RedirectLayout`, `SingleLayout`                                                                 |
-| `@chassis-ui/docs/components/*` | `DocsSidebar`, `FeatureCard`, `NavLink`, `ResponsiveImage`, `TableOfContents`, `ThemeToggler`                                |
-| `@chassis-ui/docs/shortcodes/*` | MDX shortcode components                                                                                                     |
-| `@chassis-ui/docs/libs/*`       | Direct access to individual library modules                                                                                  |
-| `@chassis-ui/docs/js/*`         | Client-side scripts                                                                                                          |
-| `@chassis-ui/docs/scss/*`       | SCSS utilities and partials                                                                                                  |
+These import paths are the public API.
 
-### Source Layout
+| Path                            | Contents                                                                                                                                                                                                                           |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@chassis-ui/docs`              | Library functions that work anywhere: config and data loaders, path helpers, `getSiteUrl`, `getDocsMarkdownConfig`, the remark and rehype plugins, `chassisAutoImport`, `generateToc`, `highlightCode`, image and string utilities |
+| `@chassis-ui/docs/integration`  | `chassisDocs()` and the type of its options                                                                                                                                                                                        |
+| `@chassis-ui/docs/schema`       | `z`, `configSchema`, `sidebarSchema`, `docsSchema`, `calloutsSchema`, the version validators, and the types `ChassisConfig`, `Sidebar`, `SidebarItem`, `DocsFrontmatter`, `DocsPage`                                               |
+| `@chassis-ui/docs/site`         | What pages read from the site. See above                                                                                                                                                                                           |
+| `@chassis-ui/docs/layouts/*`    | `BaseLayout`, `DocsLayout`, `RedirectLayout`, `SingleLayout`                                                                                                                                                                       |
+| `@chassis-ui/docs/components/*` | `DocsSidebar`, `FeatureCard`, `NavLink`, `ResponsiveImage`, `TableOfContents`, `ThemeToggler`                                                                                                                                      |
+| `@chassis-ui/docs/shortcodes/*` | The MDX shortcodes                                                                                                                                                                                                                 |
+| `@chassis-ui/docs/js/*`         | Client-side scripts: `example-mode.js`, `clipboard.ts`, `color-modes.js` and others                                                                                                                                                |
+| `@chassis-ui/docs/scss/main`    | The styles of the package                                                                                                                                                                                                          |
+| `@chassis-ui/docs/scss/vars`    | The Sass variables and custom properties of the docs, for a site's own stylesheets                                                                                                                                                 |
 
-```
-src/
-├── components/      # Astro components (+ shortcodes/)
-├── layouts/         # Page layouts (+ head/, header/, footer/)
-├── libs/            # Utility libraries
-├── js/              # Client-side scripts
-└── scss/            # Styling utilities
-```
+`package.json` still resolves other paths, such as `@chassis-ui/docs/libs/*` and the other partials under `scss/`. They are not public and will stop resolving.
+
+The integration provides four modules: `virtual:chassis-docs/config`, `virtual:chassis-docs/sidebar`, `virtual:chassis-docs/paths` and `virtual:chassis-docs/styles`. Use the functions of `@chassis-ui/docs/site` instead of importing them.
+
+## Versioning
+
+The package follows [Semantic Versioning](https://semver.org/). Before 1.0 that means:
+
+- A minor release, 0.x.0, may contain breaking changes. Each one is listed in the changelog and has a step in [UPGRADING.md](UPGRADING.md).
+- A patch release, 0.x.y, contains none.
+
+A change is breaking when it changes something that this README documents:
+
+- the import paths listed under [Exports](#exports), and what they export
+- the options of the integration
+- the keys of `config.yml`, and the schemas of the sidebar and the content collections
+- the props and slots of the layouts, components and shortcodes
+- the `[[config:]]` and `[[docsref:]]` syntax
+- the URLs under `/static/` that the layouts link to
+- the supported versions of Node, Astro and `@chassis-ui/css`
+
+Everything else may change in a patch release: the rendered HTML, class names, the content of the styles, and every file that is not reachable through a documented import path.
+
+1.0 is released when all three hold:
+
+1. Every Chassis site uses the integration and carries no copy of code that the package provides.
+2. Unit tests and builds of a fixture site run before every release.
+3. Releases are automated and published with provenance.
 
 ## Chassis Ecosystem
 
@@ -141,6 +279,7 @@ This package is part of the Chassis Design System's multi-repository architectur
 | [chassis-icons](https://github.com/chassis-ui/icons)     | Icon library and build toolkit                                 |
 | [chassis-assets](https://github.com/chassis-ui/assets)   | Multi-platform asset management                                |
 | [chassis-figma](https://github.com/chassis-ui/figma)     | Figma component documentation                                  |
+| [chassis-react](https://github.com/chassis-ui/react)     | React component library                                        |
 
 All documentation sites in the ecosystem share this package for consistent layouts, components, and styling.
 

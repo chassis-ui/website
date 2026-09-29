@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+This becomes 0.6.0, a breaking release of `packages/docs`. [UPGRADING.md](packages/docs/UPGRADING.md) has the steps for a site.
+
+### Added
+
+- `packages/docs`: the `chassisDocs()` integration, at `@chassis-ui/docs/integration`. It reads `config.yml` and `data/sidebar.yml`, sets `site` and `markdown`, imports the shortcodes into MDX files and checks `[[docsref:]]` links. It finds every file from the Astro root, so the working directory of the build does not matter.
+- `packages/docs`: `@chassis-ui/docs/schema` exports the schemas of `config.yml`, the sidebar and the `docs` and `callouts` collections, with their types. A site extends `configSchema` for keys of its own.
+- `packages/docs`: `@chassis-ui/docs/site` exports what pages read from the site: `getConfig()`, `getSidebar()`, `getDocsPath()`, `getDocsPages()`, `getCallout()`, the path and URL helpers, `getPackageFilePath()` and `createDataLoader()`.
+- `packages/docs`: the root entry exports `loadConfig()`, `loadData()`, `loadSidebar()`, the remark plugins `remarkCxConfig` and `remarkCxDocsref`, and one implementation of `getChassisTokensFsPath()`, `getChassisAssetsFsPath()`, `getChassisCSSFsPath()` and `getChassisIconsFsPath()`.
+- `packages/docs`: `js/clipboard.ts`, which every site carried a copy of.
+- `packages/docs`: `include` and `exclude` options for the shortcodes. A shortcode of the site replaces the package's shortcode of the same name.
+- `packages/docs`: a versioning policy in the README, and `scss/vars` as a public partial.
+
+### Changed
+
+- **Breaking.** `packages/docs`: the package no longer imports `@libs/config`, `@libs/content`, `@libs/data`, `@libs/path`, `@libs/clipboard` or `@scss/docs.scss` from the site. A site adds the integration instead.
+- **Breaking.** `packages/docs`: `config.yml` keys are camelCase: `currentVersion`, `githubOrg`, `figmaHandle`, `xUsername` and `analytics.googleId`. An old name fails the build with a message that names the new one.
+- **Breaking.** `packages/docs`: three more keys are camelCase: `iconColor` in `data/sidebar.yml`, and `added.showBadge` and `extraJs` in the frontmatter of docs pages. An old name fails the build.
+- **Breaking.** `packages/docs`: the schema of `config.yml` is strict. An unknown key fails the build. It was dropped silently.
+- **Breaking.** `packages/docs`: `chassisAutoImport()` takes `{ root, dir, include, exclude }` and returns `{ imports, typeDefinitions, plugin }`. It finds the package's shortcodes from the package's own location, and the type declarations go to `.astro/`, not to `src/types/auto-import.d.ts`.
+- **Breaking.** `packages/docs`: `getSourceFsPath()`, `getSourceUrl()` and `getSiteFileUrl()` moved from `libs/source` to `@chassis-ui/docs/site`.
+- `packages/docs`: `githubOrg`, `figmaHandle`, `xUsername` and `analytics.googleId` are optional. The header links, the X meta tags and Google Analytics are left out when their key is not set.
+- `packages/docs`: `anchors`, `toc`, `siteBranch` and `sourceDir` have defaults.
+- `packages/docs`: packages whose types the shipped source imports are dependencies, not development dependencies.
+- Website: uses the integration, the schemas and the helpers of the package. Its copies under `src/libs` are deleted. The built site is unchanged.
+
+### Removed
+
+- **Breaking.** `packages/docs`: the `docsDir` key of `config.yml`. The site root is the Astro root.
+- **Breaking.** `packages/docs`: the `docsPath` and `modulesPath` options of `chassisAutoImport()`, and its `integration()`.
+
 ## [0.5.1] - 2026-09-29
 
 ### Added
