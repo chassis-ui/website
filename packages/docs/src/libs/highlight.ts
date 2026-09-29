@@ -1,5 +1,5 @@
 import { codeToHtml, type ShikiTransformer } from 'shiki'
-import { DOCS_SHIKI_THEMES } from './markdown'
+import { DOCS_SHIKI_THEMES, focusableTransformer } from './markdown'
 
 /**
  * Shiki transformer that renames the `shiki` CSS class on `<pre>` elements to
@@ -44,7 +44,7 @@ export async function highlightCode(
     lang,
     themes: DOCS_SHIKI_THEMES,
     defaultColor: false,
-    transformers: [...extraTransformers, classTransformer]
+    transformers: [...extraTransformers, classTransformer, focusableTransformer]
   })
 
   return { html: replaceShikiClasses(highlighted) }

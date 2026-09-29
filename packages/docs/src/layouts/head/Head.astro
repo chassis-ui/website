@@ -40,6 +40,14 @@ const pageTitle = isHome
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!--
+  A link, not an `@import` in the styles, so that the browser finds it with the page and
+  not after the stylesheet that imports it
+-->
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:wght@100..900&family=Archivo+Narrow:ital,wght@0,400..700;1,400..700&display=swap"
+/>
 
 <meta name="description" content={description} />
 

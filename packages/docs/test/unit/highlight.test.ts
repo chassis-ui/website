@@ -17,6 +17,12 @@ describe('highlightCode', () => {
     expect(html).toContain('github-dark')
   })
 
+  test('lets a keyboard focus the code block, so that it can scroll', async () => {
+    const { html } = await highlightCode('const a = 1', 'js')
+
+    expect(html).toMatch(/<pre[^>]* tabindex="0"/)
+  })
+
   test('marks every line of a shell snippet', async () => {
     const { html } = await highlightCode('# install\npnpm add @chassis-ui/docs', 'bash')
 

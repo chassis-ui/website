@@ -67,8 +67,8 @@ describe('getDocsMarkdownConfig', () => {
     expect(config.syntaxHighlight).toBe('shiki')
     expect(config.shikiConfig?.themes).toEqual(DOCS_SHIKI_THEMES)
     expect(config.shikiConfig?.defaultColor).toBe(false)
-    expect(config.shikiConfig?.transformers?.map((transformer) => transformer.name)).toContain(
-      'add-language-attribute'
+    expect(config.shikiConfig?.transformers?.map((transformer) => transformer.name)).toEqual(
+      expect.arrayContaining(['add-language-attribute', 'focusable-pre'])
     )
   })
 })

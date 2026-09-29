@@ -31,7 +31,12 @@ export default defineConfig([
     rules: {
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       'no-useless-escape': 'warn',
-      'prettier/prettier': 'warn'
+      'prettier/prettier': 'warn',
+      // A code block that scrolls sideways must take focus, so that a keyboard can scroll it
+      'astro/jsx-a11y/no-noninteractive-tabindex': [
+        'error',
+        { tags: ['pre'], roles: ['tabpanel'], allowExpressionValues: true }
+      ]
     }
   },
   {

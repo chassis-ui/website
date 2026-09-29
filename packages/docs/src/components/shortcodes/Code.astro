@@ -226,7 +226,7 @@ if (codeToDisplay && detectedLang) {
       ) : (
         <div class:list={['cxd-code', { 'line-numbers': lineNumbers }]}>
           {/* prettier-ignore */}
-          <pre class={className}><slot /></pre>
+          <pre class={className} tabindex="0"><slot /></pre>
         </div>
       )}
     </>
@@ -279,7 +279,7 @@ if (codeToDisplay && detectedLang) {
       ) : (
         <div class:list={['cxd-code', { 'line-numbers': lineNumbers }]}>
           {/* prettier-ignore */}
-          <pre class={className}><slot /></pre>
+          <pre class={className} tabindex="0"><slot /></pre>
         </div>
       )}
     </div>

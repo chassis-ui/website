@@ -36,6 +36,17 @@ const addLanguageAttributeTransformer: ShikiTransformer = {
 }
 
 /**
+ * Shiki transformer that puts `<pre>` in the tab order. A code block that is wider than the
+ * page scrolls sideways, and a keyboard can scroll it only when it can take focus.
+ */
+export const focusableTransformer: ShikiTransformer = {
+  name: 'focusable-pre',
+  pre(node) {
+    node.properties['tabindex'] = '0'
+  }
+}
+
+/**
  * Options accepted by `getDocsMarkdownConfig`.
  */
 export interface DocsMarkdownConfigOptions {
@@ -121,7 +132,8 @@ export function getDocsMarkdownConfig(options: DocsMarkdownConfigOptions): Markd
       transformers: [
         transformerNotationDiff(),
         transformerNotationHighlight(),
-        addLanguageAttributeTransformer
+        addLanguageAttributeTransformer,
+        focusableTransformer
       ]
     }
   }
