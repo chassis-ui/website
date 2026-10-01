@@ -23,7 +23,6 @@ We use Vercel's conditional rewrites (`has`) to detect the requesting domain and
 ### How It Works
 
 `vercel.json` contains conditional rewrites that:
-
 1. Check the `host` header of incoming requests.
 2. Route requests on `staging.chassis-ui.com` to staging services.
 3. Let production requests fall through to a default rule.
@@ -51,7 +50,6 @@ Each service has two rewrite rules per route:
 ```
 
 **How the rules work:**
-
 1. **First rule**: If the `host` header equals `staging.chassis-ui.com`, route to the staging service.
 2. **Second rule**: Fallback for all other hosts (production).
 
@@ -61,14 +59,14 @@ Each service has two rewrite rules per route:
 
 ### Project routes
 
-| Path        | Staging destination                          | Production destination               |
-| ----------- | -------------------------------------------- | ------------------------------------ |
+| Path | Staging destination | Production destination |
+|------|---------------------|------------------------|
 | `/assets/*` | `chassis-assets-staging.vercel.app/assets/*` | `chassis-assets.vercel.app/assets/*` |
-| `/css/*`    | `chassis-css-staging.vercel.app/css/*`       | `chassis-css.vercel.app/css/*`       |
+| `/css/*` | `chassis-css-staging.vercel.app/css/*` | `chassis-css.vercel.app/css/*` |
 | `/tokens/*` | `chassis-tokens-staging.vercel.app/tokens/*` | `chassis-tokens.vercel.app/tokens/*` |
-| `/figma/*`  | `chassis-figma-staging.vercel.app/figma/*`   | `chassis-figma.vercel.app/figma/*`   |
-| `/icons/*`  | `chassis-icons-staging.vercel.app/icons/*`   | `chassis-icons.vercel.app/icons/*`   |
-| `/react/*`  | `chassis-react-staging.vercel.app/react/*`   | `chassis-react.vercel.app/react/*`   |
+| `/figma/*` | `chassis-figma-staging.vercel.app/figma/*` | `chassis-figma.vercel.app/figma/*` |
+| `/icons/*` | `chassis-icons-staging.vercel.app/icons/*` | `chassis-icons.vercel.app/icons/*` |
+| `/react/*` | `chassis-react-staging.vercel.app/react/*` | `chassis-react.vercel.app/react/*` |
 
 chassis-react-staging.vercel.app is behind Vercel's deployment protection, unlike the
 other five staging deployments, so `staging.chassis-ui.com/react/` shows Vercel's login.
@@ -171,13 +169,13 @@ The first entry of `headers` in `vercel.json` applies to every path. Vercel adds
 headers of this project to the responses of external rewrites too, so they cover the
 proxied sibling pages as well as the website's own.
 
-| Header                                | Value                                                                              | Why                                                                                                                                                                                                                   |
-| ------------------------------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Content-Security-Policy-Report-Only` | See below                                                                          | Reports what the policy would block and blocks nothing yet.                                                                                                                                                           |
-| `X-Content-Type-Options`              | `nosniff`                                                                          | A script or stylesheet must be served with its own type.                                                                                                                                                              |
-| `X-Frame-Options`                     | `SAMEORIGIN`                                                                       | Other sites cannot frame a page. It is set on its own because `frame-ancestors` has no effect in a report-only policy.                                                                                                |
-| `Referrer-Policy`                     | `strict-origin-when-cross-origin`                                                  | Other sites see the origin only. Requests to the site itself keep the full URL, which the referrer-based `/static/*` rewrites need. Do not use `no-referrer`, `origin` or `strict-origin`: they break those rewrites. |
-| `Permissions-Policy`                  | `camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()` | No page uses these. Leave `fullscreen` and `autoplay` alone: the YouTube embed of the chassis-css docs uses them.                                                                                                     |
+| Header                                | Value                                               | Why                                                                                                                                                  |
+| ------------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Content-Security-Policy-Report-Only` | See below                                           | Reports what the policy would block and blocks nothing yet.                                                                                          |
+| `X-Content-Type-Options`              | `nosniff`                                           | A script or stylesheet must be served with its own type.                                                                                             |
+| `X-Frame-Options`                     | `SAMEORIGIN`                                        | Other sites cannot frame a page. It is set on its own because `frame-ancestors` has no effect in a report-only policy.                              |
+| `Referrer-Policy`                     | `strict-origin-when-cross-origin`                   | Other sites see the origin only. Requests to the site itself keep the full URL, which the referrer-based `/static/*` rewrites need. Do not use `no-referrer`, `origin` or `strict-origin`: they break those rewrites. |
+| `Permissions-Policy`                  | `camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()` | No page uses these. Leave `fullscreen` and `autoplay` alone: the YouTube embed of the chassis-css docs uses them.                           |
 
 HSTS is not set here. Vercel sends it for every custom domain.
 
@@ -187,15 +185,15 @@ The policy was written from a crawl of every sitemap URL of the six sites on 202
 then checked by serving production through a local proxy with the policy enforced. Each
 source is there for a reason:
 
-| Directive     | Sources beyond `'self'`                                                                         | Needed by                                                                                                                                                                     |
-| ------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `script-src`  | `'unsafe-inline'`, `'wasm-unsafe-eval'`, `cdn.jsdelivr.net`, `*.googletagmanager.com`           | Inline scripts of Astro and the `onclick` examples of chassis-css. Pagefind, which is WebAssembly. GSAP and Swiper on the home page, Fuse on chassis-icons. Google Analytics. |
-| `style-src`   | `'unsafe-inline'`, `cdn.jsdelivr.net`, `fonts.googleapis.com`                                   | `style` attributes throughout the docs. The Swiper stylesheet. Google Fonts.                                                                                                  |
-| `font-src`    | `data:`, `fonts.gstatic.com`                                                                    | The icon font inside the Swiper stylesheet. Google Fonts.                                                                                                                     |
-| `img-src`     | `data:`, `i.pravatar.cc`, `github.com`, `avatars.githubusercontent.com`, Google Analytics hosts | Inline images of the docs. The avatar examples and the team page of chassis-css.                                                                                              |
-| `connect-src` | Google Analytics hosts                                                                          | The analytics hits. Search, the contact form and the Pagefind index are on the site itself.                                                                                   |
-| `frame-src`   | `www.youtube.com`, `www.youtube-nocookie.com`                                                   | The ratio example of chassis-css.                                                                                                                                             |
-| `worker-src`  | none                                                                                            | The Pagefind worker.                                                                                                                                                          |
+| Directive     | Sources beyond `'self'`                                                                        | Needed by                                                                                                                  |
+| ------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `script-src`  | `'unsafe-inline'`, `'wasm-unsafe-eval'`, `cdn.jsdelivr.net`, `*.googletagmanager.com`          | Inline scripts of Astro and the `onclick` examples of chassis-css. Pagefind, which is WebAssembly. GSAP and Swiper on the home page, Fuse on chassis-icons. Google Analytics. |
+| `style-src`   | `'unsafe-inline'`, `cdn.jsdelivr.net`, `fonts.googleapis.com`                                  | `style` attributes throughout the docs. The Swiper stylesheet. Google Fonts.                                              |
+| `font-src`    | `data:`, `fonts.gstatic.com`                                                                   | The icon font inside the Swiper stylesheet. Google Fonts.                                                                  |
+| `img-src`     | `data:`, `i.pravatar.cc`, `github.com`, `avatars.githubusercontent.com`, Google Analytics hosts | Inline images of the docs. The avatar examples and the team page of chassis-css.                                          |
+| `connect-src` | Google Analytics hosts                                                                         | The analytics hits. Search, the contact form and the Pagefind index are on the site itself.                               |
+| `frame-src`   | `www.youtube.com`, `www.youtube-nocookie.com`                                                  | The ratio example of chassis-css.                                                                                          |
+| `worker-src`  | none                                                                                           | The Pagefind worker.                                                                                                       |
 
 `object-src 'none'`, `base-uri 'self'`, `form-action 'self'` and `frame-ancestors 'self'`
 close the rest. `'unsafe-inline'` stays as long as the sites have inline scripts and
@@ -220,12 +218,12 @@ fields, and escapes what it puts into the email. Counting requests needs state t
 function does not have, so the rate limit is a rule of the Vercel Web Application Firewall,
 set in the dashboard, not in this repository:
 
-| Setting | Value                                                                            |
-| ------- | -------------------------------------------------------------------------------- |
-| Name    | Contact form rate limit                                                          |
-| If      | Request Path matches the expression `^/api/contact/?$`, and Method equals `POST` |
-| Then    | Rate Limit, Fixed Window, 10 minutes, 5 requests, key IP                         |
-| Action  | Default (429)                                                                    |
+| Setting    | Value                                                          |
+| ---------- | -------------------------------------------------------------- |
+| Name       | Contact form rate limit                                        |
+| If         | Request Path matches the expression `^/api/contact/?$`, and Method equals `POST` |
+| Then       | Rate Limit, Fixed Window, 10 minutes, 5 requests, key IP       |
+| Action     | Default (429)                                                  |
 
 The site redirects `/api/contact` to `/api/contact/`, because of `trailingSlash`. The form
 posts to `/api/contact/` directly, so that a message counts once. The expression matches
@@ -245,7 +243,7 @@ by two endpoints would need a name that starts with `_` for the same reason.
 
 ## ⚠️ Vercel Deployment Protection
 
-**Disable Deployment Protection** on every sub-project that the website rewrites to (Vercel project Settings → Deployment Protection → _Disabled_). When it is enabled, Vercel intercepts proxied requests and 401-redirects them to a Vercel SSO page, which collapses the rewrite into a visible browser redirect to the underlying `*.vercel.app` URL.
+**Disable Deployment Protection** on every sub-project that the website rewrites to (Vercel project Settings → Deployment Protection → *Disabled*). When it is enabled, Vercel intercepts proxied requests and 401-redirects them to a Vercel SSO page, which collapses the rewrite into a visible browser redirect to the underlying `*.vercel.app` URL.
 
 **Symptom of a misconfigured project:**
 
@@ -260,13 +258,11 @@ The address bar will change from `staging.chassis-ui.com/tokens/` to `chassis-to
 ## Development Workflow
 
 ### Working on staging
-
 1. Branch off `staging`, do work, merge into `staging`.
 2. Push `staging` → Vercel deploys to `staging.chassis-ui.com`.
 3. URLs route to `*-staging.vercel.app` services automatically via host detection.
 
 ### Production release
-
 1. Merge `staging` → `main`.
 2. Push `main` → Vercel deploys to `chassis-ui.com`.
 3. URLs route to production `*.vercel.app` services automatically.
@@ -282,7 +278,6 @@ The address bar will change from `staging.chassis-ui.com/tokens/` to `chassis-to
 ## Technical Details
 
 ### Vercel configuration
-
 - Uses `"type": "header", "key": "host"` to detect the requesting domain.
 - Uses `"type": "header", "key": "referer"` for `/static/*` disambiguation.
 - Uses regex capture groups (`(.*)` / `$1`) in `source` / `destination`.
@@ -290,28 +285,24 @@ The address bar will change from `staging.chassis-ui.com/tokens/` to `chassis-to
 - Sub-projects use `"public": true` to mark deployments as publicly accessible (independent of Deployment Protection settings, which must also be off).
 
 ### Limitations
-
 - **Local development** — conditional rewrites do **not** work with `vercel dev`; must test on real staging/production URLs.
 - **Header leakage on rewrites** — Vercel external rewrites pass upstream response headers to the client. This is why production sub-projects must NOT add an `X-Robots-Tag: noindex` header (it would leak to `chassis-ui.com` and de-index production). See [INDEXING.md](INDEXING.md).
 
 ## Verification Commands
 
 Test staging:
-
 ```bash
 curl -sI https://staging.chassis-ui.com/css/
 # → HTTP/2 200, x-robots-tag: noindex, nofollow
 ```
 
 Test production:
-
 ```bash
 curl -sI https://chassis-ui.com/css/
 # → HTTP/2 200, no x-robots-tag
 ```
 
 Test direct sub-project access (should not be SSO-gated):
-
 ```bash
 curl -sI https://chassis-tokens.vercel.app/tokens/
 # → HTTP/2 200 (not 401)
