@@ -207,7 +207,7 @@ staticPath: '/css/static'
 
 The layouts, the `Icon` shortcode and the scripts of the package then link `/css/static/css/chassis.min.css` and so on. The files do not move: they stay in `static/` of the `public` directory. Two rewrites make the path answer:
 
-- on the host, from `/css/static/*` to `/static/*` of the site's deployment. chassis-ui.com has one for each Chassis site.
+- on the host, from `/css/static/*` to `/static/*` of the site's deployment.
 - in the site's own `vercel.json`, from `/css/static/(.*)` to `/static/$1`, so that the deployment also works when it is opened directly.
 
 Two kinds of URL are the site's own to move:

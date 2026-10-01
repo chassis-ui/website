@@ -92,8 +92,7 @@ projects' own Vercel deployments. The website only forwards the requests.
    [VERCEL_CONFIG.md](VERCEL_CONFIG.md) describes.
 4. If only its styles, scripts or images fail, the referrer-based `/static/*` rules did not
    match. A page opened without a `Referer`, or a browser that strips it, gets the website's
-   files instead. This goes away when the project moves to its `/<project>/static/` prefix,
-   task A6 of [SIBLING_TASKS.md](SIBLING_TASKS.md).
+   files instead. See "`/static/*` rewrites" in [VERCEL_CONFIG.md](VERCEL_CONFIG.md).
 
 While a project is down, the rest of the site keeps working. There is no fallback page for
 a single project.

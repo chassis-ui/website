@@ -98,14 +98,14 @@ Each sub-project's pages reference assets under `/static/...` (CSS, JS, images, 
   "source": "/static/(.*)",
   "has": [
     { "type": "header", "key": "host", "value": "staging.chassis-ui.com" },
-    { "type": "header", "key": "referer", "value": ".*/css/.*" }
+    { "type": "header", "key": "referer", "value": "https?://[^/]+/(?:static/)?css/.*" }
   ],
   "destination": "https://chassis-css-staging.vercel.app/static/$1"
 },
 {
   "source": "/static/(.*)",
   "has": [
-    { "type": "header", "key": "referer", "value": ".*/css/.*" }
+    { "type": "header", "key": "referer", "value": "https?://[^/]+/(?:static/)?css/.*" }
   ],
   "destination": "https://chassis-css.vercel.app/static/$1"
 }
@@ -113,33 +113,25 @@ Each sub-project's pages reference assets under `/static/...` (CSS, JS, images, 
 
 The same pattern is repeated for each project (`/css/`, `/icons/`, `/tokens/`, `/figma/`, `/assets/`, `/react/`). Order matters — staging-specific rules must come before production fallbacks.
 
+The pattern matches the project as the first part of the path of the page, not anywhere in
+it. Until 2026-10-01 it was `.*/css/.*`, which also matched `/icons/category/css/`: that
+page of the icons site got its files from the css deployment, and lost those that only the
+icons site has. The optional `static/` keeps one case of the old pattern: a font that a
+stylesheet under `/static/css/` or `/static/icons/` loads has that stylesheet as its
+`Referer`, and goes to the css or the icons deployment as before.
+
 A request without a `Referer`, or with one from another site, gets the website's own file,
-or a 404. That is why the rules are being replaced (decision D6 of the
-[roadmap](ROADMAP.md)).
+or a 404. Browsers send the header for a page's own files under the site's
+`Referrer-Policy`, so this is accepted (decision D6 of the [roadmap](ROADMAP.md)).
 
-### `/<project>/static/*` rewrites (path-based)
+One URL for all sites is what lets the browser keep one copy of the shared CSS, fonts and
+icons. The files are sent with `max-age=0, must-revalidate`: the browser asks each time,
+and gets a 304 when the file of the site it is on is the same as its copy, and that site's
+file when it differs.
 
-Next to the referrer-based rules, each project has a static prefix of its own, which needs
-no `Referer`:
-
-```json
-{ "source": "/css/static/(.*)", "destination": "https://chassis-css.vercel.app/static/$1" }
-```
-
-The files stay where they are, under `/static/` of the project's deployment. Only the URLs
-in the project's pages change. Each pair of rules sits before the project's catch-all rule,
-which would otherwise send `/css/static/…` to `/css/static/…` of the deployment, where
-nothing is.
-
-A project moves to its prefix in two steps, task A6 in [SIBLING_TASKS.md](SIBLING_TASKS.md):
-
-1. `@chassis-ui/docs` has an option for the prefix of static URLs since 0.6.2: the
-   `staticPath` key of `config.yml`, `/static` by default.
-2. The project sets it to `/<project>/static`, and adds a rewrite from
-   `/<project>/static/(.*)` to `/static/$1` in its own `vercel.json`, so that its
-   deployment still works when opened directly.
-
-When all six projects have moved, the referrer-based rules are removed.
+From 2026-09-29 to 2026-10-01 each project also had a prefix of its own,
+`/<project>/static/*`, for a move away from the `Referer` header. The move was called off
+because it ends the shared cache, and the rules were removed (decision D6).
 
 ## 🚫 Indexing-related headers
 
