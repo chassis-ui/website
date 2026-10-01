@@ -5,6 +5,9 @@ description: 'A minimal Chassis documentation site, to copy as the start of a ne
 authors: 'Chassis UI contributors'
 baseURL: 'https://example.com'
 docsPath: '/docs'
+# The URL path of the static files. A site that is served under a prefix of another host,
+# such as /css, sets it to '/css/static' and rewrites that path to /static.
+staticPath: '/static'
 repo: 'https://github.com/chassis-ui/website'
 currentVersion: '0.1.0'
 

@@ -13,6 +13,7 @@
 // is needed here.
 
 import { getInstanceManager } from '@pagefind/component-ui'
+import { staticPath } from 'virtual:chassis-docs/static'
 
 const DIALOG_SELECTOR = '#cxdSearchDialog'
 const SUB_RESULTS_LIMIT = 3
@@ -233,7 +234,7 @@ const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => 
 const renderItem = ({ url, titleHtml, excerptHtml = '', icon, sub = false }) => `
   <a class="cxd-search-item${sub ? ' cxd-search-subitem' : ''}" href="${escapeHtml(url)}">
     <svg class="icon cxd-search-item-icon" width="16" height="16" aria-hidden="true">
-      <use href="/static/icons/chassis-icons.svg#${icon}"></use>
+      <use href="${staticPath}/icons/chassis-icons.svg#${icon}"></use>
     </svg>
     <div class="cxd-search-item-body">
       <div class="cxd-search-item-title">${titleHtml}</div>

@@ -4,6 +4,8 @@
  *
  * Site footer with logo, license information, and navigation links.
  */
+
+import { getStaticPath } from '../../site'
 ---
 
 <footer class="cxd-footer py-6xl">
@@ -15,7 +17,7 @@
           href="/"
           aria-label="Chassis"
         >
-          <img src="/static/images/site-logo.svg" alt="Chassis UI" height="32" />
+          <img src={getStaticPath('images/site-logo.svg')} alt="Chassis UI" height="32" />
         </a>
         <p class="mb-xs">
           This project is licensed under the MIT License, which allows for free use, modification,

@@ -604,11 +604,15 @@ On 2026-09-29, after `develop` went to `staging`:
       `/<project>/static/*` to `/static/*` of the project's deployment and sits before its
       catch-all rule. Nothing answered under those paths before. A project can use them
       once the package has an option for the prefix of static URLs, the next task.
-- [ ] Add an option to `@chassis-ui/docs` for the prefix of static URLs. The package writes
+- [x] Add an option to `@chassis-ui/docs` for the prefix of static URLs. The package writes
       `/static/` in about fifteen places: the head, the header, the footer, the `Icon`
       shortcode and three scripts. Task A6 of the siblings waits on it. Deferred in session
-      4.2 on a recommendation that took it for out of scope, and left until the siblings
-      are upgraded.
+      4.2 on a recommendation that took it for out of scope, and built on 2026-10-01: the
+      `staticPath` key of `config.yml`, `/static` by default, and `getStaticPath()` for a
+      site's own URLs. The scripts read it from a new module, `virtual:chassis-docs/static`.
+      The files stay in `static/`. The `packages` layout of the fixture builds with a
+      prefix and checks that no URL of the page or of the scripts starts with `/static/`.
+      Astro's own files move with `build.assetsPrefix`, checked on the website.
 - [x] Add a link checker over the built site and the proxied routes.
       `build/check-links.js`, with linkinator, checks links, anchors and assets. On the
       built site it runs in the Build job of CI, from every page, since the guide is
@@ -771,8 +775,8 @@ On 2026-09-29, after `develop` went to `staging`, first at `6e7d767` and then at
 
 ### Exit criteria
 
-Met on 2026-09-29 except where noted. A6 needs a package option that is not scheduled
-yet, so it names no release.
+Met on 2026-09-29, and for A6 on 2026-10-01, when the package got the option it needs:
+A6 names 0.6.2.
 
 - The website carries no copy of a script or library that the package provides.
 - A release that a sibling's range accepts, and that would break its build, is reported
@@ -869,3 +873,4 @@ go here, in session 5.2.
 | 2026-09-29 | release  | Pushed sessions 5.1 to 5.3 and the maintainer's header and footer changes to `develop`, CI green, the reusable workflows among it. Renamed the required checks of the ruleset and pushed `staging`. Lighthouse passed. Links failed on the new `/react` link: chassis-react-staging is behind Vercel's deployment protection, which the maintainer keeps. At the maintainer's choice, the link checker now reports a broken link by the proxied project it points into, so a link into a sibling that is down or protected warns instead of failing. Updated RCT2. Pushed that to `develop` and `staging`: CI, Links and Lighthouse passed. Added F64 and "Checked on staging" to Phase 5. Fixed F64 in the link checker: a proxied project that redirects to Vercel's login is reported as a warning. `main` stays on hold.                                                                                                             |
 | 2026-09-29 | react    | chassis-react moved to `@chassis-ui/docs` 0.6.0 and did A7, A9, A12, RCT2, RCT3, RCT6 and RCT9, on its `develop` up to `227018b4`, with CI green. Checked the commits and recorded A1, A3, A4, A7, A9, A12, A16, A19, A20, RCT1, RCT2, RCT3, RCT5, RCT6, RCT8 and RCT9 as done for react. Its range, `^0.6.0`, makes it the first sibling that the canary builds, once it is on its default branch, `main`. The maintainer lifted the hold on production: the next release, 0.6.1, goes to `main`.                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | 2026-09-29 | release  | Released `@chassis-ui/docs` 0.6.1 and deployed production, the first time since 0.6.0: `develop`, then `staging`, then `main`, all at one commit. GitHub started no run for the first push of the release commit, so it was amended without a change and pushed again. The canary built chassis-react with 0.6.1 and passed. On staging, Links warned that the react site is behind Vercel's login, the F64 fix. On production: npm has 0.6.1 as `latest` with provenance, the headers and the report-only policy are served, `/privacy/` and `/react/` answer 200, Links passed, and the Dependabot alerts went to 0. Lighthouse got a 403 again, F40, so every URL is now run once. The policy reports to `/api/csp-report/`, which saves a redirect. A5 and A15 are open, RCT7 is done. Dependabot's first run from `main` opened #3 and failed on four major updates.                                                                |
+| 2026-10-01 | 4.2      | Built the static-prefix option that session 4.2 deferred: the `staticPath` key of `config.yml` and `getStaticPath()`, with tests, a fixture layout that builds under a prefix, and a changeset for 0.6.2. The website keeps `/static`. Rewrote A6, which now names 0.6.2, and set A14 to open: the reusable workflows have been on GitHub since the release.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |

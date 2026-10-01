@@ -22,4 +22,9 @@ declare module 'virtual:chassis-docs/paths' {
   export const packageRoot: string
 }
 
+declare module 'virtual:chassis-docs/static' {
+  /** `staticPath` of the config, for scripts that run in the browser. */
+  export const staticPath: string
+}
+
 declare module 'virtual:chassis-docs/styles' {}

@@ -133,8 +133,8 @@ nothing is.
 
 A project moves to its prefix in two steps, task A6 in [SIBLING_TASKS.md](SIBLING_TASKS.md):
 
-1. `@chassis-ui/docs` gets an option for the prefix of static URLs. The package writes
-   `/static/` today.
+1. `@chassis-ui/docs` has an option for the prefix of static URLs since 0.6.2: the
+   `staticPath` key of `config.yml`, `/static` by default.
 2. The project sets it to `/<project>/static`, and adds a rewrite from
    `/<project>/static/(.*)` to `/static/$1` in its own `vercel.json`, so that its
    deployment still works when opened directly.

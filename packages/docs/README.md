@@ -106,23 +106,24 @@ repo: 'https://github.com/chassis-ui/css'
 currentVersion: '0.5.2'
 ```
 
-| Key                                           | Required | Meaning                                                                                           |
-| --------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------- |
-| `title`, `subtitle`, `description`, `authors` | yes      | Used in the page title and the meta tags                                                          |
-| `baseURL`                                     | yes      | Canonical URL of the site                                                                         |
-| `docsPath`                                    | yes      | URL path of the docs pages. Starts with `/`                                                       |
-| `repo`                                        | yes      | URL of the repository                                                                             |
-| `currentVersion`                              | yes      | Version that the site documents. Links to source files use the tag `v<currentVersion>`            |
-| `githubOrg`                                   | no       | GitHub organisation name, not a URL. The header links to it                                       |
-| `figmaHandle`                                 | no       | Figma Community handle. The header links to it                                                    |
-| `xUsername`                                   | no       | X handle. Used in the social meta tags                                                            |
-| `analytics.googleId`                          | no       | Google Analytics ID. In production builds, loaded after the visitor accepts in a consent banner   |
-| `anchors.min`, `anchors.max`                  | no       | Heading levels that get an anchor link. Default 2 to 5                                            |
-| `toc.min`, `toc.max`                          | no       | Heading levels in the table of contents. Default 2 to 6                                           |
-| `sourceDir`                                   | no       | Directory that `file` props are relative to, from the site's root, e.g. `"../css"`. Default `"."` |
-| `sourcePath`                                  | no       | The same directory from the root of the repository, e.g. `"packages/css"`                         |
-| `sitePath`                                    | no       | The site's root from the root of the repository, e.g. `"packages/site"`                           |
-| `siteBranch`                                  | no       | The branch that "View on GitHub" links to. Default `main`                                         |
+| Key                                           | Required | Meaning                                                                                                                    |
+| --------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `title`, `subtitle`, `description`, `authors` | yes      | Used in the page title and the meta tags                                                                                   |
+| `baseURL`                                     | yes      | Canonical URL of the site                                                                                                  |
+| `docsPath`                                    | yes      | URL path of the docs pages. Starts with `/`                                                                                |
+| `staticPath`                                  | no       | URL path that the pages load the static files from. Default `/static`. See [A site under a prefix](#a-site-under-a-prefix) |
+| `repo`                                        | yes      | URL of the repository                                                                                                      |
+| `currentVersion`                              | yes      | Version that the site documents. Links to source files use the tag `v<currentVersion>`                                     |
+| `githubOrg`                                   | no       | GitHub organisation name, not a URL. The header links to it                                                                |
+| `figmaHandle`                                 | no       | Figma Community handle. The header links to it                                                                             |
+| `xUsername`                                   | no       | X handle. Used in the social meta tags                                                                                     |
+| `analytics.googleId`                          | no       | Google Analytics ID. In production builds, loaded after the visitor accepts in a consent banner                            |
+| `anchors.min`, `anchors.max`                  | no       | Heading levels that get an anchor link. Default 2 to 5                                                                     |
+| `toc.min`, `toc.max`                          | no       | Heading levels in the table of contents. Default 2 to 6                                                                    |
+| `sourceDir`                                   | no       | Directory that `file` props are relative to, from the site's root, e.g. `"../css"`. Default `"."`                          |
+| `sourcePath`                                  | no       | The same directory from the root of the repository, e.g. `"packages/css"`                                                  |
+| `sitePath`                                    | no       | The site's root from the root of the repository, e.g. `"packages/site"`                                                    |
+| `siteBranch`                                  | no       | The branch that "View on GitHub" links to. Default `main`                                                                  |
 
 `file` props are those of `<ScssDocs>`, `<ScssDocsSimple>`, `<JsDocs>` and `<Code filePath>`.
 
@@ -181,7 +182,7 @@ export const collections = {
 
 ### 4. Provide the static files
 
-The layouts link to files under `/static/`, which the site puts into its `public` directory:
+The layouts link to files under `/static/`, which the site puts into `static/` of its `public` directory:
 
 | URL                                                                  | From                                      |
 | -------------------------------------------------------------------- | ----------------------------------------- |
@@ -194,6 +195,27 @@ The layouts link to files under `/static/`, which the site puts into its `public
 These helpers find the folders, whether `node_modules` is in the site's root or in the root of the repository: `getChassisCSSFsPath()`, `getChassisIconsFsPath()`, `getChassisAssetsFsPath()` and `getChassisTokensFsPath()`. Each takes `{ root, dir }`.
 
 A site that type-checks with `astro check` declares the `@chassis-ui/css` module, which has no types: `declare module '@chassis-ui/css'`.
+
+#### A site under a prefix
+
+A site that is served under a path of another host, such as `chassis-ui.com/css`, cannot use `/static/` there: that path belongs to the host's own site. It loads its static files under a path of its own instead:
+
+```yaml
+# config.yml
+staticPath: '/css/static'
+```
+
+The layouts, the `Icon` shortcode and the scripts of the package then link `/css/static/css/chassis.min.css` and so on. The files do not move: they stay in `static/` of the `public` directory. Two rewrites make the path answer:
+
+- on the host, from `/css/static/*` to `/static/*` of the site's deployment. chassis-ui.com has one for each Chassis site.
+- in the site's own `vercel.json`, from `/css/static/(.*)` to `/static/$1`, so that the deployment also works when it is opened directly.
+
+Two kinds of URL are the site's own to move:
+
+- URLs that the site writes itself, in its pages and components. `getStaticPath('images/hero.png')` of `@chassis-ui/docs/site` returns the URL under `staticPath`.
+- The files that Astro builds, when the site puts them under `static/` with `build.assets`. Astro's `build.assetsPrefix` adds the prefix to them, `'/css'` here.
+
+A social image named in the frontmatter as `static/images/…` is read from the `public` directory and linked under `staticPath`.
 
 ### 5. Use the layouts
 
@@ -233,6 +255,7 @@ chassisDocs({
 | `getCallout(name)`                                 | An entry of the `callouts` collection                               |
 | `getSiteRoot()`, `getSiteFsPath(file)`             | Absolute path of the site's root, or of a file in it                |
 | `getPublicFsPath(file)`                            | Absolute path of a file in the `public` directory                   |
+| `getStaticPath(file)`                              | URL path of a static file, under `staticPath` of the config         |
 | `getSourceFsPath(file)`                            | Absolute path of a file that a `file` prop names                    |
 | `getSourceUrl(file)`                               | URL of a source file on GitHub, at the tag of the current version   |
 | `getSiteFileUrl(filePath)`                         | URL of a file of the site on GitHub, on the site's branch           |
@@ -343,7 +366,7 @@ These import paths are the public API.
 
 No other path resolves: `exports` in `package.json` lists these and nothing else. The layouts and components are listed by name, so the folders inside `layouts/` and `components/` are not reachable.
 
-The integration provides four modules: `virtual:chassis-docs/config`, `virtual:chassis-docs/sidebar`, `virtual:chassis-docs/paths` and `virtual:chassis-docs/styles`. Use the functions of `@chassis-ui/docs/site` instead of importing them.
+The integration provides five modules: `virtual:chassis-docs/config`, `virtual:chassis-docs/sidebar`, `virtual:chassis-docs/paths`, `virtual:chassis-docs/static` and `virtual:chassis-docs/styles`. Use the functions of `@chassis-ui/docs/site` instead of importing them.
 
 ## Compatibility
 
@@ -378,7 +401,7 @@ A change is breaking when it changes something that this README documents:
 - the keys of `config.yml`, and the schemas of the sidebar and the content collections
 - the props and slots of the layouts, components and shortcodes
 - the `[[config:]]` and `[[docsref:]]` syntax
-- the URLs under `/static/` that the layouts link to
+- the URLs under `staticPath`, `/static/` by default, that the layouts link to
 - the supported versions of Node, Astro and `@chassis-ui/css`
 
 Everything else may change in a patch release: the rendered HTML, class names, the content of the styles, and every file that is not reachable through a documented import path.

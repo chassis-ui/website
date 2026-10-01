@@ -10,3 +10,10 @@ export function joinDocsPath(docsPath: string, inputPath: string): string {
 
   return page ? `${base}/${page}` : base
 }
+
+/** Joins the static path of the config and a file: `('/css/static', 'css/chassis.css')`. */
+export function joinStaticPath(staticPath: string, file = ''): string {
+  const name = file.replace(/^\/+/, '')
+
+  return name ? `${staticPath}/${name}` : staticPath
+}

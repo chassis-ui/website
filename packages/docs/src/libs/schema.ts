@@ -70,6 +70,16 @@ export const configSchema = z.strictObject({
   sourceDir: z.string().default('.'),
   /** The same directory from the root of the repository, e.g. `"packages/css"`. */
   sourcePath: z.string().optional(),
+  /**
+   * URL path that the pages load the static files from, e.g. `"/css/static"`. The files stay
+   * in `static/` of the `public` directory: a site under a prefix of another host sets this
+   * and rewrites the path to `/static`.
+   */
+  staticPath: z
+    .string()
+    .regex(/^\/(.*[^/])?$/, 'Expected a URL path that starts with "/" and has no trailing slash')
+    .refine((value) => value !== '/', 'Expected a path below the root, such as "/static"')
+    .default('/static'),
   subtitle: z.string(),
   title: z.string(),
   /** Heading levels that the table of contents lists. */

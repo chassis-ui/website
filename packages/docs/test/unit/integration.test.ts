@@ -86,6 +86,12 @@ describe('chassisDocs: config', () => {
     expect(await loadVirtual('config')).toContain('"siteBranch":"main"')
   })
 
+  test('provides the static path to the scripts', async () => {
+    const { loadVirtual } = await setUp({})
+
+    expect(await loadVirtual('static')).toBe('export const staticPath = "/static"')
+  })
+
   test('watches the config file', async () => {
     const { root, watched } = await setUp({})
 
@@ -109,7 +115,8 @@ describe('chassisDocs: config', () => {
           anchors: { min: 2, max: 3 },
           toc: { min: 2, max: 3 },
           siteBranch: 'main',
-          sourceDir: '.'
+          sourceDir: '.',
+          staticPath: '/static'
         }
       }
     )

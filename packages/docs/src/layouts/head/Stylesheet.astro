@@ -6,9 +6,10 @@
  */
 
 import type { HTMLAttributes } from 'astro/types'
+import { getStaticPath } from '../../site'
 
 function getChassisCssProps() {
-  let cxCssLinkHref = '/static/css/chassis'
+  let cxCssLinkHref = getStaticPath('css/chassis')
 
   if (import.meta.env.PROD) {
     cxCssLinkHref = `${cxCssLinkHref}.min`
@@ -26,4 +27,4 @@ function getChassisCssProps() {
 ---
 
 <link {...getChassisCssProps()} />
-<link rel="stylesheet" href={`/static/icons/chassis-icons.css`} />
+<link rel="stylesheet" href={getStaticPath('icons/chassis-icons.css')} />

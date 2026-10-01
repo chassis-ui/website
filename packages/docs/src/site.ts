@@ -9,7 +9,7 @@ import sidebar from 'virtual:chassis-docs/sidebar'
 import * as paths from 'virtual:chassis-docs/paths'
 import { getCollection, getEntry, type render } from 'astro:content'
 import { loadData } from './libs/config'
-import { joinDocsPath } from './libs/docs-path'
+import { joinDocsPath, joinStaticPath } from './libs/docs-path'
 import { getNodeModulesFsPaths, resolvePackageFilePath } from './libs/paths'
 import { replaceConfigInText, replaceDocsrefInText } from './libs/remark'
 import type { ChassisConfig, DocsPage, Sidebar } from './libs/schema'
@@ -33,6 +33,14 @@ export function getSidebar(): Sidebar {
 /** URL path of a docs page, e.g. `getDocsPath('/components/button/')`. */
 export function getDocsPath(inputPath: string): string {
   return joinDocsPath(config.docsPath, inputPath)
+}
+
+/**
+ * URL path of a static file, under `staticPath` of the config:
+ * `getStaticPath('images/site-logo.svg')` is `/static/images/site-logo.svg` by default.
+ */
+export function getStaticPath(file = ''): string {
+  return joinStaticPath(config.staticPath ?? '/static', file)
 }
 
 /** Absolute path of the site's root: the directory that holds `astro.config.ts`. */

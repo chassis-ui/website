@@ -14,7 +14,8 @@
  *   as well.
  *
  * In both, the code that the site documents sits outside the site, and `sourceDir` points
- * to it.
+ * to it. The `packages` layout also loads its static files under a prefix, as a site does
+ * that is served under a path of chassis-ui.com.
  *
  * Usage: node build/fixture-sites.js [root|packages ...] [--keep]
  */
@@ -65,6 +66,7 @@ const layouts = {
     sitePath: 'site',
     sourcePath: 'source',
     sourceDir: '../source',
+    staticPath: '/static',
     build: ['exec', 'astro', 'build', '--root', 'site'],
     check: false,
     lint: ['exec', 'chassis-docs', 'html-validate', 'site/dist']
@@ -73,6 +75,7 @@ const layouts = {
     sitePath: 'packages/site',
     sourcePath: 'packages/source',
     sourceDir: '../source',
+    staticPath: '/starter/static',
     build: ['--filter', 'chassis-docs-starter', 'build'],
     check: ['--filter', 'chassis-docs-starter', 'check'],
     lint: ['--filter', 'chassis-docs-starter', 'lint:html']
@@ -129,6 +132,7 @@ function createRepository(name, layout, tarball, tempDir) {
   setConfigKey(configFile, 'sourceDir', layout.sourceDir)
   setConfigKey(configFile, 'sourcePath', layout.sourcePath)
   setConfigKey(configFile, 'sitePath', layout.sitePath)
+  setConfigKey(configFile, 'staticPath', layout.staticPath)
 
   const manifest = readJson(path.join(siteDir, 'package.json'))
 
@@ -230,6 +234,30 @@ function checkOutput(layout, siteDir) {
   readBuiltFile(distDir, 'static/images/site-logo.svg')
   readBuiltFile(distDir, 'static/css/chassis.min.css')
   readBuiltFile(distDir, 'static/icons/chassis-icons.css')
+
+  // The pages load the static files under `staticPath`. The files stay in `static/`.
+  const prefix = layout.staticPath
+
+  for (const file of ['css/chassis.min.css', 'icons/chassis-icons.css', 'images/favicon.png']) {
+    assert.ok(page.includes(`href="${prefix}/${file}"`), `The page does not link ${prefix}/${file}`)
+  }
+
+  assert.ok(
+    page.includes(`src="${prefix}/images/site-logo.svg"`),
+    'The logo is not loaded from the static path'
+  )
+  assert.ok(
+    page.includes(`href="${prefix}/icons/chassis-icons.svg#`),
+    'The icons are not loaded from the static path'
+  )
+
+  if (prefix !== '/static') {
+    assert.doesNotMatch(
+      page,
+      /(href|src|content)="\/static\//,
+      'A URL of the page still starts with /static/'
+    )
+  }
 
   // `src/scss/docs.scss` of the starter, which uses `scss/vars` and `scss/main`, compiled.
   const stylesheets = fs

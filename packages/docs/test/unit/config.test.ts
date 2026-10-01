@@ -25,8 +25,19 @@ describe('loadConfig', () => {
       anchors: { min: 2, max: 5 },
       toc: { min: 2, max: 6 },
       siteBranch: 'main',
-      sourceDir: '.'
+      sourceDir: '.',
+      staticPath: '/static'
     })
+  })
+
+  test('takes a static path under a prefix', () => {
+    const root = createTempDir({ 'config.yml': `${minimal}staticPath: '/css/static'\n` })
+
+    expect(loadConfig({ root }).staticPath).toBe('/css/static')
+  })
+
+  test.each(['static', '/static/', '/', ''])('rejects the static path %j', (staticPath) => {
+    expect(() => load(`${minimal}staticPath: '${staticPath}'\n`)).toThrow(/staticPath/)
   })
 
   test('reads a config file with another name', () => {

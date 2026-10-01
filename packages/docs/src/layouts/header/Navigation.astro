@@ -6,7 +6,7 @@
  */
 
 import type { Layout } from '../../libs/layout'
-import { getConfig } from '../../site'
+import { getConfig, getStaticPath } from '../../site'
 import NavLink from '../../components/NavLink.astro'
 import ThemeToggler from '../../components/ThemeToggler.astro'
 import SearchTrigger from './SearchTrigger.astro'
@@ -55,7 +55,7 @@ const isActive = (path: string) => {
     {layout !== 'docs' && <div class="lg:d-none" style="width: 4.25rem;" />}
 
     <a class="navbar-brand m-0 py-sm lg:me-md" href="/" aria-label="Chassis">
-      <img src="/static/images/site-logo.svg" alt="Chassis UI" width="123" height="32" />
+      <img src={getStaticPath('images/site-logo.svg')} alt="Chassis UI" width="123" height="32" />
     </a>
 
     <div class="d-flex">

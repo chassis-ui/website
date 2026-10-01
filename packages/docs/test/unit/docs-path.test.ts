@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { joinDocsPath } from '../../src/libs/docs-path'
+import { joinDocsPath, joinStaticPath } from '../../src/libs/docs-path'
 
 describe('joinDocsPath', () => {
   test('joins the docs path and the page path with one slash', () => {
@@ -18,5 +18,18 @@ describe('joinDocsPath', () => {
 
   test('uses forward slashes on every platform', () => {
     expect(joinDocsPath('/docs', 'a/b')).not.toContain('\\')
+  })
+})
+
+describe('joinStaticPath', () => {
+  test('joins the static path and the file with one slash', () => {
+    expect(joinStaticPath('/static', 'css/chassis.css')).toBe('/static/css/chassis.css')
+    expect(joinStaticPath('/css/static', '/icons/chassis-icons.svg')).toBe(
+      '/css/static/icons/chassis-icons.svg'
+    )
+  })
+
+  test('returns the static path for no file', () => {
+    expect(joinStaticPath('/css/static')).toBe('/css/static')
   })
 })

@@ -7,7 +7,7 @@
 
 import { getRemoteImageSize, getStaticImageSize } from '../../libs/image'
 import type { Layout } from '../../libs/layout'
-import { getConfig, getPublicFsPath } from '../../site'
+import { getConfig, getPublicFsPath, getStaticPath } from '../../site'
 
 interface Props {
   /** Page description */
@@ -22,7 +22,10 @@ interface Props {
 
 const { description, layout, thumbnail, title } = Astro.props
 
-const socialImageUrl = new URL(thumbnail, Astro.site)
+// A file in `static/` of the `public` directory is read from there, and linked under
+// `staticPath` of the config.
+const staticFile = thumbnail.match(/^\/?static\/(.+)$/)?.[1]
+const socialImageUrl = new URL(staticFile ? getStaticPath(staticFile) : thumbnail, Astro.site)
 const isRemoteThumbnail = /^https?:\/\//i.test(thumbnail)
 const socialImageSize = isRemoteThumbnail
   ? await getRemoteImageSize(thumbnail)

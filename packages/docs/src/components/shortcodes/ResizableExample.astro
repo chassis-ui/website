@@ -3,6 +3,7 @@ import { replacePlaceholdersInHtml } from '../../libs/placeholder'
 import { replaceIconsInHtml } from '../../libs/icon'
 import Code from './Code.astro'
 import Icon from './Icon.astro'
+import { getStaticPath } from '../../site'
 
 interface Props {
   /**
@@ -67,7 +68,7 @@ const {
 
 let markup = Array.isArray(code) ? code.join('\n') : code
 markup = replacePlaceholdersInHtml(markup)
-markup = replaceIconsInHtml(markup)
+markup = replaceIconsInHtml(markup, getStaticPath())
 
 // The resizable container needs `overflow: hidden` for the CSS `resize` handle
 // to work, which clips popovers like menus/dropdowns when they open. Render them

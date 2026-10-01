@@ -22,6 +22,15 @@ describe('replaceIconsInHtml', () => {
     )
   })
 
+  test('loads the sprite from the static path of the site', () => {
+    expect(replaceIconsInHtml('<Icon name="check" />', '/css/static')).toContain(
+      '<use href="/css/static/icons/chassis-icons.svg#check">'
+    )
+    expect(replaceIconsInHtml('<Icon name="x" sprite="/icons.svg" />', '/css/static')).toContain(
+      '<use href="/icons.svg#x">'
+    )
+  })
+
   test('renders a font icon', () => {
     expect(replaceIconsInHtml('<Icon name="check" font />')).toBe(
       '<span class="icon cx-check" aria-hidden="true"></span>'

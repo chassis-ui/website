@@ -20,7 +20,7 @@ interface IconOptions {
  * actually invoked — they need to be expanded to their rendered markup ahead of time.
  * @see src/components/shortcodes/Icon.astro
  */
-export function replaceIconsInHtml(html: string) {
+export function replaceIconsInHtml(html: string, staticPath = '/static') {
   return html.replace(iconRegex, (match) => {
     const document = htmlparser2.parseDocument(match, { xmlMode: true })
     const iconElement = document.firstChild
@@ -34,11 +34,11 @@ export function replaceIconsInHtml(html: string) {
       throw new Error('Invalid icon element.')
     }
 
-    return renderIconToString(getOptionsWithDefaults(iconElement.attribs))
+    return renderIconToString(getOptionsWithDefaults(iconElement.attribs, staticPath))
   })
 }
 
-function getOptionsWithDefaults(attribs: Record<string, string>): IconOptions {
+function getOptionsWithDefaults(attribs: Record<string, string>, staticPath: string): IconOptions {
   if (!attribs.name) {
     throw new Error('Icon element is missing the required "name" attribute.')
   }
@@ -48,7 +48,7 @@ function getOptionsWithDefaults(attribs: Record<string, string>): IconOptions {
     class: attribs.class,
     size: attribs.size ? Number(attribs.size.replace(/[{}]/g, '')) : 24,
     font: attribs.font !== undefined && attribs.font !== '{false}',
-    sprite: attribs.sprite || '/static/icons/chassis-icons.svg',
+    sprite: attribs.sprite || `${staticPath}/icons/chassis-icons.svg`,
     title: attribs.title
   }
 }

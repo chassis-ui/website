@@ -90,6 +90,10 @@ declare module 'virtual:chassis-docs/paths' {
   export const packageRoot: string
 }
 
+declare module 'virtual:chassis-docs/static' {
+  export const staticPath: string
+}
+
 declare module 'virtual:chassis-docs/styles' {}
 `
 
@@ -234,6 +238,8 @@ export function chassisDocs<TSchema extends z.ZodType = typeof configSchema>(
                 paths: Object.entries(paths)
                   .map(([name, value]) => `export const ${name} = ${JSON.stringify(value)}`)
                   .join('\n'),
+                // A config that was not loaded with `loadConfig()` may lack the default.
+                static: `export const staticPath = ${JSON.stringify(config.staticPath ?? '/static')}`,
                 styles: styles.map((file) => `import ${JSON.stringify(file)}`).join('\n')
               })
             ]
