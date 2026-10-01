@@ -722,56 +722,9 @@ change them.
 - [x] Move the website to `@chassis-ui/tokens` 0.6. The built site is byte-identical:
       the styles take the tokens that `@chassis-ui/css` carries. The starter moved too.
 - [ ] Move the website's assets submodule to the current commit. Decide whether the
-      website keeps the submodule. See decision D9. The pin is the tip of `app/docs`, so
-      there is nothing to move. `main` of chassis-assets is one commit ahead, which changes
-      its own docs site only. D9 stays open.
-
-### Session 5.3: canary and compatibility
-
-- [x] Add a canary job that clones each sibling whose range accepts the version being
-      released, installs the packed package into it and builds its site. It runs before
-      a release and reports. It does not push anything. `build/canary.js`, run by
-      `canary.yml` on a push to `develop` that sets a version npm does not have, and by
-      hand. It reports only, by the maintainer's choice: nothing requires it. The docs
-      build of `vendor/assets` is built once and copied into each sibling. Today every
-      range is `^0.5`, so it skips all six. Forced on chassis-figma, it installed the
-      tarball and failed on the 0.6 API, as it should.
-- [x] Publish a compatibility table: which `@chassis-ui/docs` version works with which
-      `@chassis-ui/css`, `@chassis-ui/tokens` and Astro versions. "Compatibility" in the
-      package README, from the declared ranges of every published version and the
-      lockfile at each release tag. Tokens are not a dependency: the styles use the ones
-      that `@chassis-ui/css` carries. `CONTRIBUTING.md` adds a row at each release.
-- [x] Review [SIBLING_TASKS.md](SIBLING_TASKS.md) against the current state of each
-      sibling. Remove what is done. A10 was done in css, tokens and react, and is
-      narrowed to icons and figma. Nothing else was done. AST6, ICO4 and FIG4 repeated
-      A7 and were folded into it. A5 and A15 name 0.6.1.
-
-### Checked on staging
-
-On 2026-09-29, after `develop` went to `staging`, first at `6e7d767` and then at `b5f65a0`:
-
-- CI passed on both commits, the first runs of the reusable workflows. The checks were
-  named `Lint / Lint`, `Type Check / Type Check` and `Build / Build`. The ruleset was
-  changed to require those names before the push to `staging`, which it then accepted.
-- The canary ran its first job only, since npm has 0.6.0, and skipped the builds.
-- The header and the footer link React, and the privacy page is titled "Privacy Policy ·
-  Chassis UI".
-- `staging.chassis-ui.com/react/` answered 404 at first: chassis-react had no staging
-  deployment. The maintainer created it the same day, behind Vercel's deployment
-  protection, so it now redirects to Vercel's login. The other five staging deployments
-  are not protected. The maintainer keeps the protection. A bypass secret of Vercel was
-  considered and turned down: each sibling would need its own, and a secret in
-  `vercel.json` would be public. See RCT2.
-- Links failed on the first push, on `/react`, the only broken link of this site. The
-  checker now reports a link into a proxied project under that project, so it warns
-  instead. On the second push it passed: 0 broken on this site, and 750 broken links on
-  the proxied sites, as warnings: 651 on icons, 44 on figma, 41 on css, 14 on tokens and 6
-  on assets. See A23. `/react` was not listed at all, see F64.
-- Lighthouse passed both times. Its SEO warnings come from the `noindex` header of
-  staging.
-- The push listed six Dependabot alerts, all for `examples/react-app/package-lock.json`.
-  Session 3.1 deleted that folder, but Dependabot reads `main`, which still has it. They
-  close when `main` moves.
+      website keeps the submodule. See decision D9. Moved on 2026-10-01 to `c42976e`, the
+      release of chassis-assets 0.2.0 and the tip of `app/docs`: the site builds, and the
+      HTML, link and accessibility checks pass. D9 stays open.
 
 ### Exit criteria
 
