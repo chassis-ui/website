@@ -22,6 +22,10 @@ on:
         description: The command that installs the dependencies
         type: string
         default: pnpm install --frozen-lockfile
+      timeout-minutes:
+        description: The minutes after which the job is cancelled
+        type: number
+        default: 10
 
 permissions:
   contents: read
@@ -30,16 +34,19 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout-minutes }}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ inputs.node-version }}
           node-version-file: ${{ inputs.node-version == '' && inputs.node-version-file || '' }}

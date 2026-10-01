@@ -8,12 +8,12 @@ This document describes how indexing is allowed on the production domain (`chass
 
 ## 🎯 Goals
 
-| Host | Should be indexed? |
-|---|---|
-| `chassis-ui.com/*` (production custom domain) | ✅ Yes |
-| `staging.chassis-ui.com/*` (staging custom domain) | ❌ No |
-| `chassis-{tokens,css,icons,figma,assets,react}.vercel.app/*` (production Vercel previews) | ❌ No |
-| `chassis-{tokens,css,icons,figma,assets,react}-staging.vercel.app/*` (staging Vercel previews) | ❌ No |
+| Host                                                                                           | Should be indexed? |
+| ---------------------------------------------------------------------------------------------- | ------------------ |
+| `chassis-ui.com/*` (production custom domain)                                                  | ✅ Yes             |
+| `staging.chassis-ui.com/*` (staging custom domain)                                             | ❌ No              |
+| `chassis-{tokens,css,icons,figma,assets,react}.vercel.app/*` (production Vercel previews)      | ❌ No              |
+| `chassis-{tokens,css,icons,figma,assets,react}-staging.vercel.app/*` (staging Vercel previews) | ❌ No              |
 
 The sub-project sites (`chassis-tokens`, `chassis-css`, etc.) exist only as proxy targets behind `chassis-ui.com`. Crawlers must never index those URLs directly.
 
@@ -21,26 +21,26 @@ The sub-project sites (`chassis-tokens`, `chassis-css`, etc.) exist only as prox
 
 Indexing is controlled with **two layers**:
 
-| Layer | Per-host? | Used for |
-|---|---|---|
-| `robots.txt` (Astro endpoint) | Yes — each host serves its own | Tells crawlers whether to crawl the host. **Safe to use on sub-project hosts** because `robots.txt` is fetched only when a crawler hits that host directly — it does not affect what crawlers see at `chassis-ui.com`. |
-| `X-Robots-Tag` HTTP header (Vercel `vercel.json`) | Conditional on host | Strong signal for staging URLs. **Must NOT be set on production sub-project hosts** because Vercel external rewrites pass upstream response headers to the client, which would leak `noindex` to `chassis-ui.com`. |
+| Layer                                             | Per-host?                      | Used for                                                                                                                                                                                                               |
+| ------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `robots.txt` (Astro endpoint)                     | Yes — each host serves its own | Tells crawlers whether to crawl the host. **Safe to use on sub-project hosts** because `robots.txt` is fetched only when a crawler hits that host directly — it does not affect what crawlers see at `chassis-ui.com`. |
+| `X-Robots-Tag` HTTP header (Vercel `vercel.json`) | Conditional on host            | Strong signal for staging URLs. **Must NOT be set on production sub-project hosts** because Vercel external rewrites pass upstream response headers to the client, which would leak `noindex` to `chassis-ui.com`.     |
 
 ### Why both?
 
-- `robots.txt` blocks crawling but doesn't *de-index* URLs that Google already discovered through external links — Google may keep them in the index without content.
+- `robots.txt` blocks crawling but doesn't _de-index_ URLs that Google already discovered through external links — Google may keep them in the index without content.
 - `X-Robots-Tag: noindex` actively removes pages from the index even if backlinks exist.
 - Staging deployments get **both**.
 - Production sub-project Vercel hosts get **only `robots.txt`** (header would leak through proxy).
 
 ## 🗺️ Per-host Configuration Map
 
-| Host | `robots.txt` | `X-Robots-Tag` |
-|---|---|---|
-| `chassis-ui.com` | `Disallow:` (allow all) + sitemap | (none) |
-| `staging.chassis-ui.com` | `Disallow: /` | `noindex, nofollow` |
-| `chassis-*.vercel.app` (production previews) | `Disallow: /` | (none — would leak via proxy) |
-| `chassis-*-staging.vercel.app` (staging previews) | `Disallow: /` | `noindex, nofollow` |
+| Host                                              | `robots.txt`                      | `X-Robots-Tag`                |
+| ------------------------------------------------- | --------------------------------- | ----------------------------- |
+| `chassis-ui.com`                                  | `Disallow:` (allow all) + sitemap | (none)                        |
+| `staging.chassis-ui.com`                          | `Disallow: /`                     | `noindex, nofollow`           |
+| `chassis-*.vercel.app` (production previews)      | `Disallow: /`                     | (none — would leak via proxy) |
+| `chassis-*-staging.vercel.app` (staging previews) | `Disallow: /`                     | `noindex, nofollow`           |
 
 ## 📂 Where each rule lives
 
@@ -107,6 +107,7 @@ Vercel's **Deployment Protection** (project Settings → Deployment Protection) 
 **Required setting:** Disable Deployment Protection (or use "Standard Protection + Bypass for Automation" with a query token) on every sub-project that the website rewrites to.
 
 Symptom of misconfiguration:
+
 ```
 $ curl -I https://staging.chassis-ui.com/tokens/
 HTTP/2 401
@@ -155,12 +156,12 @@ done
 
 **Expected results:**
 
-| URL | robots.txt | `X-Robots-Tag` |
-|---|---|---|
-| `chassis-ui.com/*` | `Disallow:` (allow) | (none) |
-| `staging.chassis-ui.com/*` | `Disallow: /` | `noindex, nofollow` |
-| `chassis-*.vercel.app/*` | `Disallow: /` | (none) |
-| `chassis-*-staging.vercel.app/*` | `Disallow: /` | `noindex, nofollow` |
+| URL                              | robots.txt          | `X-Robots-Tag`      |
+| -------------------------------- | ------------------- | ------------------- |
+| `chassis-ui.com/*`               | `Disallow:` (allow) | (none)              |
+| `staging.chassis-ui.com/*`       | `Disallow: /`       | `noindex, nofollow` |
+| `chassis-*.vercel.app/*`         | `Disallow: /`       | (none)              |
+| `chassis-*-staging.vercel.app/*` | `Disallow: /`       | `noindex, nofollow` |
 
 ## 📝 Canonical URLs
 
@@ -173,19 +174,23 @@ The `Disallow: /` and `X-Robots-Tag: noindex` rules remain the primary defence a
 ## 🐛 Troubleshooting
 
 ### Production page shows `noindex` unexpectedly
+
 Check that the matching sub-project's `vercel.json` does **not** apply `X-Robots-Tag` to its production `*.vercel.app` host. If it does, remove the header rule or scope its `has` condition more tightly to `*-staging.vercel.app` only. Otherwise the header leaks through the website's external rewrite.
 
 ### Staging page is indexable
+
 1. Confirm `staging` branch is pushed and Vercel finished rebuilding.
 2. Re-fetch `https://staging.chassis-ui.com/robots.txt` — should be `Disallow: /`.
 3. Check `curl -sI https://staging.chassis-ui.com/ | grep x-robots` — should show `noindex, nofollow`.
 4. Verify `VERCEL_ENV` for the staging deployment is `preview` (not `production`).
 
 ### Direct `*.vercel.app` URL is indexable
+
 1. Check `https://<project>.vercel.app/robots.txt` returns `Disallow: /`.
 2. If allow rule is shown instead, the sub-project's `staging` branch wasn't pushed — verify with `git rev-parse staging` vs `git rev-parse origin/staging` in that repo.
 
 ### Already-indexed URLs in Google
+
 `robots.txt` does not de-index existing entries. Submit a removal request in Google Search Console for any leaked URLs after the noindex headers are live.
 
 ## 🔗 Related documents

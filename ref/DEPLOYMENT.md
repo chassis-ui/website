@@ -184,18 +184,24 @@ jobs:
 Pin a full commit SHA of this repository, so that a change here reaches a sibling only when
 it moves the pin. Take a commit that passed CI here.
 
-| Input               | Workflows | Default                                                                  |
-| ------------------- | --------- | ------------------------------------------------------------------------ |
-| `command`           | all       | `pnpm lint`, `pnpm check:astro`, `pnpm site:build`. One command per line |
-| `checks`            | build     | Empty. Commands that check the built site, one per line                  |
-| `submodules`        | build     | `'true'`, so that `chassis-docs vendor` can build `vendor/assets`        |
-| `node-version`      | all       | Empty, which reads `node-version-file`                                   |
-| `node-version-file` | all       | `.nvmrc`                                                                 |
-| `install-command`   | all       | `pnpm install --frozen-lockfile`                                         |
+| Input               | Workflows | Default                                                                     |
+| ------------------- | --------- | --------------------------------------------------------------------------- |
+| `command`           | all       | `pnpm lint`, `pnpm check:astro`, `pnpm site:build`. One command per line    |
+| `checks`            | build     | Empty. Commands that check the built site, one per line                     |
+| `submodules`        | build     | `'true'`, so that `chassis-docs vendor` can build `vendor/assets`           |
+| `lfs`               | build     | `false`. `true` pulls the Git LFS files, from a cache keyed by their ids    |
+| `node-version`      | all       | Empty, which reads `node-version-file`                                      |
+| `node-version-file` | all       | `.nvmrc`                                                                    |
+| `install-command`   | all       | `pnpm install --frozen-lockfile`                                            |
+| `timeout-minutes`   | all       | 10 for lint and type check, 20 for the build. The job is cancelled after it |
 
 Each job stops at the first command that fails. The runner of the build has Java, for
 `chassis-docs vnu`, and Google Chrome. The checks are named `<job> / Lint` and so on, after
 the name of the calling job.
+
+Every action in them is pinned to a commit, so the commit a sibling pins fixes the actions
+too. The checkout does not keep the token of the job (`persist-credentials: false`), and
+the permissions are `contents: read`.
 
 A change to an input or a default of these workflows is a change for every sibling that
 calls them. Add inputs, and keep the defaults, unless all siblings move together.
