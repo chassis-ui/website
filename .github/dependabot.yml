@@ -9,6 +9,15 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 10
+    # Dependabot waits 3 days after a release by default, and passes that on to pnpm as its
+    # minimum release age when it re-resolves the lockfile, so a Chassis package that develop
+    # already requires fails the whole run until it is 3 days old. Chassis releases can be
+    # urgent fixes between our own packages: they are exempt here, and from pnpm's check in
+    # pnpm-workspace.yaml. Everything else keeps the default.
+    cooldown:
+      default-days: 3
+      exclude:
+        - '@chassis-ui/*'
     commit-message:
       prefix: 'chore(deps)'
     ignore:
