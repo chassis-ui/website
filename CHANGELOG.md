@@ -4,6 +4,13 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-10-01
+
+### Changed
+
+- Lighthouse checks each URL once, on production as on staging. Three runs of each made Vercel answer 403.
+- The content security policy reports to `/api/csp-report/`, which saves a redirect.
+
 ## 2026-09-29
 
 ### Added
@@ -17,7 +24,7 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 - Security headers, with the content security policy in report-only mode. `/api/csp-report` logs its reports.
 - The React docs at `/react/`, and path-based routes for the static files of each project, next to the referrer-based ones.
 - React in the header and the footer.
-- Checks of the built site in CI: both HTML validators, the link checker and axe. The link checker also crawls each deployment. Lighthouse on staging tests the staging domain.
+- Checks of the built site in CI: both HTML validators, the link checker and axe. The link checker also crawls each deployment. There it lists a broken link into a proxied project, and a project behind Vercel's login, as warnings under that project. Lighthouse on staging tests the staging domain.
 - Reusable workflows for lint, type check and site build, which CI calls and the sibling repositories can call.
 - A canary that builds the sites of the sibling repositories with a new version of `@chassis-ui/docs` before it is published.
 - Community files, issue forms, Dependabot and a pre-commit hook for ESLint and Prettier.
