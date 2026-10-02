@@ -124,6 +124,14 @@ A request without a `Referer`, or with one from another site, gets the website's
 or a 404. Browsers send the header for a page's own files under the site's
 `Referrer-Policy`, so this is accepted (decision D6 of the [roadmap](ROADMAP.md)).
 
+The files that Astro builds are the exception. A script under `/static/astro/` that another
+script imports has that script as its `Referer`, which names no project, so the request
+gets the website's file or a 404. Each sibling therefore loads Astro's files from
+`/<project>/static/astro/`, with `build.assetsPrefix`, and rewrites that path to
+`/static/astro/` in its own `vercel.json` (task A6 of
+[SIBLING_TASKS.md](SIBLING_TASKS.md)). The `/<project>/(.*)` rule routes them by path. They
+have a hash of the site in their name and were never shared.
+
 One URL for all sites is what lets the browser keep one copy of the shared CSS, fonts and
 icons. The files are sent with `max-age=0, must-revalidate`: the browser asks each time,
 and gets a 304 when the file of the site it is on is the same as its copy, and that site's
