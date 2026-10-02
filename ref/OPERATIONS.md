@@ -114,18 +114,19 @@ send.
 
 ## Rotate npm credentials
 
-This repository has no npm token. The publish workflow uses npm trusted publishing: npm
-trusts `.github/workflows/publish-packages.yml` of `chassis-ui/website` on `main`, and
+This repository has no npm token. The release workflow uses npm trusted publishing: npm
+trusts `.github/workflows/release.yml` of `chassis-ui/website` on `main`, and
 issues a short-lived credential for each run. There is nothing to rotate.
 
 - If the workflow file is renamed or moved, update the trusted publisher in the package's
-  settings on npmjs.com, or publishing fails.
+  settings on npmjs.com, or publishing fails. The file was `publish-packages.yml` until
+  2026-10-02.
 - If an unexpected version appears on npm, check its provenance on the package page, which
   names the workflow run that built it. Then deprecate it as above, and review who can push
   to `main` and who has access to the package on npm.
-- The organisation secret `NPM_CHASSIS_UI` is still used by chassis-icons and chassis-react.
+- The organisation secret `NPM_CHASSIS_UI` is still used by chassis-icons.
   Rotate it in npm and in the organisation's secrets if it may have leaked. It is deleted
-  when those projects move to trusted publishing, task A21 of
+  when that project moves to trusted publishing, task A21 of
   [SIBLING_TASKS.md](SIBLING_TASKS.md).
 
 ## Content security policy reports

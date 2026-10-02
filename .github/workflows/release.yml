@@ -1,4 +1,4 @@
-name: Publish Packages
+name: Release
 
 # On a push to main, publishes the version in packages/docs/package.json when npm does not
 # have it yet, then creates its GitHub release from its CHANGELOG entry. The version and the
@@ -9,7 +9,8 @@ name: Publish Packages
 # It reads their results and stops unless each one passed.
 #
 # npm trusted publishing: the package trusts this workflow file of chassis-ui/website, so no
-# npm token is needed, and every version has provenance.
+# npm token is needed, and every version has provenance. Renaming this file breaks publishing
+# until the trusted publisher on npmjs.com is updated to match.
 on:
   push:
     branches: [main]
@@ -20,12 +21,14 @@ permissions:
 
 # Never cancel a run that may be publishing
 concurrency:
-  group: publish-packages
+  group: release
   cancel-in-progress: false
 
 jobs:
   detect:
     name: Detect Version
+    # A manual run on another branch stops here
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -92,10 +95,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REQUIRED: |
-            Lint / Lint
-            Type Check / Type Check
+            Lint
+            Type Check
             Test
-            Build / Build
+            Build
             Fixture Site (root)
             Fixture Site (packages)
         run: |
@@ -153,14 +156,22 @@ jobs:
           DIST_TAG: ${{ needs.detect.outputs.dist-tag }}
         run: npm publish --provenance --access public --tag "$DIST_TAG"
 
-      # Runs only when the publish step succeeded
+      # Runs only when the publish step succeeded. The tag names the package, since the
+      # website itself has no version
       - name: Create the GitHub release
-        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
-        with:
-          tag_name: '@chassis-ui/docs@${{ needs.detect.outputs.version }}'
-          name: '@chassis-ui/docs v${{ needs.detect.outputs.version }}'
-          body_path: ${{ runner.temp }}/release-notes.md
-          target_commitish: ${{ github.sha }}
-          prerelease: ${{ needs.detect.outputs.prerelease == 'true' }}
-          make_latest: ${{ needs.detect.outputs.prerelease == 'true' && 'false' || 'true' }}
-          draft: false
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.detect.outputs.version }}
+          PRERELEASE: ${{ needs.detect.outputs.prerelease }}
+        run: |
+          if [ "$PRERELEASE" = true ]; then
+            FLAGS=(--prerelease --latest=false)
+          else
+            FLAGS=(--latest)
+          fi
+
+          gh release create "@chassis-ui/docs@$VERSION" \
+            --target "$GITHUB_SHA" \
+            --title "@chassis-ui/docs v$VERSION" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
+            "${FLAGS[@]}"

@@ -4,7 +4,7 @@ on:
   push:
     # A commit reaches `staging` and `main` only after these checks passed on it, so they
     # run on `develop` first. Their results belong to the commit, and the ruleset and the
-    # publish workflow read them there, so pushing the same commit to `staging` and `main`
+    # release workflow read them there, so pushing the same commit to `staging` and `main`
     # does not run them again. See ref/DEPLOYMENT.md.
     branches: [develop]
   pull_request:
@@ -14,20 +14,66 @@ on:
 permissions:
   contents: read
 
+# A newer push to the same pull request supersedes the running one. A push to `develop` always
+# runs to the end: the ruleset and the release workflow read the results of that commit.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  # Lint, Type Check and Build call the reusable workflows that the sibling repositories call
-  # too, so every push tests them. GitHub names their checks "Lint / Lint" and so on.
+  # The ruleset of `staging` and `main` requires Lint, Type Check, Test and Build by these
+  # names, and release.yml reads them too. Rename a job in all three places.
   lint:
     name: Lint
-    uses: ./.github/workflows/reusable-lint.yml
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
 
   typecheck:
     name: Type Check
-    uses: ./.github/workflows/reusable-typecheck.yml
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm check:astro
 
   test:
     name: Test
@@ -55,17 +101,47 @@ jobs:
       - name: Unit and component tests
         run: pnpm test
 
+  # The same build as Vercel, then the checks of its output. The runner has Java, for
+  # `chassis-docs vnu`, and Google Chrome, for axe.
   build:
     name: Build
-    uses: ./.github/workflows/reusable-build.yml
-    with:
-      # vendor/assets is built at the commit pinned in this repository. Axe runs in the
-      # Chrome that the runner has installed
-      checks: |
-        pnpm site:lint:html
-        pnpm site:lint:vnu
-        pnpm site:lint:links
-        pnpm site:lint:a11y
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # vendor/assets is built at the commit pinned in this repository
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: true
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm site:build
+
+      - name: Validate HTML
+        run: pnpm site:lint:html
+
+      - name: Validate HTML with vnu
+        run: pnpm site:lint:vnu
+
+      - name: Check links
+        run: pnpm site:lint:links
+
+      - name: Check accessibility
+        run: pnpm site:lint:a11y
 
   fixtures:
     name: Fixture Site (${{ matrix.layout }})
@@ -98,8 +174,66 @@ jobs:
       - name: Build the starter site from the packed package
         run: pnpm test:fixtures ${{ matrix.layout }}
 
+  # A change to bin/, src/, index.ts or virtual.d.ts of packages/docs needs a changeset
+  # (changedFilePatterns in .changeset/config.json, which are relative to the package);
+  # `pnpm changeset --empty` adds one that releases nothing. A pull request is compared with
+  # its base branch, a push to develop with the tip it replaced. The version commit consumes
+  # the changesets, so a push that changes the version is skipped.
+  changeset:
+    name: Changeset
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Changesets compares with an earlier commit
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      # The root package only: it has the Changesets CLI
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --filter chassis-website-monorepo
+
+      - name: Check for a changeset
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            SINCE="origin/$BASE_REF"
+          else
+            if [ -z "$BEFORE" ] || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+              echo "No earlier commit to compare with"
+              exit 0
+            fi
+
+            PACKAGE_JSON=packages/docs/package.json
+            OLD_VERSION=$(git show "$BEFORE:$PACKAGE_JSON" | node -p 'JSON.parse(require("node:fs").readFileSync(0, "utf8")).version')
+            NEW_VERSION=$(node -p 'require("./packages/docs/package.json").version')
+            if [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
+              echo "The push changes the version ($OLD_VERSION → $NEW_VERSION): a version step, which consumes changesets"
+              exit 0
+            fi
+
+            SINCE="$BEFORE"
+          fi
+
+          pnpm changeset status --since "$SINCE"
+
   audit:
-    name: Security Audit
+    name: Audit
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -116,13 +250,18 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
-          cache: 'pnpm'
+          # The audit installs nothing: it reads the lockfile. There is no pnpm store to
+          # cache, and the cache's post step would fail the job
+          package-manager-cache: false
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Audit dependencies
+      # Blocking: what is installed with @chassis-ui/docs reaches every site that uses it
+      - name: Audit runtime dependencies
         run: pnpm check:pnpm
+
+      # Reports only: the build, test and site tooling never ships in the package
+      - name: Audit all dependencies
+        run: pnpm audit
+        continue-on-error: true
 
   dependency-review:
     name: Dependency Review

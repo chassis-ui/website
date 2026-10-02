@@ -6,6 +6,7 @@
   "linked": [],
   "access": "public",
   "baseBranch": "develop",
+  "changedFilePatterns": ["bin/**", "src/**", "index.ts", "virtual.d.ts"],
   "updateInternalDependencies": "patch",
   "ignore": [],
   "privatePackages": { "version": false, "tag": false }

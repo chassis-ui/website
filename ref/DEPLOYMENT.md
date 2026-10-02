@@ -85,17 +85,19 @@ or with a pull request. Then the same commit moves on to `staging` and `main`. N
 reaches `staging` or `main` that did not pass through `develop`.
 
 The ruleset "Protect main and staging" requires four jobs of `ci.yml` to pass on a commit
-before it reaches `staging` or `main`: Lint, Type Check, Test and Build. Lint, Type Check
-and Build call [reusable workflows](#reusable-workflows), so GitHub names their checks
-`Lint / Lint`, `Type Check / Type Check` and `Build / Build`, and the ruleset requires those
-names. Security Audit runs and does not block.
+before it reaches `staging` or `main`: Lint, Type Check, Test and Build. The ruleset and
+`release.yml` name the jobs, so a job is renamed in all three places. Fixture Site,
+Changeset and Audit run and do not block a push; `release.yml` also requires both Fixture
+Site jobs before it publishes.
 
 The rule applies to direct pushes and pull requests alike. GitHub accepts a direct push
 only when the commit already has passing checks, so a commit has to pass CI somewhere
 first. That is what `develop` is for: CI runs on every push to it, and Vercel does not
 deploy it. CI does not run again when the same commit is pushed to `staging` and `main`: the
-results of the `develop` run belong to the commit, and the ruleset and the publish workflow
-read them there.
+results of the `develop` run belong to the commit, and the ruleset and the release workflow
+read them there. A push to `staging` runs nothing in Actions, and a push to `main` runs
+`release.yml` only. The pushes to `develop` are not cancelled by a newer one, so each
+commit keeps its results; a newer push to a pull request cancels the run of the older.
 
 ### Releasing chassis-website
 
@@ -141,63 +143,15 @@ vercel                     # Deploy to preview
 
 None of the workflows in `.github/workflows/` deploys:
 
-| Workflow                                                            | Trigger                                                                                                            | Purpose                                                                                                                                                                                                                                                               |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ci.yml`                                                            | Pushes to `develop`, pull requests against `develop`, `staging` and `main`                                         | Lint, Type Check, Test and Build, which the ruleset requires, Fixture Site for both layouts, and Security Audit. Dependency Review on pull requests                                                                                                                   |
-| `lighthouse.yml`                                                    | `deployment_status` events (or manual `workflow_dispatch`)                                                         | Runs Lighthouse CI against the resulting production or staging URL, using `lighthouse.json` thresholds                                                                                                                                                                |
-| `links.yml`                                                         | `deployment_status` events (or manual `workflow_dispatch`)                                                         | Crawls the resulting production or staging URL, the proxied projects included, with `build/check-links.js`. Fails on a broken link of this site. A broken link of a proxied project, or into one, is a warning                                                        |
-| `publish-packages.yml`                                              | Push to `main`                                                                                                     | Publishes the version in `packages/docs/package.json` when npm does not have it, after checking that CI passed on the commit. Trusted publishing with provenance. A prerelease goes to the dist-tag named by its version. See [Releases](../CONTRIBUTING.md#releases) |
-| `canary.yml`                                                        | Pushes to `develop` that set a version of `@chassis-ui/docs` that npm does not have, or manual `workflow_dispatch` | Builds the site of each sibling whose range accepts the version, with the packed package, with `build/canary.js`. Reports only: nothing requires it. See [Releases](../CONTRIBUTING.md#releases)                                                                      |
-| `reusable-lint.yml`, `reusable-typecheck.yml`, `reusable-build.yml` | Called by `ci.yml`, and by the sibling repositories                                                                | Lint, type check, and build a site and check its output. See below                                                                                                                                                                                                    |
+| Workflow         | Trigger                                                                                                            | Purpose                                                                                                                                                                                                                                                                                                |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ci.yml`         | Pushes to `develop`, pull requests against `develop`, `staging` and `main`                                         | Lint, Type Check, Test and Build, which the ruleset requires, Fixture Site for both layouts, Changeset, which asks for a changeset when `packages/docs` changed, and Audit. Dependency Review on pull requests                                                                                         |
+| `lighthouse.yml` | `deployment_status` events (or manual `workflow_dispatch`)                                                         | Runs Lighthouse CI against the resulting production or staging URL, using `lighthouse.json` thresholds                                                                                                                                                                                                 |
+| `links.yml`      | `deployment_status` events (or manual `workflow_dispatch`)                                                         | Crawls the resulting production or staging URL, the proxied projects included, with `build/check-links.js`. Fails on a broken link of this site. A broken link of a proxied project, or into one, is a warning                                                                                         |
+| `release.yml`    | Push to `main`, or manual `workflow_dispatch` on `main`                                                            | Publishes the version in `packages/docs/package.json` when npm does not have it, after checking that CI passed on the commit, then creates the GitHub release. Trusted publishing with provenance. A prerelease goes to the dist-tag named by its version. See [Releases](../CONTRIBUTING.md#releases) |
+| `canary.yml`     | Pushes to `develop` that set a version of `@chassis-ui/docs` that npm does not have, or manual `workflow_dispatch` | Builds the site of each sibling whose range accepts the version, with the packed package, with `build/canary.js`. Reports only: nothing requires it. See [Releases](../CONTRIBUTING.md#releases)                                                                                                       |
 
 No workflow moves the `vendor/assets` pin. The build uses the pinned commit, and the pin moves only when someone runs `pnpm sync-submodules` and commits the result. See [DEVELOPMENT.md](DEVELOPMENT.md#the-vendorassets-submodule).
-
-### Reusable workflows
-
-The three `reusable-*.yml` workflows set up a Chassis repository the same way (checkout,
-pnpm from `packageManager`, Node.js from `.nvmrc`, `pnpm install --frozen-lockfile`) and run
-one command. `ci.yml` calls them, so every push to `develop` tests them. A sibling repository
-calls them from its own CI:
-
-```yaml
-jobs:
-  lint:
-    name: Lint
-    uses: chassis-ui/website/.github/workflows/reusable-lint.yml@<commit>
-    with:
-      command: pnpm lint
-
-  typecheck:
-    name: Type Check
-    uses: chassis-ui/website/.github/workflows/reusable-typecheck.yml@<commit>
-
-  build:
-    name: Build
-    uses: chassis-ui/website/.github/workflows/reusable-build.yml@<commit>
-    with:
-      command: pnpm site:build
-      checks: |
-        pnpm site:lint:html
-        pnpm site:lint:vnu
-```
-
-Pin a full commit SHA of this repository, so that a change here reaches a sibling only when
-it moves the pin. Take a commit that passed CI here.
-
-| Input               | Workflows | Default                                                                     |
-| ------------------- | --------- | --------------------------------------------------------------------------- |
-| `command`           | all       | `pnpm lint`, `pnpm check:astro`, `pnpm site:build`. One command per line    |
-| `checks`            | build     | Empty. Commands that check the built site, one per line                     |
-| `submodules`        | build     | `'true'`, so that `chassis-docs vendor` can build `vendor/assets`           |
-| `lfs`               | build     | `false`. `true` pulls the Git LFS files, from a cache keyed by their ids    |
-| `node-version`      | all       | Empty, which reads `node-version-file`                                      |
-| `node-version-file` | all       | `.nvmrc`                                                                    |
-| `install-command`   | all       | `pnpm install --frozen-lockfile`                                            |
-| `timeout-minutes`   | all       | 10 for lint and type check, 20 for the build. The job is cancelled after it |
-
-Each job stops at the first command that fails. The runner of the build has Java, for
-`chassis-docs vnu`, and Google Chrome. The checks are named `<job> / Lint` and so on, after
-the name of the calling job.
 
 Every action in them is pinned to a commit, so the commit a sibling pins fixes the actions
 too. The checkout does not keep the token of the job (`persist-credentials: false`), and
@@ -279,10 +233,10 @@ When deploying changes that affect multiple projects:
 1. **Release @chassis-ui/docs** (if shared components changed) — run from the repo root:
 
    ```bash
-   pnpm changeset version   # applies the changesets in .changeset/
+   pnpm changeset:version   # applies the changesets in .changeset/
    git commit -am "chore(release): @chassis-ui/docs <version>"
    # Push through develop and staging to main, as above
-   # → .github/workflows/publish-packages.yml publishes a version that npm does not have yet
+   # → .github/workflows/release.yml publishes a version that npm does not have yet
    ```
 
    See [Releases](../CONTRIBUTING.md#releases) for changesets and prereleases.
@@ -310,7 +264,7 @@ Before pushing to `main`:
 - [ ] The `vendor/assets` pin is the commit you mean to deploy: `git submodule status`
 - [ ] Dependencies are up to date
 - [ ] Breaking changes documented
-- [ ] `pnpm changeset version` run and committed (if releasing @chassis-ui/docs)
+- [ ] `pnpm changeset:version` run and committed (if releasing @chassis-ui/docs)
 
 ## 🐛 Troubleshooting Deployments
 

@@ -4,6 +4,23 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-10-02
+
+### Changed
+
+- The release workflow is `release.yml`, named Release, as in the other Chassis repositories. It was `publish-packages.yml`. A manual run publishes from `main` only, and the GitHub release is created with the GitHub CLI.
+- The checks of CI are named `Lint`, `Type Check` and `Build` again, and the ruleset requires those names. A push to `develop` is no longer cancelled by a newer one.
+- `pnpm check:pnpm`, and the Audit job with it, fail on the dependencies that ship, `pnpm audit --prod`. The job also reports the audit of all dependencies.
+- `pnpm changeset:version` makes a version, as in the other repositories.
+
+### Added
+
+- A Changeset job in CI: a change to the code of `@chassis-ui/docs` needs a changeset.
+
+### Removed
+
+- The reusable workflows for lint, type check and site build. No repository called them.
+
 ## 2026-10-01
 
 ### Changed

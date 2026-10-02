@@ -64,7 +64,7 @@ Run them from the root of the repository.
 | `pnpm spellcheck`      | Checks the spelling of the Markdown and MDX files with cspell. Add new words to `.cspell.json`               |
 | `pnpm test`            | Runs the unit and component tests once. `pnpm test:watch` runs them on every change                          |
 | `pnpm test:fixtures`   | Builds the starter site from the packed package, in both layouts. See [Tests](#tests)                        |
-| `pnpm check`           | `astro check` on both packages, then `pnpm audit`                                                            |
+| `pnpm check`           | `astro check` on both packages, then `pnpm audit --prod`                                                     |
 | `pnpm vendor`          | Builds the `vendor/assets` submodule at the pinned commit                                                    |
 | `pnpm sync-submodules` | Moves the `vendor/assets` pin to the latest `app/docs` of chassis-assets, and builds it                      |
 | `pnpm changeset`       | Describes a change to `@chassis-ui/docs` for its changelog. See [Releases](#releases)                        |
@@ -324,17 +324,21 @@ with the change. Before 1.0, a breaking change is a `minor` bump, and its summar
 `**Breaking.**`. Everything else is a `patch`. The
 [versioning policy](packages/docs/README.md#versioning) says what counts as breaking.
 
+The Changeset job of CI fails when `bin/`, `src/`, `index.ts` or `virtual.d.ts` of the
+package changed and no changeset came with it. For a change that needs no release, such as
+a comment, `pnpm changeset --empty` adds a changeset that releases nothing.
+
 ### Release a version
 
 On `develop`:
 
 ```bash
-pnpm changeset version
+pnpm changeset:version
 git add .
 git commit -m "chore(release): @chassis-ui/docs <version>"
 ```
 
-`changeset version` bumps `packages/docs/package.json`, writes the entry in
+`changeset:version` bumps `packages/docs/package.json`, writes the entry in
 `packages/docs/CHANGELOG.md` and deletes the changesets. Add a row for the version to
 [Compatibility](packages/docs/README.md#compatibility) in the package README, with the
 versions of Astro, `@chassis-ui/css` and `@chassis-ui/tokens` in `pnpm-lock.yaml`, and
@@ -346,18 +350,21 @@ accepts the new version, with the packed package. Read its result before you go 
 does not block the release, so a failure is yours to judge: a break that the package causes
 needs a fix first, and one that a sibling causes on its own is that sibling's to fix.
 
-Then push the commit to `staging` and `main`, as for any change. The push to `main` runs
-`.github/workflows/publish-packages.yml`. It publishes the version when npm does not have it
-yet and every check of CI passed on the commit, then creates the GitHub release.
+Then push the commit to `staging` and `main`, as for any change. CI does not run again:
+the checks of the commit ran on `develop`. The push to `main` runs
+`.github/workflows/release.yml`. It publishes the version when npm does not have it yet and
+Lint, Type Check, Test, Build and both Fixture Site jobs passed on the commit, then creates
+the GitHub release `@chassis-ui/docs@<version>` from the changelog entry. A version without
+an entry is not published.
 
 ### Prereleases
 
 ```bash
 pnpm changeset pre enter next   # versions become 0.6.0-next.0, 0.6.0-next.1, …
-pnpm changeset version
+pnpm changeset:version
 # commit, push to develop, staging and main
 pnpm changeset pre exit         # when the version is ready
-pnpm changeset version          # 0.6.0
+pnpm changeset:version          # 0.6.0
 ```
 
 A prerelease is published under the dist-tag named by its version, `next` here, and its

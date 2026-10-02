@@ -34,7 +34,7 @@ Related sibling repos (separate git projects, not part of this monorepo):
 - Tests: `pnpm test` (Vitest: `packages/docs/test` and `api/*.test.ts`)
 - Fixture sites: `pnpm test:fixtures` (packs `@chassis-ui/docs`, builds `packages/docs/starter` in two layouts)
 - Canary: `pnpm test:canary` (after `pnpm vendor`; builds the sibling sites whose range accepts the packed version)
-- Type/diagnostics check: `pnpm check` (runs `astro check` for both packages + `pnpm audit`)
+- Type/diagnostics check: `pnpm check` (runs `astro check` for both packages + `pnpm audit --prod`)
 - The full table is under "Commands" in `CONTRIBUTING.md`.
 - A pre-commit hook (simple-git-hooks + lint-staged, installed by `pnpm install`) runs ESLint
   and Prettier on staged files of both packages.

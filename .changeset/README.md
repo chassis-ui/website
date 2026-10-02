@@ -7,6 +7,6 @@ the website need none.
 Before 1.0, a breaking change is a `minor` bump and everything else is a `patch`. See
 [Versioning](../packages/docs/README.md#versioning) in the package README.
 
-To release, run `pnpm changeset version` on `develop`. It bumps the version and writes
+To release, run `pnpm changeset:version` on `develop`. It bumps the version and writes
 `packages/docs/CHANGELOG.md`. Commit that, and push it to `develop`, `staging` and `main`. The
 push to `main` publishes the version. See [Releases](../CONTRIBUTING.md#releases).
