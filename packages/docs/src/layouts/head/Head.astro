@@ -10,6 +10,7 @@ import type { Layout } from '../../libs/layout'
 import Stylesheet from './Stylesheet.astro'
 import Favicons from './Favicons.astro'
 import Social from './Social.astro'
+import colorModes from '../../js/color-modes.js?raw'
 import 'virtual:chassis-docs/styles'
 
 interface Props {
@@ -60,7 +61,11 @@ const pageTitle = isHome
 
 {robots && <meta name="robots" content={robots} />}
 
-<script src="../../js/color-modes.js"></script>
+<!--
+  Inline and not a module, so that it sets the theme before the first paint. A module runs
+  after the document is parsed, and a page in dark mode would show light first
+-->
+<script is:inline set:html={colorModes} />
 
 <Stylesheet />
 <slot name="styles" />
