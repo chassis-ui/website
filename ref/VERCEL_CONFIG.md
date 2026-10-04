@@ -126,11 +126,12 @@ or a 404. Browsers send the header for a page's own files under the site's
 
 The files that Astro builds are the exception. A script under `/static/astro/` that another
 script imports has that script as its `Referer`, which names no project, so the request
-gets the website's file or a 404. Each sibling therefore loads Astro's files from
-`/<project>/static/astro/`, with `build.assetsPrefix`, and rewrites that path to
-`/static/astro/` in its own `vercel.json` (task A6 of
-[SIBLING_TASKS.md](SIBLING_TASKS.md)). The `/<project>/(.*)` rule routes them by path. They
-have a hash of the site in their name and were never shared.
+gets the website's file or a 404. Each sibling therefore writes Astro's files to
+`<project>/static/astro/` of its build, with `build.assets`, and its pages request them as
+`/<project>/static/astro/…` (task A6 of [SIBLING_TASKS.md](SIBLING_TASKS.md)). The
+`/<project>/(.*)` rule routes them by path, and the sibling needs no rewrite: the file is
+at the path of its URL, on the deployment and on a local `astro preview`. They have a hash
+of the site in their name and were never shared.
 
 One URL for all sites is what lets the browser keep one copy of the shared CSS, fonts and
 icons. The files are sent with `max-age=0, must-revalidate`: the browser asks each time,
