@@ -16,6 +16,9 @@ import { getInstanceManager } from '@pagefind/component-ui'
 import { staticPath } from 'virtual:chassis-docs/static'
 
 const DIALOG_SELECTOR = '#cxdSearchDialog'
+// The rows that are links. The loading skeleton reuses the class on a `<div>`,
+// which must not be followed, focused or saved as a visit.
+const ITEM_SELECTOR = 'a.cxd-search-item'
 const SUB_RESULTS_LIMIT = 3
 // How long a search may take before we show the loading skeleton. Most queries
 // resolve faster, so the previous results stay on-screen instead of flashing.
@@ -294,12 +297,21 @@ class CxdSearchInput extends HTMLElement {
       return
     }
 
+    // Safari keeps Escape for the search field, even an empty one, and the
+    // dialog never gets its cancel event. With text in the field the key clears
+    // it, as in every browser; without text it closes the dialog here.
+    if (event.key === 'Escape' && !this.input.value) {
+      event.preventDefault()
+      closeSearchDialog(this.closest('dialog'))
+      return
+    }
+
     // Enter follows the first result link.
     // Always preventDefault so the form never implicit-submits.
     if (event.key === 'Enter') {
       event.preventDefault()
       const dialogEl = this.closest('dialog')
-      dialogEl?.querySelector('.cxd-search-item')?.click()
+      dialogEl?.querySelector(ITEM_SELECTOR)?.click()
     }
   }
 
@@ -339,11 +351,11 @@ class CxdSearchResults extends HTMLElement {
   }
 
   _getLinks() {
-    return [...this.querySelectorAll('.cxd-search-item')]
+    return [...this.querySelectorAll(ITEM_SELECTOR)]
   }
 
   _onKeydown(event) {
-    const link = event.target.closest('.cxd-search-item')
+    const link = event.target.closest(ITEM_SELECTOR)
     if (!link) return
 
     const links = this._getLinks()
@@ -617,6 +629,29 @@ const isEditableTarget = (target) => {
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT'
 }
 
+const TRIGGER_SELECTOR = `[data-cx-toggle="dialog"][data-cx-target="${DIALOG_SELECTOR}"]`
+
+// Puts the caret in the input once the dialog is open. The chassis Dialog
+// focuses the dialog element itself when it opens, so a key typed right after a
+// click on the trigger went nowhere.
+const focusSearchInput = (dialogEl) => {
+  requestAnimationFrame(() => {
+    if (!dialogEl.open) return
+    dialogEl.querySelector('cxd-search-input')?.focus()
+    if (!instance.searchTerm) {
+      dialogEl.querySelector('cxd-search-results')?._renderEmpty?.()
+    }
+  })
+}
+
+const registerTriggerHandler = () => {
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest(TRIGGER_SELECTOR)) return
+    const dialogEl = document.querySelector(DIALOG_SELECTOR)
+    if (dialogEl) focusSearchInput(dialogEl)
+  })
+}
+
 const openSearchDialog = () => {
   const dialogEl = document.querySelector(DIALOG_SELECTOR)
   if (!dialogEl) return
@@ -626,15 +661,24 @@ const openSearchDialog = () => {
     return
   }
 
-  // Native showModal() — CSS @starting-style handles the entry animation without
-  // needing the chassis bundle. Works in both dev (no bundle) and prod.
-  dialogEl.showModal()
-  requestAnimationFrame(() => {
-    dialogEl.querySelector('cxd-search-input')?.focus()
-    if (!instance.searchTerm) {
-      dialogEl.querySelector('cxd-search-results')?._renderEmpty?.()
-    }
-  })
+  // Open through the trigger, so that a shortcut does what the button does: the
+  // chassis Dialog locks the scroll of the body, closes on a click on the
+  // backdrop and gives the focus back. Without the chassis bundle the click does
+  // nothing, and the native showModal() opens the dialog.
+  document.querySelector(TRIGGER_SELECTOR)?.click()
+  if (!dialogEl.open) {
+    dialogEl.showModal()
+    focusSearchInput(dialogEl)
+  }
+}
+
+// Closes through the dismiss button, so that the chassis Dialog animates the
+// dialog out, unlocks the scroll of the body and gives the focus back. Without
+// the chassis bundle the click does nothing, and the native close() closes it.
+const closeSearchDialog = (dialogEl) => {
+  if (!dialogEl?.open) return
+  dialogEl.querySelector('[data-cx-dismiss="dialog"]')?.click()
+  if (dialogEl.open && !dialogEl.classList.contains('hiding')) dialogEl.close()
 }
 
 const registerGlobalShortcuts = () => {
@@ -683,7 +727,7 @@ const setupDialogResetOnClose = () => {
 
 const registerResultLinkHandler = () => {
   document.addEventListener('click', (event) => {
-    const link = event.target.closest('.cxd-search-item')
+    const link = event.target.closest(ITEM_SELECTOR)
     if (!link) return
     const dialogEl = link.closest('dialog')
     if (!dialogEl?.matches(DIALOG_SELECTOR)) return
@@ -697,6 +741,14 @@ const registerResultLinkHandler = () => {
     })
 
     dialogEl.close()
+
+    // The trigger opens the dialog through the chassis Dialog, which locks the
+    // scroll of the body with this class and unlocks it in its own hide(). The
+    // native close() above skips that, so the class stays: when the result is on
+    // the current page, nothing reloads and the page can no longer scroll.
+    if (!document.querySelector('dialog[open]:modal')) {
+      document.body.classList.remove('dialog-open')
+    }
   })
 }
 
@@ -704,6 +756,7 @@ const registerResultLinkHandler = () => {
 
 defineSearchCustomElements()
 registerGlobalShortcuts()
+registerTriggerHandler()
 registerResultLinkHandler()
 
 if (document.readyState === 'loading') {
