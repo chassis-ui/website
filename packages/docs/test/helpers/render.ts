@@ -7,7 +7,8 @@ let container: Container | undefined
 
 /** Renders a component in the fixture site. */
 export async function render(component: unknown, options: RenderOptions = {}): Promise<string> {
-  container ??= await AstroContainer.create()
+  // The head reads `Astro.site` for the canonical URL. The origin of the fixture's `baseURL`.
+  container ??= await AstroContainer.create({ astroConfig: { site: 'https://example.com' } })
 
   return container.renderToString(component as Parameters<Container['renderToString']>[0], options)
 }

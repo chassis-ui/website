@@ -109,7 +109,7 @@ currentVersion: '0.5.2'
 | Key                                           | Required | Meaning                                                                                                                    |
 | --------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
 | `title`, `subtitle`, `description`, `authors` | yes      | Used in the page title and the meta tags                                                                                   |
-| `baseURL`                                     | yes      | Canonical URL of the site                                                                                                  |
+| `baseURL`                                     | yes      | Canonical URL of the site. The page at its path is the home page: `/css/` for `https://chassis-ui.com/css/`                |
 | `docsPath`                                    | yes      | URL path of the docs pages. Starts with `/`                                                                                |
 | `staticPath`                                  | no       | URL path that the pages load the static files from. Default `/static`. See [A site under a prefix](#a-site-under-a-prefix) |
 | `repo`                                        | yes      | URL of the repository                                                                                                      |
@@ -228,6 +228,8 @@ import SingleLayout from '@chassis-ui/docs/layouts/SingleLayout.astro'
   <p>Page content.</p>
 </SingleLayout>
 ```
+
+The `<title>` of a page is its `title` and the `title` of `config.yml`: `About · Chassis UI`. The home page, which is the page at the path of `baseURL`, gets `title` and `subtitle` of `config.yml` instead: `Chassis UI · Design Systems that Scale & Sync`. Its own `title` is used for the social tags only. html-validate reports a `<title>` of more than 70 characters, so keep the two within that.
 
 ## Shortcodes
 

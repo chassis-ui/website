@@ -6,6 +6,7 @@
  */
 
 import { getConfig } from '../../site'
+import { isHomePath } from '../../libs/docs-path'
 import type { Layout } from '../../libs/layout'
 import Stylesheet from './Stylesheet.astro'
 import Favicons from './Favicons.astro'
@@ -30,7 +31,8 @@ const { description, layout, robots, thumbnail, title } = Astro.props
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site)
 
-const isHome = Astro.url.pathname === '/'
+// The home page of a site under a path, such as `/css/`, is not at `/`
+const isHome = isHomePath(getConfig().baseURL, Astro.url.pathname)
 const pageTitle = isHome
   ? `${getConfig().title} · ${getConfig().subtitle}`
   : `${title} · ${getConfig().title}`

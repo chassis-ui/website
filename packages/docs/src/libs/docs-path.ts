@@ -17,3 +17,16 @@ export function joinStaticPath(staticPath: string, file = ''): string {
 
   return name ? `${staticPath}/${name}` : staticPath
 }
+
+/**
+ * Whether a page is the home page of the site: the page at the path of `baseURL`. That is
+ * `/` for `https://chassis-ui.com` and `/css/` for `https://chassis-ui.com/css/`.
+ *
+ * @param baseURL The `baseURL` of the site's `config.yml`.
+ * @param pathname URL path of the page, with or without a trailing slash.
+ */
+export function isHomePath(baseURL: string, pathname: string): boolean {
+  const trim = (value: string) => value.replace(/\/+$/, '')
+
+  return trim(pathname) === trim(new URL(baseURL).pathname)
+}
