@@ -43,12 +43,12 @@ const siblings = {
   },
   css: {
     repository: 'chassis-ui/css',
-    site: '.',
+    site: 'packages/site',
     build: [['dist'], ['astro:build']]
   },
   assets: {
     repository: 'chassis-ui/assets',
-    site: '.',
+    site: 'packages/site',
     // The docs build is chassis-assets' own output, copied in place of `pnpm assets:site`,
     // which needs the Git LFS files of the repository.
     assetsTarget: 'dist/web/docs/chassis',
