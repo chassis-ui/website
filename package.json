@@ -65,6 +65,7 @@
     "site:lint:vnu": "chassis-docs vnu",
     "site:lint:links": "node build/check-links.js",
     "site:lint:a11y": "node build/check-a11y.js",
+    "site:lint:csp": "node build/check-csp.js",
     "site:pagefind": "pagefind --site _site",
     "docs:format": "prettier --write --cache packages/docs",
     "docs:lint": "pnpm docs:lint:eslint && pnpm docs:lint:stylelint && pnpm docs:lint:prettier",

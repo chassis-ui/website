@@ -1,0 +1,72 @@
+name: Content Security Policy
+
+# Opens pages of the deployed site in Chrome, the proxied projects included, after each
+# deployment, and fails on what the content security policy of vercel.json blocks or would
+# block. The policy is a header of the deployment, so CI cannot check it on the built site.
+# See build/check-csp.js.
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to check'
+        required: false
+        default: 'production'
+        type: choice
+        options: [production, staging]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: csp-${{ github.event.deployment.environment || github.event.inputs.environment || 'manual' }}
+  cancel-in-progress: true
+
+jobs:
+  csp:
+    name: Content Security Policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Only run on successful deployments or manual triggers
+    if: github.event_name == 'workflow_dispatch' || github.event.deployment_status.state == 'success'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Determine base URL
+        id: base-url
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            ENV="${{ github.event.inputs.environment }}"
+          elif [[ "${{ github.event.deployment.ref }}" == "staging" ]] || [[ "${{ github.event.deployment.environment }}" == *"staging"* ]] || [[ "${{ github.event.deployment.environment }}" == *"Preview"* ]]; then
+            ENV="staging"
+          else
+            ENV="production"
+          fi
+
+          if [[ "$ENV" == "staging" ]]; then
+            echo "url=https://staging.chassis-ui.com" >> $GITHUB_OUTPUT
+          else
+            echo "url=https://chassis-ui.com" >> $GITHUB_OUTPUT
+          fi
+
+      # Ten pages of each project, to stay well under what Vercel takes for a flood. It uses
+      # the Google Chrome of the runner.
+      - name: Check content security policy
+        run: pnpm site:lint:csp ${{ steps.base-url.outputs.url }} --max 10

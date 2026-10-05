@@ -78,6 +78,14 @@ of CI does too.
 colour mode, against WCAG 2.2 A and AA. Colour contrast is left out for now. It needs Google
 Chrome installed.
 
+`pnpm site:lint:csp https://chassis-ui.com` opens pages of a deployment in Chrome, the
+proxied projects included, and lists what the content security policy blocks or would
+block. It takes a sample of the pages of each project; `--all --only css` checks every page
+of one. It needs Google Chrome installed, and a deployment: the policy is a header of
+`vercel.json`, which `_site` does not have. A violation that is left blocked on purpose is
+in `ACCEPTED` of `build/check-csp.js`. The Content Security Policy workflow runs the check
+after each deployment.
+
 `pnpm site:lint:links` checks every link, anchor and asset of the built site that stays on
 it. Given a deployment, such as `pnpm site:lint:links https://staging.chassis-ui.com`, it
 crawls that instead, the proxied projects included. It fails on a broken link of this

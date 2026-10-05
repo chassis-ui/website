@@ -68,10 +68,9 @@ Each service has two rewrite rules per route:
 | `/icons/*` | `chassis-icons-staging.vercel.app/icons/*` | `chassis-icons.vercel.app/icons/*` |
 | `/react/*` | `chassis-react-staging.vercel.app/react/*` | `chassis-react.vercel.app/react/*` |
 
-chassis-react-staging.vercel.app is behind Vercel's deployment protection, unlike the
-other five staging deployments, so `staging.chassis-ui.com/react/` shows Vercel's login.
-The Links workflow on staging warns that the react site is behind Vercel's login until it
-is reachable. The maintainer keeps the protection. See task RCT2.
+None of the six staging deployments is behind Vercel's deployment protection: the
+maintainer turned it off for chassis-react-staging.vercel.app, the last one, on 2026-10-05.
+Each answers with `X-Robots-Tag: noindex, nofollow`.
 The route sends staging to it, so that staging never shows production content.
 
 ### Sitemap routes
@@ -212,12 +211,16 @@ build and per site.
 Browsers send each violation to `/api/csp-report`, which writes one line per violation to
 the function log of the website project: `CSP violation {"directive":…,"blocked":…,"page":…}`.
 Vercel keeps that log for one hour on the Hobby plan, so it shows what happens now, not a
-history. Where to keep the reports is decision D23 of the [roadmap](ROADMAP.md).
-Violations of the sibling pages arrive there as well.
+history. Violations of the sibling pages arrive there as well. The reports are not stored
+anywhere else, decision D23 of the [roadmap](ROADMAP.md): the sites are static, so
+`pnpm site:lint:csp https://chassis-ui.com` finds the same violations by opening the pages
+of the seven sites in Chrome. See `build/check-csp.js`.
 
 **To add a source,** add it to the right directive, and add a row to the table above. **To
-enforce the policy,** rename the header to `Content-Security-Policy` once the log has shown
-no unexplained violations for a while. `frame-ancestors` then takes effect, and
+enforce the policy,** rename the header to `Content-Security-Policy` once
+`pnpm site:lint:csp` finds no violation on production, with `--all` for each project in
+turn. The check reads either header, so it keeps working afterwards. `frame-ancestors`
+then takes effect, and
 `X-Frame-Options` can stay for older browsers.
 
 ## 🧱 Firewall rule for the contact endpoint

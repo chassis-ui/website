@@ -16,14 +16,14 @@ describes. There is no on-call rota and no status page.
 
 ## How problems are noticed
 
-| Signal                                      | Where                                                                                                                                        |
-| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| A deployment fails                          | Vercel's email, and the deployment in the Vercel dashboard                                                                                   |
-| A broken link after a deployment            | The Links workflow in GitHub Actions. A link of a proxied project, or into one, is a warning, not a failure                                  |
-| Accessibility or performance after a deploy | The Lighthouse workflow in GitHub Actions                                                                                                    |
-| A content security policy violation         | The function log of the website project in Vercel. Search for `CSP violation`. Vercel keeps it for one hour on Hobby, see D23 of the roadmap |
-| Abuse of the contact form                   | The firewall overview of the website project in Vercel, rule "Contact form rate limit". It counts requests on staging and production alike   |
-| The site is down                            | Nothing yet. Uptime monitoring is a task of roadmap session 4.4                                                                              |
+| Signal                                      | Where                                                                                                                                                                                                                                                                     |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A deployment fails                          | Vercel's email, and the deployment in the Vercel dashboard                                                                                                                                                                                                                |
+| A broken link after a deployment            | The Links workflow in GitHub Actions. A link of a proxied project, or into one, is a warning, not a failure                                                                                                                                                               |
+| Accessibility or performance after a deploy | The Lighthouse workflow in GitHub Actions                                                                                                                                                                                                                                 |
+| A content security policy violation         | The Content Security Policy workflow in GitHub Actions, after each deployment, or `pnpm site:lint:csp https://chassis-ui.com`. For what happens now, the function log of the website project in Vercel: search for `CSP violation`. Vercel keeps it for one hour on Hobby |
+| Abuse of the contact form                   | The firewall overview of the website project in Vercel, rule "Contact form rate limit". It counts requests on staging and production alike                                                                                                                                |
+| The site is down                            | Nothing yet. Uptime monitoring is a task of roadmap session 4.4                                                                                                                                                                                                           |
 
 ## Roll back the website
 
@@ -132,8 +132,13 @@ issues a short-lived credential for each run. There is nothing to rotate.
 ## Content security policy reports
 
 The policy is in report-only mode, so a violation breaks nothing. The Vercel function log
-keeps each report as one line, for one hour on the Hobby plan. Where to keep them longer is
-decision D23 of the [roadmap](ROADMAP.md). A new host in the log usually means a new embed or script on
-one of the projects: add it to the policy, as [VERCEL_CONFIG.md](VERCEL_CONFIG.md)
-describes, or ask the project to remove it. The policy is enforced once the log has been
-quiet for two weeks, a task of roadmap session 4.4.
+keeps each report as one line, for one hour on the Hobby plan, and they are kept nowhere
+else: decision D23 of the [roadmap](ROADMAP.md). To see what the policy would block, run
+`pnpm site:lint:csp https://chassis-ui.com`, which opens pages of the seven sites in
+Chrome and lists the violations by project. A new host usually means a new embed or script
+on one of the projects: add it to the policy, as [VERCEL_CONFIG.md](VERCEL_CONFIG.md)
+describes, or ask the project to remove it. A violation that is left blocked on purpose is
+listed in `ACCEPTED` of `build/check-csp.js`, with the reason: the copy of each analytics
+hit that the Google tag sends to `www.google.com` is one. The same check runs after each
+deployment, in the Content Security Policy workflow. The policy is enforced once the check
+passes on every page, a task of roadmap session 4.4.

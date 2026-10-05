@@ -50,9 +50,7 @@ Each Chassis project deploys independently:
 | chassis-assets | `chassis-assets.vercel.app` | `chassis-assets-staging.vercel.app` |
 | chassis-icons  | `chassis-icons.vercel.app`  | `chassis-icons-staging.vercel.app`  |
 | chassis-figma  | `chassis-figma.vercel.app`  | `chassis-figma-staging.vercel.app`  |
-| chassis-react  | `chassis-react.vercel.app`  | none yet                            |
-
-chassis-react's staging deployment is behind Vercel's deployment protection, so `staging.chassis-ui.com/react/` shows Vercel's login. See [VERCEL_CONFIG.md](VERCEL_CONFIG.md).
+| chassis-react  | `chassis-react.vercel.app`  | `chassis-react-staging.vercel.app`  |
 
 ### Unified Routing
 
@@ -148,6 +146,7 @@ None of the workflows in `.github/workflows/` deploys:
 | `ci.yml`         | Pushes to `develop`, pull requests against `develop`, `staging` and `main`                                         | Lint, Type Check, Test and Build, which the ruleset requires, Fixture Site for both layouts, Changeset, which asks for a changeset when `packages/docs` changed, and Audit. Dependency Review on pull requests                                                                                         |
 | `lighthouse.yml` | `deployment_status` events (or manual `workflow_dispatch`)                                                         | Runs Lighthouse CI against the resulting production or staging URL, using `lighthouse.json` thresholds                                                                                                                                                                                                 |
 | `links.yml`      | `deployment_status` events (or manual `workflow_dispatch`)                                                         | Crawls the resulting production or staging URL, the proxied projects included, with `build/check-links.js`. Fails on a broken link of this site. A broken link of a proxied project, or into one, is a warning                                                                                         |
+| `csp.yml`        | `deployment_status` events (or manual `workflow_dispatch`)                                                         | Opens ten pages of each project on the resulting production or staging URL in Chrome, with `build/check-csp.js`, and fails on a violation of the content security policy that is not accepted in that file. A project behind Vercel's login is skipped                                                 |
 | `release.yml`    | Push to `main`, or manual `workflow_dispatch` on `main`                                                            | Publishes the version in `packages/docs/package.json` when npm does not have it, after checking that CI passed on the commit, then creates the GitHub release. Trusted publishing with provenance. A prerelease goes to the dist-tag named by its version. See [Releases](../CONTRIBUTING.md#releases) |
 | `canary.yml`     | Pushes to `develop` that set a version of `@chassis-ui/docs` that npm does not have, or manual `workflow_dispatch` | Builds the site of each sibling whose range accepts the version, with the packed package, with `build/canary.js`. Reports only: nothing requires it. See [Releases](../CONTRIBUTING.md#releases)                                                                                                       |
 
