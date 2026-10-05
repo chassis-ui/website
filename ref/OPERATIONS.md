@@ -124,10 +124,10 @@ issues a short-lived credential for each run. There is nothing to rotate.
 - If an unexpected version appears on npm, check its provenance on the package page, which
   names the workflow run that built it. Then deprecate it as above, and review who can push
   to `main` and who has access to the package on npm.
-- The organisation secret `NPM_CHASSIS_UI` is still used by chassis-icons.
-  Rotate it in npm and in the organisation's secrets if it may have leaked. It is deleted
-  when that project moves to trusted publishing, task A21 of
-  [SIBLING_TASKS.md](SIBLING_TASKS.md).
+- No workflow of the Chassis repositories reads the organisation secret `NPM_CHASSIS_UI`
+  any more, checked on 2026-10-05: every package is published with trusted publishing.
+  Delete the secret from the organisation and revoke its token on npm, if they still
+  exist.
 
 ## Content security policy reports
 
