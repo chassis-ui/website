@@ -4,6 +4,20 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-10-05
+
+### Added
+
+- A check of the content security policy, `pnpm site:lint:csp <url>`: it opens pages of a deployment in Chrome, the proxied projects included, and lists what the policy blocks or would block. The Content Security Policy workflow runs it after each deployment. The reports of the policy are not stored: the check replaces them.
+
+### Changed
+
+- The assets submodule is at `def4a90`, which adds two docs images of chassis-figma and changes two.
+
+### Fixed
+
+- The canary builds the sites of chassis-css and chassis-assets again. It had skipped both since their sites moved to `packages/site`.
+
 ## 2026-10-02
 
 ### Changed

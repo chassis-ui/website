@@ -1,5 +1,13 @@
 # @chassis-ui/docs
 
+## 0.6.3
+
+### Patch Changes
+
+- The home page of a site under a path gets the home form of the title, `title · subtitle`. The layouts took the page at `/` as the home page, so a site with `baseURL` `https://chassis-ui.com/css/` never got it: its home page is at `/css/`. The home page is now the page at the path of `baseURL`. The title of such a home page changes with this release, and the `title` prop of its layout is used for the social tags only. Keep `title · subtitle` within 70 characters where the site validates its HTML.
+- The color mode script is inline in the head and runs before the first paint. It was a module, which runs after the document is parsed, so a page in dark mode showed light first.
+- Five fixes of the search dialog. The page scrolls again after a search result on the current page is opened: the dialog closed without removing the scroll lock of the body. The input has the focus when the dialog is opened with the button, so typing works at once. The keyboard shortcuts open the dialog as the button does: the page behind it no longer scrolls, and a click outside closes it. A click or Enter on a loading placeholder no longer closes the dialog and saves an empty visit. Escape closes the dialog in Safari when the focus is in the empty input.
+
 ## 0.6.2
 
 ### Patch Changes
