@@ -124,6 +124,14 @@ A request without a `Referer`, or with one from another site, gets the website's
 or a 404. Browsers send the header for a page's own files under the site's
 `Referrer-Policy`, so this is accepted (decision D6 of the [roadmap](ROADMAP.md)).
 
+A rewrite applies only when the website's deployment has no file at the path: Vercel
+serves a file of the deployment first. So a file under `/static/` that the website also
+builds, such as the shared CSS, the fonts, the icons and the docs images of the assets
+submodule, comes from the website for every site, and a sibling's own copy is reached only
+for a file that the website lacks. A shared file therefore changes for all sites when the
+website deploys it: after a sibling moves its assets pin, the website moves its own (finding
+F65 of the [roadmap](ROADMAP.md)).
+
 The files that Astro builds are the exception. A script under `/static/astro/` that another
 script imports has that script as its `Referer`, which names no project, so the request
 gets the website's file or a 404. Each sibling therefore writes Astro's files to
