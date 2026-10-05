@@ -20,10 +20,10 @@ describes. There is no on-call rota and no status page.
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A deployment fails                          | Vercel's email, and the deployment in the Vercel dashboard                                                                                                                                                                                                                |
 | A broken link after a deployment            | The Links workflow in GitHub Actions. A link of a proxied project, or into one, is a warning, not a failure                                                                                                                                                               |
-| Accessibility or performance after a deploy | The Lighthouse workflow in GitHub Actions                                                                                                                                                                                                                                 |
+| Accessibility or performance after a deploy | The Lighthouse Performance workflow in GitHub Actions                                                                                                                                                                                                                     |
 | A content security policy violation         | The Content Security Policy workflow in GitHub Actions, after each deployment, or `pnpm site:lint:csp https://chassis-ui.com`. For what happens now, the function log of the website project in Vercel: search for `CSP violation`. Vercel keeps it for one hour on Hobby |
 | Abuse of the contact form                   | The firewall overview of the website project in Vercel, rule "Contact form rate limit". It counts requests on staging and production alike                                                                                                                                |
-| The site is down                            | Nothing yet. Uptime monitoring is a task of roadmap session 4.4                                                                                                                                                                                                           |
+| The site is down                            | Nothing yet. Uptime monitoring is [issue 9](https://github.com/chassis-ui/website/issues/9)                                                                                                                                                                               |
 
 ## Roll back the website
 
@@ -141,4 +141,4 @@ describes, or ask the project to remove it. A violation that is left blocked on 
 listed in `ACCEPTED` of `build/check-csp.js`, with the reason: the copy of each analytics
 hit that the Google tag sends to `www.google.com` is one. The same check runs after each
 deployment, in the Content Security Policy workflow. The policy is enforced once the check
-passes on every page, a task of roadmap session 4.4.
+passes on every page: [issue 10](https://github.com/chassis-ui/website/issues/10).

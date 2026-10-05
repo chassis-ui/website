@@ -31,13 +31,13 @@ Each Chassis project (tokens, css, icons, assets, figma, react) has its own stag
 
 - URL: `chassis-ui.com`
 - Vercel Project: `chassis-website`
-- Deployment URL: `chassis-website.vercel.app`
+- Deployment URL: `chassis-website-ozgurgunes.vercel.app`
 
 **Staging:**
 
 - URL: `staging.chassis-ui.com`
 - Vercel Project: Same (different branch)
-- Deployment URL: `chassis-website-git-staging.vercel.app`
+- Deployment URL: `chassis-website-git-staging-ozgurgunes.vercel.app`
 
 ### Project Sites
 
@@ -88,13 +88,14 @@ before it reaches `staging` or `main`: Lint, Type Check, Test and Build. The rul
 Changeset and Audit run and do not block a push; `release.yml` also requires both Fixture
 Site jobs before it publishes.
 
-The rule applies to direct pushes and pull requests alike. GitHub accepts a direct push
-only when the commit already has passing checks, so a commit has to pass CI somewhere
-first. That is what `develop` is for: CI runs on every push to it, and Vercel does not
-deploy it. CI does not run again when the same commit is pushed to `staging` and `main`: the
-results of the `develop` run belong to the commit, and the ruleset and the release workflow
-read them there. A push to `staging` runs nothing in Actions, and a push to `main` runs
-`release.yml` only. The pushes to `develop` are not cancelled by a newer one, so each
+The rule applies to direct pushes and pull requests alike. GitHub accepts a direct push only
+when the commit already has passing checks, so a commit has to pass CI somewhere first. That
+is what `develop` is for: CI runs on every push to it, and Vercel does not deploy it. CI
+does not run again when the same commit is pushed to `staging` and `main`: the results of
+the `develop` run belong to the commit, and the ruleset and the release workflow read them
+there. A push to `staging` runs nothing in Actions, and a push to `main` runs `release.yml`
+only. The deployment that Vercel makes after each of the two then starts `lighthouse.yml`,
+`links.yml` and `csp.yml`. The pushes to `develop` are not cancelled by a newer one, so each
 commit keeps its results; a newer push to a pull request cancels the run of the older.
 
 ### Releasing chassis-website
@@ -143,7 +144,7 @@ None of the workflows in `.github/workflows/` deploys:
 
 | Workflow         | Trigger                                                                                                            | Purpose                                                                                                                                                                                                                                                                                                |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ci.yml`         | Pushes to `develop`, pull requests against `develop`, `staging` and `main`                                         | Lint, Type Check, Test and Build, which the ruleset requires, Fixture Site for both layouts, Changeset, which asks for a changeset when `packages/docs` changed, and Audit. Dependency Review on pull requests                                                                                         |
+| `ci.yml`         | Pushes to `develop`, pull requests against `develop`, `staging` and `main`                                         | Lint, Type Check, Test and Build, which the ruleset requires, Fixture Site for both layouts, Changeset, which asks for a changeset when the published code of `packages/docs` changed, and Audit. Dependency Review on pull requests                                                                   |
 | `lighthouse.yml` | `deployment_status` events (or manual `workflow_dispatch`)                                                         | Runs Lighthouse CI against the resulting production or staging URL, using `lighthouse.json` thresholds                                                                                                                                                                                                 |
 | `links.yml`      | `deployment_status` events (or manual `workflow_dispatch`)                                                         | Crawls the resulting production or staging URL, the proxied projects included, with `build/check-links.js`. Fails on a broken link of this site. A broken link of a proxied project, or into one, is a warning                                                                                         |
 | `csp.yml`        | `deployment_status` events (or manual `workflow_dispatch`)                                                         | Opens ten pages of each project on the resulting production or staging URL in Chrome, with `build/check-csp.js`, and fails on a violation of the content security policy that is not accepted in that file. A project behind Vercel's login is skipped                                                 |
@@ -152,12 +153,10 @@ None of the workflows in `.github/workflows/` deploys:
 
 No workflow moves the `vendor/assets` pin. The build uses the pinned commit, and the pin moves only when someone runs `pnpm sync-submodules` and commits the result. See [DEVELOPMENT.md](DEVELOPMENT.md#the-vendorassets-submodule).
 
-Every action in them is pinned to a commit, so the commit a sibling pins fixes the actions
-too. The checkout does not keep the token of the job (`persist-credentials: false`), and
-the permissions are `contents: read`.
-
-A change to an input or a default of these workflows is a change for every sibling that
-calls them. Add inputs, and keep the defaults, unless all siblings move together.
+Every action in them is pinned to a commit. The checkout does not keep the token of the
+job (`persist-credentials: false`), and the permissions are `contents: read`. Two jobs of
+`release.yml` get more: the one that reads the checks of the commit, and the one that
+publishes to npm and creates the GitHub release.
 
 ## 🔧 Vercel Configuration
 
@@ -166,9 +165,10 @@ calls them. Add inputs, and keep the defaults, unless all siblings move together
 The main site's `vercel.json` handles:
 
 - Build configuration
+- Which branches Vercel deploys: `main` and `staging`
 - Rewrite rules for project proxying
 - Environment-specific routing
-- Headers and redirects
+- The security headers, and the `X-Robots-Tag` header of staging
 
 Example:
 
@@ -243,15 +243,14 @@ When deploying changes that affect multiple projects:
 2. **Update dependent projects**
 
    ```bash
-   # In chassis-css, chassis-tokens, etc.
-   pnpm add @chassis-ui/docs@latest
+   # In the package of each project that depends on it: packages/site in tokens, css,
+   # assets and react, the root of the repository in icons and figma
+   pnpm add -D @chassis-ui/docs@latest
    git commit -m "chore: update @chassis-ui/docs"
    git push
    ```
 
 3. **Deploy in order** (optional, or just deploy all simultaneously)
-
-> `@chassis-ui/css` and `@chassis-ui/tokens` share the same MINOR version number.
 
 ## 🧪 Pre-Deployment Checklist
 
@@ -319,10 +318,11 @@ Clear Vercel build cache:
 3. Clear build cache
 4. Redeploy
 
-Or use CLI:
+Or use the CLI, which makes a new deployment of the local checkout and builds it without
+the cache:
 
 ```bash
-vercel redeploy --no-cache
+vercel deploy --force
 ```
 
 ## 📊 Monitoring
@@ -362,7 +362,7 @@ Access via Vercel dashboard for each project.
 - **Icons Docs:** https://staging.chassis-ui.com/icons/
 - **Figma Docs:** https://staging.chassis-ui.com/figma/
 - **Assets Docs:** https://staging.chassis-ui.com/assets/
-- **React Docs:** none yet, see above
+- **React Docs:** https://staging.chassis-ui.com/react/
 
 > ⚠️ Staging is excluded from search engines via `robots.txt` (`Disallow: /`) and `X-Robots-Tag: noindex, nofollow`. See [INDEXING.md](INDEXING.md).
 
@@ -394,7 +394,7 @@ pnpm build && pnpm preview
 # Deploy to production (if you have Vercel CLI configured)
 vercel --prod
 
-# Deploy to staging preview
+# Deploy the local checkout as a preview. Staging itself follows the `staging` branch
 vercel
 
 # Check deployment status

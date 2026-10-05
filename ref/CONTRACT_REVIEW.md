@@ -1,6 +1,6 @@
 # Review of the Copied Site Libraries and Scripts
 
-> **Purpose:** the record of roadmap session 2.1, task 1. Seven sites carried their own
+> **Purpose:** the record of roadmap session 2.1. Seven sites carried their own
 > copy of `src/libs/*`, because `@chassis-ui/docs` imported those modules from the site.
 > This document lists every difference between the copies and says what each one is.
 > [Build scripts](#build-scripts) does the same for the scripts under `build/`, the record
@@ -9,9 +9,8 @@
 > **Baseline:** read on 2026-09-29. `chassis-website` at `c838de3`, `chassis-css` on its
 > `develop` branch, the other siblings on `main`. Nothing in a sibling was changed.
 >
-> **Related:** [ROADMAP.md](ROADMAP.md) session 2.1, [SIBLING_TASKS.md](SIBLING_TASKS.md),
-> and the contract that replaced the copies in the
-> [package README](../packages/docs/README.md).
+> **Related:** [ROADMAP.md](ROADMAP.md) session 2.1, and the contract that replaced the
+> copies in the [package README](../packages/docs/README.md).
 
 ## How to read the tables
 
@@ -164,27 +163,27 @@ package, and "In the command" says where each difference went.
 | `build-site.js`      | Website, react and assets, each different                                                     |
 | `change-version.js`  | Assets, icons and figma. Not replaced, see below                                              |
 
-| Difference                                                                                       | Where                     | Kind     | In the command                                                                                                                                        |
-| ------------------------------------------------------------------------------------------------ | ------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sync-submodules` fetches the branch and creates it from `FETCH_HEAD` when the checkout has none | react                     | need     | Taken. A CI checkout has the submodule at a detached HEAD, and a bare `git checkout app/docs` failed                                                  |
-| `sync-submodules` checks the build output in `dist/web/chassis-docs`                             | react                     | bug      | The output is `dist/web/docs/chassis`. The command checks that, and fails when it is missing. Task RCT4                                               |
-| `git lfs install` without `--local`                                                              | all                       | bug      | It wrote to the user's global Git config. The command writes to the submodule's                                                                       |
-| `git pull` of the branch may merge                                                               | all                       | accident | `git pull --ff-only`, which stops on a diverged branch                                                                                                |
-| Uncommitted changes in the submodule skip the sync with a warning, and the script succeeds       | all                       | accident | The command fails and says so                                                                                                                         |
-| `pnpm install` in the submodule, with or without `--ignore-workspace`                            | all                       | accident | `--ignore-workspace` always, so the submodule's own lockfile decides                                                                                  |
-| Extra rules and `elements` for html-validate                                                     | css                       | need     | A JSON file passed with `--config`                                                                                                                    |
-| The rule for the home page slider, `prefer-native-element` without `region`                      | website                   | need     | `packages/website/html-validate.json`. The package's defaults keep only what its layouts need                                                         |
-| `packages/css/js/tests` validated with the site                                                  | css                       | need     | Passed as a second path                                                                                                                               |
-| "behaviour" or "behavior" in a comment                                                           | tokens                    | accident |                                                                                                                                                       |
-| Filters for duplicate `dt` names                                                                 | figma                     | need     | `--filter`                                                                                                                                            |
-| Eleven filters, one of them with `.` in place of quotes                                          | css                       | need     | A file passed with `--filter-file`. Quotes can be written as they are, since no shell reads the pattern                                               |
-| `spawn` with `shell: true` and quoted arguments                                                  | assets, icons, figma, css | accident | No shell, so a pattern needs no quoting                                                                                                               |
-| `--asciiquotes`, so the output shows `"` where a filter must match `“`                           | all                       | accident | Dropped. A line copied from the output works as a filter                                                                                              |
-| `static/icons` left out of both validators                                                       | all                       | need     | The default, per path. `--ignore` adds to it                                                                                                          |
-| `build-site` moves the pin with `--remote`, and falls back to `sync-submodules`                  | react                     | bug      | The same as F26 was here: the build did not use the pinned commit. `chassis-docs vendor` builds the pin. RCT3 deletes the script, which nothing calls |
-| `build-site` builds the examples                                                                 | website                   | need     | A step of the site's own `build` script                                                                                                               |
-| `build-site` builds the repository's own assets, and has no submodule                            | assets                    | need     | Stays in the site's own scripts. Only the vendor step is shared                                                                                       |
-| `build-site` checks that `pnpm` and `git` exist, and that `_site` has an `index.html`            | website, react, assets    | accident | Left out. The build fails without them, and the link checker reads every page                                                                         |
+| Difference                                                                                       | Where                     | Kind     | In the command                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------ | ------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sync-submodules` fetches the branch and creates it from `FETCH_HEAD` when the checkout has none | react                     | need     | Taken. A CI checkout has the submodule at a detached HEAD, and a bare `git checkout app/docs` failed                                                            |
+| `sync-submodules` checks the build output in `dist/web/chassis-docs`                             | react                     | bug      | The output is `dist/web/docs/chassis`. The command checks that, and fails when it is missing. chassis-react deleted its copy                                    |
+| `git lfs install` without `--local`                                                              | all                       | bug      | It wrote to the user's global Git config. The command writes to the submodule's                                                                                 |
+| `git pull` of the branch may merge                                                               | all                       | accident | `git pull --ff-only`, which stops on a diverged branch                                                                                                          |
+| Uncommitted changes in the submodule skip the sync with a warning, and the script succeeds       | all                       | accident | The command fails and says so                                                                                                                                   |
+| `pnpm install` in the submodule, with or without `--ignore-workspace`                            | all                       | accident | `--ignore-workspace` always, so the submodule's own lockfile decides                                                                                            |
+| Extra rules and `elements` for html-validate                                                     | css                       | need     | A JSON file passed with `--config`                                                                                                                              |
+| The rule for the home page slider, `prefer-native-element` without `region`                      | website                   | need     | `packages/website/html-validate.json`. The package's defaults keep only what its layouts need                                                                   |
+| `packages/css/js/tests` validated with the site                                                  | css                       | need     | Passed as a second path                                                                                                                                         |
+| "behaviour" or "behavior" in a comment                                                           | tokens                    | accident |                                                                                                                                                                 |
+| Filters for duplicate `dt` names                                                                 | figma                     | need     | `--filter`                                                                                                                                                      |
+| Eleven filters, one of them with `.` in place of quotes                                          | css                       | need     | A file passed with `--filter-file`. Quotes can be written as they are, since no shell reads the pattern                                                         |
+| `spawn` with `shell: true` and quoted arguments                                                  | assets, icons, figma, css | accident | No shell, so a pattern needs no quoting                                                                                                                         |
+| `--asciiquotes`, so the output shows `"` where a filter must match `“`                           | all                       | accident | Dropped. A line copied from the output works as a filter                                                                                                        |
+| `static/icons` left out of both validators                                                       | all                       | need     | The default, per path. `--ignore` adds to it                                                                                                                    |
+| `build-site` moves the pin with `--remote`, and falls back to `sync-submodules`                  | react                     | bug      | The same as F26 was here: the build did not use the pinned commit. `chassis-docs vendor` builds the pin. chassis-react deleted the script, which nothing called |
+| `build-site` builds the examples                                                                 | website                   | need     | A step of the site's own `build` script                                                                                                                         |
+| `build-site` builds the repository's own assets, and has no submodule                            | assets                    | need     | Stays in the site's own scripts. Only the vendor step is shared                                                                                                 |
+| `build-site` checks that `pnpm` and `git` exist, and that `_site` has an `index.html`            | website, react, assets    | accident | Left out. The build fails without them, and the link checker reads every page                                                                                   |
 
 `change-version.js` bumps a version across files. It is not a docs-site script, and the
 sites that have it publish nothing through this package. It stays with those three
@@ -194,13 +193,13 @@ repositories, which can move to Changesets as tokens, css, react and this reposi
 
 The review of the package itself found assumptions that the README of 0.5.1 did not list:
 
-| Assumption                                                                        | In 0.6                                                                  |
-| --------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `Head.astro` imports `@scss/docs.scss`, a second path alias                       | The `styles` option, with `src/scss/docs.scss` as the default           |
-| The generated declarations import the site's shortcodes through `@shortcodes/*`   | They name the files, and are written to `.astro/`                       |
-| `ScssDocs` adds `node_modules` of the working directory to the Sass load paths    | Every `node_modules` from the site's root to the root of the repository |
-| The shipped source imports types from packages that were development dependencies | They are dependencies                                                   |
-| The layouts link to fixed URLs under `/static/`                                   | Unchanged, and listed in the README                                     |
-| The styles need `chassis-tokens` on the Sass load path. Found in session 2.3      | Listed in the README. Each site still sets it. See F49 and D22          |
-| The build needs the docs build of `chassis-assets`. Found in session 2.3          | Unchanged. See F51                                                      |
-| The header lists five sibling sites by name, without `chassis-react`              | Fixed in 0.6.1. See F44                                                 |
+| Assumption                                                                        | In 0.6                                                                                                    |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `Head.astro` imports `@scss/docs.scss`, a second path alias                       | The `styles` option, with `src/scss/docs.scss` as the default                                             |
+| The generated declarations import the site's shortcodes through `@shortcodes/*`   | They name the files, and are written to `.astro/`                                                         |
+| `ScssDocs` adds `node_modules` of the working directory to the Sass load paths    | Every `node_modules` from the site's root to the root of the repository                                   |
+| The shipped source imports types from packages that were development dependencies | They are dependencies                                                                                     |
+| The layouts link to fixed URLs under `/static/`                                   | Unchanged in 0.6.0. Since 0.6.2 the path is the `staticPath` key of `config.yml`, `/static` by default    |
+| The styles need `chassis-tokens` on the Sass load path. Found in session 2.3      | The integration adds the default one. A site sets a load path only for tokens of its own. See F49 and D22 |
+| The build needs the docs build of `chassis-assets`. Found in session 2.3          | Unchanged. See F51                                                                                        |
+| The header lists five sibling sites by name, without `chassis-react`              | Fixed in 0.6.1. See F44                                                                                   |

@@ -110,7 +110,8 @@ To add an example, create the folder with a `package.json` whose `build` script 
 The package README, [packages/docs/README.md](../packages/docs/README.md), is the contract
 with the sites that use it. Update it with any change to what it describes.
 
-- `pnpm test` runs the package's unit and component tests.
+- `pnpm test` runs the package's unit and component tests, and the tests of the functions
+  in `api/`.
 - `pnpm test:fixtures` packs the package and builds the starter site in
   `packages/docs/starter` from the tarball, the way a sibling installs it.
 - `pnpm check:astro:docs` type-checks the package without the website.
@@ -119,12 +120,14 @@ with the sites that use it. Update it with any change to what it describes.
 
 ### Trying a change in a sibling project
 
-Pack the package and install the tarball in the sibling:
+Pack the package and install the tarball in the package of the sibling that depends on
+it. That is `packages/site` in tokens, css, assets and react, and the root of the
+repository in icons and figma:
 
 ```bash
 cd packages/docs
 pnpm pack --pack-destination /tmp
-cd ../../../chassis-css
+cd ../../../chassis-css/packages/site
 pnpm add -D /tmp/chassis-ui-docs-<version>.tgz
 ```
 

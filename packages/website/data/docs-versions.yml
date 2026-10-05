@@ -1,5 +1,0 @@
-- group: v0.x
-  baseurl: 'https://chassis-ui.com/docs/'
-  description: 'Development releases are listed below.'
-  versions:
-    - '0.1.0'

@@ -1,7 +1,7 @@
 # Search Engine Indexing Configuration
 
 > **Document Purpose:** Reference for how the Chassis ecosystem controls search engine indexing across production, staging, and direct Vercel deployment URLs.
-> **Last Updated:** July 2026
+> **Last Updated:** October 2026
 > **Audience:** Developers maintaining the website and sub-project sites.
 
 This document describes how indexing is allowed on the production domain (`chassis-ui.com`) and blocked everywhere else (staging domain + every direct `*.vercel.app` host).
@@ -14,6 +14,7 @@ This document describes how indexing is allowed on the production domain (`chass
 | `staging.chassis-ui.com/*` (staging custom domain) | ❌ No |
 | `chassis-{tokens,css,icons,figma,assets,react}.vercel.app/*` (production Vercel previews) | ❌ No |
 | `chassis-{tokens,css,icons,figma,assets,react}-staging.vercel.app/*` (staging Vercel previews) | ❌ No |
+| `chassis-website-*.vercel.app/*` (the website's own Vercel hosts) | ❌ No |
 
 The sub-project sites (`chassis-tokens`, `chassis-css`, etc.) exist only as proxy targets behind `chassis-ui.com`. Crawlers must never index those URLs directly.
 
@@ -39,8 +40,10 @@ Indexing is controlled with **two layers**:
 |---|---|---|
 | `chassis-ui.com` | `Disallow:` (allow all) + sitemap | (none) |
 | `staging.chassis-ui.com` | `Disallow: /` | `noindex, nofollow` |
-| `chassis-*.vercel.app` (production previews) | `Disallow: /` | (none — would leak via proxy) |
-| `chassis-*-staging.vercel.app` (staging previews) | `Disallow: /` | `noindex, nofollow` |
+| `chassis-<project>.vercel.app` (production previews of the six sub-projects) | `Disallow: /` | (none — would leak via proxy) |
+| `chassis-<project>-staging.vercel.app` (staging previews) | `Disallow: /` | `noindex, nofollow` |
+| `chassis-website-ozgurgunes.vercel.app` (the website's production deployment) | `Disallow:` (allow all) + sitemap of `chassis-ui.com` | `noindex`, which Vercel adds |
+| `chassis-website-git-staging-ozgurgunes.vercel.app` (the website's staging deployment) | `Disallow: /` | `noindex`, which Vercel adds |
 
 ## 📂 Where each rule lives
 
@@ -52,6 +55,8 @@ Indexing is controlled with **two layers**:
 const vercelEnv = process.env.VERCEL_ENV
 const allowCrawling = import.meta.env.PROD && (!vercelEnv || vercelEnv === 'production')
 ```
+
+The file decides by the build, not by the host, so the website's production deployment serves the allowing `robots.txt` on its `*.vercel.app` host too. That host is kept out of the index by the `X-Robots-Tag: noindex` header that Vercel adds to it (seen on 2026-10-05; nothing in `vercel.json` sets it), and its pages carry a canonical link to `chassis-ui.com`.
 
 **`vercel.json`** — adds `X-Robots-Tag: noindex, nofollow` for any request whose `host` header matches `staging.chassis-ui.com`:
 
@@ -73,7 +78,7 @@ const allowCrawling = import.meta.env.PROD && (!vercelEnv || vercelEnv === 'prod
 
 ### Sub-projects (chassis-tokens, chassis-css, chassis-icons, chassis-figma, chassis-assets, chassis-react)
 
-**`site/src/pages/robots.txt.ts`** — always emits `Disallow: /`. These hosts are never user-facing; they only serve as proxy targets.
+**`src/pages/robots.txt.ts`** of the site (`packages/site` in tokens, css, assets and react, `site/` in icons and figma) — always emits `Disallow: /`. These hosts are never user-facing; they only serve as proxy targets.
 
 ```ts
 const robotsTxt = `# www.robotstxt.org
@@ -102,16 +107,11 @@ Disallow: /
 
 ## ⚠️ Vercel Deployment Protection
 
-Vercel's **Deployment Protection** (project Settings → Deployment Protection) intercepts requests to a deployment and 401-redirects them to a Vercel SSO page. When this is enabled on a sub-project that's used as a rewrite target, the proxied request from `chassis-ui.com/<path>/` collapses into a visible browser redirect to the underlying `*.vercel.app` URL.
+Vercel's **Deployment Protection** (project Settings → Deployment Protection) answers requests to a deployment with Vercel's login. When this is enabled on a sub-project that's used as a rewrite target, the proxied request from `chassis-ui.com/<path>/` collapses into a visible browser redirect to the underlying `*.vercel.app` URL.
 
-**Required setting:** Disable Deployment Protection (or use "Standard Protection + Bypass for Automation" with a query token) on every sub-project that the website rewrites to.
+**Required setting:** Disable Deployment Protection on every sub-project that the website rewrites to. A bypass token is not an alternative: each sub-project would need its own, and a token in `vercel.json` would be public.
 
-Symptom of misconfiguration:
-```
-$ curl -I https://staging.chassis-ui.com/tokens/
-HTTP/2 401
-set-cookie: _vercel_sso_nonce=...
-```
+The symptom is a Vercel login where the project's page should be. See "Vercel Deployment Protection" in [VERCEL_CONFIG.md](VERCEL_CONFIG.md) for what the status looks like.
 
 ## ✅ Verification
 
@@ -132,7 +132,8 @@ for h in \
   https://chassis-css-staging.vercel.app \
   https://chassis-icons-staging.vercel.app \
   https://chassis-figma-staging.vercel.app \
-  https://chassis-assets-staging.vercel.app ; do
+  https://chassis-assets-staging.vercel.app \
+  https://chassis-react-staging.vercel.app ; do
   echo "── $h/robots.txt"
   curl -s "$h/robots.txt"
   echo ""
@@ -159,12 +160,12 @@ done
 |---|---|---|
 | `chassis-ui.com/*` | `Disallow:` (allow) | (none) |
 | `staging.chassis-ui.com/*` | `Disallow: /` | `noindex, nofollow` |
-| `chassis-*.vercel.app/*` | `Disallow: /` | (none) |
-| `chassis-*-staging.vercel.app/*` | `Disallow: /` | `noindex, nofollow` |
+| `chassis-<project>.vercel.app/*` | `Disallow: /` | (none) |
+| `chassis-<project>-staging.vercel.app/*` | `Disallow: /` | `noindex, nofollow` |
 
 ## 📝 Canonical URLs
 
-`getSiteUrl()` in `packages/docs/src/libs/site.ts` determines the Astro `site` value used for sitemap generation and canonical `<link>` tags. In production (`VERCEL_ENV === 'production'`) it returns `config.baseURL`, which is set to the correct path-prefixed `chassis-ui.com` URL in each project's `config.yml` (e.g. `https://chassis-ui.com/tokens/` for chassis-tokens).
+`getSiteUrl()` in `packages/docs/src/libs/site.ts` determines the Astro `site` value used for sitemap generation and canonical `<link>` tags. In production (`VERCEL_ENV === 'production'`) it returns `config.baseURL`, which is set to the correct path-prefixed `chassis-ui.com` URL in each project's `config.yml` (e.g. `https://chassis-ui.com/tokens` for chassis-tokens).
 
 This means sub-project sitemaps and canonical tags correctly reference `chassis-ui.com/...` URLs in production builds — not the bare `*.vercel.app` host.
 
@@ -183,7 +184,7 @@ Check that the matching sub-project's `vercel.json` does **not** apply `X-Robots
 
 ### Direct `*.vercel.app` URL is indexable
 1. Check `https://<project>.vercel.app/robots.txt` returns `Disallow: /`.
-2. If allow rule is shown instead, the sub-project's `staging` branch wasn't pushed — verify with `git rev-parse staging` vs `git rev-parse origin/staging` in that repo.
+2. The sub-project's `robots.txt.ts` has no allow rule, so an allow rule means the host does not serve that project's current build. `<project>.vercel.app` is built from `main`: check the latest deployment of the project in Vercel, and that `main` has the file.
 
 ### Already-indexed URLs in Google
 `robots.txt` does not de-index existing entries. Submit a removal request in Google Search Console for any leaked URLs after the noindex headers are live.

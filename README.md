@@ -50,7 +50,7 @@ The build writes the site to `_site/`.
 | [ref/ARCHITECTURE.md](ref/ARCHITECTURE.md)         | How the Chassis repositories fit together                     |
 | [ref/DEPLOYMENT.md](ref/DEPLOYMENT.md)             | Environments, deployments and the release flow                |
 | [ref/VERCEL_CONFIG.md](ref/VERCEL_CONFIG.md)       | How chassis-ui.com routes to the other projects' sites        |
-| [ref/ROADMAP.md](ref/ROADMAP.md)                   | Planned work on this repository                               |
+| [ref/ROADMAP.md](ref/ROADMAP.md)                   | Record of the hardening project, its findings and decisions   |
 
 ## Chassis ecosystem
 

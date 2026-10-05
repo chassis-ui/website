@@ -8,10 +8,10 @@
  * Each layout is a repository of its own in a temporary directory:
  *
  * - `root`: the site is in `site/` and is built from the root of the repository with
- *   `astro build --root site`, like chassis-assets, chassis-icons and chassis-figma.
+ *   `astro build --root site`, like chassis-icons and chassis-figma.
  * - `packages`: the site is the workspace package `packages/site` and is built with
- *   `pnpm --filter`, like chassis-tokens, chassis-css and chassis-react. It is type-checked
- *   as well.
+ *   `pnpm --filter`, like chassis-tokens, chassis-css, chassis-assets and chassis-react. It
+ *   is type-checked as well.
  *
  * In both, the code that the site documents sits outside the site, and `sourceDir` points
  * to it. The `packages` layout also loads its static files under a prefix, as a site does

@@ -64,18 +64,18 @@ area rather than re-deriving from source:
 - [ref/VERCEL_CONFIG.md](ref/VERCEL_CONFIG.md) — Vercel proxy routing across ecosystem sites
 - [ref/INDEXING.md](ref/INDEXING.md) — search engine indexing rules per host/environment
 - [ref/CHASSIS_CSS.md](ref/CHASSIS_CSS.md) — Bootstrap → Chassis CSS conversion guide (written for LLMs)
-- [ref/ROADMAP.md](ref/ROADMAP.md) — phased roadmap with findings, tasks and a session log; update
-  it at the end of every session that works on it
+- [ref/ROADMAP.md](ref/ROADMAP.md) — closed record of the 2026-09/10 hardening project: what each
+  phase did, and the findings (F), sibling findings (S) and decisions (D) that code and docs cite.
+  Open work is in the GitHub issues, not here; don't add tasks or a session log to it
 - [ref/CONTRACT_REVIEW.md](ref/CONTRACT_REVIEW.md) — what differed between the sites' copies of
   `src/libs` before `@chassis-ui/docs` 0.6, and of the build scripts before the `chassis-docs`
   commands, and why; the contract itself is in `packages/docs/README.md`
-- [ref/SIBLING_TASKS.md](ref/SIBLING_TASKS.md) — closed record of the siblings' upgrade to
-  `@chassis-ui/docs` 0.6; don't add to it. Work that belongs in a sibling repo is still not
-  done from a session in this repo: tell the maintainer
 
 ## Cautions
 
 - Never commit or push without being asked.
+- Work that belongs in a sibling repo is not done from a session in this repo: tell the
+  maintainer.
 - Don't edit generated output in `_site/`, `.cache/`, or `node_modules/`.
 - Submodule sync (`pnpm sync-submodules`) moves the pin to the latest `app/docs` of
   `chassis-ui/assets` — be aware changes there originate from a different repo.

@@ -1,7 +1,7 @@
 # Vercel Configuration Guide
 
 > **Document Purpose:** Technical reference for Vercel proxy routing configuration
-> **Last Updated:** September 2026 (security headers and the contact firewall rule added)
+> **Last Updated:** October 2026
 > **Audience:** Developers working on chassis-website deployment
 
 This document describes how environment-specific URL routing works for the Chassis ecosystem using Vercel rewrites and conditional headers.
@@ -13,7 +13,7 @@ The Chassis ecosystem consists of multiple independent repositories, each with i
 1. Present a unified website at `chassis-ui.com`.
 2. Route requests to the appropriate project sites (e.g. `/css/*` → `chassis-css.vercel.app`).
 3. Support both production (`chassis-ui.com`) and staging (`staging.chassis-ui.com`) environments from a single `vercel.json`.
-4. Avoid manual configuration changes when merging `staging` → `main`.
+4. Avoid manual configuration changes when a commit moves from `staging` to `main`.
 5. Keep search engines indexing only the production custom domain.
 
 ## ✅ Solution: Host Header Conditional Rewrites
@@ -119,9 +119,12 @@ icons site has. The optional `static/` keeps one case of the old pattern: a font
 stylesheet under `/static/css/` or `/static/icons/` loads has that stylesheet as its
 `Referer`, and goes to the css or the icons deployment as before.
 
-A request without a `Referer`, or with one from another site, gets the website's own file,
-or a 404. Browsers send the header for a page's own files under the site's
-`Referrer-Policy`, so this is accepted (decision D6 of the [roadmap](ROADMAP.md)).
+A request without a `Referer`, or with one whose path names no project, gets the website's
+own file, or a 404. The rules read the path of the `Referer` and not its host, so a
+`Referer` of any host with a path under `/css/` is routed to the css deployment. A page of
+another site does not send one: under the browsers' default policy it sends its origin
+only, without the path. Browsers send the full header for a page's own files under the
+site's `Referrer-Policy`, so this is accepted (decision D6 of the [roadmap](ROADMAP.md)).
 
 A rewrite applies only when the website's deployment has no file at the path: Vercel
 serves a file of the deployment first. So a file under `/static/` that the website also
@@ -135,8 +138,8 @@ The files that Astro builds are the exception. A script under `/static/astro/` t
 script imports has that script as its `Referer`, which names no project, so the request
 gets the website's file or a 404. Each sibling therefore writes Astro's files to
 `<project>/static/astro/` of its build, with `build.assets`, and its pages request them as
-`/<project>/static/astro/…` (task A6 of [SIBLING_TASKS.md](SIBLING_TASKS.md)). The
-`/<project>/(.*)` rule routes them by path, and the sibling needs no rewrite: the file is
+`/<project>/static/astro/…`. The `/<project>/(.*)` rule routes them by path, and the
+sibling needs no rewrite: the file is
 at the path of its URL, on the deployment and on a local `astro preview`. They have a hash
 of the site in their name and were never shared.
 
@@ -209,7 +212,7 @@ event handlers: a static site behind a proxy cannot use nonces, and hashes would
 build and per site.
 
 Browsers send each violation to `/api/csp-report`, which writes one line per violation to
-the function log of the website project: `CSP violation {"directive":…,"blocked":…,"page":…}`.
+the function log of the website project: `CSP violation {"directive":…,"blocked":…,"page":…,"source":…}`.
 Vercel keeps that log for one hour on the Hobby plan, so it shows what happens now, not a
 history. Violations of the sibling pages arrive there as well. The reports are not stored
 anywhere else, decision D23 of the [roadmap](ROADMAP.md): the sites are static, so
@@ -255,9 +258,9 @@ by two endpoints would need a name that starts with `_` for the same reason.
 
 ## ⚠️ Vercel Deployment Protection
 
-**Disable Deployment Protection** on every sub-project that the website rewrites to (Vercel project Settings → Deployment Protection → *Disabled*). When it is enabled, Vercel intercepts proxied requests and 401-redirects them to a Vercel SSO page, which collapses the rewrite into a visible browser redirect to the underlying `*.vercel.app` URL.
+**Disable Deployment Protection** on every sub-project that the website rewrites to (Vercel project Settings → Deployment Protection → *Disabled*). When it is enabled, Vercel answers a proxied request with its login instead of the site, and the address bar changes from `staging.chassis-ui.com/tokens/` to the underlying `*.vercel.app` URL.
 
-**Symptom of a misconfigured project:**
+**Symptom of a misconfigured project:** the page of the project shows a Vercel login. The status does not always show it. A request can get a 401 with a `_vercel_sso_nonce` cookie:
 
 ```bash
 $ curl -I https://staging.chassis-ui.com/tokens/
@@ -265,25 +268,27 @@ HTTP/2 401
 set-cookie: _vercel_sso_nonce=...
 ```
 
-The address bar will change from `staging.chassis-ui.com/tokens/` to `chassis-tokens-staging.vercel.app/...`. Disabling Deployment Protection on `chassis-tokens` (and any other affected sub-project) fixes it.
+It can also get a redirect to Vercel's login, which answers 200: that is what `staging.chassis-ui.com/react/` did on 2026-09-29, and why the link check passed it (F64 of the [roadmap](ROADMAP.md)). `build/check-links.js` and `build/check-csp.js` therefore look at where the root of each project ends up.
+
+Disabling Deployment Protection on the affected sub-project fixes it. A bypass token is not an alternative: each sub-project would need its own, and a token in `vercel.json` would be public.
 
 ## Development Workflow
 
-### Working on staging
-1. Branch off `staging`, do work, merge into `staging`.
-2. Push `staging` → Vercel deploys to `staging.chassis-ui.com`.
-3. URLs route to `*-staging.vercel.app` services automatically via host detection.
+The branch flow is in [DEPLOYMENT.md](DEPLOYMENT.md): work is merged into `develop`, and the same commit is then pushed to `staging` and to `main`.
+
+### Staging
+1. Push the commit to `staging` → Vercel deploys to `staging.chassis-ui.com`.
+2. URLs route to `*-staging.vercel.app` services automatically via host detection.
 
 ### Production release
-1. Merge `staging` → `main`.
-2. Push `main` → Vercel deploys to `chassis-ui.com`.
-3. URLs route to production `*.vercel.app` services automatically.
-4. **No manual `vercel.json` changes needed** — host detection handles the switch.
+1. Push the same commit to `main` → Vercel deploys to `chassis-ui.com`.
+2. URLs route to production `*.vercel.app` services automatically.
+3. **No manual `vercel.json` changes needed** — host detection handles the switch.
 
 ## Benefits
 
 - ✅ **Single configuration** — one `vercel.json` works for both environments.
-- ✅ **Merge-safe** — no manual edits during `staging` → `main` merges.
+- ✅ **Release-safe** — no manual edits when a commit moves from `staging` to `main`.
 - ✅ **Domain-driven** — routing happens automatically based on the requesting host.
 - ✅ **Maintainable** — changes apply to both environments simultaneously.
 
@@ -293,8 +298,8 @@ The address bar will change from `staging.chassis-ui.com/tokens/` to `chassis-to
 - Uses `"type": "header", "key": "host"` to detect the requesting domain.
 - Uses `"type": "header", "key": "referer"` for `/static/*` disambiguation.
 - Uses regex capture groups (`(.*)` / `$1`) in `source` / `destination`.
-- Top-level options: `buildCommand`, `outputDirectory`, `trailingSlash: true`.
-- Sub-projects use `"public": true` to mark deployments as publicly accessible (independent of Deployment Protection settings, which must also be off).
+- Top-level options: `buildCommand`, `outputDirectory`, `trailingSlash: true`, and `git.deploymentEnabled`, which lets Vercel deploy `main` and `staging` and not `develop` or the `dependabot/**` branches.
+- A sub-project's own `vercel.json` sets `buildCommand`, `outputDirectory`, `git.deploymentEnabled` and the `X-Robots-Tag` header of its staging host. Whether its deployments are public is the project's Deployment Protection setting, which must be off.
 
 ### Limitations
 - **Local development** — conditional rewrites do **not** work with `vercel dev`; must test on real staging/production URLs.
@@ -324,8 +329,8 @@ curl -sI https://chassis-tokens.vercel.app/tokens/
 
 - **`vercel.json`** (chassis-website) — main rewrites, security headers, staging `X-Robots-Tag` header.
 - **`vercel.json`** (each sub-project) — `X-Robots-Tag` for `*-staging.vercel.app` hosts only.
-- **`packages/website/src/pages/robots.txt.ts`** — host-aware robots for the website.
-- **`<sub-project>/site/src/pages/robots.txt.ts`** — always emits `Disallow: /` (sub-projects are never user-facing).
+- **`packages/website/src/pages/robots.txt.ts`** — robots for the website, by build environment: a production build allows crawling, any other disallows it.
+- **`src/pages/robots.txt.ts`** of each sub-project's site (`packages/site`, or `site/` in icons and figma) — always emits `Disallow: /` (sub-projects are never user-facing).
 
 ## Troubleshooting
 
@@ -342,7 +347,7 @@ If the wrong URLs are being used:
 This solution replaced an earlier approach that generated `vercel.json` at build time. The current host-header conditional rewrite approach is more reliable because:
 
 - ✅ Single `vercel.json` works for both staging and production.
-- ✅ No manual configuration changes when merging `staging` → `main`.
+- ✅ No manual configuration changes when a commit moves from `staging` to `main`.
 - ✅ Vercel reads `vercel.json` directly from git — no build-time dependency.
 - ✅ No environment-variable detection issues.
 - ✅ Works consistently across all deployment types.

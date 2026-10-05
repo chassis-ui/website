@@ -2,8 +2,9 @@
 
 > **Scope:** this document covers the _shape_ of the ecosystem and the _why_ behind its
 > non-obvious decisions (why a project is a submodule instead of an npm package, why an
-> override mechanism exists). For step-by-step instructions, see [DEVELOPMENT.md](DEVELOPMENT.md),
-> [DEPLOYMENT.md](DEPLOYMENT.md), [VERCEL_CONFIG.md](VERCEL_CONFIG.md), and [INDEXING.md](INDEXING.md).
+> override mechanism exists). Setup and commands are in [CONTRIBUTING.md](../CONTRIBUTING.md).
+> How the parts work is in [DEVELOPMENT.md](DEVELOPMENT.md), [DEPLOYMENT.md](DEPLOYMENT.md),
+> [VERCEL_CONFIG.md](VERCEL_CONFIG.md), and [INDEXING.md](INDEXING.md).
 
 ## Overview
 
@@ -44,7 +45,7 @@ chassis-website/
 │       └── astro.config.ts
 ├── examples/                    # Workspace packages, served under /examples/
 │   └── vanilla-html/
-├── api/                         # The contact form endpoint, a Vercel function
+├── api/                         # Vercel functions: the contact form and the CSP reports
 ├── vendor/
 │   └── assets/                  # chassis-assets submodule
 ├── build/                       # Build, validation and release scripts
@@ -56,17 +57,17 @@ chassis-website/
 Each sibling project has an Astro documentation site that depends on `@chassis-ui/docs`
 from npm, and deploys it to Vercel on its own. Where the site lives differs:
 
-| Project        | Site            | What it distributes                                  |
-| -------------- | --------------- | ---------------------------------------------------- |
-| chassis-tokens | `packages/site` | `@chassis-ui/tokens` on npm, from `packages/tokens`  |
-| chassis-css    | `packages/site` | `@chassis-ui/css` on npm, from `packages/css`        |
-| chassis-react  | `packages/site` | `@chassis-ui/react` on npm, from `packages/react`    |
-| chassis-icons  | `site/`         | `@chassis-ui/icons` on npm, from the repository root |
-| chassis-assets | `site/`         | Fonts, images and other assets. Not on npm           |
-| chassis-figma  | `site/`         | Nothing. Documentation of the Figma libraries only   |
+| Project        | Site            | What it distributes                                                |
+| -------------- | --------------- | ------------------------------------------------------------------ |
+| chassis-tokens | `packages/site` | `@chassis-ui/tokens` on npm, from `packages/tokens`                |
+| chassis-css    | `packages/site` | `@chassis-ui/css` on npm, from `packages/css`                      |
+| chassis-react  | `packages/site` | `@chassis-ui/react` on npm, from `packages/react`                  |
+| chassis-assets | `packages/site` | Fonts, images and other assets, from `packages/assets`. Not on npm |
+| chassis-icons  | `site/`         | `@chassis-ui/icons` on npm, from the repository root               |
+| chassis-figma  | `site/`         | Nothing. Documentation of the Figma libraries only                 |
 
-tokens, css and react are pnpm workspaces with the package and the site side by side.
-icons, assets and figma are single packages with the site in a folder.
+tokens, css, react and assets are pnpm workspaces with the package and the site side by
+side. icons and figma are single packages with the site in a folder.
 
 How each project's output reaches consumers differs, and this is a deliberate design
 choice per project, not an inconsistency to be fixed:
@@ -76,9 +77,9 @@ choice per project, not an inconsistency to be fixed:
   (see Dependency Model below).
 - **chassis-assets** ships fonts, images, and other binary assets that are also consumed
   by non-Node clients — e.g. native iOS and Android apps — which have no use for an npm
-  package. It is never published to npm; `chassis-website` pulls it in as a git submodule
-  (`vendor/assets`, at a pinned commit of the `app/docs` branch) and other sites/apps
-  consume it via CDN (see Runtime Asset Sharing below).
+  package. It is never published to npm; every Chassis site, this one included, pulls it in
+  as a git submodule (`vendor/assets`, at a pinned commit of the `app/docs` branch) and
+  builds it (see Git Submodules below).
 - **chassis-figma** is documentation only — it has no distributable package, npm or
   otherwise.
 
@@ -102,11 +103,11 @@ depends on:
 ```
 
 `@chassis-ui/css`, `@chassis-ui/icons`, and `@chassis-ui/tokens` are published from their
-own repos and released in lockstep — they share the same MINOR version number
-release-to-release. Check `packages/website/package.json` for the exact current ranges
-rather than trusting a number written here. `@chassis-ui/docs` is versioned
-independently inside this monorepo (see `packages/docs/package.json`) and isn't part of
-that coordinated release.
+own repos, each on its own version: the numbers are not coordinated. Check
+`packages/website/package.json` for the exact current ranges rather than trusting a
+number written here. `@chassis-ui/docs` is versioned inside this monorepo (see
+`packages/docs/package.json`), and the "Compatibility" table of its README says which
+versions of `@chassis-ui/css` and Astro each release works with.
 
 ### Local Development via pnpm Workspace Overrides
 
@@ -171,29 +172,27 @@ alias, and each site carried its own copy of them. The copies drifted. The recor
 is in [CONTRACT_REVIEW.md](CONTRACT_REVIEW.md). The package README is the reference for the
 current contract.
 
-## Runtime Asset Sharing
+## Shared Static Files
 
-Independent of how a project is installed at dev/build time (npm vs. submodule),
-deployed sites reference each other's _built output_ directly over CDN:
+No site loads a file from another project's deployment by its URL. Each site copies what
+it needs into its own build, under `/static/`: the compiled CSS and JavaScript of
+`@chassis-ui/css` and the icon font of `@chassis-ui/icons` from `node_modules`, and the
+fonts and images of chassis-assets from the docs build of `vendor/assets`.
+`src/libs/astro.ts` of the site does the copying. See "What the site copies into
+`public/`" in [DEVELOPMENT.md](DEVELOPMENT.md).
 
-```html
-<!-- CSS/JS from chassis-css's own deployment -->
-<link href="https://chassis-css.vercel.app/dist/chassis.css" rel="stylesheet">
-<script src="https://chassis-css.vercel.app/dist/chassis.js"></script>
-```
-
-```css
-/* Fonts from chassis-assets, icon fonts from chassis-icons */
-@import url('https://chassis-assets.vercel.app/fonts/inter.css');
-@import url('https://chassis-icons.vercel.app/dist/icons.css');
-```
+On chassis-ui.com every site requests these files from the same path, `/static/…`, and
+the main site sends each request to the deployment of the site that asked, by the
+`Referer` header. One URL for all sites lets the browser keep one copy of the files they
+share. See "`/static/*` rewrites" in [VERCEL_CONFIG.md](VERCEL_CONFIG.md).
 
 ## Deployment & Routing
 
 Each project (including chassis-website itself) deploys independently to Vercel, and
 `chassis-ui.com` proxies `/css/*`, `/tokens/*`, `/assets/*`, `/icons/*`, `/figma/*` and
 `/react/*` to the corresponding project's deployment, with a staging mirror per project.
-chassis-react's staging deployment is behind Vercel's deployment protection, so it cannot be seen through the staging site.
+None of the staging deployments is behind Vercel's deployment protection, which would send
+a visitor of the staging site to Vercel's login.
 
 - Full URL table and release process: [DEPLOYMENT.md](DEPLOYMENT.md)
 - How the host-header rewrites actually work: [VERCEL_CONFIG.md](VERCEL_CONFIG.md)
@@ -210,7 +209,7 @@ site handles the submodule the same way. See "The `vendor/assets` submodule" in
 
 ## Related Documentation
 
-- [DEVELOPMENT.md](DEVELOPMENT.md) — setup, day-to-day workflow, troubleshooting
+- [DEVELOPMENT.md](DEVELOPMENT.md) — how the build, the submodule and the package work, troubleshooting
 - [DEPLOYMENT.md](DEPLOYMENT.md) — environments, release process, GitHub Actions
 - [VERCEL_CONFIG.md](VERCEL_CONFIG.md) — proxy routing mechanics
 - [INDEXING.md](INDEXING.md) — search engine indexing rules per host
