@@ -1,5 +1,69 @@
 # Upgrading @chassis-ui/docs
 
+## From 0.6 to 0.7
+
+0.7.0 needs `@chassis-ui/css` 0.6.0 or later. The layouts use the CSS grid of that version,
+`.grid` with `col-span-*`, in place of the flexbox grid, `.row` with `.col-*`. css 0.6
+deprecates the flexbox grid and css 0.7 removes it.
+
+### 1. Update the dependencies
+
+```sh
+pnpm add -D @chassis-ui/docs@^0.7.0 @chassis-ui/css@^0.6.0
+```
+
+css 0.6.0 has changes of its own. Read its
+[changelog](https://github.com/chassis-ui/css/blob/main/packages/css/CHANGELOG.md) first:
+among them, the default gap of `.grid` is now the gutter token of the breakpoint.
+
+### 2. Move your own pages off the flexbox grid
+
+css 0.6 still has the flexbox grid, so the site builds and looks as before without this
+step. css 0.7 removes it. Replace the classes in your own components, pages and content:
+
+| Flexbox grid                             | CSS grid                                           |
+| ---------------------------------------- | -------------------------------------------------- |
+| `row`                                    | `grid`                                             |
+| `col-6`, `md:col-6`                      | `col-span-6`, `col-span-full md:col-span-6`        |
+| `col-12`                                 | `col-span-full`                                    |
+| `row row-cols-1 md:row-cols-3` and `col` | `grid grid-cols-1 md:grid-cols-3`, no class inside |
+| `offset-1`                               | `col-start-2`                                      |
+| `col lg:col-10 mx-auto`                  | `col-span-full lg:col-span-10 lg:col-start-2`      |
+| `g-md`, `gx-md`, `gy-md`                 | `gap-md`, `column-gap-md`, `row-gap-md`            |
+| `col-auto`                               | `d-flex` with `gap-*` on the parent                |
+| `col-6` outside a `row`                  | `w-6/12`                                           |
+| `col` outside a `row`                    | `flex-fill`                                        |
+
+- An item without a span is one column wide. A column that was full width below its
+  breakpoint, such as `md:col-6`, needs `col-span-full` too.
+- A `row` without a gutter class had a gutter of 1.5rem between columns and none between
+  rows. A `grid` has the gutter of the breakpoint in both directions, from 0.5rem to 3rem.
+  Add `row-gap-0` where the items have margins of their own.
+- A grid beside the sidebar, or in a card, is narrower than the viewport that the gutter
+  follows. Give it a `gap-*` class, and `grid-cols-{n}` in place of twelve columns.
+- An auto margin shrinks a grid item to its content. Center an item with `col-start-*`.
+
+The [grid page](https://chassis-ui.com/css/docs/layout/grid/) of Chassis CSS has the full
+table.
+
+### What changes in the package
+
+- **`NavLink` sets no width.** Its item was `nav-item col-6 lg:col-auto`, half of the list
+  below `lg`. It is `nav-item` now, and the lists of the header are a grid of two columns
+  below `lg`. A list of your own that relied on the two columns takes
+  `d-grid grid-cols-2 lg:d-flex`.
+- **`.cxd-gutter` sets `--cx-container-padding`.** It set `--cx-gutter-x`, which the
+  container stops reading in css 0.7. The page margin of the docs layout is 1rem, as
+  before. A rule of your own that set `--cx-gutter-x` on that element sets
+  `--cx-container-padding` to half of it.
+- **The footer and the header of `SingleLayout` take the gutter of the breakpoint.** The
+  footer columns move by a few pixels, 20 at most on the widest screens.
+
+### Check the result
+
+Build the site before and after the upgrade and compare the pages in a browser, at a phone
+width and a desktop width. Apart from the footer columns, nothing of the package moves.
+
 ## From 0.5 to 0.6
 
 0.6.0 is a breaking release. In 0.5 a site had to supply five modules behind a `@libs/*`

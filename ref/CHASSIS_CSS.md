@@ -1,7 +1,7 @@
 # Bootstrap to Chassis CSS Migration Guide for LLMs
 
 > **Document Purpose:** This is an LLM instruction guide for converting Bootstrap CSS to Chassis CSS.  
-> **Last Updated:** 2026-09-29, verified against the compiled `dist/css/chassis.css` and `dist/js/chassis.js` of `@chassis-ui/css@0.5.2` (class names, breakpoint prefixes and widths, size names, data attributes) — check `package.json` for the exact current version; the prefix syntax dates from `v0.2.0`, the short size and breakpoint names (`sm`, `md`, `lg`, …) from `v0.5.0`  
+> **Last Updated:** 2026-10-06 for the grid, verified against the compiled `dist/css/chassis.css` of `@chassis-ui/css@0.6.0`. The rest was verified on 2026-09-29 against `dist/css/chassis.css` and `dist/js/chassis.js` of `@chassis-ui/css@0.5.2` (class names, breakpoint prefixes and widths, size names, data attributes) — check `package.json` for the exact current version; the prefix syntax dates from `v0.2.0`, the short size and breakpoint names (`sm`, `md`, `lg`, …) from `v0.5.0`, the CSS grid as the only grid from `v0.6.0`  
 > **Status:** Living document - Chassis CSS is under active development
 
 **Target Audience**: LLMs, AI assistants, and automated code conversion tools
@@ -26,14 +26,15 @@ When processing Bootstrap code, apply these transformations:
 3. **Typography**: `display-{n}` → `font-display font-{size}` (`display-1` → `font-display font-5xl`)
 4. **Spacing**: Numeric (`p-1`, `m-3`) → size names (`p-2xs`, `m-md`)
 5. **Breakpoints**: Same abbreviations (`sm`, `md`, `lg`, `xl`) except `xxl` → `2xl`; the widths from `lg` up differ (see [Responsive Breakpoints](#responsive-breakpoints))
-6. **Responsive utilities**: Bootstrap infix (`d-md-flex`, `col-md-6`) → Chassis CSS **prefix** (`md:d-flex`, `md:col-6`) — see [Breakpoint Prefix Syntax](#-breakpoint-prefix-syntax-v020) below
-7. **Data attributes**: `data-bs-*` → `data-cx-*`
+6. **Responsive utilities**: Bootstrap infix (`d-md-flex`, `p-md-3`) → Chassis CSS **prefix** (`md:d-flex`, `md:p-md`) — see [Breakpoint Prefix Syntax](#-breakpoint-prefix-syntax-v020) below
+7. **Grid**: Bootstrap's flexbox grid → the CSS grid: `row` → `grid`, `col-6` → `col-span-6`, `col-md-6` → `md:col-span-6`, `g-3` → `gap-md` — see [Grid System](#grid-system) below
+8. **Data attributes**: `data-bs-*` → `data-cx-*`
 
 ## ⚠️ Breakpoint Prefix Syntax (v0.2.0+)
 
-As of `@chassis-ui/css@0.2.0`, every responsive utility class uses a Tailwind-style **prefix** (`{breakpoint}:{utility}`), not Bootstrap's **infix** (`{utility}-{breakpoint}`). This applies uniformly to spacing, display, flex, grid columns, and all other responsive utilities:
+As of `@chassis-ui/css@0.2.0`, every responsive utility class uses a Tailwind-style **prefix** (`{breakpoint}:{utility}`), not Bootstrap's **infix** (`{utility}-{breakpoint}`). This applies uniformly to spacing, display, flex, grid placement, and all other responsive utilities:
 
-Most utilities use an **up** (min-width) prefix — active _at and above_ the named breakpoint — e.g. `lg:p-xl`, `md:d-flex`, `md:col-6`, `md:offset-3`. Never emit a hyphenated infix like `col-medium-6` or `d-medium-flex` — that was Chassis's own pre-0.2.0 syntax and is invalid today. Never emit the long breakpoint names either (`medium:col-6`, `large:p-xlarge`): `@chassis-ui/css@0.5.0` renamed every breakpoint and size to its short form.
+Most utilities use an **up** (min-width) prefix — active _at and above_ the named breakpoint — e.g. `lg:p-xl`, `md:d-flex`, `md:col-span-6`, `md:col-start-3`. Never emit a hyphenated infix like `p-medium-lg` or `d-medium-flex` — that was Chassis's own pre-0.2.0 syntax and is invalid today. Never emit the long breakpoint names either (`medium:d-flex`, `large:p-xlarge`): `@chassis-ui/css@0.5.0` renamed every breakpoint and size to its short form.
 
 A few components instead use a **down** (max-width) variant — active _below_ the named breakpoint — which gets its own `max-` prefix (`max-{breakpoint}:{utility}`), confirmed against the compiled `dist/css/chassis.css`:
 
@@ -54,7 +55,7 @@ A handful of components use a **compound class** where Bootstrap uses a hyphenat
 | `.list-group-numbered` / `.list-group-flush` | `.list.numbered` / `.list.flush`                                               |
 | `.list-group-horizontal-lg`                  | `.list.lg:horizontal` (a container query: wrap the list in `.contains-inline`) |
 
-**When converting Bootstrap responsive classes, always emit the new prefix form** (e.g. `col-md-6` → `md:col-6`, never `col-medium-6` or `medium:col-6`). All examples below already use the current prefix syntax.
+**When converting Bootstrap responsive classes, always emit the new prefix form** (e.g. `d-md-flex` → `md:d-flex`, never `d-medium-flex` or `medium:d-flex`). All examples below already use the current prefix syntax.
 
 This comprehensive guide provides mappings from Bootstrap classes to their Chassis CSS equivalents.
 
@@ -64,7 +65,7 @@ When encountering Bootstrap code in user requests:
 
 1. **Identify Bootstrap classes** using patterns like `btn-*`, `text-*`, `bg-*`, `display-*`, numeric spacing
 2. **Apply systematic replacements** using the mappings below
-3. **Preserve layout structure** (grid system remains compatible)
+3. **Convert the grid** (Bootstrap's `row` and `col-*` become the CSS grid, see [Grid System](#grid-system); the HTML structure stays)
 4. **Update semantic meaning** (use Chassis CSS's more descriptive approach)
 5. **Consider context** (Chassis CSS offers more granular color and spacing options)
 
@@ -150,13 +151,13 @@ When encountering Bootstrap code in user requests:
 
 ### Responsive Breakpoints
 
-| Bootstrap | Chassis CSS | Screen Width    | Notes                                                         |
-| --------- | ----------- | --------------- | ------------------------------------------------------------- |
-| `sm`      | `sm`        | ≥576px (36rem)  | Bootstrap infix (`col-sm-6`) → Chassis prefix (`sm:col-6`)    |
-| `md`      | `md`        | ≥768px (48rem)  | `col-md-6` → `md:col-6`                                       |
-| `lg`      | `lg`        | ≥1024px (64rem) | `col-lg-4` → `lg:col-4`; Bootstrap's `lg` starts at 992px     |
-| `xl`      | `xl`        | ≥1280px (80rem) | `col-xl-3` → `xl:col-3`; Bootstrap's `xl` starts at 1200px    |
-| `xxl`     | `2xl`       | ≥1536px (96rem) | `col-xxl-2` → `2xl:col-2`; Bootstrap's `xxl` starts at 1400px |
+| Bootstrap | Chassis CSS | Screen Width    | Notes                                                           |
+| --------- | ----------- | --------------- | --------------------------------------------------------------- |
+| `sm`      | `sm`        | ≥576px (36rem)  | Bootstrap infix (`d-sm-flex`) → Chassis prefix (`sm:d-flex`)    |
+| `md`      | `md`        | ≥768px (48rem)  | `d-md-flex` → `md:d-flex`                                       |
+| `lg`      | `lg`        | ≥1024px (64rem) | `p-lg-4` → `lg:p-xl`; Bootstrap's `lg` starts at 992px          |
+| `xl`      | `xl`        | ≥1280px (80rem) | `mt-xl-3` → `xl:mt-md`; Bootstrap's `xl` starts at 1200px       |
+| `xxl`     | `2xl`       | ≥1536px (96rem) | `d-xxl-none` → `2xl:d-none`; Bootstrap's `xxl` starts at 1400px |
 
 ## Font Sizes & Typography
 
@@ -414,7 +415,35 @@ _Note: Sizing utilities remain largely the same_
 
 ### Grid System
 
-The grid system remains largely compatible, but responsive classes use a breakpoint prefix:
+Chassis CSS has one grid, a CSS grid: `.grid` is a container of 12 columns, and its items span and start on those columns. Bootstrap's flexbox grid (`row`, `col-*`, `offset-*`, `row-cols-*`, `g-*`) is deprecated since `@chassis-ui/css@0.6.0` and removed in `0.7.0`. **Never emit those classes.** The container classes stay.
+
+| Bootstrap                                               | Chassis CSS                                                |
+| ------------------------------------------------------- | ---------------------------------------------------------- |
+| `row`                                                   | `grid`                                                     |
+| `col-6`                                                 | `col-span-6`                                               |
+| `col-12`                                                | `col-span-full`                                            |
+| `col-md-6`                                              | `col-span-full md:col-span-6`                              |
+| `row row-cols-3` with `col` children                    | `grid grid-cols-3`, no class on the children               |
+| `row row-cols-1 row-cols-md-3`                          | `grid grid-cols-1 md:grid-cols-3`                          |
+| `row` with equal `col` children                         | `grid grid-cols-{n}`, `n` being the number of children     |
+| `offset-2`                                              | `col-start-3`: the start line is the offset plus one       |
+| `offset-md-0`                                           | `md:col-start-auto`                                        |
+| `col-md-8 mx-auto`, `justify-content-center` on the row | `md:col-span-8 md:col-start-3`, without `mx-auto`          |
+| `g-3`, `g-4`                                            | `gap-md`, `gap-xl`                                         |
+| `gx-3`, `gy-3`                                          | `column-gap-md`, `row-gap-md`                              |
+| `g-0`                                                   | `gap-0`                                                    |
+| `col-auto`                                              | not a grid: `d-flex` with `gap-*` on the parent            |
+| `col-6` outside a `row`, used as a width                | `w-6/12` (`w-1/12` to `w-11/12`, with breakpoint prefixes) |
+
+What differs from Bootstrap's grid:
+
+- **An item without a span is one column wide**, not full width. A Bootstrap column that is full width below its breakpoint (`col-md-6`) needs `col-span-full` as well.
+- **A start line is absolute.** `offset-2` moves a column two columns from the previous one, `col-start-3` puts the item on the third line. They agree for the first item of a row only.
+- **The default gap is the gutter token of the breakpoint**, from 0.5rem at `xs` to 3rem at `2xl`, where Bootstrap has 1.5rem everywhere. It applies between rows too. A `gap-*` class sets another one, and `row-gap-0` removes it between rows.
+- **A grid in a narrow place needs its own gap.** The gutter follows the viewport, not the width of the grid. Give a grid in a sidebar, a card or another grid item a `gap-*` class, and `grid-cols-{n}` in place of twelve columns.
+- **An auto margin shrinks a grid item to its content.** Center an item with `col-start-*`, not with `mx-auto`.
+- **Content does not widen a column.** Something wider than its item, such as a fixed-width image, overflows it.
+- A nested `row` in a column becomes a nested `grid` in the item.
 
 ```html
 <!-- Bootstrap -->
@@ -426,11 +455,13 @@ The grid system remains largely compatible, but responsive classes use a breakpo
 
 <!-- Chassis CSS -->
 <div class="container">
-  <div class="row">
-    <div class="col-12 md:col-6 lg:col-4">Content</div>
+  <div class="grid">
+    <div class="col-span-full md:col-span-6 lg:col-span-4">Content</div>
   </div>
 </div>
 ```
+
+The [grid documentation](https://chassis-ui.com/css/docs/layout/grid/) has the full migration table.
 
 ### Responsive Breakpoints
 
@@ -441,7 +472,7 @@ The grid system remains largely compatible, but responsive classes use a breakpo
 
 <!-- Chassis CSS -->
 <div class="d-none sm:d-block md:d-flex">
-<div class="col-12 md:col-6 lg:col-4 xl:col-3">
+<div class="col-span-full md:col-span-6 lg:col-span-4 xl:col-span-3">
 ```
 
 ### Flexbox Utilities
@@ -554,10 +585,10 @@ Some `data-cx-toggle` values follow Chassis's component names rather than Bootst
 
 <!-- OUTPUT (Chassis CSS) -->
 <div class="container">
-  <div class="row">
-    <div class="col-12 sm:col-6 md:col-4 lg:col-3">Column 1</div>
-    <div class="col-12 sm:col-6 md:col-4 lg:col-3">Column 2</div>
-    <div class="d-none md:d-block md:col-4 lg:col-6">Column 3</div>
+  <div class="grid">
+    <div class="col-span-full sm:col-span-6 md:col-span-4 lg:col-span-3">Column 1</div>
+    <div class="col-span-full sm:col-span-6 md:col-span-4 lg:col-span-3">Column 2</div>
+    <div class="d-none md:d-block md:col-span-4 lg:col-span-6">Column 3</div>
   </div>
 </div>
 ```
@@ -597,12 +628,12 @@ Some `data-cx-toggle` values follow Chassis's component names rather than Bootst
 <div class="card">
   <div class="card-body">
     <h3 class="card-title font-display font-lg fg-primary">Quick Stats</h3>
-    <div class="row text-center">
-      <div class="col-4">
+    <div class="grid gap-xl text-center">
+      <div class="col-span-4">
         <div class="font-display font-2xl fg-primary">150</div>
         <div class="fg-subtle text-sm">Icons</div>
       </div>
-      <div class="col-4">
+      <div class="col-span-4">
         <div class="font-display font-2xl fg-success">98%</div>
         <div class="fg-subtle text-sm">Coverage</div>
       </div>
@@ -626,13 +657,14 @@ When processing user requests involving CSS frameworks:
    - Classes starting with `btn-`, `text-`, `bg-`, `display-`
    - Numeric spacing patterns (`p-1`, `m-3`, etc.)
    - Component patterns (`card-body`, `alert-primary`)
-   - Abbreviated breakpoints (`col-sm-*`, `d-md-*`, etc.)
+   - Grid classes (`row`, `col-*`, `offset-*`, `g-*`) and abbreviated breakpoints (`col-sm-*`, `d-md-*`, etc.)
 
 2. **Apply Chassis CSS conversion**:
    - Use mapping tables above
    - Preserve HTML structure
    - Convert class names systematically
-   - Move responsive breakpoints from infix to prefix (`col-md-6` → `md:col-6`) and rename `xxl` to `2xl`
+   - Move responsive breakpoints from infix to prefix (`d-md-flex` → `md:d-flex`) and rename `xxl` to `2xl`
+   - Convert the flexbox grid to the CSS grid (`row` → `grid`, `col-md-6` → `col-span-full md:col-span-6`)
 
 3. **Consider context enhancements**:
    - Suggest semantic improvements (`fg-subtle` vs basic colors)
@@ -682,7 +714,9 @@ When processing user requests involving CSS frameworks:
 ### Layout
 
 - [ ] Keep breakpoint abbreviations, but rename `xxl` to `2xl`
-- [ ] Convert infix to prefix syntax for every responsive utility (`col-md-6` → `md:col-6`, `d-sm-block` → `sm:d-block`)
+- [ ] Convert infix to prefix syntax for every responsive utility (`p-md-3` → `md:p-md`, `d-sm-block` → `sm:d-block`)
+- [ ] Convert the grid: `row` → `grid`, `col-*` → `col-span-*`, `offset-*` → `col-start-*`, `row-cols-*` → `grid-cols-*`, `g-*` → `gap-*`
+- [ ] Add `col-span-full` to an item that was full width below its first breakpoint
 - [ ] Convert compound-class components (`container-lg` → `container lg`, `img-fluid` → `image fluid`)
 - [ ] Flexbox utilities remain largely the same (just apply the prefix convention when responsive)
 - [ ] Display utilities are compatible (same prefix convention when responsive)
@@ -694,14 +728,15 @@ When processing user requests involving CSS frameworks:
 - **Chassis CSS uses space-separated modifiers**: `button primary outline` not `btn btn-primary btn-outline`
 - **Size names for spacing**: `md`, `lg`, `xl` instead of numbers
 - **Breakpoint names**: `sm`, `md`, `lg`, `xl`, `2xl` — Bootstrap's abbreviations except `xxl` → `2xl`, but `lg`, `xl` and `2xl` start at 1024px, 1280px and 1536px
-- **Prefix, not infix, for responsive utilities**: `md:p-lg` / `md:col-6` not `p-md-lg` / `col-md-6` (see [Breakpoint Prefix Syntax](#-breakpoint-prefix-syntax-v020))
+- **Prefix, not infix, for responsive utilities**: `md:p-lg` / `md:d-flex` not `p-md-lg` / `d-md-flex` (see [Breakpoint Prefix Syntax](#-breakpoint-prefix-syntax-v020))
+- **One grid, a CSS grid**: `grid` with `col-span-*` and `col-start-*`, not `row` with `col-*` and `offset-*` (see [Grid System](#grid-system))
 - **Comprehensive color system**: `fg-subtle`, `fg-slight`, `fg-main` for text variations
 - **Context-aware colors**: `primary-fg-subtle`, `secondary-bg-evident` for advanced usage
 - **Display fonts require two classes**: `font-display font-2xl` not just `display-4`
 
 ### What Stays the Same:
 
-- Grid system classes (`container`, `row`, `col-*`)
+- The container classes (`container`, with compound sizes such as `container lg`)
 - Most flexbox utilities (`d-flex`, `justify-content-*`)
 - Display utilities (`d-none`, `d-block`)
 - Position utilities (`position-relative`, `position-absolute`)

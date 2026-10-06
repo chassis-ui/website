@@ -8,7 +8,7 @@
     "build": "node build.js"
   },
   "devDependencies": {
-    "@chassis-ui/css": "^0.5.2",
+    "@chassis-ui/css": "^0.6.0",
     "@chassis-ui/icons": "^0.3.1"
   }
 }

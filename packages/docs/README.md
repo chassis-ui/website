@@ -23,7 +23,7 @@ pnpm add @chassis-ui/docs
 ```json
 {
   "@astrojs/markdown-remark": "^7.0.0",
-  "@chassis-ui/css": "^0.5.0-0",
+  "@chassis-ui/css": ">=0.6.0",
   "@pagefind/component-ui": "^1.0.0",
   "@shikijs/transformers": "^4.3.1",
   "astro": "^7.0.0",

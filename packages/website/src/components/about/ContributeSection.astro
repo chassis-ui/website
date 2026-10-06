@@ -18,8 +18,8 @@ const repos = [
 
 <section id="contribute" class="py-3xl md:py-6xl">
   <div class="container 2xl">
-    <div class="row g-md lg:g-3xl">
-      <div class="col-12 lg:col-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-md lg:gap-3xl">
+      <div>
         <h2>Contribute</h2>
         <p class="font-lg mb-xl">
           Chassis is shaped by the people using it. File an issue when something is broken, missing,
@@ -35,7 +35,7 @@ const repos = [
           Browse repositories
         </a>
       </div>
-      <div class="col-12 lg:col-6 lg:pt-6xl">
+      <div class="lg:pt-6xl">
         <ul class="list-group">
           {
             repos.map((repo) => (

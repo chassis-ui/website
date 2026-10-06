@@ -90,14 +90,16 @@ const isActive = (path: string) => {
 
       <hr class="lg:d-none m-0" />
       <div class="drawer-body lg:p-0">
-        <ul class="navbar-nav flex-row flex-wrap cxd-navbar-nav mx-0 lg:mx-md">
+        <ul
+          class="navbar-nav d-grid grid-cols-2 lg:d-flex flex-row flex-wrap cxd-navbar-nav mx-0 lg:mx-md"
+        >
           <NavLink active={isActive('/tokens')} href="/tokens">Tokens</NavLink>
           <NavLink active={isActive('/figma')} href="/figma">Figma</NavLink>
           <NavLink active={isActive('/css')} href="/css">CSS</NavLink>
           <NavLink active={isActive('/react')} href="/react">React</NavLink>
           <NavLink active={isActive('/assets')} href="/assets">Assets</NavLink>
           <NavLink active={isActive('/icons')} href="/icons">Icons</NavLink>
-          <li class="nav-item col-12 lg:col-auto lg:d-flex">
+          <li class="nav-item col-span-full lg:d-flex">
             <div class="vr d-none lg:d-flex my-auto lg:mx-sm"></div>
             <hr class="lg:d-none" />
           </li>
@@ -107,7 +109,9 @@ const isActive = (path: string) => {
 
         <hr class="lg:d-none m-0" />
 
-        <ul class="navbar-nav flex-row flex-wrap lg:ms-auto align-items-center">
+        <ul
+          class="navbar-nav d-grid grid-cols-2 lg:d-flex flex-row flex-wrap lg:ms-auto align-items-center"
+        >
           {
             figmaHandle && (
               <NavLink
@@ -134,7 +138,7 @@ const isActive = (path: string) => {
               </NavLink>
             )
           }
-          <li class="nav-item col-12 lg:col-auto">
+          <li class="nav-item col-span-full">
             <div class="vr d-none lg:d-flex h-100 lg:mx-2xs"></div>
             <hr class="lg:d-none" />
           </li>

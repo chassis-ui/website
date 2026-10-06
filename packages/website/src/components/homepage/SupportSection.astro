@@ -14,8 +14,8 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
   aria-labelledby="support-heading"
 >
   <div class="container 2xl section-content">
-    <div class="row mb-3xl md:mb-6xl">
-      <header class="section-header col lg:col-10 2xl:col-8">
+    <div class="grid mb-3xl md:mb-6xl">
+      <header class="section-header col-span-full lg:col-span-10 2xl:col-span-8">
         <h2 id="support-heading" class="font-5xl mb-xs md:mb-sm lg:mb-md">
           <span class="font-normal d-block">Built for Complex Reality,</span> Not Idealized Simplicity
         </h2>
@@ -25,9 +25,9 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
         </p>
       </header>
     </div>
-    <div class="section-features g-xl row flex-column md:flex-row mb-md md:mb-6xl">
+    <div class="section-features grid grid-cols-1 md:grid-cols-2 gap-xl mb-md md:mb-6xl">
       <!-- Item -->
-      <div class="col">
+      <div>
         <FeatureCard icon="cx-folder-tree" classes="context primary default-fg-main" horizontal>
           <Fragment slot="title">Get in touch</Fragment>
           <Fragment slot="body">
@@ -113,7 +113,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
           </form>
         </FeatureCard>
       </div>
-      <div class="col">
+      <div>
         <FeatureCard icon="cx-book-open-alt" classes="h-100" horizontal>
           <Fragment slot="title">Frequently asked questions</Fragment>
           <Fragment slot="body">

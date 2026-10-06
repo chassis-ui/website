@@ -4,6 +4,19 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-10-06
+
+### Changed
+
+- The website uses `@chassis-ui/css` 0.6.0 and its CSS grid. The home page, the about page, the blog, the examples page and the privacy page use `.grid` with `col-span-*` in place of the flexbox grid, `.row` with `.col-*`, which css 0.6 deprecates. The pages look as before. Columns that had the fixed gutter of 1.5rem have the gutter of the breakpoint and move by a few pixels, and the line under a blog post in the list is as wide as the text, not 12 pixels wider on each side.
+- The vanilla HTML example uses `@chassis-ui/css` 0.6.0 and the CSS grid.
+- The CDN links of the installation page are for `@chassis-ui/css` 0.6.0.
+- `ref/CHASSIS_CSS.md` converts Bootstrap's grid to the CSS grid.
+
+### Fixed
+
+- The about page and the examples page no longer scroll 4 pixels sideways between 1024 and 1535 pixels. The gutter of their rows was wider than the padding of the container.
+
 ## 2026-10-05
 
 ### Added

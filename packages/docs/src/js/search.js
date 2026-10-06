@@ -472,8 +472,8 @@ class CxdSearchResults extends HTMLElement {
             <div class="icon cxd-search-icon skeleton">
             </div>
             <div class="cxd-search-item-body">
-              <div class="skeleton col-4"></div>
-              <div class="skeleton col-12"></div>
+              <div class="skeleton w-4/12"></div>
+              <div class="skeleton w-100"></div>
             </div>
           </div>
         `

@@ -27,6 +27,9 @@
 }
 
 .module-item {
+  // Equal columns from `md` up. The basis is a length, not `flex-fill`'s `0%`, so that the
+  // link's `h-100` also resolves while the items are stacked.
+  flex: 1 0 0;
   list-style: none;
   > a {
     background-image: none;

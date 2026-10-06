@@ -39,8 +39,8 @@
     <main>
       <section class="py-3xl md:py-6xl text-center">
         <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-12 lg:col-8">
+          <div class="grid">
+            <div class="col-span-full lg:col-span-8 lg:col-start-3">
               <h1 class="font-hero mb-md">Vanilla HTML and Chassis CSS</h1>
               <p class="font-lead fg-subtle mb-2xl">
                 One HTML file, two stylesheets and no framework. Every class on this page comes from
@@ -71,8 +71,8 @@
             Add <code>context</code> and a color name to re-color an element and everything inside
             it.
           </p>
-          <div class="row g-lg">
-            <div class="col-12 md:col-6 lg:col-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+            <div>
               <div class="card context primary h-100">
                 <div class="card-body text-center">
                   <span class="icon icon-3xl cx-star-solid mx-auto" aria-hidden="true"></span>
@@ -82,7 +82,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 md:col-6 lg:col-4">
+            <div>
               <div class="card context success h-100">
                 <div class="card-body text-center">
                   <span
@@ -95,7 +95,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 md:col-6 lg:col-4">
+            <div>
               <div class="card context warning h-100">
                 <div class="card-body text-center">
                   <span
@@ -114,15 +114,15 @@
 
       <section class="py-3xl md:py-5xl" aria-labelledby="form-title">
         <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-12 lg:col-8">
+          <div class="grid">
+            <div class="col-span-full lg:col-span-8 lg:col-start-3">
               <div class="card">
                 <div class="card-header">
                   <h2 id="form-title" class="font-heading mb-0">Contact form</h2>
                 </div>
                 <div class="card-body">
-                  <form id="contact-form" class="row g-md">
-                    <div class="form-field col-12 md:col-6">
+                  <form id="contact-form" class="grid grid-cols-1 md:grid-cols-2 gap-md">
+                    <div class="form-field">
                       <label class="form-label" for="first-name">First name</label>
                       <input
                         class="form-input"
@@ -133,7 +133,7 @@
                         required
                       />
                     </div>
-                    <div class="form-field col-12 md:col-6">
+                    <div class="form-field">
                       <label class="form-label" for="last-name">Last name</label>
                       <input
                         class="form-input"
@@ -144,7 +144,7 @@
                         required
                       />
                     </div>
-                    <div class="form-field col-12">
+                    <div class="form-field col-span-full">
                       <label class="form-label" for="email">Email</label>
                       <input
                         class="form-input"
@@ -159,7 +159,7 @@
                         This demo does not send anything anywhere.
                       </div>
                     </div>
-                    <div class="form-field col-12">
+                    <div class="form-field col-span-full">
                       <label class="form-label" for="role">Role</label>
                       <select class="form-input" id="role" name="role">
                         <option>Product</option>
@@ -168,18 +168,18 @@
                         <option>Other</option>
                       </select>
                     </div>
-                    <div class="form-field col-12">
+                    <div class="form-field col-span-full">
                       <label class="form-label" for="message">Message</label>
                       <textarea class="form-input" id="message" name="message" rows="4"></textarea>
                     </div>
-                    <div class="col-12 d-flex flex-wrap gap-sm">
+                    <div class="col-span-full d-flex flex-wrap gap-sm">
                       <button class="button primary" type="submit">
                         <span class="icon cx-paper-plane-solid" aria-hidden="true"></span>
                         <span>Send message</span>
                       </button>
                       <button class="button default" type="reset">Reset</button>
                     </div>
-                    <div class="col-12" role="status">
+                    <div class="col-span-full" role="status">
                       <p id="contact-status" class="notification success" hidden>
                         Message sent. Nothing left this page; a real form would post it to a server.
                       </p>

@@ -38,8 +38,8 @@ const popularTags = Array.from(tagCounts.entries())
     <main id="content">
       <header class="py-xl md:py-3xl border-bottom border-subtle">
         <div class="container 2xl">
-          <div class="row">
-            <div class="col-12 md:col-7 xl:col-8">
+          <div class="grid row-gap-0">
+            <div class="col-span-full md:col-span-7 xl:col-span-8">
               {
                 Astro.slots.has('breadcrumb') ? (
                   <div>
@@ -57,7 +57,7 @@ const popularTags = Array.from(tagCounts.entries())
                 )
               }
             </div>
-            <div class="col-12 md:col-5 xl:col-4">
+            <div class="col-span-full md:col-span-5 xl:col-span-4">
               <div class="rounded p-md lg:p-lg border">
                 <p class="d-flex">
                   <strong>Popular tags</strong>

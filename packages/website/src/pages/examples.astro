@@ -19,10 +19,10 @@ const examples = [
 >
   <section class="py-3xl md:py-6xl">
     <div class="container 2xl">
-      <div class="row g-md lg:g-3xl">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-md lg:gap-3xl">
         {
           examples.map((example) => (
-            <div class="col-12 lg:col-6">
+            <div>
               <h2>{example.title}</h2>
               <p class="font-lg fg-subtle mb-xl">{example.description}</p>
               <div class="d-flex flex-wrap gap-md">

@@ -146,9 +146,9 @@ if (frontmatter.toc) {
       <div class="cxd-content">
         {
           frontmatter.sections && (
-            <div class="row g-xl">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
               {frontmatter.sections.map((section: DocSection) => (
-                <div class="md:col-6">
+                <div>
                   <a
                     class="d-block text-decoration-none"
                     href={getDocsPath(

@@ -48,12 +48,12 @@ const { Content } = await render(blogPage)
   layout="blog"
 >
   <div class="container 2xl">
-    <nav class="col py-md border-bottom border-subtle mb-xl" aria-label="Breadcrumb">
+    <nav class="py-md border-bottom border-subtle mb-xl" aria-label="Breadcrumb">
       <a href="/blog" class="icon-link text-decoration-none">
         <Icon name="arrow-left-outline" class="icon-adaptive" /> Back to Blog
       </a>
     </nav>
-    <div class="col-12 lg:col-10 2xl:col-8 mx-auto">
+    <div class="lg:w-10/12 2xl:w-8/12 mx-auto">
       {
         data.tags && (
           <div class="d-flex flex-wrap gap-xs justify-content-center my-xl lg:my-3xl">
@@ -101,7 +101,7 @@ const { Content } = await render(blogPage)
         <Content components={{ pre: Code }} />
       </article>
     </div>
-    <nav class="col py-md border-top border-subtle mb-xl" aria-label="Post navigation">
+    <nav class="py-md border-top border-subtle mb-xl" aria-label="Post navigation">
       <a href="/blog" class="icon-link text-decoration-none">
         <Icon name="arrow-left-outline" class="icon-adaptive" /> Back to Blog
       </a>

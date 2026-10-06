@@ -11,8 +11,8 @@ const { post } = Astro.props
 const url = getBlogPostUrl(post)
 ---
 
-<article class="row mb-xl pb-xl border-bottom border-subtle">
-  <div class="col-12 lg:col-4 mb-md lg:mb-0">
+<article class="grid row-gap-0 mb-xl pb-xl border-bottom border-subtle">
+  <div class="col-span-full lg:col-span-4 mb-md lg:mb-0">
     <a href={url} class="d-block">
       <img
         src={post.data.image?.url || '/static/images/social-image.png'}
@@ -21,7 +21,7 @@ const url = getBlogPostUrl(post)
       />
     </a>
   </div>
-  <div class="col-12 lg:col-8">
+  <div class="col-span-full lg:col-span-8">
     <header class="mb-md">
       <h2 class="font-strong font-3xl mb-sm">
         <a href={url} class="fg-main text-decoration-none">{post.data.title}</a>

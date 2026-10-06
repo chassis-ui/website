@@ -3,7 +3,7 @@
 
 @layer custom {
   .cxd-gutter {
-    --cx-gutter-x: #{$cxd-gutter-x};
+    --cx-container-padding: #{$cxd-gutter-x * .5};
   }
 
   .cxd-layout {
