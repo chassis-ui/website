@@ -14,6 +14,7 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 - `ref/CHASSIS_CSS.md` converts Bootstrap's grid to the CSS grid.
 - The five feature sliders of the home page are carousels of Chassis CSS. They were built on Swiper, whose script and stylesheet the page loaded from jsDelivr. The cards, their sizes and the two buttons are where they were. A touch, a trackpad, the buttons and the arrow keys move the row. Dragging it with the mouse no longer does.
 - The frequently asked questions of the home page open and close with the height transition of the accordion of Chassis CSS: the accordion has `data-cx-accordion`.
+- The Nu Html Checker is `vnu-jar` 26.10.2, for `chassis-docs vnu` too: the docs package resolved 26.9.27 next to the website, and `@shikijs/transformers` 4.4.3 next to 4.5.0. Version 26.10.2 rejects `width: calc(100vw - var(--cx-space-5xl))` of the buttons of the feature sliders with "CSS: “width”: The types are incompatible", which 26.9.27 accepts. The declaration is valid, so `pnpm site:lint:vnu` filters the message, for every `width`.
 
 ### Fixed
 

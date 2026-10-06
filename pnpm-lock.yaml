@@ -122,7 +122,7 @@ importers:
         version: 1.5.2
       '@shikijs/transformers':
         specifier: ^4.3.1
-        version: 4.4.3
+        version: 4.5.0
       '@types/hast':
         specifier: ^3.0.5
         version: 3.0.5
@@ -182,7 +182,7 @@ importers:
         version: 5.1.0
       vnu-jar:
         specifier: '>=26.0.0'
-        version: 26.9.27
+        version: 26.10.2
     devDependencies:
       astro:
         specifier: ^7.3.5
@@ -1586,10 +1586,6 @@ packages:
 
   '@shikijs/themes@4.4.3':
     resolution: {integrity: sha512-w8UHjeUnIR965KMWJHUPXOc2mNJUnK3vpVLYLvw5IYU2mnTTJ89E24OrJDBNiJDQ0qzb0tc4l7mrIXx5cFeIyw==}
-    engines: {node: '>=20'}
-
-  '@shikijs/transformers@4.4.3':
-    resolution: {integrity: sha512-oJSARV6NaWd+rnNJbtnpAdj3Zg0ZVyzsnMgb3vi3HA+35y8lBWUCpOnWsmyiXZIikY+x1BDqrQUgmxfzWh7Jvw==}
     engines: {node: '>=20'}
 
   '@shikijs/transformers@4.5.0':
@@ -4605,11 +4601,6 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  vnu-jar@26.9.27:
-    resolution: {integrity: sha512-TkQd5DFfOaWC9ebtvozTsrH2Vaod3jYg+vrOeREzIXxBexLz9+rS2DNtjn7+RPUiZhgli0SghgBX6RJRNea0KA==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   volar-service-css@0.0.71:
     resolution: {integrity: sha512-wRRFt9BpjMKCazcgOh67MSjUjiWUCAh99DyYSDIOTuxaRjEtDC7PpB0k1Y1wbJIW/pVtMUSVbpPo3UGSm0Byxw==}
     peerDependencies:
@@ -6004,11 +5995,6 @@ snapshots:
 
   '@shikijs/themes@4.4.3':
     dependencies:
-      '@shikijs/types': 4.4.3
-
-  '@shikijs/transformers@4.4.3':
-    dependencies:
-      '@shikijs/core': 4.4.3
       '@shikijs/types': 4.4.3
 
   '@shikijs/transformers@4.5.0':
@@ -9767,8 +9753,6 @@ snapshots:
       - msw
 
   vnu-jar@26.10.2: {}
-
-  vnu-jar@26.9.27: {}
 
   volar-service-css@0.0.71(@volar/language-service@2.4.28):
     dependencies:
