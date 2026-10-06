@@ -43,6 +43,11 @@
     @include media-breakpoint-down(md) {
       --cx-bg-color: var(--cx-bg-even);
     }
+    // Five labels on one line are wider than the row up to about 926px: the last link was
+    // cut off. A label of a button does not wrap by default.
+    @include media-breakpoint-only(md) {
+      white-space: normal;
+    }
   }
 }
 

@@ -16,6 +16,7 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 ### Fixed
 
 - The about page and the examples page no longer scroll 4 pixels sideways between 1024 and 1535 pixels. The gutter of their rows was wider than the padding of the container.
+- The five module links of the home page fit their row between 768 and 1023 pixels: a label that is wider than its column wraps onto a second line. Up to 926 pixels the fifth link, "Icon Packager", was cut off.
 
 ## 2026-10-05
 
