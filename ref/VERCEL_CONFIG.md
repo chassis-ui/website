@@ -198,13 +198,18 @@ source is there for a reason:
 
 | Directive     | Sources beyond `'self'`                                                                        | Needed by                                                                                                                  |
 | ------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `script-src`  | `'unsafe-inline'`, `'wasm-unsafe-eval'`, `cdn.jsdelivr.net`, `*.googletagmanager.com`          | Inline scripts of Astro and the `onclick` examples of chassis-css. Pagefind, which is WebAssembly. GSAP and Swiper on the home page, Fuse on chassis-icons. Google Analytics. |
-| `style-src`   | `'unsafe-inline'`, `cdn.jsdelivr.net`, `fonts.googleapis.com`                                  | `style` attributes throughout the docs. The Swiper stylesheet. Google Fonts.                                              |
-| `font-src`    | `data:`, `fonts.gstatic.com`                                                                   | The icon font inside the Swiper stylesheet. Google Fonts.                                                                  |
+| `script-src`  | `'unsafe-inline'`, `'wasm-unsafe-eval'`, `cdn.jsdelivr.net`, `*.googletagmanager.com`          | Inline scripts of Astro and the `onclick` examples of chassis-css. Pagefind, which is WebAssembly. GSAP on the home page, Fuse on chassis-icons. Google Analytics.            |
+| `style-src`   | `'unsafe-inline'`, `cdn.jsdelivr.net`, `fonts.googleapis.com`                                  | `style` attributes throughout the docs. Google Fonts. Was also the Swiper stylesheet, see below.                          |
+| `font-src`    | `data:`, `fonts.gstatic.com`                                                                   | Google Fonts. `data:` was the icon font inside the Swiper stylesheet, see below.                                           |
 | `img-src`     | `data:`, `i.pravatar.cc`, `github.com`, `avatars.githubusercontent.com`, Google Analytics hosts | Inline images of the docs. The avatar examples and the team page of chassis-css.                                          |
 | `connect-src` | Google Analytics hosts                                                                         | The analytics hits. Search, the contact form and the Pagefind index are on the site itself.                               |
 | `frame-src`   | `www.youtube.com`, `www.youtube-nocookie.com`                                                  | The ratio example of chassis-css.                                                                                          |
 | `worker-src`  | none                                                                                           | The Pagefind worker.                                                                                                       |
+
+The home page dropped Swiper for the carousel of Chassis CSS on 2026-10-06. Nothing on this
+site needs `cdn.jsdelivr.net` in `style-src` or `data:` in `font-src` since. Both stay until
+`pnpm site:lint:csp --all` on a deployment of the policy without them shows that no sibling
+page needs them either.
 
 `object-src 'none'`, `base-uri 'self'`, `form-action 'self'` and `frame-ancestors 'self'`
 close the rest. `'unsafe-inline'` stays as long as the sites have inline scripts and

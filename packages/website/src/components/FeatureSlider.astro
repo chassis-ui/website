@@ -2,28 +2,75 @@
 /**
  * Feature Slider
  *
- * Swiper-based carousel wrapper with navigation and pagination controls.
- * Displays feature cards in a responsive slider layout.
+ * A Chassis CSS carousel of feature cards. From the `md` breakpoint the cards sit in a row
+ * that scrolls, with a previous and a next button. Below it they are stacked.
  *
- * @slot default - Feature cards to display in the slider
+ * @slot default - Feature cards, each with the class `carousel-item`
  */
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+
 interface Props {
+  /** The id of the carousel, which its buttons target */
+  id: string
   /** Accessible label for the slider region */
   ariaLabel?: string
 }
 
-const { ariaLabel = 'Feature carousel' } = Astro.props
+const { id, ariaLabel = 'Feature carousel' } = Astro.props
 ---
 
-<div class="feature-slider">
-  <div class="swiper-navigation d-none md:d-block" role="group" aria-label="Slider navigation">
-    <button type="button" class="swiper-button-prev button" aria-label="Previous slide"></button>
-    <button type="button" class="swiper-button-next button" aria-label="Next slide"></button>
+<div
+  id={id}
+  class="feature-slider carousel carousel-auto"
+  data-cx-ends="stop"
+  role="region"
+  aria-label={ariaLabel}
+>
+  <div class="carousel-inner flex-column md:flex-row gap-md md:gap-xl">
+    <slot />
   </div>
-  <div class="slider-swiper overflow-visible swiper" role="region" aria-label={ariaLabel}>
-    <div class="swiper-wrapper flex-column md:flex-row gap-md md:gap-0">
-      <slot />
-    </div>
+  <div class="feature-slider-nav d-none md:d-flex" role="group" aria-label="Slider navigation">
+    <button
+      type="button"
+      class="button icon-only"
+      data-cx-target={`#${id}`}
+      data-cx-slide="prev"
+      aria-label="Previous slide"
+    >
+      <Icon name="chevron-left-solid" class="directional-icon" />
+    </button>
+    <button
+      type="button"
+      class="button icon-only"
+      data-cx-target={`#${id}`}
+      data-cx-slide="next"
+      aria-label="Next slide"
+    >
+      <Icon name="chevron-right-solid" class="directional-icon" />
+    </button>
   </div>
-  <div class="swiper-pagination" role="group" aria-label="Slide pagination"></div>
+
+  {
+    /* Inside the slider, not after it: Astro renders the script where it is written, once,
+       and the scroll animation of the home page fades out a slider that has a next sibling. */
+  }
+  <script>
+    import { Carousel } from '@chassis-ui/css'
+
+    // A carousel needs an instance before its first use: the instance disables the button
+    // of the end that the row rests at, and follows a scroll that no button started.
+    for (const slider of document.querySelectorAll('.feature-slider')) {
+      Carousel.getOrCreateInstance(slider)
+
+      // While the cards form a row that scrolls, the row takes the focus: a keyboard has to
+      // reach it when no card has a link. The stacked cards do not scroll and take none.
+      const row = slider.querySelector<HTMLElement>('.carousel-inner')
+
+      if (row) {
+        new ResizeObserver(() => {
+          row.tabIndex = row.scrollWidth > row.clientWidth ? 0 : -1
+        }).observe(row)
+      }
+    }
+  </script>
 </div>

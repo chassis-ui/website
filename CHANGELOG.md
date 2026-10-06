@@ -12,11 +12,15 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 - The vanilla HTML example uses `@chassis-ui/css` 0.6.0 and the CSS grid.
 - The CDN links of the installation page are for `@chassis-ui/css` 0.6.0.
 - `ref/CHASSIS_CSS.md` converts Bootstrap's grid to the CSS grid.
+- The five feature sliders of the home page are carousels of Chassis CSS. They were built on Swiper, whose script and stylesheet the page loaded from jsDelivr. The cards, their sizes and the two buttons are where they were. A touch, a trackpad, the buttons and the arrow keys move the row. Dragging it with the mouse no longer does.
+- The frequently asked questions of the home page open and close with the height transition of the accordion of Chassis CSS: the accordion has `data-cx-accordion`.
 
 ### Fixed
 
 - The about page and the examples page no longer scroll 4 pixels sideways between 1024 and 1535 pixels. The gutter of their rows was wider than the padding of the container.
 - The five module links of the home page fit their row between 768 and 1023 pixels: a label that is wider than its column wraps onto a second line. Up to 926 pixels the fifth link, "Icon Packager", was cut off.
+- The buttons of the feature sliders are on the slider between 768 and 991 pixels. They were placed against the page, far above it.
+- The cards of the feature sliders run to the edges of the viewport. The container cropped them, which shows on a screen wider than 1536 pixels: the `overflow-visible` utility of the slider is in a cascade layer, so the stylesheet of Swiper, which is in none, won.
 
 ## 2026-10-05
 

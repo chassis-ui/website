@@ -24,10 +24,10 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
         </p>
       </header>
     </div>
-    <div class="section-features gap-xl flex-column md:flex-row mb-md md:mb-6xl">
-      <FeatureSlider ariaLabel="CSS features carousel">
+    <div class="section-features contains-inline mb-md md:mb-6xl">
+      <FeatureSlider id="css-features" ariaLabel="CSS features carousel">
         <!-- Item 1: Token-generated CSS variables -->
-        <FeatureCard icon="cx-brackets-curly" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-brackets-curly" classes="carousel-item" horizontal>
           <Fragment slot="title">Token-generated CSS variables</Fragment>
           <Fragment slot="body">
             Design tokens become CSS custom properties automatically. Change a token, and every
@@ -55,7 +55,7 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
         </FeatureCard>
 
         <!-- Item 2: Perfectly align with Figma -->
-        <FeatureCard icon="cx-figma" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-figma" classes="carousel-item" horizontal>
           <Fragment slot="title">Perfectly align with Figma</Fragment>
           <Fragment slot="body">
             Utility classes are named to match Figma styles and variables — there's no guesswork
@@ -83,7 +83,7 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
         </FeatureCard>
 
         <!-- Item 3: Faster frontend development -->
-        <FeatureCard icon="cx-code" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-code" classes="carousel-item" horizontal>
           <Fragment slot="title">Context-aware utility classes</Fragment>
           <Fragment slot="body">
             Use a CSS framework that already speaks your design system's language — no

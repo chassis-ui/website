@@ -25,10 +25,10 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
         </p>
       </header>
     </div>
-    <div class="section-features gap-xl flex-column md:flex-row mb-md md:mb-6xl">
-      <FeatureSlider ariaLabel="Tokens features carousel">
+    <div class="section-features contains-inline mb-md md:mb-6xl">
+      <FeatureSlider id="tokens-features" ariaLabel="Tokens features carousel">
         <!-- Item -->
-        <FeatureCard icon="cx-folder-tree" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-folder-tree" classes="carousel-item" horizontal>
           <Fragment slot="title">Centralized token definitions</Fragment>
           <Fragment slot="body">
             Create and manage design tokens directly in Figma using Variables. Sync changes
@@ -43,7 +43,7 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
           />
         </FeatureCard>
         <!-- Item -->
-        <FeatureCard icon="cx-link" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-link" classes="carousel-item" horizontal>
           <Fragment slot="title">Intelligent references</Fragment>
           <Fragment slot="body">
             Build tokens that reference other tokens, enabling cascading updates across your entire
@@ -58,7 +58,7 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
           />
         </FeatureCard>
         <!-- Item -->
-        <FeatureCard icon="cx-shapes" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-shapes" classes="carousel-item" horizontal>
           <Fragment slot="title">Cross-platform transformation</Fragment>
           <Fragment slot="body">
             Convert tokens automatically for different platforms while preserving relationships and

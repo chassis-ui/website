@@ -62,7 +62,7 @@
     "site:lint:stylelint": "stylelint --cache --cache-location .cache/.stylelintcache packages/website/\"**/*.{css,scss}\"",
     "site:lint:prettier": "prettier -c --cache packages/website",
     "site:lint:html": "chassis-docs html-validate --config packages/website/html-validate.json",
-    "site:lint:vnu": "chassis-docs vnu",
+    "site:lint:vnu": "chassis-docs vnu --filter 'CSS: .--cx-carousel-items-peek.: Parse Error.'",
     "site:lint:links": "node build/check-links.js",
     "site:lint:a11y": "node build/check-a11y.js",
     "site:lint:csp": "node build/check-csp.js",

@@ -25,10 +25,10 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
         </p>
       </header>
     </div>
-    <div class="section-features gap-xl flex-column md:flex-row mb-md md:mb-6xl">
-      <FeatureSlider ariaLabel="Assets features carousel">
+    <div class="section-features contains-inline mb-md md:mb-6xl">
+      <FeatureSlider id="assets-features" ariaLabel="Assets features carousel">
         <!-- Item -->
-        <FeatureCard icon="cx-number-one" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-number-one" classes="carousel-item" horizontal>
           <Fragment slot="title">Store files</Fragment>
           <Fragment slot="body"
             >Organize brand- and app-specific assets in structured, predictable folders.
@@ -52,7 +52,7 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
           </div>
         </FeatureCard>
         <!-- Item -->
-        <FeatureCard icon="cx-number-two" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-number-two" classes="carousel-item" horizontal>
           <Fragment slot="title">Distribute assets</Fragment>
           <Fragment slot="body"
             >Automatically generate platform-optimized assets with a single script.
@@ -76,7 +76,7 @@ pnpm assets --brand chassis --app demo`}
           </div>
         </FeatureCard>
         <!-- Item -->
-        <FeatureCard icon="cx-number-three" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-number-three" classes="carousel-item" horizontal>
           <Fragment slot="title">Ship confidently</Fragment>
           <Fragment slot="body"
             >Output is organised per platform and brand — correctly named and ready to use.

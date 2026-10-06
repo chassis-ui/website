@@ -24,10 +24,10 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
         </p>
       </header>
     </div>
-    <div class="section-features gap-xl flex-column md:flex-row mb-md md:mb-6xl">
-      <FeatureSlider ariaLabel="Figma features carousel">
+    <div class="section-features contains-inline mb-md md:mb-6xl">
+      <FeatureSlider id="figma-features" ariaLabel="Figma features carousel">
         <!-- Item -->
-        <FeatureCard icon="cx-swatchbook" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-swatchbook" classes="carousel-item" horizontal>
           <Fragment slot="title">Contextual color system</Fragment>
           <Fragment slot="body">
             Colors are organised by role — text, backgrounds, icons, indicators, and more — each
@@ -49,7 +49,7 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
           />
         </FeatureCard>
         <!-- Item -->
-        <FeatureCard icon="cx-book-open-alt" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-book-open-alt" classes="carousel-item" horizontal>
           <Fragment slot="title">Self-documented components</Fragment>
           <Fragment slot="body">
             Each component file includes a documentation page covering variants, props, specs, and
@@ -71,7 +71,7 @@ import ResponsiveImage from '@chassis-ui/docs/components/ResponsiveImage.astro'
           />
         </FeatureCard>
         <!-- Item -->
-        <FeatureCard icon="cx-compass-drafting" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-compass-drafting" classes="carousel-item" horizontal>
           <Fragment slot="title">Consistent design language</Fragment>
           <Fragment slot="body">
             Spacing, typography, and color scales are shared between Figma and production code —

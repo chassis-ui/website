@@ -53,35 +53,49 @@
 
 // -----------------------------------------------------------------------------
 // SLIDER
+// A Chassis CSS carousel, `.carousel.carousel-auto`. See FeatureSlider.astro.
 // -----------------------------------------------------------------------------
 
 .feature-slider {
-
-  .swiper-slide {
-    display: flex;
-    height: auto;
-  }
-
   @include media-breakpoint-up(md) {
+    // The row is as wide as the viewport, so the cards run to its edges and the container
+    // does not crop them. The padding of the row, which is also where a card snaps, keeps
+    // the first and the last card on the edges of the container. `100cqw` is the width of
+    // `.section-features.contains-inline`, the parent of the slider. The padding has to be
+    // a length: the carousel reads it in pixels, and a percentage of a scroll padding is a
+    // part of the row itself. vnu does not know `cqw`: `site:lint:vnu` filters its message.
+    --cx-carousel-items-peek: calc((100vw - 100cqw) / 2);
     z-index: 10;
-    width: 100%;
-    margin: 0 auto;
 
-    // Swiper slide width
-    .swiper-slide {
+    .carousel-inner {
+      width: 100vw;
+      margin-inline: calc(var(--cx-carousel-items-peek) * -1);
+    }
+
+    .carousel-item {
       width: var(--feature-item-width, 560px);
     }
-    .swiper-navigation {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      z-index: 20;
-      width: calc(100vw - var(--cx-space-3xl));
-      //padding: 0 32px;
-      transform: translate(-50%, 50%);
-      > .button {
-        color: var(--cx-fg-main);
-      }
+  }
+}
+
+// The two buttons sit at the edges of the viewport, at half the height of the cards.
+.feature-slider-nav {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 20;
+  justify-content: space-between;
+  width: calc(100vw - var(--cx-space-5xl));
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+
+  > .button {
+    --cx-button-min-size: 2.75rem;
+    pointer-events: auto;
+
+    // The carousel disables the button of the end that the row rests at.
+    &:disabled {
+      visibility: hidden;
     }
   }
 }

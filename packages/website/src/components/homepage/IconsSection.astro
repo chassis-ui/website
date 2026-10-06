@@ -26,10 +26,10 @@ import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
         </p>
       </header>
     </div>
-    <div class="section-features gap-xl flex-column md:flex-row mb-md md:mb-6xl">
-      <FeatureSlider ariaLabel="Icons features carousel">
+    <div class="section-features contains-inline mb-md md:mb-6xl">
+      <FeatureSlider id="icons-features" ariaLabel="Icons features carousel">
         <!-- Item 1: Structured icon library -->
-        <FeatureCard icon="cx-book" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-book" classes="carousel-item" horizontal>
           <Fragment slot="title">Structured icon library</Fragment>
           <Fragment slot="body">
             A clear system for organizing icons by category, size, and variant — so every icon has a
@@ -53,7 +53,7 @@ import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
         </FeatureCard>
 
         <!-- Item 2: Easy team distribution -->
-        <FeatureCard icon="cx-folders" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-folders" classes="carousel-item" horizontal>
           <Fragment slot="title">Easy team distribution</Fragment>
           <Fragment slot="body">
             Package and distribute icons as a versioned release. Every team gets the same set, with
@@ -79,7 +79,7 @@ import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
         </FeatureCard>
 
         <!-- Item 3: Design-to-code compatibility -->
-        <FeatureCard icon="cx-laptop-code" classes="swiper-slide" horizontal>
+        <FeatureCard icon="cx-laptop-code" classes="carousel-item" horizontal>
           <Fragment slot="title">Multiple usage formats</Fragment>
           <Fragment slot="body">
             Icons flow from design tools into code as optimized SVGs with consistent markup. No
