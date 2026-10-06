@@ -139,6 +139,12 @@ The tests of `@chassis-ui/docs` are in `packages/docs/test`. Component tests ren
 small site in `packages/docs/test/fixture`. The tests of the contact endpoint are next to it,
 in `api/`.
 
+One test reads `pnpm-lock.yaml`. The lockfile must have one version of each peer dependency
+of `@chassis-ui/docs`, so that the package is built and checked with what the website
+installs. A peer that the website or the root installs is a devDependency of the package
+too: Dependabot updates the ranges of devDependencies, not of peerDependencies. When the
+test fails after an update, give both the same range and run `pnpm install`.
+
 `pnpm test:fixtures` packs `@chassis-ui/docs`, installs it into copies of the starter site
 in `packages/docs/starter`, builds them and checks the output. It needs network access for
 the install. A stand-in replaces the docs build of chassis-assets. Name a layout, `root` or

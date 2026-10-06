@@ -111,18 +111,6 @@ importers:
 
   packages/docs:
     dependencies:
-      '@astrojs/markdown-remark':
-        specifier: ^7.0.0
-        version: 7.3.1
-      '@chassis-ui/css':
-        specifier: '>=0.6.0'
-        version: 0.6.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.28))(vanilla-calendar-pro@3.4.0)
-      '@pagefind/component-ui':
-        specifier: ^1.0.0
-        version: 1.5.2
-      '@shikijs/transformers':
-        specifier: ^4.3.1
-        version: 4.5.0
       '@types/hast':
         specifier: ^3.0.5
         version: 3.0.5
@@ -135,9 +123,6 @@ importers:
       github-slugger:
         specifier: ^2.0.0
         version: 2.0.0
-      html-validate:
-        specifier: ^11.0.0
-        version: 11.16.1(vitest@5.0.3(@types/node@24.19.0)(vite@8.3.1(@types/node@24.19.0)(esbuild@0.28.2)(sass@1.105.1)(yaml@2.9.1)))
       htmlparser2:
         specifier: ^12.0.0
         version: 12.0.0
@@ -159,18 +144,12 @@ importers:
       medium-zoom:
         specifier: ^1.1.0
         version: 1.1.0
-      rehype-autolink-headings:
-        specifier: ^7.0.0
-        version: 7.1.0
       remark:
         specifier: ^15.0.1
         version: 15.0.1
       remark-html:
         specifier: ^16.0.1
         version: 16.0.1
-      sass:
-        specifier: ^1.101.0
-        version: 1.105.1
       shiki:
         specifier: ^4.3.1
         version: 4.4.3
@@ -180,19 +159,40 @@ importers:
       unist-util-visit:
         specifier: ^5.1.0
         version: 5.1.0
-      vnu-jar:
-        specifier: '>=26.0.0'
-        version: 26.10.2
     devDependencies:
+      '@astrojs/markdown-remark':
+        specifier: ^7.3.1
+        version: 7.3.1
+      '@chassis-ui/css':
+        specifier: ^0.6.0
+        version: 0.6.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.28))(vanilla-calendar-pro@3.4.0)
+      '@pagefind/component-ui':
+        specifier: ^1.5.2
+        version: 1.5.2
+      '@shikijs/transformers':
+        specifier: ^4.5.0
+        version: 4.5.0
       astro:
         specifier: ^7.3.5
         version: 7.3.5(@astrojs/markdown-remark@7.3.1)(@types/node@24.19.0)(sass@1.105.1)(yaml@2.9.1)
+      html-validate:
+        specifier: ^11.16.1
+        version: 11.16.1(vitest@5.0.3(@types/node@24.19.0)(vite@8.3.1(@types/node@24.19.0)(esbuild@0.28.2)(sass@1.105.1)(yaml@2.9.1)))
+      rehype-autolink-headings:
+        specifier: ^7.1.0
+        version: 7.1.0
       remark-mdx:
         specifier: ^3.1.1
         version: 3.1.1
+      sass:
+        specifier: ^1.105.1
+        version: 1.105.1
       vfile:
         specifier: ^6.0.3
         version: 6.0.3
+      vnu-jar:
+        specifier: ^26.10.2
+        version: 26.10.2
 
   packages/website:
     devDependencies:
