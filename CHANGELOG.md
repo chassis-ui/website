@@ -21,6 +21,7 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 - The five module links of the home page fit their row between 768 and 1023 pixels: a label that is wider than its column wraps onto a second line. Up to 926 pixels the fifth link, "Icon Packager", was cut off.
 - The buttons of the feature sliders are on the slider between 768 and 991 pixels. They were placed against the page, far above it.
 - The cards of the feature sliders run to the edges of the viewport. The container cropped them, which shows on a screen wider than 1536 pixels: the `overflow-visible` utility of the slider is in a cascade layer, so the stylesheet of Swiper, which is in none, won.
+- `source-map-js` is 1.2.2 in the lockfile. Version 1.2.1 has a [security advisory](https://github.com/advisories/GHSA-68fv-2mgg-jv7q), which failed the Audit job. It comes with PostCSS, through `@chassis-ui/css`.
 
 ## 2026-10-05
 
