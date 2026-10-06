@@ -24,7 +24,9 @@ const url = getBlogPostUrl(post)
   <div class="col-span-full lg:col-span-8">
     <header class="mb-md">
       <h2 class="font-strong font-3xl mb-sm">
-        <a href={url} class="fg-main text-decoration-none">{post.data.title}</a>
+        <a href={url} class="fg-main text-decoration-none">
+          {post.data.title}
+        </a>
       </h2>
       <div class="fg-subtle sm">
         <time datetime={post.data.pubDate?.toISOString()} class="text-nowrap">
@@ -32,22 +34,20 @@ const url = getBlogPostUrl(post)
         </time>
         <span class="mx-xs">•</span>
         <span class="text-nowrap">{getReadingTime(post.body || '')}</span>
-        {
-          post.data.author && (
-            <>
-              <span class="mx-xs">•</span>
-              <span class="text-nowrap">by {post.data.author}</span>
-            </>
-          )
-        }
+        {post.data.author && (
+          <>
+            <span class="mx-xs">•</span>
+            <span class="text-nowrap">by {post.data.author}</span>
+          </>
+        )}
       </div>
     </header>
 
     {post.data.description && <p class="font-lg">{post.data.description}</p>}
     <footer>
-      <a href={url} class="icon-link text-decoration-none"
-        >Read more <Icon name="arrow-right-outline" class="icon-adaptive" /></a
-      >
+      <a href={url} class="icon-link text-decoration-none">
+        Read more <Icon name="arrow-right-outline" class="icon-adaptive" />
+      </a>
     </footer>
   </div>
 </article>

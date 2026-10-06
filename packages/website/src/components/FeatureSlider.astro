@@ -50,10 +50,8 @@ const { id, ariaLabel = 'Feature carousel' } = Astro.props
     </button>
   </div>
 
-  {
-    /* Inside the slider, not after it: Astro renders the script where it is written, once,
-       and the scroll animation of the home page fades out a slider that has a next sibling. */
-  }
+  {/* Inside the slider, not after it: Astro renders the script where it is written, once,
+       and the scroll animation of the home page fades out a slider that has a next sibling. */}
   <script>
     import { Carousel } from '@chassis-ui/css'
 

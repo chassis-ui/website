@@ -26,9 +26,12 @@ const { layout } = Astro.props
   data-cx-placement="bottom-end"
 >
   <Icon name="circle-half-solid" class="theme-icon-active" />
-  <span class=`${layout === 'examples' ? 'visually-hidden' : 'lg:d-none ms-xs'}` id="cxd-theme-text"
-    >Toggle theme</span
+  <span
+    class=`${layout === 'examples' ? 'visually-hidden' : 'lg:d-none ms-xs'}`
+    id="cxd-theme-text"
   >
+    Toggle theme
+  </span>
 </button>
 <ul class="menu" role="menu" aria-label="Theme options">
   <li>

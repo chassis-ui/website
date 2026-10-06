@@ -37,26 +37,24 @@ const repos = [
       </div>
       <div class="lg:pt-6xl">
         <ul class="list-group">
-          {
-            repos.map((repo) => (
-              <li class="list-item">
-                <a
-                  href={`https://github.com/chassis-ui/${repo.repo}`}
-                  class="text-decoration-none d-flex align-items-center gap-md"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <svg class="icon icon-xl icon-default" aria-hidden="true">
-                    <use href="#github-brand" />
-                  </svg>
-                  <div>
-                    <p class="font-code font-strong m-0">{repo.name}</p>
-                    <p class="fg-subtle font-sm m-0">{repo.description}</p>
-                  </div>
-                </a>
-              </li>
-            ))
-          }
+          {repos.map((repo) => (
+            <li class="list-item">
+              <a
+                href={`https://github.com/chassis-ui/${repo.repo}`}
+                class="text-decoration-none d-flex align-items-center gap-md"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg class="icon icon-xl icon-default" aria-hidden="true">
+                  <use href="#github-brand" />
+                </svg>
+                <div>
+                  <p class="font-code font-strong m-0">{repo.name}</p>
+                  <p class="fg-subtle font-sm m-0">{repo.description}</p>
+                </div>
+              </a>
+            </li>
+          ))}
         </ul>
       </div>
     </div>

@@ -44,13 +44,11 @@ const headerClasses = [
 
 <div class={cardClasses}>
   <div class={headerClasses}>
-    {
-      icon && (
-        <div class="feature-thumb">
-          <Icon name={icon} class="feature-icon icon-3xl md:icon-4xl" sprite="" />
-        </div>
-      )
-    }
+    {icon && (
+      <div class="feature-thumb">
+        <Icon name={icon} class="feature-icon icon-3xl md:icon-4xl" sprite="" />
+      </div>
+    )}
     <div>
       <h3 class="feature-title font-lg md:font-xl mb-3xs md:mb-2xs">
         <slot name="title" />

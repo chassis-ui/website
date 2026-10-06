@@ -36,24 +36,22 @@ const {
 } = Astro.props
 ---
 
-{
-  font ? (
-    <span
-      class:list={['icon', `cx-${name}`, className]}
-      aria-hidden={title ? undefined : 'true'}
-      aria-label={title}
-      {...rest}
-    />
-  ) : (
-    <svg
-      class:list={['icon', className]}
-      width={size}
-      height={size}
-      aria-hidden={title ? undefined : 'true'}
-      {...rest}
-    >
-      {title && <title>{title}</title>}
-      <use href={`${sprite}#${name}`} />
-    </svg>
-  )
-}
+{font ? (
+  <span
+    class:list={['icon', `cx-${name}`, className]}
+    aria-hidden={title ? undefined : 'true'}
+    aria-label={title}
+    {...rest}
+  />
+) : (
+  <svg
+    class:list={['icon', className]}
+    width={size}
+    height={size}
+    aria-hidden={title ? undefined : 'true'}
+    {...rest}
+  >
+    {title && <title>{title}</title>}
+    <use href={`${sprite}#${name}`} />
+  </svg>
+)}

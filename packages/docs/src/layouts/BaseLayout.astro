@@ -81,15 +81,13 @@ const mainProps = { id: 'content', ...overrides?.main }
   <body {...bodyProps}>
     <Header layout={layout} title={title} />
 
-    {
-      Astro.slots.has('main') ? (
-        <slot name="main" />
-      ) : (
-        <main {...mainProps}>
-          <slot />
-        </main>
-      )
-    }
+    {Astro.slots.has('main') ? (
+      <slot name="main" />
+    ) : (
+      <main {...mainProps}>
+        <slot />
+      </main>
+    )}
 
     <Footer />
     <Consent />
@@ -98,17 +96,13 @@ const mainProps = { id: 'content', ...overrides?.main }
       <slot name="scripts" slot="scripts" />
     </Scripts>
 
-    {
-      frontmatter?.extraJs &&
-        frontmatter.extraJs.map((js: ExtraJS) => <script is:inline async={js.async} src={js.src} />)
-    }
+    {frontmatter?.extraJs &&
+      frontmatter.extraJs.map((js: ExtraJS) => <script is:inline async={js.async} src={js.src} />)}
 
-    {
-      (layout === 'docs' || layout === 'icons') && (
-        <div class="position-fixed" aria-hidden="true">
-          <input type="text" tabindex="-1" />
-        </div>
-      )
-    }
+    {(layout === 'docs' || layout === 'icons') && (
+      <div class="position-fixed" aria-hidden="true">
+        <input type="text" tabindex="-1" />
+      </div>
+    )}
   </body>
 </html>

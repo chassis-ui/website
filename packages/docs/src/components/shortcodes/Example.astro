@@ -97,37 +97,33 @@ const simplifiedMarkup = sourceMarkup
 ---
 
 <div class="cxd-example-snippet cxd-code-snippet not-prose" data-pagefind-ignore>
-  {
-    showPreview && (
-      <div id={id} class:list={['cxd-example m-0 border-0 context', className]}>
-        {!showMarkup && (
-          <div class="cxd-mode">
-            <button
-              type="button"
-              class="button-mode"
-              title="Toggle color mode"
-              aria-label="Toggle color mode"
-              onclick="toggleTheme(this)"
-            >
-              <Icon name="swatchbook-solid" />
-            </button>
-          </div>
-        )}
-        <Fragment set:html={markup} />
-      </div>
-    )
-  }
-  {
-    showMarkup && (
-      <Code
-        code={simplifiedMarkup}
-        lang={lang}
-        file={file}
-        lineNumbers={lineNumbers}
-        nestedInExample={true}
-        addStackblitzJs={addStackblitzJs}
-        hasPreview={showPreview}
-      />
-    )
-  }
+  {showPreview && (
+    <div id={id} class:list={['cxd-example m-0 border-0 context', className]}>
+      {!showMarkup && (
+        <div class="cxd-mode">
+          <button
+            type="button"
+            class="button-mode"
+            title="Toggle color mode"
+            aria-label="Toggle color mode"
+            onclick="toggleTheme(this)"
+          >
+            <Icon name="swatchbook-solid" />
+          </button>
+        </div>
+      )}
+      <Fragment set:html={markup} />
+    </div>
+  )}
+  {showMarkup && (
+    <Code
+      code={simplifiedMarkup}
+      lang={lang}
+      file={file}
+      lineNumbers={lineNumbers}
+      nestedInExample={true}
+      addStackblitzJs={addStackblitzJs}
+      hasPreview={showPreview}
+    />
+  )}
 </div>

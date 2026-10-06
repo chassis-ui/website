@@ -21,8 +21,12 @@ const frontmatter = {
 
 <BlogLayout frontmatter={frontmatter}>
   <ol class="breadcrumb" slot="breadcrumb">
-    <li class="breadcrumb-item"><a href="/blog">Blog</a></li>
-    <li class="breadcrumb-item" aria-current="page">Tags</li>
+    <li class="breadcrumb-item">
+      <a href="/blog">Blog</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      Tags
+    </li>
   </ol>
 
   <section class="mb-2xl">
@@ -31,14 +35,12 @@ const frontmatter = {
       <p class="font-lg">Topics covered across the blog</p>
     </header>
     <div class="d-flex flex-wrap gap-xs">
-      {
-        sortedTags.map(([tag, count]) => (
-          <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip lg neutral smooth">
-            {tag}
-            <span class="badge neutral -me-xs">{count}</span>
-          </a>
-        ))
-      }
+      {sortedTags.map(([tag, count]) => (
+        <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip lg neutral smooth">
+          {tag}
+          <span class="badge neutral -me-xs">{count}</span>
+        </a>
+      ))}
     </div>
   </section>
 </BlogLayout>

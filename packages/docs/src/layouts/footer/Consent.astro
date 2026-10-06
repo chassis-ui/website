@@ -15,28 +15,26 @@ const isProd = import.meta.env.PROD
 const { googleId } = getConfig().analytics
 ---
 
-{
-  isProd && googleId && (
-    <section class="cxd-consent" aria-label="Cookie consent" data-google-id={googleId} hidden>
-      <div class="container 2xl">
-        <div class="notification default shadow-lg d-flex flex-wrap align-items-center gap-md p-md">
-          <p class="mb-0 flex-grow-1">
-            We would like to count visits with Google Analytics, which sets cookies. Nothing is sent
-            to Google unless you accept. <a href="/privacy/">Privacy notice</a>
-          </p>
-          <div class="d-flex gap-sm">
-            <button type="button" class="button primary" data-consent="granted">
-              Accept
-            </button>
-            <button type="button" class="button default" data-consent="denied">
-              Decline
-            </button>
-          </div>
+{isProd && googleId && (
+  <section class="cxd-consent" aria-label="Cookie consent" data-google-id={googleId} hidden>
+    <div class="container 2xl">
+      <div class="notification default shadow-lg d-flex flex-wrap align-items-center gap-md p-md">
+        <p class="mb-0 flex-grow-1">
+          We would like to count visits with Google Analytics, which sets cookies. Nothing is sent
+          to Google unless you accept. <a href="/privacy/">Privacy notice</a>
+        </p>
+        <div class="d-flex gap-sm">
+          <button type="button" class="button primary" data-consent="granted">
+            Accept
+          </button>
+          <button type="button" class="button default" data-consent="denied">
+            Decline
+          </button>
         </div>
       </div>
-    </section>
-  )
-}
+    </div>
+  </section>
+)}
 
 <script>
   type AnalyticsWindow = Window &

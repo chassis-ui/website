@@ -35,23 +35,21 @@ const isActive = (path: string) => {
 
 <header class="navbar translucent lg:navbar-expand cxd-navbar sticky-top">
   <nav class="container 2xl" aria-label="Site navigation">
-    {
-      layout === 'docs' && (
-        <div class="cxd-navbar-toggle">
-          <button
-            class="button icon-only navbar-toggler"
-            type="button"
-            data-cx-toggle="drawer"
-            data-cx-target="#cxdSidebar"
-            aria-controls="cxdSidebar"
-            aria-label="Toggle docs navigation"
-          >
-            <Icon name="bars-solid" class="icon-lg" />
-            <span class="d-none lg:d-inline fs-6 pe-2xs">Browse</span>
-          </button>
-        </div>
-      )
-    }
+    {layout === 'docs' && (
+      <div class="cxd-navbar-toggle">
+        <button
+          class="button icon-only navbar-toggler"
+          type="button"
+          data-cx-toggle="drawer"
+          data-cx-target="#cxdSidebar"
+          aria-controls="cxdSidebar"
+          aria-label="Toggle docs navigation"
+        >
+          <Icon name="bars-solid" class="icon-lg" />
+          <span class="d-none lg:d-inline fs-6 pe-2xs">Browse</span>
+        </button>
+      </div>
+    )}
     {layout !== 'docs' && <div class="lg:d-none" style="width: 4.25rem;" />}
 
     <a class="navbar-brand m-0 py-sm lg:me-md" href="/" aria-label="Chassis">
@@ -59,7 +57,9 @@ const isActive = (path: string) => {
     </a>
 
     <div class="d-flex">
-      <div class="cxd-search"><SearchTrigger placeholder="Search docs…" /></div>
+      <div class="cxd-search">
+        <SearchTrigger placeholder="Search docs…" />
+      </div>
 
       <button
         class="button icon-only navbar-toggler"
@@ -79,65 +79,76 @@ const isActive = (path: string) => {
       aria-labelledby="cxdNavbarOffcanvasLabel"
     >
       <div class="drawer-header">
-        <h2 class="drawer-title" id="cxdNavbarOffcanvasLabel">Chassis</h2>
+        <h2 class="drawer-title" id="cxdNavbarOffcanvasLabel">
+          Chassis
+        </h2>
         <button
           type="button"
           class="close-button close-button-white"
           data-cx-dismiss="drawer"
           aria-label="Close"
-          data-cx-target="#cxdNavbar"></button>
+          data-cx-target="#cxdNavbar"
+        ></button>
       </div>
 
       <hr class="lg:d-none m-0" />
       <div class="drawer-body lg:p-0">
-        <ul
-          class="navbar-nav d-grid grid-cols-2 lg:d-flex flex-row flex-wrap cxd-navbar-nav mx-0 lg:mx-md"
-        >
-          <NavLink active={isActive('/tokens')} href="/tokens">Tokens</NavLink>
-          <NavLink active={isActive('/figma')} href="/figma">Figma</NavLink>
-          <NavLink active={isActive('/css')} href="/css">CSS</NavLink>
-          <NavLink active={isActive('/react')} href="/react">React</NavLink>
-          <NavLink active={isActive('/assets')} href="/assets">Assets</NavLink>
-          <NavLink active={isActive('/icons')} href="/icons">Icons</NavLink>
+        <ul class="navbar-nav d-grid grid-cols-2 lg:d-flex flex-row flex-wrap cxd-navbar-nav mx-0 lg:mx-md">
+          <NavLink active={isActive('/tokens')} href="/tokens">
+            Tokens
+          </NavLink>
+          <NavLink active={isActive('/figma')} href="/figma">
+            Figma
+          </NavLink>
+          <NavLink active={isActive('/css')} href="/css">
+            CSS
+          </NavLink>
+          <NavLink active={isActive('/react')} href="/react">
+            React
+          </NavLink>
+          <NavLink active={isActive('/assets')} href="/assets">
+            Assets
+          </NavLink>
+          <NavLink active={isActive('/icons')} href="/icons">
+            Icons
+          </NavLink>
           <li class="nav-item col-span-full lg:d-flex">
             <div class="vr d-none lg:d-flex my-auto lg:mx-sm"></div>
             <hr class="lg:d-none" />
           </li>
-          <NavLink active={isActive('/blog')} href="/blog">Blog</NavLink>
-          <NavLink active={isActive('/examples')} href="/examples">Examples</NavLink>
+          <NavLink active={isActive('/blog')} href="/blog">
+            Blog
+          </NavLink>
+          <NavLink active={isActive('/examples')} href="/examples">
+            Examples
+          </NavLink>
         </ul>
 
         <hr class="lg:d-none m-0" />
 
-        <ul
-          class="navbar-nav d-grid grid-cols-2 lg:d-flex flex-row flex-wrap lg:ms-auto align-items-center"
-        >
-          {
-            figmaHandle && (
-              <NavLink
-                class="px-0 lg:px-xs"
-                href={`https://figma.com/@${figmaHandle}`}
-                target="_blank"
-                rel="noopener"
-              >
-                <Icon name="figma-brand" title="Figma" />
-                <small class="lg:d-none ms-xs">Figma Community</small>
-              </NavLink>
-            )
-          }
-          {
-            githubOrg && (
-              <NavLink
-                class="px-0 lg:px-xs"
-                href={`https://github.com/${githubOrg}`}
-                target="_blank"
-                rel="noopener"
-              >
-                <Icon name="github-brand" title="GitHub" />
-                <small class="lg:d-none ms-xs">GitHub</small>
-              </NavLink>
-            )
-          }
+        <ul class="navbar-nav d-grid grid-cols-2 lg:d-flex flex-row flex-wrap lg:ms-auto align-items-center">
+          {figmaHandle && (
+            <NavLink
+              class="px-0 lg:px-xs"
+              href={`https://figma.com/@${figmaHandle}`}
+              target="_blank"
+              rel="noopener"
+            >
+              <Icon name="figma-brand" title="Figma" />
+              <small class="lg:d-none ms-xs">Figma Community</small>
+            </NavLink>
+          )}
+          {githubOrg && (
+            <NavLink
+              class="px-0 lg:px-xs"
+              href={`https://github.com/${githubOrg}`}
+              target="_blank"
+              rel="noopener"
+            >
+              <Icon name="github-brand" title="GitHub" />
+              <small class="lg:d-none ms-xs">GitHub</small>
+            </NavLink>
+          )}
           <li class="nav-item col-span-full">
             <div class="vr d-none lg:d-flex h-100 lg:mx-2xs"></div>
             <hr class="lg:d-none" />

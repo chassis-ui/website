@@ -20,31 +20,29 @@ const { posts, currentPostId } = Astro.props
 <div class="bg-even p-md rounded-lg mb-md">
   <h3>Latest Posts</h3>
   <ul class="list-group list-plain">
-    {
-      posts
-        .filter((post: any) => post.id !== currentPostId) // Exclude current post
-        .filter((post: any) => post.data.pubDate) // Only posts with dates
-        .sort(
-          (a: any, b: any) =>
-            new Date(b.data.pubDate!).getTime() - new Date(a.data.pubDate!).getTime()
-        )
-        .slice(0, 5) // Show latest 5 posts
-        .map((post: any) => (
-          <li class="list-item bg-even py-sm">
-            <a href={getBlogPostUrl(post)} class="fg-main text-decoration-none">
-              <article>
-                <h4 class="font-md mb-0">{post.data.title}</h4>
-                <time datetime={post.data.pubDate!.toISOString()}>
-                  {post.data.pubDate!.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </time>
-              </article>
-            </a>
-          </li>
-        ))
-    }
+    {posts
+      .filter((post: any) => post.id !== currentPostId) // Exclude current post
+      .filter((post: any) => post.data.pubDate) // Only posts with dates
+      .sort(
+        (a: any, b: any) =>
+          new Date(b.data.pubDate!).getTime() - new Date(a.data.pubDate!).getTime()
+      )
+      .slice(0, 5) // Show latest 5 posts
+      .map((post: any) => (
+        <li class="list-item bg-even py-sm">
+          <a href={getBlogPostUrl(post)} class="fg-main text-decoration-none">
+            <article>
+              <h4 class="font-md mb-0">{post.data.title}</h4>
+              <time datetime={post.data.pubDate!.toISOString()}>
+                {post.data.pubDate!.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+            </article>
+          </a>
+        </li>
+      ))}
   </ul>
 </div>

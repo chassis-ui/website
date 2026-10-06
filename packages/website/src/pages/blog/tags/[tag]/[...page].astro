@@ -54,22 +54,26 @@ const frontmatter = {
 
 <BlogLayout frontmatter={frontmatter}>
   <ol class="breadcrumb" slot="breadcrumb">
-    <li class="breadcrumb-item"><a href="/blog">Blog</a></li>
-    <li class="breadcrumb-item"><a href="/blog/tags">Tags</a></li>
-    <li class="breadcrumb-item" aria-current="page">{tag}</li>
+    <li class="breadcrumb-item">
+      <a href="/blog">Blog</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/blog/tags">Tags</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      {tag}
+    </li>
   </ol>
 
-  {
-    page.data.length > 0 ? (
-      <div class="mb-xl">
-        {page.data.map((post: BlogPost) => (
-          <BlogPostCard post={post} />
-        ))}
-      </div>
-    ) : (
-      <p>No posts found.</p>
-    )
-  }
+  {page.data.length > 0 ? (
+    <div class="mb-xl">
+      {page.data.map((post: BlogPost) => (
+        <BlogPostCard post={post} />
+      ))}
+    </div>
+  ) : (
+    <p>No posts found.</p>
+  )}
 
   <Pagination page={page} baseUrl={`/blog/tags/${encodeURIComponent(tag)}`} />
 </BlogLayout>

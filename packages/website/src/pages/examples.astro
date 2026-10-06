@@ -20,27 +20,25 @@ const examples = [
   <section class="py-3xl md:py-6xl">
     <div class="container 2xl">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-md lg:gap-3xl">
-        {
-          examples.map((example) => (
-            <div>
-              <h2>{example.title}</h2>
-              <p class="font-lg fg-subtle mb-xl">{example.description}</p>
-              <div class="d-flex flex-wrap gap-md">
-                <a href={`/examples/${example.folder}/`} class="button default">
-                  Open the example
-                </a>
-                <a
-                  href={`https://github.com/chassis-ui/website/tree/main/examples/${example.folder}`}
-                  class="button outline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View the source
-                </a>
-              </div>
+        {examples.map((example) => (
+          <div>
+            <h2>{example.title}</h2>
+            <p class="font-lg fg-subtle mb-xl">{example.description}</p>
+            <div class="d-flex flex-wrap gap-md">
+              <a href={`/examples/${example.folder}/`} class="button default">
+                Open the example
+              </a>
+              <a
+                href={`https://github.com/chassis-ui/website/tree/main/examples/${example.folder}`}
+                class="button outline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View the source
+              </a>
             </div>
-          ))
-        }
+          </div>
+        ))}
       </div>
     </div>
   </section>

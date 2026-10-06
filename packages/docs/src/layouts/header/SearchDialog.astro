@@ -45,7 +45,9 @@ const { id = 'cxdSearchDialog', placeholder = 'Search docs…' } = Astro.props
       </div>
     </cxd-search-input>
     <cxd-search-filter class="cxd-search-filter" hidden>
-      <label class="visually-hidden" for={`${id}-filter`}>Search in</label>
+      <label class="visually-hidden" for={`${id}-filter`}>
+        Search in
+      </label>
       <select id={`${id}-filter`} class="form-input cxd-search-filter-select"></select>
     </cxd-search-filter>
     <button
@@ -53,8 +55,10 @@ const { id = 'cxdSearchDialog', placeholder = 'Search docs…' } = Astro.props
       class="close-button"
       aria-label="Close"
       data-cx-dismiss="dialog"
-      data-cx-target={`#${id}`}>×</button
+      data-cx-target={`#${id}`}
     >
+      ×
+    </button>
   </search>
 
   <div class="modal-body cxd-search-body">
@@ -65,11 +69,13 @@ const { id = 'cxdSearchDialog', placeholder = 'Search docs…' } = Astro.props
       <li class="list-item">
         <kbd class="cxd-search-shortcut-key font-2xs">⮐</kbd>
         <span class="cxd-search-shortcut-label">to select</span>
-      </li><li class="list-item">
+      </li>
+      <li class="list-item">
         <kbd class="cxd-search-shortcut-key font-sm">↑</kbd>
         <kbd class="cxd-search-shortcut-key font-sm">↓</kbd>
         <span class="cxd-search-shortcut-label">to navigate</span>
-      </li><li class="list-item">
+      </li>
+      <li class="list-item">
         <kbd class="cxd-search-shortcut-key font-xs">ESC</kbd>
         <span class="cxd-search-shortcut-label">to close</span>
       </li>

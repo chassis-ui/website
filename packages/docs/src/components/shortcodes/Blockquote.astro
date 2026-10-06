@@ -13,19 +13,17 @@ interface Props {
 const { attr } = Astro.props
 ---
 
-{
-  attr ? (
-    <figure>
-      <blockquote class="blockquote">
-        <slot />
-      </blockquote>
-      <figcaption class="attribution">
-        <Fragment set:html={attr} />
-      </figcaption>
-    </figure>
-  ) : (
+{attr ? (
+  <figure>
     <blockquote class="blockquote">
       <slot />
     </blockquote>
-  )
-}
+    <figcaption class="attribution">
+      <Fragment set:html={attr} />
+    </figcaption>
+  </figure>
+) : (
+  <blockquote class="blockquote">
+    <slot />
+  </blockquote>
+)}

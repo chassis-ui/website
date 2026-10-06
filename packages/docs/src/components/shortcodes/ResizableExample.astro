@@ -119,9 +119,7 @@ const simplifiedMarkup = sourceMarkup
       <Fragment set:html={previewMarkup} />
     </div>
   </div>
-  {
-    showMarkup && (
-      <Code code={simplifiedMarkup} lang="html" nestedInExample={true} lineNumbers={lineNumbers} />
-    )
-  }
+  {showMarkup && (
+    <Code code={simplifiedMarkup} lang="html" nestedInExample={true} lineNumbers={lineNumbers} />
+  )}
 </div>

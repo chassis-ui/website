@@ -22,7 +22,9 @@ const { icon, title, url } = Astro.props
     href={url}
     class="d-flex button p-md lg:p-xl gap-md lg:gap-sm md:flex-column justify-content-start lg:justify-content-center my-2xs md:m-0 h-100"
   >
-    <svg class="icon icon-2xl md:icon-4xl"><use href={`#${icon}`}></use></svg>
+    <svg class="icon icon-2xl md:icon-4xl">
+      <use href={`#${icon}`}></use>
+    </svg>
     <p class="font-strong font-lg m-0">{title}</p>
   </a>
 </li>
