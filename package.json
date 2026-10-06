@@ -101,7 +101,7 @@
     "pagefind": "^1.5.2",
     "playwright-core": "^1.63.0",
     "prettier": "^3.9.9",
-    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-astro": "^1.1.0",
     "semver": "^7.8.5",
     "simple-git-hooks": "^2.14.0",
     "stylelint": "^16.26.1",
