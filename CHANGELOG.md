@@ -4,6 +4,15 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-10-07
+
+### Changed
+
+- The website, the vanilla HTML example and the starter of `@chassis-ui/docs` use `@chassis-ui/css` 0.7.0 and `@chassis-ui/tokens` 0.7.0. No markup or style of the website changed: the built pages differ from the ones before by the names of five script files. The new values are those of the tokens. The page margin is 1rem, and 1.5rem from `md`, where it was 0.75rem at every width. The gap of a grid is 1rem, and 1.5rem from `md`, where it went from 0.5rem to 3rem. Subtle text is less transparent, and in the dark theme the text and link colors of the contexts are lighter. Text wraps in a column that is 8 pixels narrower at 375 pixels, so pages are longer there, the home page by 223 pixels: its hero heading takes five lines instead of four. No page gained or lost sideways scroll at 375, 1024 or 1440 pixels.
+- `@chassis-ui/docs` is built and tested with css 0.7.0. Its source uses nothing that 0.7.0 removed or renamed, its peer range stays `>=0.6.0`, and no version of it is released for this.
+- The CDN links of the installation page are for `@chassis-ui/css` 0.7.0.
+- `ref/CHASSIS_CSS.md` describes the grid of css 0.7.0: the flexbox grid is removed, `col-auto` is a class of the CSS grid, the gap is 1rem and 1.5rem, and `grid-fill`, `grid contained` and the `@md:` variants are named.
+
 ## 2026-10-06
 
 ### Changed

@@ -1,7 +1,7 @@
 # Bootstrap to Chassis CSS Migration Guide for LLMs
 
 > **Document Purpose:** This is an LLM instruction guide for converting Bootstrap CSS to Chassis CSS.  
-> **Last Updated:** 2026-10-06 for the grid, verified against the compiled `dist/css/chassis.css` of `@chassis-ui/css@0.6.0`. The rest was verified on 2026-09-29 against `dist/css/chassis.css` and `dist/js/chassis.js` of `@chassis-ui/css@0.5.2` (class names, breakpoint prefixes and widths, size names, data attributes) — check `package.json` for the exact current version; the prefix syntax dates from `v0.2.0`, the short size and breakpoint names (`sm`, `md`, `lg`, …) from `v0.5.0`, the CSS grid as the only grid from `v0.6.0`  
+> **Last Updated:** 2026-10-07 for the grid, verified against the compiled `dist/css/chassis.css` of `@chassis-ui/css@0.7.0`. The rest was verified on 2026-09-29 against `dist/css/chassis.css` and `dist/js/chassis.js` of `@chassis-ui/css@0.5.2` (class names, breakpoint prefixes and widths, size names, data attributes) — check `package.json` for the exact current version; the prefix syntax dates from `v0.2.0`, the short size and breakpoint names (`sm`, `md`, `lg`, …) from `v0.5.0`, the CSS grid from `v0.6.0`, and as the only grid from `v0.7.0`  
 > **Status:** Living document - Chassis CSS is under active development
 
 **Target Audience**: LLMs, AI assistants, and automated code conversion tools
@@ -415,7 +415,7 @@ _Note: Sizing utilities remain largely the same_
 
 ### Grid System
 
-Chassis CSS has one grid, a CSS grid: `.grid` is a container of 12 columns, and its items span and start on those columns. Bootstrap's flexbox grid (`row`, `col-*`, `offset-*`, `row-cols-*`, `g-*`) is deprecated since `@chassis-ui/css@0.6.0` and removed in `0.7.0`. **Never emit those classes.** The container classes stay.
+Chassis CSS has one grid, a CSS grid: `.grid` is a container of 12 columns, and its items span and start on those columns. Bootstrap's flexbox grid (`row`, `col-*`, `offset-*`, `row-cols-*`, `g-*`) was removed in `@chassis-ui/css@0.7.0`. **Never emit those classes.** They no longer exist, except `col-auto`, which is now a class of the CSS grid with another meaning (`grid-column: auto`, an item of one column). The container classes stay.
 
 | Bootstrap                                               | Chassis CSS                                                |
 | ------------------------------------------------------- | ---------------------------------------------------------- |
@@ -433,14 +433,16 @@ Chassis CSS has one grid, a CSS grid: `.grid` is a container of 12 columns, and 
 | `gx-3`, `gy-3`                                          | `column-gap-md`, `row-gap-md`                              |
 | `g-0`                                                   | `gap-0`                                                    |
 | `col-auto`                                              | not a grid: `d-flex` with `gap-*` on the parent            |
+| `row` with `col` children of any number                 | `grid-fill` on the parent, no class on the children        |
 | `col-6` outside a `row`, used as a width                | `w-6/12` (`w-1/12` to `w-11/12`, with breakpoint prefixes) |
 
 What differs from Bootstrap's grid:
 
 - **An item without a span is one column wide**, not full width. A Bootstrap column that is full width below its breakpoint (`col-md-6`) needs `col-span-full` as well.
 - **A start line is absolute.** `offset-2` moves a column two columns from the previous one, `col-start-3` puts the item on the third line. They agree for the first item of a row only.
-- **The default gap is the gutter token of the breakpoint**, from 0.5rem at `xs` to 3rem at `2xl`, where Bootstrap has 1.5rem everywhere. It applies between rows too. A `gap-*` class sets another one, and `row-gap-0` removes it between rows.
-- **A grid in a narrow place needs its own gap.** The gutter follows the viewport, not the width of the grid. Give a grid in a sidebar, a card or another grid item a `gap-*` class, and `grid-cols-{n}` in place of twelve columns.
+- **The default gap is the gutter token of the breakpoint**, 1rem below `md` and 1.5rem from `md`, where Bootstrap has 1.5rem everywhere. It applies between rows too. A `gap-*` class sets another one, and `row-gap-0` removes it between rows.
+- **A grid in a narrow place follows the viewport, not its own width.** Its gutter and the breakpoint classes of its items (`md:col-span-6`) read the width of the page. Give a grid in a sidebar, a card or another grid item `grid-cols-{n}` in place of twelve columns. To make it follow the place it is in, put `contains-inline` on an element around it, `contained` on the grid (`grid contained`) and use the container variants on its items: `@md:col-span-6` applies when that element is at least `md` wide.
+- **`grid-fill` is a grid without a column count.** It puts as many equal columns in a row as fit, each at least 12rem wide (`--cx-grid-min` sets another minimum), and its children need no class.
 - **An auto margin shrinks a grid item to its content.** Center an item with `col-start-*`, not with `mx-auto`.
 - **Content does not widen a column.** Something wider than its item, such as a fixed-width image, overflows it.
 - A nested `row` in a column becomes a nested `grid` in the item.
