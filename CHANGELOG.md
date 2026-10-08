@@ -4,6 +4,17 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-10-08
+
+### Changed
+
+- The website, the vanilla HTML example and the starter of `@chassis-ui/docs` use `@chassis-ui/css` 0.7.1, and `@chassis-ui/docs` is built and tested with it. Its peer range stays `>=0.6.0`, and no version of it is released for this. Nothing changes on screen: the boxes and the colors of every element of 11 pages are the same in Chrome before and after, in both color modes.
+- The CDN links of the installation page are for `@chassis-ui/css` 0.7.1.
+
+### Fixed
+
+- Axe can measure the color contrast of a light page. css 0.7.0 wrote white as `oklch(100% 0 none)`, which axe-core 4.13 cannot parse: its `color-contrast` rule stopped on every page in the light mode and reported nothing. css 0.7.1 writes such colors as `oklab()`. The rule is still off in `build/check-a11y.js`, see issue 6: with it on, every page fails in the light mode.
+
 ## 2026-10-07
 
 ### Changed

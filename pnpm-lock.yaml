@@ -103,8 +103,8 @@ importers:
   examples/vanilla-html:
     devDependencies:
       '@chassis-ui/css':
-        specifier: ^0.7.0
-        version: 0.7.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.28))(vanilla-calendar-pro@3.4.0)
+        specifier: ^0.7.1
+        version: 0.7.1(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.28))(vanilla-calendar-pro@3.4.0)
       '@chassis-ui/icons':
         specifier: ^0.3.1
         version: 0.3.1
@@ -164,8 +164,8 @@ importers:
         specifier: ^7.3.1
         version: 7.3.1
       '@chassis-ui/css':
-        specifier: ^0.7.0
-        version: 0.7.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.28))(vanilla-calendar-pro@3.4.0)
+        specifier: ^0.7.1
+        version: 0.7.1(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.28))(vanilla-calendar-pro@3.4.0)
       '@pagefind/component-ui':
         specifier: ^1.5.2
         version: 1.5.2
@@ -209,8 +209,8 @@ importers:
         specifier: ^3.7.4
         version: 3.7.4
       '@chassis-ui/css':
-        specifier: ^0.7.0
-        version: 0.7.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.28))(vanilla-calendar-pro@3.4.0)
+        specifier: ^0.7.1
+        version: 0.7.1(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.28))(vanilla-calendar-pro@3.4.0)
       '@chassis-ui/docs':
         specifier: workspace:*
         version: link:../docs
@@ -597,8 +597,8 @@ packages:
     resolution: {integrity: sha512-q/ThtP9gcnEP6xlv7LrY26C2mHqdGBti/MmOVngt/M/oIGYkssmQGxPK9WzBNt2juVcH/vml2WQ+ra8LXYOTaA==}
     engines: {node: ^22.11 || ^24 || >=26}
 
-  '@chassis-ui/css@0.7.0':
-    resolution: {integrity: sha512-Sr9RiMspTCH4kTNYpoi3LZHB5fzT1VZWgYZfXiLorcmltLG2LAjLO+RsmCCS+AeGP3UUB58zNPm7cdMMmiYeWQ==}
+  '@chassis-ui/css@0.7.1':
+    resolution: {integrity: sha512-AqtYNGvSqueH/a1asBbugzR7Ti8n7jUqDz2h6xyB5sx49+/KgWqDZJb31+rt1EWz15Rk6DmtEfiPaxvbzy/q2g==}
     engines: {node: '>=22'}
     peerDependencies:
       '@floating-ui/dom': ^1.7.6
@@ -5285,7 +5285,7 @@ snapshots:
       '@changesets/types': 7.0.0
       human-id: 4.2.1
 
-  '@chassis-ui/css@0.7.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.28))(vanilla-calendar-pro@3.4.0)':
+  '@chassis-ui/css@0.7.1(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.28))(vanilla-calendar-pro@3.4.0)':
     dependencies:
       '@floating-ui/dom': 1.8.0
       vanilla-calendar-pro: 3.4.0
