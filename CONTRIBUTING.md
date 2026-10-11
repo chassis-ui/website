@@ -65,7 +65,7 @@ Run them from the root of the repository.
 | `pnpm test`            | Runs the unit and component tests once. `pnpm test:watch` runs them on every change                          |
 | `pnpm test:fixtures`   | Builds the starter site from the packed package, in both layouts. See [Tests](#tests)                        |
 | `pnpm check`           | `astro check` on both packages, then `pnpm audit --prod`                                                     |
-| `pnpm vendor`          | Builds the `vendor/assets` submodule at the pinned commit                                                    |
+| `pnpm vendor`          | Builds the `vendor/assets` submodule at the pinned commit, with a subset of each font: Latin characters      |
 | `pnpm sync-submodules` | Moves the `vendor/assets` pin to the latest `app/docs` of chassis-assets, and builds it                      |
 | `pnpm changeset`       | Describes a change to `@chassis-ui/docs` for its changelog. See [Releases](#releases)                        |
 

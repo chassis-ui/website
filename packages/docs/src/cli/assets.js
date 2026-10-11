@@ -11,6 +11,9 @@ export const ASSETS_OUTPUT = 'dist/web/docs/chassis'
 /** The branch of chassis-assets that the docs sites follow. */
 export const DEFAULT_BRANCH = 'app/docs'
 
+/** The package of the build inside the submodule, which names the packages its options load. */
+export const ASSETS_PACKAGE = './packages/assets'
+
 /**
  * The root of the repository that contains the working directory, so that the commands
  * work from a site's folder too.
@@ -22,23 +25,24 @@ function repositoryRoot(run) {
 
 /**
  * Checks out `vendor/assets` at the commit that the repository pins, and builds it.
- * @param {{ root?: string, run?: typeof defaultRun }} [options]
+ * @param {{ root?: string, subset?: string[], run?: typeof defaultRun }} [options]
  */
-export function buildAssets({ run = defaultRun, root = repositoryRoot(run) } = {}) {
+export function buildAssets({ run = defaultRun, root = repositoryRoot(run), subset = [] } = {}) {
   log(`Building ${ASSETS_PATH} at the pinned commit`)
   run('git', ['submodule', 'update', '--init', ASSETS_PATH], { cwd: root })
-  buildCheckout(root, run)
+  buildCheckout(root, run, subset)
 }
 
 /**
  * Moves `vendor/assets` to the latest commit of `branch`, and builds it. The repository
  * then has a changed submodule pointer to commit.
- * @param {{ root?: string, branch?: string, run?: typeof defaultRun }} [options]
+ * @param {{ root?: string, branch?: string, subset?: string[], run?: typeof defaultRun }} [options]
  */
 export function syncAssets({
   run = defaultRun,
   root = repositoryRoot(run),
-  branch = DEFAULT_BRANCH
+  branch = DEFAULT_BRANCH,
+  subset = []
 } = {}) {
   const dir = path.join(root, ASSETS_PATH)
   const git = (args, quiet = true) => run('git', args, { cwd: dir, quiet })
@@ -68,7 +72,7 @@ export function syncAssets({
   }
 
   git(['pull', '--ff-only', 'origin', branch])
-  buildCheckout(root, run)
+  buildCheckout(root, run, subset)
 
   const commit = git(['rev-parse', '--short', 'HEAD']).trim()
   const moved = run('git', ['status', '--porcelain', '--', ASSETS_PATH], {
@@ -92,14 +96,27 @@ function hasLocalBranch(git, branch) {
   }
 }
 
-function buildCheckout(root, run) {
+function buildCheckout(root, run, subset = []) {
   const dir = path.join(root, ASSETS_PATH)
 
   // The images are stored with Git LFS. Without it they are pointer files.
   run('git', ['lfs', 'install', '--local'], { cwd: dir, quiet: true })
   run('git', ['lfs', 'pull'], { cwd: dir })
-  run('pnpm', ['install', '--ignore-workspace'], { cwd: dir })
-  run('pnpm', ['assets:site'], { cwd: dir })
+
+  if (subset.length > 0) {
+    // The subsetter is a package that the build loads, so the package of the build is
+    // installed, without the tools of its tests. Where an install without the workspace
+    // ran before, pnpm removes its modules first, and would ask.
+    run(
+      'pnpm',
+      ['install', '--filter', ASSETS_PACKAGE, '--prod', '--config.confirmModulesPurge=false'],
+      { cwd: dir }
+    )
+    run('pnpm', ['assets:site', '--subset', ...subset], { cwd: dir })
+  } else {
+    run('pnpm', ['install', '--ignore-workspace'], { cwd: dir })
+    run('pnpm', ['assets:site'], { cwd: dir })
+  }
 
   const output = path.join(dir, ASSETS_OUTPUT)
 

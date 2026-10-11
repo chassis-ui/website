@@ -184,11 +184,12 @@ export const collections = {
 
 The layouts link to files under `/static/`, which the site puts into `static/` of its `public` directory:
 
-| URL                                                                  | From                                      |
-| -------------------------------------------------------------------- | ----------------------------------------- |
-| `/static/css/chassis.css`, `/static/css/chassis.min.css`             | the `dist` folder of `@chassis-ui/css`    |
-| `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css` | the `icons` folder of `@chassis-ui/icons` |
-| `/static/images/*`: logo, favicons, social image                     | the docs build of `chassis-assets`        |
+| URL                                                                                                           | From                                      |
+| ------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `/static/css/chassis.css`, `/static/css/chassis.min.css`                                                      | the `dist` folder of `@chassis-ui/css`    |
+| `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css`                                          | the `icons` folder of `@chassis-ui/icons` |
+| `/static/images/*`: logo, favicons, social image                                                              | the docs build of `chassis-assets`        |
+| `/static/fonts/text.css`, `/static/fonts/display.css`, `/static/fonts/code.css`, and the font files they load | the docs build of `chassis-assets`        |
 
 `chassis-docs vendor` builds the docs build of `chassis-assets` in the `vendor/assets` submodule. See [Commands](#commands).
 
@@ -291,6 +292,18 @@ The package installs a `chassis-docs` command with the build steps that every Ch
 | `chassis-docs help`                  | Lists the commands and their options                                                                                                                                |
 
 `vendor` and `sync-submodules` work from any folder of the repository. They need Git, Git LFS and pnpm. `sync-submodules --branch <name>`, or the `SUBMODULE_BRANCH` variable, follows another branch.
+
+Both take `--subset <range>`, which writes the fonts of the build with the characters of the range only, so that a page downloads smaller font files. A range is a name that `chassis-assets` knows, such as `latin` or `latin-ext`, or a range written as `U+0370-03FF`, and the option is repeatable:
+
+```json
+{
+  "scripts": {
+    "vendor": "chassis-docs vendor --subset latin --subset latin-ext"
+  }
+}
+```
+
+A character outside the ranges is drawn with the next font of the font stack. With the option, the commands install the package of the build in the submodule, `pnpm install --filter ./packages/assets --prod`, in place of `pnpm install --ignore-workspace`: it holds the package that subsets a font.
 
 Each command exits with 1 when it fails, so a script or CI job stops there.
 

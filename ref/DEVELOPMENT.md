@@ -28,7 +28,11 @@ ranges in `packages/website/package.json`.
 1. **Vendor assets.** `pnpm vendor` runs `chassis-docs vendor`, a command of
    `@chassis-ui/docs`. It checks out `vendor/assets` at the commit this repository pins,
    pulls its Git LFS files, installs its dependencies and runs its `pnpm assets:site`. The
-   output is `vendor/assets/dist/web/docs/chassis`.
+   output is `vendor/assets/dist/web/docs/chassis`. The script passes three `--subset`
+   ranges, so the fonts of the output hold these characters only: `latin` and `latin-ext`,
+   the languages that are written in Latin letters, and `U+2500-257F`, the box drawing
+   characters of the file trees on the home page. With `--subset` the command installs the
+   package of the build in the submodule, which holds the package that subsets a font.
 2. **Examples.** `pnpm examples:build` builds each workspace package in `examples/`.
 3. **Site.** `astro build` in `packages/website`. Astro writes to `_site/`.
 4. **Search.** `pagefind --site _site` indexes the pages that `pagefind.yml` selects.

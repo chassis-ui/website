@@ -157,7 +157,7 @@ function fakeRun(root: string, answers: Record<string, string | Error> = {}) {
 
     calls.push(`${where}: ${line}`)
 
-    if (line === 'pnpm assets:site') {
+    if (line.startsWith('pnpm assets:site')) {
       fs.mkdirSync(path.join(root, ASSETS_PATH, ASSETS_OUTPUT), { recursive: true })
     }
 
@@ -195,6 +195,19 @@ describe('buildAssets', () => {
 
     expect(() => buildAssets({ root, run })).toThrow(/wrote nothing/)
   })
+
+  test('installs the package of the build and subsets the fonts when ranges are given', () => {
+    silence()
+    const root = createTempDir({ [`${ASSETS_PATH}/`]: '' })
+    const { calls, run } = fakeRun(root)
+
+    buildAssets({ root, run, subset: ['latin', 'latin-ext'] })
+
+    expect(calls.slice(-2)).toEqual([
+      `${ASSETS_PATH}: pnpm install --filter ./packages/assets --prod --config.confirmModulesPurge=false`,
+      `${ASSETS_PATH}: pnpm assets:site --subset latin latin-ext`
+    ])
+  })
 })
 
 describe('syncAssets', () => {
@@ -210,6 +223,17 @@ describe('syncAssets', () => {
       `${ASSETS_PATH}: git pull --ff-only origin app/docs`
     ])
     expect(calls.slice(2, 6)).toEqual(build)
+  })
+
+  test('subsets the fonts of the build when ranges are given', () => {
+    silence()
+    const root = createTempDir({ [`${ASSETS_PATH}/.git`]: '' })
+    const { calls, run } = fakeRun(root, { 'git rev-parse --abbrev-ref HEAD': 'app/docs\n' })
+
+    syncAssets({ root, run, subset: ['latin'] })
+
+    expect(calls).toContain(`${ASSETS_PATH}: pnpm assets:site --subset latin`)
+    expect(calls).not.toContain(`${ASSETS_PATH}: pnpm install --ignore-workspace`)
   })
 
   test('creates the branch from the fetch when a fresh checkout has none', () => {
@@ -275,6 +299,8 @@ describe('main', () => {
     expect(await main(['toString'])).toBe(1)
     expect(await main(['vnu', '--bogus'])).toBe(1)
     expect(await main(['vendor', 'extra'])).toBe(1)
+    expect(await main(['vendor', '--subset'])).toBe(1)
+    expect(await main(['vendor', '--subset', 'latin', 'latin-ext'])).toBe(1)
   })
 
   test('fails when the output folder does not exist', async () => {

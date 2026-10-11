@@ -23,4 +23,14 @@ describe('<Head>', () => {
     expect(await renderAt('/fixture/docs/')).toContain('<title>Page · Fixture</title>')
     expect(await renderAt('/')).toContain('<title>Page · Fixture</title>')
   })
+
+  test('links the font stylesheets of the three roles under the static path', async () => {
+    const html = await renderAt('/fixture/')
+
+    for (const role of ['text', 'display', 'code']) {
+      expect(html).toContain(`<link rel="stylesheet" href="/static/fonts/${role}.css">`)
+    }
+    expect(html).not.toContain('fonts.googleapis.com')
+    expect(html).not.toContain('fonts.gstatic.com')
+  })
 })

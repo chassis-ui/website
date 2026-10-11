@@ -5,7 +5,7 @@
  * HTML head section with meta tags, stylesheets, and SEO configuration.
  */
 
-import { getConfig } from '../../site'
+import { getConfig, getStaticPath } from '../../site'
 import { isHomePath } from '../../libs/docs-path'
 import type { Layout } from '../../libs/layout'
 import Stylesheet from './Stylesheet.astro'
@@ -41,16 +41,14 @@ const pageTitle = isHome
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <!--
-  A link, not an `@import` in the styles, so that the browser finds it with the page and
-  not after the stylesheet that imports it
+  The fonts of the text, display and code roles, from the docs build of chassis-assets.
+  Links, not `@import`s in the styles, so that the browser finds them with the page and
+  not after the stylesheet that imports them
 -->
-<link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:wght@100..900&family=Archivo+Narrow:ital,wght@0,400..700;1,400..700&display=swap"
-/>
+<link rel="stylesheet" href={getStaticPath('fonts/text.css')} />
+<link rel="stylesheet" href={getStaticPath('fonts/display.css')} />
+<link rel="stylesheet" href={getStaticPath('fonts/code.css')} />
 
 <meta name="description" content={description} />
 

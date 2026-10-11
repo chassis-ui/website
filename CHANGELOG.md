@@ -4,6 +4,13 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-10-11
+
+### Changed
+
+- The pages load their fonts from the site, no longer from Google Fonts. The head links `fonts/text.css`, `fonts/display.css` and `fonts/code.css` under `/static/`, from the docs build of chassis-assets at `77912ed`, which declare Inter, Archivo Narrow and Fira Code as variable fonts. No request of a page goes to `fonts.googleapis.com` or `fonts.gstatic.com`. Inter has an italic file now, where the browser slanted the upright one. The content security policy and the privacy page still name Google Fonts: both cover the sites of the other projects, which load it until they take the next version of `@chassis-ui/docs`.
+- `pnpm vendor` and `pnpm sync-submodules` write a subset of each font, with `--subset` of `chassis-docs`: `latin`, `latin-ext` and `U+2500-257F`, the box drawing characters of the file trees on the home page. `text.woff2` is 208 KB where the whole file is 349 KB, and `code.woff2` is 46 KB where it is 109 KB. A page that Google Fonts sent 85 KB for these two fonts downloads 254 KB. The commands install the package of the build in the submodule, which holds the package that subsets a font.
+
 ## 2026-10-08
 
 ### Changed

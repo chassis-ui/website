@@ -14,6 +14,10 @@ Commands:
   vendor                 Build vendor/assets at the commit that the repository pins
   sync-submodules        Move vendor/assets to the latest commit of a branch, and build it
       --branch <name>    The branch of chassis-assets (default: $SUBMODULE_BRANCH or ${DEFAULT_BRANCH})
+
+  Both builds:
+      --subset <range>   Write the web fonts with the characters of a range only, such as
+                         latin or U+0370-03FF. Repeatable
   html-validate [paths]  Validate the HTML files in paths (default: _site) with html-validate
       --config <file>    A JSON config of html-validate, added to the defaults
   vnu [paths]            Validate paths (default: _site) with the Nu Html Checker. Needs Java
@@ -27,6 +31,10 @@ Commands:
 
 html-validate and vnu need the html-validate and vnu-jar packages in the site's devDependencies.`
 
+const subsetOptions = {
+  subset: { type: 'string', multiple: true }
+}
+
 const ignoreOptions = {
   ignore: { type: 'string', multiple: true },
   'no-default-ignore': { type: 'boolean' }
@@ -39,16 +47,19 @@ function ignoresOf(values, paths) {
 
 const commands = {
   vendor: {
-    options: {},
-    run: () => {
-      buildAssets()
+    options: { ...subsetOptions },
+    run: ({ values }) => {
+      buildAssets({ subset: values.subset })
       return 0
     }
   },
   'sync-submodules': {
-    options: { branch: { type: 'string' } },
+    options: { branch: { type: 'string' }, ...subsetOptions },
     run: ({ values }) => {
-      syncAssets({ branch: values.branch ?? process.env.SUBMODULE_BRANCH ?? DEFAULT_BRANCH })
+      syncAssets({
+        branch: values.branch ?? process.env.SUBMODULE_BRANCH ?? DEFAULT_BRANCH,
+        subset: values.subset
+      })
       return 0
     }
   },
