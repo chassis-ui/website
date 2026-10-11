@@ -148,6 +148,8 @@ icons. The files are sent with `max-age=0, must-revalidate`: the browser asks ea
 and gets a 304 when the file of the site it is on is the same as its copy, and that site's
 file when it differs.
 
+The font files are the exception, see [Cache of the font files](#cache-of-the-font-files).
+
 From 2026-09-29 to 2026-10-01 each project also had a prefix of its own,
 `/<project>/static/*`, for a move away from the `Referer` header. The move was called off
 because it ends the shared cache, and the rules were removed (decision D6).
@@ -189,6 +191,24 @@ proxied sibling pages as well as the website's own.
 | `Permissions-Policy`                  | `camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()` | No page uses these. Leave `fullscreen` and `autoplay` alone: the YouTube embed of the chassis-css docs uses them.                           |
 
 HSTS is not set here. Vercel sends it for every custom domain.
+
+### Cache of the font files
+
+The third entry of `headers` sends the WOFF and WOFF2 files under `/static/fonts/` with
+`Cache-Control: public, max-age=604800`: a browser keeps a font for a week without asking.
+The pages load their fonts from there since 2026-10-11, where Google Fonts sent its files
+with a cache of a year, and without the rule a visitor asks for each font again on every
+page.
+
+- The website has every file of `/static/fonts/`, so its deployment answers for all seven
+  sites, and the rule covers them.
+- The names have no hash. A font that changes under its name reaches a returning visitor
+  within a week. Until then the visitor has the font of before, which matters when the
+  ranges of `--subset` grow: a new character is drawn with the next font of the stack.
+- The stylesheets of the folder, `text.css`, `display.css` and `code.css`, are not matched
+  and are asked for each time. A stylesheet kept for a week could name a font file that a
+  newer build no longer has.
+- The icon font under `/static/icons/` is not matched either.
 
 ### The content security policy
 
@@ -322,6 +342,14 @@ Test production:
 ```bash
 curl -sI https://chassis-ui.com/css/
 # → HTTP/2 200, no x-robots-tag
+```
+
+Test the cache of a font file, and of a font stylesheet:
+```bash
+curl -sI https://chassis-ui.com/static/fonts/text.woff2 | grep -i cache-control
+# → cache-control: public, max-age=604800
+curl -sI https://chassis-ui.com/static/fonts/text.css | grep -i cache-control
+# → cache-control: public, max-age=0, must-revalidate
 ```
 
 Test direct sub-project access (should not be SSO-gated):

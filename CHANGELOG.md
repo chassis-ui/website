@@ -13,6 +13,7 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 - The optical size axis of Inter is fixed at 14 in the fonts of the site, as chassis-assets sets it for the brand. The font of Google Fonts had no such axis, and with it a browser draws large text narrower: the longest line of the heading of the home page, at 57 pixels, is 786 pixels wide as before, where it was 726 with the axis.
 - The vanilla HTML example is built once per brand, at `/examples/vanilla-html/chassis/` and `/examples/vanilla-html/sinefil/`: the same page with Chassis CSS compiled with the design tokens of the brand, and the fonts and the logo of the brand from chassis-assets. `/examples/vanilla-html/` opens the first brand. `chassis.build.brands` of the `package.json` of the example names the brands, and the examples page and `build/check-csp.js` read the list. The example build needs `pnpm vendor` before it. The logo of `sinefil` is the placeholder of chassis-assets.
 - The examples page links each brand of the example, and the installation page links the examples page for them.
+- A browser keeps the font files under `/static/fonts/` for a week: `vercel.json` sends them with `Cache-Control: public, max-age=604800`. They were sent with `max-age=0, must-revalidate`, so a visitor asked for each font again on every page. The font stylesheets are still asked for each time.
 
 ## 2026-10-08
 
