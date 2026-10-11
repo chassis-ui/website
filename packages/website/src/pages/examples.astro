@@ -1,16 +1,21 @@
 ---
 import SingleLayout from '@chassis-ui/docs/layouts/SingleLayout.astro'
+import vanillaHtml from '../../../../examples/vanilla-html/package.json'
 
 // Each example is a folder in `examples/` of this repository. The site serves its build
-// output under /examples/<folder>/. See ref/DEVELOPMENT.md.
+// output under /examples/<folder>/, with a copy for each brand of the example under
+// /examples/<folder>/<brand>/. See ref/DEVELOPMENT.md.
 const examples = [
   {
     folder: 'vanilla-html',
     title: 'Vanilla HTML',
     description:
-      'One HTML page styled with Chassis CSS and Chassis Icons from npm. No framework and no bundler: context classes, a form, buttons, badges and icons.'
+      'One HTML page styled with Chassis CSS and Chassis Icons. No framework and no bundler: context classes, a form, buttons, badges and icons. It is built once per brand, each with its own design tokens, fonts and logo.',
+    brands: vanillaHtml.chassis.build.brands
   }
 ]
+
+const titleOf = (brand: string) => brand.charAt(0).toUpperCase() + brand.slice(1)
 ---
 
 <SingleLayout
@@ -25,9 +30,11 @@ const examples = [
             <h2>{example.title}</h2>
             <p class="font-lg fg-subtle mb-xl">{example.description}</p>
             <div class="d-flex flex-wrap gap-md">
-              <a href={`/examples/${example.folder}/`} class="button default">
-                Open the example
-              </a>
+              {example.brands.map((brand) => (
+                <a href={`/examples/${example.folder}/${brand}/`} class="button default">
+                  Open in the {titleOf(brand)} brand
+                </a>
+              ))}
               <a
                 href={`https://github.com/chassis-ui/website/tree/main/examples/${example.folder}`}
                 class="button outline"

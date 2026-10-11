@@ -33,7 +33,9 @@ ranges in `packages/website/package.json`.
    the languages that are written in Latin letters, and `U+2500-257F`, the box drawing
    characters of the file trees on the home page. With `--subset` the command installs the
    package of the build in the submodule, which holds the package that subsets a font.
-2. **Examples.** `pnpm examples:build` builds each workspace package in `examples/`.
+2. **Examples.** `pnpm examples:build` builds each workspace package in `examples/`. The
+   vanilla HTML example reads the fonts and the logos of its brands from `vendor/assets`,
+   so it needs the submodule that the first step checks out.
 3. **Site.** `astro build` in `packages/website`. Astro writes to `_site/`.
 4. **Search.** `pagefind --site _site` indexes the pages that `pagefind.yml` selects.
 
@@ -108,6 +110,32 @@ page links to it.
 
 To add an example, create the folder with a `package.json` whose `build` script writes
 `dist/`, and link it from `packages/website/src/pages/examples.astro`.
+
+### Brands
+
+`examples/vanilla-html` is built once per brand. `chassis.build.brands` of its
+`package.json` names the brands, as the same key does in chassis-tokens and chassis-assets.
+Each brand is written to `dist/<brand>/`, so the site serves it under
+`/examples/vanilla-html/<brand>/`. `dist/index.html` is a redirect page to the first brand
+of the list, which keeps `/examples/vanilla-html/` working.
+
+For each brand, `build.js` of the example:
+
+- compiles Chassis CSS from the Sass source of `@chassis-ui/css` with the tokens of the
+  brand, then adds the `--cx-` prefix with PostCSS. Chassis CSS loads its tokens as
+  `chassis-tokens`, and a Sass importer answers with `dist/web/docs/<brand>/main.scss` of
+  `@chassis-ui/tokens`, so no file per brand is kept. The compiled CSS of the package is
+  the `chassis` brand only.
+- copies `fonts/text.css`, `fonts/display.css` and `fonts/code.css` of the brand, with the
+  font files they load and the licenses, and the logo. It runs the build of `vendor/assets`
+  for these files into a temporary folder, with `--brand`, `--app docs` and `--include`,
+  and so does not depend on `pnpm assets:site`, which builds the `chassis` brand only. It
+  passes `--subset latin latin-ext`, as the site does, with the package that `pnpm vendor`
+  installs in the submodule.
+
+A brand has the same name in `@chassis-ui/tokens`, in chassis-assets and in the list. To
+add or remove one, change the list: the examples page of the site and `build/check-csp.js`
+read it too.
 
 ## Working on `@chassis-ui/docs`
 

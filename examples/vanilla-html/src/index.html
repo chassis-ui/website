@@ -9,6 +9,9 @@
       content="A plain HTML page styled with Chassis CSS and Chassis Icons, with no framework or bundler."
     />
     <title>Vanilla HTML example · Chassis</title>
+    <link rel="stylesheet" href="./vendor/fonts/text.css" />
+    <link rel="stylesheet" href="./vendor/fonts/display.css" />
+    <link rel="stylesheet" href="./vendor/fonts/code.css" />
     <link rel="stylesheet" href="./vendor/css/chassis.min.css" />
     <link rel="stylesheet" href="./vendor/icons/chassis-icons.min.css" />
     <link rel="stylesheet" href="./styles.css" />
@@ -20,7 +23,7 @@
         class="container d-flex flex-wrap align-items-center justify-content-between gap-sm py-md"
       >
         <a class="brand d-inline-flex align-items-center gap-xs font-title" href="./">
-          <span class="icon icon-lg cx-swatchbook-solid" aria-hidden="true"></span>
+          <img src="./vendor/images/logo/chassis-icon-brand.svg" alt="" width="44" height="24" />
           <span>Chassis example</span>
         </a>
         <nav aria-label="Main">
@@ -43,8 +46,9 @@
             <div class="col-span-full lg:col-span-8 lg:col-start-3">
               <h1 class="font-hero mb-md">Vanilla HTML and Chassis CSS</h1>
               <p class="font-lead fg-subtle mb-2xl">
-                One HTML file, two stylesheets and no framework. Every class on this page comes from
-                Chassis CSS, and every icon from Chassis Icons.
+                One HTML file, a few stylesheets and no framework. Every class on this page comes
+                from Chassis CSS and every icon from Chassis Icons. The colors, the fonts and the
+                logo are those of the brand the page is built for.
               </p>
               <div class="d-flex flex-wrap justify-content-center gap-sm">
                 <a class="button primary lg" href="https://chassis-ui.com/css/">

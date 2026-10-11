@@ -31,7 +31,8 @@ packages/
     starter/    A minimal site built from the packed package in CI
     test/       Its unit and component tests
 examples/
-  vanilla-html/ Chassis CSS and Icons in a plain HTML page, served at /examples/vanilla-html/
+  vanilla-html/ Chassis CSS and Icons in a plain HTML page, built once per brand and
+                served at /examples/vanilla-html/<brand>/
 api/            The contact form endpoint, a Vercel function
 build/          Build, validation and release scripts
 vendor/assets/  The chassis-assets submodule: logo, favicons and fonts

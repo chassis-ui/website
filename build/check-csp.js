@@ -31,7 +31,7 @@
  * Licensed under MIT
  */
 
-import { readdir } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { parseArgs } from 'node:util'
 import { chromium } from 'playwright-core'
 
@@ -119,9 +119,17 @@ function sample(pages, home) {
 
 const paths = await sitemapPaths()
 
-// The examples are sites of their own, which no sitemap lists
+// The examples are sites of their own, which no sitemap lists. An example that names
+// brands in `chassis.build.brands` of its package.json is built once per brand, each in a
+// folder under its path.
 for (const example of await readdir('examples', { withFileTypes: true })) {
-  if (example.isDirectory()) paths.add(`/examples/${example.name}/`)
+  if (!example.isDirectory()) continue
+
+  const manifest = JSON.parse(await readFile(`examples/${example.name}/package.json`, 'utf8'))
+  const brands = manifest.chassis?.build?.brands ?? []
+
+  if (brands.length === 0) paths.add(`/examples/${example.name}/`)
+  for (const brand of brands) paths.add(`/examples/${example.name}/${brand}/`)
 }
 
 const byProject = Map.groupBy(paths, owner)
