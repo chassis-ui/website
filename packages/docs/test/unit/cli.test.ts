@@ -208,6 +208,29 @@ describe('buildAssets', () => {
       `${ASSETS_PATH}: pnpm assets:site --subset latin latin-ext`
     ])
   })
+
+  test('passes the decision on the split of a font after the ranges', () => {
+    silence()
+    const root = createTempDir({ [`${ASSETS_PATH}/`]: '' })
+    const split = fakeRun(root)
+    const whole = fakeRun(root)
+
+    buildAssets({ root, run: split.run, subset: ['latin'], split: true })
+    buildAssets({ root, run: whole.run, subset: ['latin'], split: false })
+
+    expect(split.calls.at(-1)).toBe(`${ASSETS_PATH}: pnpm assets:site --subset latin --split`)
+    expect(whole.calls.at(-1)).toBe(`${ASSETS_PATH}: pnpm assets:site --subset latin --no-split`)
+  })
+
+  test('fails before it touches the submodule when a split has no ranges', () => {
+    silence()
+    const root = createTempDir({ [`${ASSETS_PATH}/`]: '' })
+    const { calls, run } = fakeRun(root)
+
+    expect(() => buildAssets({ root, run, split: true })).toThrow(/need --subset/)
+    expect(() => syncAssets({ root, run, split: false })).toThrow(/need --subset/)
+    expect(calls).toEqual([])
+  })
 })
 
 describe('syncAssets', () => {
@@ -301,6 +324,8 @@ describe('main', () => {
     expect(await main(['vendor', 'extra'])).toBe(1)
     expect(await main(['vendor', '--subset'])).toBe(1)
     expect(await main(['vendor', '--subset', 'latin', 'latin-ext'])).toBe(1)
+    expect(await main(['vendor', '--split'])).toBe(1)
+    expect(await main(['vendor', '--subset', 'latin', '--split', '--no-split'])).toBe(1)
   })
 
   test('fails when the output folder does not exist', async () => {

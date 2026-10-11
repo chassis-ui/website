@@ -74,7 +74,7 @@ pnpm --filter chassis-example-vanilla-html build
 
 `pnpm vendor` checks out the `vendor/assets` submodule with its Git LFS files, and
 installs the package that subsets the fonts: the build keeps the characters of the
-languages that are written in Latin letters. It is needed once, and again when the
-submodule moves.
+languages that are written in Latin letters, in a file per range that a page loads when
+it has a character of the range. It is needed once, and again when the submodule moves.
 
 Then open `dist/chassis/index.html` or `dist/sinefil/index.html` in a browser.

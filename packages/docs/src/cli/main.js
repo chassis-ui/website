@@ -18,6 +18,10 @@ Commands:
   Both builds:
       --subset <range>   Write the web fonts with the characters of a range only, such as
                          latin or U+0370-03FF. Repeatable
+      --split            With --subset, write a font in a file per range, which a page
+                         loads when it has a character of the range
+      --no-split         With --subset, write a font in one file (default: the setting
+                         of chassis-assets)
   html-validate [paths]  Validate the HTML files in paths (default: _site) with html-validate
       --config <file>    A JSON config of html-validate, added to the defaults
   vnu [paths]            Validate paths (default: _site) with the Nu Html Checker. Needs Java
@@ -31,8 +35,19 @@ Commands:
 
 html-validate and vnu need the html-validate and vnu-jar packages in the site's devDependencies.`
 
-const subsetOptions = {
-  subset: { type: 'string', multiple: true }
+const fontOptions = {
+  subset: { type: 'string', multiple: true },
+  split: { type: 'boolean' },
+  'no-split': { type: 'boolean' }
+}
+
+// `--split` is true and `--no-split` is false. Neither leaves the decision to chassis-assets.
+function splitOf(values) {
+  if (values.split && values['no-split']) {
+    throw new CommandError('Give --split or --no-split, not both.')
+  }
+
+  return values.split ? true : values['no-split'] ? false : undefined
 }
 
 const ignoreOptions = {
@@ -47,18 +62,19 @@ function ignoresOf(values, paths) {
 
 const commands = {
   vendor: {
-    options: { ...subsetOptions },
+    options: { ...fontOptions },
     run: ({ values }) => {
-      buildAssets({ subset: values.subset })
+      buildAssets({ subset: values.subset, split: splitOf(values) })
       return 0
     }
   },
   'sync-submodules': {
-    options: { branch: { type: 'string' }, ...subsetOptions },
+    options: { branch: { type: 'string' }, ...fontOptions },
     run: ({ values }) => {
       syncAssets({
         branch: values.branch ?? process.env.SUBMODULE_BRANCH ?? DEFAULT_BRANCH,
-        subset: values.subset
+        subset: values.subset,
+        split: splitOf(values)
       })
       return 0
     }

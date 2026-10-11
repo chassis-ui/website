@@ -25,25 +25,34 @@ function repositoryRoot(run) {
 
 /**
  * Checks out `vendor/assets` at the commit that the repository pins, and builds it.
- * @param {{ root?: string, subset?: string[], run?: typeof defaultRun }} [options]
+ * @param {{ root?: string, subset?: string[], split?: boolean, run?: typeof defaultRun }} [options]
  */
-export function buildAssets({ run = defaultRun, root = repositoryRoot(run), subset = [] } = {}) {
+export function buildAssets({
+  run = defaultRun,
+  root = repositoryRoot(run),
+  subset = [],
+  split
+} = {}) {
+  const fonts = fontOptions(subset, split)
+
   log(`Building ${ASSETS_PATH} at the pinned commit`)
   run('git', ['submodule', 'update', '--init', ASSETS_PATH], { cwd: root })
-  buildCheckout(root, run, subset)
+  buildCheckout(root, run, fonts)
 }
 
 /**
  * Moves `vendor/assets` to the latest commit of `branch`, and builds it. The repository
  * then has a changed submodule pointer to commit.
- * @param {{ root?: string, branch?: string, subset?: string[], run?: typeof defaultRun }} [options]
+ * @param {{ root?: string, branch?: string, subset?: string[], split?: boolean, run?: typeof defaultRun }} [options]
  */
 export function syncAssets({
   run = defaultRun,
   root = repositoryRoot(run),
   branch = DEFAULT_BRANCH,
-  subset = []
+  subset = [],
+  split
 } = {}) {
+  const fonts = fontOptions(subset, split)
   const dir = path.join(root, ASSETS_PATH)
   const git = (args, quiet = true) => run('git', args, { cwd: dir, quiet })
 
@@ -72,7 +81,7 @@ export function syncAssets({
   }
 
   git(['pull', '--ff-only', 'origin', branch])
-  buildCheckout(root, run, subset)
+  buildCheckout(root, run, fonts)
 
   const commit = git(['rev-parse', '--short', 'HEAD']).trim()
   const moved = run('git', ['status', '--porcelain', '--', ASSETS_PATH], {
@@ -96,14 +105,36 @@ function hasLocalBranch(git, branch) {
   }
 }
 
-function buildCheckout(root, run, subset = []) {
+/**
+ * The options of the build for the fonts: the ranges of `--subset`, then `--split` or
+ * `--no-split` when the site decides it, and nothing when the fonts stay whole. Without
+ * either of the two, the build takes `split` of `chassis.subset` of chassis-assets.
+ * @param {string[]} subset
+ * @param {boolean} [split]
+ * @returns {string[]}
+ */
+function fontOptions(subset, split) {
+  if (subset.length === 0) {
+    if (split !== undefined) {
+      throw new CommandError('--split and --no-split need --subset: a font is split by its ranges.')
+    }
+
+    return []
+  }
+
+  const decided = split === undefined ? [] : [split ? '--split' : '--no-split']
+
+  return ['--subset', ...subset, ...decided]
+}
+
+function buildCheckout(root, run, fonts = []) {
   const dir = path.join(root, ASSETS_PATH)
 
   // The images are stored with Git LFS. Without it they are pointer files.
   run('git', ['lfs', 'install', '--local'], { cwd: dir, quiet: true })
   run('git', ['lfs', 'pull'], { cwd: dir })
 
-  if (subset.length > 0) {
+  if (fonts.length > 0) {
     // The subsetter is a package that the build loads, so the package of the build is
     // installed, without the tools of its tests. Where an install without the workspace
     // ran before, pnpm removes its modules first, and would ask.
@@ -112,7 +143,7 @@ function buildCheckout(root, run, subset = []) {
       ['install', '--filter', ASSETS_PACKAGE, '--prod', '--config.confirmModulesPurge=false'],
       { cwd: dir }
     )
-    run('pnpm', ['assets:site', '--subset', ...subset], { cwd: dir })
+    run('pnpm', ['assets:site', ...fonts], { cwd: dir })
   } else {
     run('pnpm', ['install', '--ignore-workspace'], { cwd: dir })
     run('pnpm', ['assets:site'], { cwd: dir })

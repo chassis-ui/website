@@ -298,12 +298,16 @@ Both take `--subset <range>`, which writes the fonts of the build with the chara
 ```json
 {
   "scripts": {
-    "vendor": "chassis-docs vendor --subset latin --subset latin-ext"
+    "vendor": "chassis-docs vendor --subset latin --subset latin-ext --split"
   }
 }
 ```
 
 A character outside the ranges is drawn with the next font of the font stack. With the option, the commands install the package of the build in the submodule, `pnpm install --filter ./packages/assets --prod`, in place of `pnpm install --ignore-workspace`: it holds the package that subsets a font.
+
+`--subset` also fixes the axes of a variable font that `chassis-assets` names for the brand: the optical size of Inter at 14, so that text has the width it had with Google Fonts. A site that builds without `--subset` sets `font-optical-sizing: none` in its styles for the same look.
+
+`--split`, with `--subset`, writes each font in a file per range as well, such as `text-latin.woff2` and `text-latin-ext.woff2`, and the stylesheets name them with a `unicode-range`: a page loads the file of a range only when it has a character of it. `--no-split` writes one file per font. Without either, the setting of `chassis-assets` decides, which is one file.
 
 Each command exits with 1 when it fails, so a script or CI job stops there.
 

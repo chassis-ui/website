@@ -31,7 +31,11 @@ ranges in `packages/website/package.json`.
    output is `vendor/assets/dist/web/docs/chassis`. The script passes three `--subset`
    ranges, so the fonts of the output hold these characters only: `latin` and `latin-ext`,
    the languages that are written in Latin letters, and `U+2500-257F`, the box drawing
-   characters of the file trees on the home page. With `--subset` the command installs the
+   characters of the file trees on the home page. With `--subset` the build also fixes the
+   optical size axis of Inter at 14, which chassis-assets sets for the brand: text has the
+   width it had with Google Fonts. The script passes `--split` too, so each font is also
+   written in a file per range, such as `text-latin.woff2`, and a page loads the file of a
+   range only when it has a character of it. With `--subset` the command installs the
    package of the build in the submodule, which holds the package that subsets a font.
 2. **Examples.** `pnpm examples:build` builds each workspace package in `examples/`. The
    vanilla HTML example reads the fonts and the logos of its brands from `vendor/assets`,
@@ -130,8 +134,8 @@ For each brand, `build.js` of the example:
   font files they load and the licenses, and the logo. It runs the build of `vendor/assets`
   for these files into a temporary folder, with `--brand`, `--app docs` and `--include`,
   and so does not depend on `pnpm assets:site`, which builds the `chassis` brand only. It
-  passes `--subset latin latin-ext`, as the site does, with the package that `pnpm vendor`
-  installs in the submodule.
+  passes `--subset latin latin-ext --split`, as the site does, with the package that
+  `pnpm vendor` installs in the submodule.
 
 A brand has the same name in `@chassis-ui/tokens`, in chassis-assets and in the list. To
 add or remove one, change the list: the examples page of the site and `build/check-csp.js`

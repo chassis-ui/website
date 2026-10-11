@@ -33,7 +33,8 @@ import postcss from 'postcss'
 import * as sass from 'sass'
 
 const FONT_ROLES = ['text', 'display', 'code']
-// The characters the fonts keep, as the site keeps them: `pnpm vendor` of the repository
+// The characters the fonts keep, each range in a file of its own, as the site has them:
+// `pnpm vendor` of the repository
 const FONT_RANGES = ['latin', 'latin-ext']
 const LOGO = 'images/logo/chassis-icon-brand.svg'
 
@@ -88,7 +89,7 @@ function buildAssets(out) {
   const args = ['build', '--cwd', assetsRepo, '--out', out, '--quiet']
   args.push('--brand', ...brands, '--app', 'docs', '--platform', 'web')
   args.push('--include', 'fonts/**', 'images/logo/**')
-  args.push('--subset', ...FONT_RANGES)
+  args.push('--subset', ...FONT_RANGES, '--split')
 
   try {
     execFileSync(process.execPath, [assetsCli, ...args], { stdio: 'inherit' })
