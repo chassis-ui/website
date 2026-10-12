@@ -231,12 +231,12 @@ site needs `cdn.jsdelivr.net` in `style-src` or `data:` in `font-src` since. Bot
 `pnpm site:lint:csp --all` on a deployment of the policy without them shows that no sibling
 page needs them either.
 
-The pages load their fonts from `/static/fonts/` since 2026-10-11, so
-`fonts.googleapis.com` left `style-src` and `fonts.gstatic.com` left `font-src` on
-2026-10-12. A site that is built with `@chassis-ui/docs` 0.7.0 or earlier still links the
-stylesheet of Google Fonts. Until it takes a later version, each of its pages reports a
-violation of both directives, and `pnpm site:lint:csp` fails for that project. Nothing is
-blocked, since the policy is report-only.
+The pages of all seven sites load their fonts from `/static/fonts/`, so the policy names no
+host of Google Fonts: `fonts.googleapis.com` left `style-src` and `fonts.gstatic.com` left
+`font-src` on 2026-10-12. The fonts are in the head of `@chassis-ui/docs` from 0.8.0 on,
+and every site took that version the same day. A site that is built with 0.7.0 or earlier
+links the stylesheet of Google Fonts, and each of its pages reports a violation of both
+directives.
 
 `object-src 'none'`, `base-uri 'self'`, `form-action 'self'` and `frame-ancestors 'self'`
 close the rest. `'unsafe-inline'` stays as long as the sites have inline scripts and
