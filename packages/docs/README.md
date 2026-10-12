@@ -10,7 +10,7 @@
 
 > [!NOTE] This package is developed inside the [`chassis-website`](https://github.com/chassis-ui/website) monorepo at `packages/docs/` and published to npm. Source, issues, and pull requests live in that repository.
 
-Coming from 0.5? See [UPGRADING.md](UPGRADING.md).
+Coming from an earlier version? See [UPGRADING.md](UPGRADING.md).
 
 ## Installation
 
@@ -417,6 +417,7 @@ The integration provides five modules: `virtual:chassis-docs/config`, `virtual:c
 
 | `@chassis-ui/docs` | Requires Astro             | Requires `@chassis-ui/css` | Requires Node | Built with                           |
 | ------------------ | -------------------------- | -------------------------- | ------------- | ------------------------------------ |
+| 0.8.0              | `^7.0.0`                   | `>=0.6.0`                  | `>=22.12.0`   | Astro 7.3.5, css 0.7.1, tokens 0.7.0 |
 | 0.7.0              | `^7.0.0`                   | `>=0.6.0`                  | `>=22.12.0`   | Astro 7.3.5, css 0.6.0, tokens 0.6.0 |
 | 0.6.3              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.6.0 |
 | 0.6.2              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.6.0 |

@@ -1,5 +1,81 @@
 # Upgrading @chassis-ui/docs
 
+## From 0.7 to 0.8
+
+0.8.0 loads the fonts from the site's own static files, no longer from Google Fonts. The
+head of every page links `fonts/text.css`, `fonts/display.css` and `fonts/code.css` under
+the static path, `/static/` by default. The three stylesheets and the font files they load
+are in the docs build of `chassis-assets`, which a site copies into `static/` already.
+
+### 1. Update the dependency
+
+```sh
+pnpm add -D @chassis-ui/docs@^0.8.0
+```
+
+### 2. Move the `vendor/assets` submodule
+
+```sh
+pnpm sync-submodules
+```
+
+The pages need `vendor/assets` at `acb5d2e` of `app/docs` or later: there the stylesheets
+declare Inter, Archivo Narrow and Fira Code as variable fonts, with every weight the styles
+use. With a commit before `77912ed` they declare four weights of each family. Commit the
+new pointer.
+
+A site that does not copy the docs build provides the three stylesheets itself, at the
+same paths.
+
+### 3. Subset the fonts
+
+Add `--subset` and `--split` to the `vendor` and `sync-submodules` scripts:
+
+```json
+{
+  "scripts": {
+    "vendor": "chassis-docs vendor --subset latin --subset latin-ext --split",
+    "sync-submodules": "chassis-docs sync-submodules --subset latin --subset latin-ext --split"
+  }
+}
+```
+
+The step is optional, and it does two things:
+
+- The fonts hold the characters of the ranges only, each range in a file of its own that a
+  page loads when it has a character of it. A page in English loads `text-latin.woff2`,
+  69 KB, where the whole `text.woff2` is 349 KB. A character outside the ranges is drawn
+  with the next font of the font stack, so name the range of every script your pages use:
+  a name that `chassis-assets` knows, or a range written as `U+0370-03FF`. See
+  [Commands](README.md#commands) in the README.
+- The optical size axis of Inter is fixed at 14. See "What changes on the pages" below.
+
+With `--subset` the commands install the package of the build in the submodule, which
+holds the package that subsets a font.
+
+### 4. Remove Google Fonts from your policy and your privacy page
+
+No page requests `fonts.googleapis.com` or `fonts.gstatic.com` any more. Remove the two
+hosts from a content security policy of your own, and a sentence about Google Fonts from a
+privacy page. The sites under chassis-ui.com have the policy of the website, which no
+longer allows the two hosts.
+
+### What changes on the pages
+
+- **Inter follows its optical size axis.** The Inter of the assets has the axis, which the
+  font of Google Fonts had not, and a browser follows it: text above 14 pixels is narrower,
+  7% at 57 pixels. Step 3 fixes the axis at 14, so text has the width it had. A site that
+  builds without `--subset` sets `font-optical-sizing: none` in its styles for the same
+  look.
+- **Inter has an italic file.** Italic text was drawn by slanting the upright font.
+- **The head has no `preconnect` links** to the two hosts of Google Fonts.
+
+### Check the result
+
+Build the site before and after the upgrade and compare the pages in a browser. With
+step 3 the text keeps its width, so nothing moves. Check in the network panel that no
+request goes to `fonts.googleapis.com` or `fonts.gstatic.com`.
+
 ## From 0.6 to 0.7
 
 0.7.0 needs `@chassis-ui/css` 0.6.0 or later. The layouts use the CSS grid of that version,

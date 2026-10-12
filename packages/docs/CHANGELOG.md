@@ -1,5 +1,12 @@
 # @chassis-ui/docs
 
+## 0.8.0
+
+### Minor Changes
+
+- **Breaking.** The pages load their fonts from the site's own static files, no longer from Google Fonts. `Head.astro` links `fonts/text.css`, `fonts/display.css` and `fonts/code.css` under the static path, `/static/` by default, in place of the Google Fonts stylesheet and the `preconnect` links to `fonts.googleapis.com` and `fonts.gstatic.com`. The three stylesheets and the font files they load are in the docs build of `chassis-assets`, which a site copies into `static/` already. A site moves its `vendor/assets` submodule to `acb5d2e` of `app/docs` or later, with `pnpm sync-submodules`: there the stylesheets declare Inter, Archivo Narrow and Fira Code as variable fonts, with every weight the styles use. With a commit before `77912ed` they declare four weights of each family. The Inter of the assets has an optical size axis, which the font of Google Fonts had not, and a browser follows it: text above 14 pixels is narrower, 7% at 57 pixels. A site keeps the look it had by building the assets with `--subset` of `chassis-docs vendor`, which fixes the axis at 14 from `acb5d2e` on, or by setting `font-optical-sizing: none` in its styles. A site that does not copy the docs build provides the three stylesheets itself.
+- `chassis-docs vendor` and `chassis-docs sync-submodules` take `--subset <range>`, repeatable, and `--split` or `--no-split` with it. With `--subset` the fonts of the docs build of `chassis-assets` are written with the characters of the ranges only, such as `--subset latin --subset latin-ext`, and the optical size axis of Inter is fixed at 14, as `chassis-assets` sets it for the `chassis` brand. With `--split` each font is also written in a file per range, and its stylesheet names them with a `unicode-range`, so a page loads a range only when it has a character of it; without `--split` and `--no-split` the setting of `chassis-assets` decides, which is one file. With the two ranges and the split, a page in English loads `text-latin.woff2`, 69 KB, where the whole `text.woff2` is 349 KB, and `code-latin.woff2`, 43 KB, where `code.woff2` is 109 KB. A character outside the ranges is drawn with the next font of the font stack. With `--subset` the commands run `pnpm install --filter ./packages/assets --prod` in the submodule, in place of `pnpm install --ignore-workspace`, since the build loads a package to subset a font. The options need `vendor/assets` at `acb5d2e` of `app/docs` or later. Without them nothing changes.
+
 ## 0.7.0
 
 ### Minor Changes
