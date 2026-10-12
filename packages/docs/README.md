@@ -184,18 +184,42 @@ export const collections = {
 
 The layouts link to files under `/static/`, which the site puts into `static/` of its `public` directory:
 
-| URL                                                                                                           | From                                      |
-| ------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| `/static/css/chassis.css`, `/static/css/chassis.min.css`                                                      | the `dist` folder of `@chassis-ui/css`    |
-| `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css`                                          | the `icons` folder of `@chassis-ui/icons` |
-| `/static/images/*`: logo, favicons, social image                                                              | the docs build of `chassis-assets`        |
-| `/static/fonts/text.css`, `/static/fonts/display.css`, `/static/fonts/code.css`, and the font files they load | the docs build of `chassis-assets`        |
+| URL                                                                                                                                | From                                      |
+| ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `/static/css/chassis.css`, `/static/css/chassis.min.css`                                                                           | the `dist` folder of `@chassis-ui/css`    |
+| `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css`                                                               | the `icons` folder of `@chassis-ui/icons` |
+| `/static/images/site-logo.svg`, the logo of the navigation bar and the footer                                                      | the docs build of `chassis-assets`        |
+| `/static/images/favicon.png`, `favicon-16x16.png`, `favicon-32x32.png` and `apple-touch-icon.png`                                  | the docs build of `chassis-assets`        |
+| `/static/images/social-image.png`, the image of a page without a `thumbnail`. The build reads its size, and fails without the file | the docs build of `chassis-assets`        |
+| `/static/fonts/text.css`, `/static/fonts/display.css`, `/static/fonts/code.css`, and the font files they load                      | the docs build of `chassis-assets`        |
+| `/static/images/manifest.json`, the web app manifest                                                                               | the site itself                           |
 
 `chassis-docs vendor` builds the docs build of `chassis-assets` in the `vendor/assets` submodule. See [Commands](#commands).
+
+Nothing else of the docs build is read by the package. A site copies the whole build into `static/`, and its own pages may read more of it.
 
 These helpers find the folders, whether `node_modules` is in the site's root or in the root of the repository: `getChassisCSSFsPath()`, `getChassisIconsFsPath()`, `getChassisAssetsFsPath()` and `getChassisTokensFsPath()`. Each takes `{ root, dir }`.
 
 A site that type-checks with `astro check` declares the `@chassis-ui/css` module, which has no types: `declare module '@chassis-ui/css'`.
+
+#### What the Chassis sites read from the docs build
+
+The sites of the Chassis projects read these files besides, by name, from the docs build of the `chassis` brand:
+
+| File of the docs build                                                   | Read by                                                                                                         |
+| ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `icons/cx-sprite.svg`                                                    | The home page of each of the seven sites, which imports it. The build fails without it                          |
+| `images/apple-touch-icon.png`, `images/favicon.png`                      | Each of the seven sites, which copies them to `/apple-touch-icon.png` and `/favicon.ico`                        |
+| `images/android-chrome-192x192.png`, `images/android-chrome-512x512.png` | The `manifest.json` of each of the seven sites                                                                  |
+| `images/home/`                                                           | The home page of the website. The home page of chassis-tokens reads `comp-gallery-*` of it                      |
+| `images/logo/chassis-{logo,icon}-{brand,white}-banner.svg`               | The about page of the website                                                                                   |
+| `images/social-image.png`                                                | The blog of the website, for a post without an image                                                            |
+| `images/site-logo.svg`                                                   | The examples of the navbar page of chassis-css. The README of `@chassis-ui/react`, by its URL on chassis-ui.com |
+| `images/figma/components/`                                               | The component pages of chassis-figma                                                                            |
+
+The vanilla HTML example of the website builds the assets itself, for each of its brands, and takes `fonts/text.css`, `fonts/display.css` and `fonts/code.css`, the font files they load, the license of each font and `images/logo/chassis-icon-brand.svg`.
+
+`contracts` in `chassis.checks.json` of `chassis-assets` names the files that a site reads, with the code that reads each, and `pnpm assets:contract` there checks a build against it.
 
 #### A site under a prefix
 
