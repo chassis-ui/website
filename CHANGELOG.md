@@ -4,6 +4,13 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-10-12
+
+### Removed
+
+- The content security policy no longer allows Google Fonts: `fonts.googleapis.com` left `style-src` and `fonts.gstatic.com` left `font-src` in `vercel.json`. The header covers the pages of the six other projects too. A project that is built with `@chassis-ui/docs` 0.7.0 or earlier still loads its fonts from Google Fonts, so its pages report a violation of both directives until it takes a later version. The policy is report-only and blocks nothing.
+- The privacy page has no "Fonts" section: no request of a page goes to Google for a font, and the font files come with the site, which "Hosting" covers.
+
 ## 2026-10-11
 
 ### Changed
