@@ -6,6 +6,10 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 
 ## 2026-10-12
 
+### Changed
+
+- The header of the hero of the home page takes the full width of the grid up to the `xl` breakpoint, and ten of its twelve columns from there. It took the ten columns from `lg`.
+
 ### Removed
 
 - The content security policy no longer allows Google Fonts: `fonts.googleapis.com` left `style-src` and `fonts.gstatic.com` left `font-src` in `vercel.json`. The header covers the pages of the six other projects too. A project that is built with `@chassis-ui/docs` 0.7.0 or earlier still loads its fonts from Google Fonts, so its pages report a violation of both directives until it takes a later version. The policy is report-only and blocks nothing.
