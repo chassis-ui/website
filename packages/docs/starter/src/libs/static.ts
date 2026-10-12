@@ -16,6 +16,8 @@ import {
  *   https://github.com/chassis-ui/assets
  * - the CSS of `@chassis-ui/css`
  * - the icon font and sprite of `@chassis-ui/icons`
+ * - the site's own files, from `static/`: the web app manifest that the head links. They
+ *   are copied last, so one replaces a file of the same name
  */
 export function chassisStatic(): AstroIntegration {
   let root: string
@@ -40,6 +42,7 @@ export function chassisStatic(): AstroIntegration {
           path.join(destination, 'icons'),
           { recursive: true }
         )
+        fs.cpSync(path.join(root, 'static'), destination, { recursive: true })
       }
     }
   }

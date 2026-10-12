@@ -10,6 +10,10 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 
 - The header of the hero of the home page takes the full width of the grid up to the `xl` breakpoint, and ten of its twelve columns from there. It took the ten columns from `lg`.
 
+### Fixed
+
+- The starter of `@chassis-ui/docs` has a web app manifest, `static/images/manifest.json`, and its `src/libs/static.ts` copies `static/` of the site into `public/static/` after the files of the Chassis packages. The head of every page links `/static/images/manifest.json`, which is not in the docs build of chassis-assets: each of the seven sites has its own, and a site made from the starter had none. The fixture sites check the file and its link.
+
 ### Removed
 
 - The content security policy no longer allows Google Fonts: `fonts.googleapis.com` left `style-src` and `fonts.gstatic.com` left `font-src` in `vercel.json`. The header covers the pages of the six other projects too. A project that is built with `@chassis-ui/docs` 0.7.0 or earlier still loads its fonts from Google Fonts, so its pages report a violation of both directives until it takes a later version. The policy is report-only and blocks nothing.
