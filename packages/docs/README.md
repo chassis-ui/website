@@ -217,7 +217,7 @@ The sites of the Chassis projects read these files besides, by name, from the do
 | `images/site-logo.svg`                                                   | The examples of the navbar page of chassis-css. The README of `@chassis-ui/react`, by its URL on chassis-ui.com |
 | `images/figma/components/`                                               | The component pages of chassis-figma                                                                            |
 
-The vanilla HTML example of the website builds the assets itself, for each of its brands, and takes `fonts/text.css`, `fonts/display.css` and `fonts/code.css`, the font files they load, the license of each font and `images/logo/chassis-icon-brand.svg`.
+The vanilla HTML example, in the `vanilla-example` repository, builds the assets itself from a `vendor/assets` submodule of its own, for the brand of each of its sites, and takes `fonts/text.css`, `fonts/display.css` and `fonts/code.css`, the font files they load, the license of each font and `images/logo/chassis-icon-brand.svg`.
 
 `contracts` in `chassis.checks.json` of `chassis-assets` names the files that a site reads, with the code that reads each, and `pnpm assets:contract` there checks a build against it.
 

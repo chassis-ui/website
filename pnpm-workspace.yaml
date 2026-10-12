@@ -1,6 +1,5 @@
 packages:
   - 'packages/*'
-  - 'examples/*'
 
 # Our own packages install at any age. Dependabot hands its 3-day cooldown to pnpm as a minimum
 # release age when it re-resolves the lockfile, which rejects a Chassis release that develop

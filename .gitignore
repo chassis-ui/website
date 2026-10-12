@@ -49,6 +49,3 @@ lerna-debug.log*
 # deploy
 .vercel
 .netlify
-
-# Example build output
-examples/*/dist

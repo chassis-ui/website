@@ -12,14 +12,13 @@ other Chassis doc sites.
 packages/
   website/   # Main Astro site (src/components, content, layouts, libs, pages, styles)
   docs/      # Shared @chassis-ui/docs utilities (TypeScript)
-examples/    # Workspace packages built into dist/, served at /examples/<folder>/
 build/       # Checks and release scripts (check-links.js, fixture-sites.js, etc.)
 vendor/      # Git submodule(s), e.g. vendor/assets (chassis-ui/assets)
 ```
 
 Related sibling repos (separate git projects, not part of this monorepo):
 `chassis-tokens`, `chassis-css`, `chassis-assets`, `chassis-icons`, `chassis-figma`,
-`chassis-react`.
+`chassis-react`, `chassis-vanilla-example`.
 
 ## Setup & commands
 
@@ -27,7 +26,7 @@ Related sibling repos (separate git projects, not part of this monorepo):
 - Node: 24 (`.nvmrc`); `engines` allows `>=22.12.0`.
 - Install: `pnpm install`, then `pnpm vendor` once (builds `vendor/assets` at the pinned commit)
 - Dev server: `pnpm dev` (Astro dev at `localhost:4321`; does not touch the submodule)
-- Build: `pnpm build` (vendor assets + examples + site + pagefind, as Vercel); `pnpm site` adds vnu HTML lint
+- Build: `pnpm build` (vendor assets + site + pagefind, as Vercel); `pnpm site` adds vnu HTML lint
 - Preview: `pnpm preview` (serves `_site/`)
 - Lint: `pnpm lint` (eslint + stylelint + prettier for both packages, then `pnpm spellcheck`)
 - Format: `pnpm format` (prettier --write for both packages)

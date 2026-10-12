@@ -7,7 +7,7 @@
 [![npm](https://img.shields.io/npm/v/@chassis-ui/docs.svg)](https://www.npmjs.com/package/@chassis-ui/docs)
 
 This repository builds [chassis-ui.com](https://chassis-ui.com): the home page, the blog,
-the getting started guide and the examples. The documentation of each Chassis project
+the getting started guide and the examples page. The documentation of each Chassis project
 lives in that project's repository and is served under chassis-ui.com, for example
 [chassis-ui.com/css/](https://chassis-ui.com/css/).
 
@@ -30,9 +30,6 @@ packages/
     src/        Its layouts, components, integration and SCSS
     starter/    A minimal site built from the packed package in CI
     test/       Its unit and component tests
-examples/
-  vanilla-html/ Chassis CSS and Icons in a plain HTML page, built once per brand and
-                served at /examples/vanilla-html/<brand>/
 api/            The contact form endpoint, a Vercel function
 build/          Build, validation and release scripts
 vendor/assets/  The chassis-assets submodule: logo, favicons and fonts

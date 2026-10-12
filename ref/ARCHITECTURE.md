@@ -43,8 +43,6 @@ chassis-website/
 │       ├── static/              # Files copied to the root of the site
 │       ├── config.yml           # Site configuration, read by the package
 │       └── astro.config.ts
-├── examples/                    # Workspace packages, served under /examples/
-│   └── vanilla-html/
 ├── api/                         # Vercel functions: the contact form and the CSP reports
 ├── vendor/
 │   └── assets/                  # chassis-assets submodule
@@ -68,6 +66,12 @@ from npm, and deploys it to Vercel on its own. Where the site lives differs:
 
 tokens, css, react and assets are pnpm workspaces with the package and the site side by
 side. icons and figma are single packages with the site in a folder.
+
+The vanilla HTML example is a repository too,
+[chassis-ui/vanilla-example](https://github.com/chassis-ui/vanilla-example). It is not a
+documentation site: it uses no `@chassis-ui/docs`, and it is deployed as a website per
+brand, at `example-1.chassis-ui.com` and `example-2.chassis-ui.com`, outside the proxy of
+chassis-ui.com. The examples page of the website links it.
 
 How each project's output reaches consumers differs, and this is a deliberate design
 choice per project, not an inconsistency to be fixed:

@@ -57,7 +57,7 @@ Run them from the root of the repository.
 | Command                | What it does                                                                                                 |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------ |
 | `pnpm dev`             | Starts the dev server at `http://localhost:4321`                                                             |
-| `pnpm build`           | Builds the vendor assets, the examples and the site into `_site/`, then the search index. Vercel runs it too |
+| `pnpm build`           | Builds the vendor assets and the site into `_site/`, then the search index. Vercel runs it too               |
 | `pnpm preview`         | Serves `_site/` after a build                                                                                |
 | `pnpm lint`            | ESLint, Stylelint and Prettier on both packages, then the spell check. What the Lint job of CI runs          |
 | `pnpm format`          | Formats both packages with Prettier                                                                          |

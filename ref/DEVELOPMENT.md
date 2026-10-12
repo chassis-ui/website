@@ -6,13 +6,12 @@ How the parts of this repository work. The setup, the commands and the branch fl
 
 ## The workspace
 
-`pnpm-workspace.yaml` lists two groups of packages:
+`pnpm-workspace.yaml` lists the packages in `packages/`:
 
 | Path               | Package                     | Published |
 | ------------------ | --------------------------- | --------- |
 | `packages/website` | `chassis-website`, the site | no        |
 | `packages/docs`    | `@chassis-ui/docs`          | npm       |
-| `examples/*`       | one package per example     | no        |
 
 The website depends on `@chassis-ui/docs` as `workspace:*`, so it always uses the source in
 `packages/docs`. A change there shows in `pnpm dev` at once. The package has no build
@@ -23,7 +22,7 @@ ranges in `packages/website/package.json`.
 
 ## How the site is built
 
-`pnpm build` runs `pnpm site:build`, which Vercel runs too. It runs four steps in turn:
+`pnpm build` runs `pnpm site:build`, which Vercel runs too. It runs three steps in turn:
 
 1. **Vendor assets.** `pnpm vendor` runs `chassis-docs vendor`, a command of
    `@chassis-ui/docs`. It checks out `vendor/assets` at the commit this repository pins,
@@ -38,11 +37,8 @@ ranges in `packages/website/package.json`.
    `text-latin.woff2`, and a page loads the file of a range only when it has a character
    of it. With `--subset` the command installs the package of the build in the submodule,
    which holds the package that subsets a font.
-2. **Examples.** `pnpm examples:build` builds each workspace package in `examples/`. The
-   vanilla HTML example reads the fonts and the logos of its brands from `vendor/assets`,
-   so it needs the submodule that the first step checks out.
-3. **Site.** `astro build` in `packages/website`. Astro writes to `_site/`.
-4. **Search.** `pagefind --site _site` indexes the pages that `pagefind.yml` selects.
+2. **Site.** `astro build` in `packages/website`. Astro writes to `_site/`.
+3. **Search.** `pagefind --site _site` indexes the pages that `pagefind.yml` selects.
 
 `pnpm clean` deletes `_site`, and the `.astro`, `node_modules` and `public` folders of the
 website.
@@ -74,14 +70,13 @@ Say in the commit message why the exception is right. See
 Before each dev or build run, the site's integration in `packages/website/src/libs/astro.ts`
 empties `packages/website/public/` and fills it again:
 
-| From                                     | To                    |
-| ---------------------------------------- | --------------------- |
-| `packages/website/static/`               | `/`                   |
-| The docs build of `vendor/assets`        | `/static/`            |
-| `dist` of `@chassis-ui/css`              | `/static/`            |
-| `icons` of `@chassis-ui/icons`           | `/static/icons/`      |
-| `dist` of each example                   | `/examples/<folder>/` |
-| `_site/pagefind/`, when a build made one | `/pagefind/`          |
+| From                                     | To               |
+| ---------------------------------------- | ---------------- |
+| `packages/website/static/`               | `/`              |
+| The docs build of `vendor/assets`        | `/static/`       |
+| `dist` of `@chassis-ui/css`              | `/static/`       |
+| `icons` of `@chassis-ui/icons`           | `/static/icons/` |
+| `_site/pagefind/`, when a build made one | `/pagefind/`     |
 
 `public/` is generated. Change the sources, not the copies.
 
@@ -108,39 +103,21 @@ Changes to the assets belong in the chassis-assets repository, not in `vendor/as
 
 ## Examples
 
-Each folder in `examples/` is a workspace package with a `build` script that writes
-`dist/`. `pnpm examples:build` builds them all, and the site build runs it before
-`astro build`. The site serves each `dist/` under `/examples/<folder>/`, and the examples
-page links to it.
+An example is a repository of its own, not a part of this one. The site only links it: the
+examples page, `packages/website/src/pages/examples.astro`, names each example with its
+repository and its websites.
 
-To add an example, create the folder with a `package.json` whose `build` script writes
-`dist/`, and link it from `packages/website/src/pages/examples.astro`.
+The vanilla HTML example is [chassis-ui/vanilla-example](https://github.com/chassis-ui/vanilla-example).
+It is deployed as a website per brand from the same commit, `example-1.chassis-ui.com` for
+`chassis` and `example-2.chassis-ui.com` for `sinefil`, each a Vercel project of its own.
+The sites are not proxied under chassis-ui.com, so `vercel.json` has no rule for them and
+the checks of this repository do not open them. Its README covers the build and the brands.
 
-### Brands
+The example was a folder of this repository once, served at `/examples/vanilla-html/`.
+That address is a redirect page to the first site now,
+`packages/website/src/pages/examples/vanilla-html.astro`, and it is left out of the sitemap.
 
-`examples/vanilla-html` is built once per brand. `chassis.build.brands` of its
-`package.json` names the brands, as the same key does in chassis-tokens and chassis-assets.
-Each brand is written to `dist/<brand>/`, so the site serves it under
-`/examples/vanilla-html/<brand>/`. `dist/index.html` is a redirect page to the first brand
-of the list, which keeps `/examples/vanilla-html/` working.
-
-For each brand, `build.js` of the example:
-
-- compiles Chassis CSS from the Sass source of `@chassis-ui/css` with the tokens of the
-  brand, then adds the `--cx-` prefix with PostCSS. Chassis CSS loads its tokens as
-  `chassis-tokens`, and a Sass importer answers with `dist/web/docs/<brand>/main.scss` of
-  `@chassis-ui/tokens`, so no file per brand is kept. The compiled CSS of the package is
-  the `chassis` brand only.
-- copies `fonts/text.css`, `fonts/display.css` and `fonts/code.css` of the brand, with the
-  font files they load and the licenses, and the logo. It runs the build of `vendor/assets`
-  for these files into a temporary folder, with `--brand`, `--app docs` and `--include`,
-  and so does not depend on `pnpm assets:site`, which builds the `chassis` brand only. It
-  passes `--subset latin latin-ext --split`, as the site does, with the package that
-  `pnpm vendor` installs in the submodule.
-
-A brand has the same name in `@chassis-ui/tokens`, in chassis-assets and in the list. To
-add or remove one, change the list: the examples page of the site and `build/check-csp.js`
-read it too.
+To add an example, add it to the list in the examples page.
 
 ## Working on `@chassis-ui/docs`
 
@@ -179,7 +156,6 @@ published, override the dependency with a sibling checkout, next to this one on 
 # pnpm-workspace.yaml
 packages:
   - 'packages/*'
-  - 'examples/*'
 overrides:
   '@chassis-ui/css': link:../chassis-css/packages/css
   '@chassis-ui/icons': link:../chassis-icons

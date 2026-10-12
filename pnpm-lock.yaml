@@ -100,30 +100,6 @@ importers:
         specifier: ^26.10.2
         version: 26.10.2
 
-  examples/vanilla-html:
-    devDependencies:
-      '@chassis-ui/css':
-        specifier: ^0.7.1
-        version: 0.7.1(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.28))(vanilla-calendar-pro@3.4.0)
-      '@chassis-ui/icons':
-        specifier: ^0.3.1
-        version: 0.3.1
-      '@chassis-ui/tokens':
-        specifier: ^0.7.0
-        version: 0.7.0
-      autoprefixer:
-        specifier: ^10.6.1
-        version: 10.6.1(postcss@8.5.28)
-      postcss:
-        specifier: ^8.5.28
-        version: 8.5.28
-      postcss-prefix-custom-properties:
-        specifier: ^0.1.0
-        version: 0.1.0(postcss@8.5.28)
-      sass:
-        specifier: ^1.105.1
-        version: 1.105.1
-
   packages/docs:
     dependencies:
       '@types/hast':

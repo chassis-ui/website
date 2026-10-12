@@ -123,11 +123,5 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser
     }
-  },
-  {
-    files: ['examples/**'],
-    languageOptions: {
-      globals: { ...globals.node, ...globals.browser }
-    }
   }
 ])

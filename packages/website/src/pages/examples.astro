@@ -1,21 +1,20 @@
 ---
 import SingleLayout from '@chassis-ui/docs/layouts/SingleLayout.astro'
-import vanillaHtml from '../../../../examples/vanilla-html/package.json'
 
-// Each example is a folder in `examples/` of this repository. The site serves its build
-// output under /examples/<folder>/, with a copy for each brand of the example under
-// /examples/<folder>/<brand>/. See ref/DEVELOPMENT.md.
+// Each example is a repository of its own, deployed as a website per brand: the same
+// commit, built with the design tokens, the fonts and the logo of the brand.
 const examples = [
   {
-    folder: 'vanilla-html',
     title: 'Vanilla HTML',
     description:
-      'One HTML page styled with Chassis CSS and Chassis Icons. No framework and no bundler: context classes, a form, buttons, badges and icons. It is built once per brand, each with its own design tokens, fonts and logo.',
-    brands: vanillaHtml.chassis.build.brands
+      'One HTML page styled with Chassis CSS and Chassis Icons. No framework and no bundler: context classes, a form, buttons, badges and icons. One repository is deployed as a website per brand, each with its own design tokens, fonts and logo.',
+    source: 'https://github.com/chassis-ui/vanilla-example',
+    sites: [
+      { brand: 'Chassis', url: 'https://example-1.chassis-ui.com/' },
+      { brand: 'Sinefil', url: 'https://example-2.chassis-ui.com/' }
+    ]
   }
 ]
-
-const titleOf = (brand: string) => brand.charAt(0).toUpperCase() + brand.slice(1)
 ---
 
 <SingleLayout
@@ -30,13 +29,13 @@ const titleOf = (brand: string) => brand.charAt(0).toUpperCase() + brand.slice(1
             <h2>{example.title}</h2>
             <p class="font-lg fg-subtle mb-xl">{example.description}</p>
             <div class="d-flex flex-wrap gap-md">
-              {example.brands.map((brand) => (
-                <a href={`/examples/${example.folder}/${brand}/`} class="button default">
-                  Open in the {titleOf(brand)} brand
+              {example.sites.map((site) => (
+                <a href={site.url} class="button default">
+                  Open in the {site.brand} brand
                 </a>
               ))}
               <a
-                href={`https://github.com/chassis-ui/website/tree/main/examples/${example.folder}`}
+                href={example.source}
                 class="button outline"
                 target="_blank"
                 rel="noopener noreferrer"

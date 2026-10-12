@@ -13,7 +13,6 @@ body:
       options:
         - The website, chassis-ui.com
         - The package, @chassis-ui/docs, in a site of my own
-        - An example under /examples/
         - Building or running this repository
     validations:
       required: true

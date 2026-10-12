@@ -1,7 +1,7 @@
 version: 2
 
 updates:
-  # The root directory covers every package of the pnpm workspace: packages/* and examples/*
+  # The root directory covers every package of the pnpm workspace: packages/*
   - package-ecosystem: npm
     directory: /
     target-branch: develop
