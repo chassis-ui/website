@@ -9,6 +9,7 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 ### Changed
 
 - The header of the hero of the home page takes the full width of the grid up to the `xl` breakpoint, and ten of its twelve columns from there. It took the ten columns from `lg`.
+- The assets submodule is at `784d885`, version 0.3.1 of chassis-assets, and `pnpm vendor` and `pnpm sync-submodules` pass `--subset symbols2` in place of `--subset U+2500-257F`: the range that chassis-assets names for the box drawing characters. The file of the range is `fonts/code-symbols2.woff2`, 3.1 KB, where `fonts/code-u2500-257f.woff2` was 2.7 KB: the range also has the block elements, `U+2580-259F`, six bracket pieces and eight spaces. The text and the display fonts have a file of the range too, which a page loads only when it shows such a character in that font. The home page loads the same three font files as before, `text-latin.woff2`, `code-latin.woff2` and the file of the range. The files of the code font that are not split, `code.woff2`, `code-normal.woff2` and `code-strong.woff2`, hold the wider range too and are 0.4 KB larger each. No other file of the docs build changed between `acb5d2e` and `784d885`.
 
 ### Fixed
 
