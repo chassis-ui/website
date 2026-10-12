@@ -94,11 +94,11 @@
     "eslint-plugin-unicorn": "^77.0.0",
     "globals": "^17.13.0",
     "globby": "^16.2.4",
-    "html-validate": "^11.16.1",
+    "html-validate": "^11.16.2",
     "linkinator": "^8.1.0",
     "lint-staged": "^17.6.0",
     "pagefind": "^1.5.2",
-    "playwright-core": "^1.63.0",
+    "playwright-core": "^1.64.0",
     "prettier": "^3.9.9",
     "prettier-plugin-astro": "^1.1.0",
     "semver": "^7.8.5",
@@ -106,9 +106,9 @@
     "stylelint": "^16.26.1",
     "stylelint-config-twbs-bootstrap": "^16.1.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.71.0",
+    "typescript-eslint": "^8.71.1",
     "vitest": "^5.0.3",
-    "vnu-jar": "^26.10.2"
+    "vnu-jar": "^26.10.9"
   },
   "packageManager": "pnpm@10.33.2+sha512.a90faf6feeab71ad6c6e57f94e0fe1a12f5dcc22cd754db40ae9593eb6a3e0b6b12e3540218bb37ae083404b1f2ce6db2a4121e979829b4aff94b99f49da1cf8",
   "simple-git-hooks": {
