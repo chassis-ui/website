@@ -155,8 +155,8 @@ importers:
         specifier: ^7.3.2
         version: 7.3.2
       '@chassis-ui/css':
-        specifier: 0.10.0-next.0
-        version: 0.10.0-next.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.29))(vanilla-calendar-pro@3.4.0)
+        specifier: ^0.10.0
+        version: 0.10.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.29))(vanilla-calendar-pro@3.4.0)
       '@pagefind/component-ui':
         specifier: ^1.5.2
         version: 1.5.2
@@ -200,8 +200,8 @@ importers:
         specifier: ^3.7.4
         version: 3.7.4
       '@chassis-ui/css':
-        specifier: 0.10.0-next.0
-        version: 0.10.0-next.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.29))(vanilla-calendar-pro@3.4.0)
+        specifier: ^0.10.0
+        version: 0.10.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.29))(vanilla-calendar-pro@3.4.0)
       '@chassis-ui/docs':
         specifier: workspace:*
         version: link:../docs
@@ -588,8 +588,8 @@ packages:
     resolution: {integrity: sha512-q/ThtP9gcnEP6xlv7LrY26C2mHqdGBti/MmOVngt/M/oIGYkssmQGxPK9WzBNt2juVcH/vml2WQ+ra8LXYOTaA==}
     engines: {node: ^22.11 || ^24 || >=26}
 
-  '@chassis-ui/css@0.10.0-next.0':
-    resolution: {integrity: sha512-W1iqi+OU74IcUkXFvbylCxYp7l0IPpIkiE4hMYIz+ZR0XJnEYYdERECckspAMrhm+ny/saOeqcKzvCc3oCbX/g==}
+  '@chassis-ui/css@0.10.0':
+    resolution: {integrity: sha512-BnSCJLWxTE+DFYjh7i8iWkSD5yydNzw+1obLGHnvkcGtnScMFkoJ3Kn2yY0wjhf6HgS++dSB7RKbuZ6SAcmeVQ==}
     engines: {node: '>=22'}
     peerDependencies:
       '@floating-ui/dom': ^1.7.6
@@ -5267,7 +5267,7 @@ snapshots:
       '@changesets/types': 7.0.0
       human-id: 4.2.1
 
-  '@chassis-ui/css@0.10.0-next.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.29))(vanilla-calendar-pro@3.4.0)':
+  '@chassis-ui/css@0.10.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.29))(vanilla-calendar-pro@3.4.0)':
     dependencies:
       '@floating-ui/dom': 1.8.0
       vanilla-calendar-pro: 3.4.0
