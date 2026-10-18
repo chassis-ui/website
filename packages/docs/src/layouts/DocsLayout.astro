@@ -132,7 +132,7 @@ if (frontmatter.toc) {
             On this page
             <Icon name="chevron-sort-solid" class="icon-sm" />
           </button>
-          <strong class="d-none md:d-block h6 my-xs">On this page</strong>
+          <strong class="d-none md:d-block font-h6 my-xs">On this page</strong>
           <hr class="d-none md:d-block my-xs" />
           <div class="collapse cxd-toc-collapse" id="tocContents">
             <nav id="TableOfContents" aria-label="Table of contents">
@@ -155,7 +155,7 @@ if (frontmatter.toc) {
                     `${parentDirectory ? parentDirectory + '/' : ''}${section.slug ? section.slug : getSlug(section.title)}/`
                   )}
                 >
-                  <strong class="d-block h5 mb-2xs">{section.title}</strong>
+                  <strong class="d-block font-h5 mb-2xs">{section.title}</strong>
                   <span class="fg-subtle">{section.description}</span>
                 </a>
               </div>

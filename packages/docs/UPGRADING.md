@@ -1,5 +1,52 @@
 # Upgrading @chassis-ui/docs
 
+## From 0.8 to 0.9
+
+0.9.0 needs `@chassis-ui/css` 0.10.0 or later. css 0.10 names the font families by their
+job, `ui` in place of `text`, and holds every text role in one group, so `$font-context-lead`
+is `$font-lead` now, and `.font-h1` to `.font-h6` are the classes of the heading roles. The
+styles and the layouts of the package read the new names.
+
+### 1. Update the dependencies
+
+```sh
+pnpm add -D @chassis-ui/docs@^0.9.0 @chassis-ui/css@^0.10.0 @chassis-ui/tokens@^0.10.0
+```
+
+The default token source of css, `scss/vendor/_chassis-tokens.scss`, forwards the
+`@chassis-ui/tokens` that your site installs, and css 0.10 reads tokens that only tokens 0.10
+has, so the three move together. css 0.10.0 has changes of its own. Read its
+[changelog](https://github.com/chassis-ui/css/blob/main/packages/css/CHANGELOG.md) first.
+
+### 2. Rename the typography names in your own pages and styles
+
+css 0.10 keeps `.h1` to `.h6`, `.font-text` and `--cx-font-family-text` in this minor as
+deprecated names, so a site builds and looks as before without this step. The next breaking
+minor of css removes them. The other old names are gone in css 0.10.
+
+| Old                                                                                                      | New                                                                                                                    |
+| -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `.h1` to `.h6`                                                                                           | `.font-h1` to `.font-h6`                                                                                               |
+| `.font-text`                                                                                             | `.font-ui`                                                                                                             |
+| `--cx-font-family-text`                                                                                  | `--cx-font-family-ui`                                                                                                  |
+| `--cx-font-size-text-lg`, `--cx-line-height-text-lg`, `--cx-font-weight-text-strong` and the other steps | `--cx-font-size-ui-lg`, `--cx-line-height-ui-lg`, `--cx-font-weight-ui-strong`                                         |
+| `--cx-font-size-html-h1`, `--cx-line-height-html-h1` and the other `--cx-*-html-*` properties            | `--cx-font-size-h1`, `--cx-line-height-h1`; `--cx-font-family-heading` and `--cx-font-weight-heading` for the headings |
+| `.font-display.font-lg` and the other display sizes                                                      | removed: a text role such as `.font-h2`, or `.font-prose.font-lg`                                                      |
+| `$font-context-lead`, `$font-context-title-large` and the other `$font-context-*` maps                   | `$font-lead`, `$font-title-large` and the others                                                                       |
+| `$font-family-text`                                                                                      | `$font-family-ui`                                                                                                      |
+
+### What changes in the package
+
+- **The footer and the docs sidebar use `.font-h6` and `.font-h5`.** The three column
+  titles of the footer and the "On this page" label were `h6`, the section titles of the
+  sidebar `h5`. A rule of your own that matched them by class matches the new class.
+- **`.cxd-subtitle` reads `$font-lead`,** the role that `$font-context-lead` was.
+
+### Check the result
+
+Build the site before and after the upgrade and compare the pages in a browser. The roles
+keep their values, so nothing of the package moves.
+
 ## From 0.7 to 0.8
 
 0.8.0 loads the fonts from the site's own static files, no longer from Google Fonts. The

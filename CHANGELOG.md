@@ -4,6 +4,13 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-10-18
+
+### Changed
+
+- The website and the starter of `@chassis-ui/docs` use the preview of `@chassis-ui/css` 0.10, `0.10.0-next.0`, pinned, and `@chassis-ui/tokens` 0.10.0, where they used css 0.7.2 and tokens 0.7.0. `@chassis-ui/docs` reads the typography names of css 0.10 and is built and tested with it; its peer range is `>=0.10.0-next.0`, released as a preview under the dist-tag `next`. The pins go back to caret ranges once css 0.10.0 is released. The stylesheet of the pages takes the changes of css 0.8 to 0.10 with it: the new base colors of the default tokens, the headings and the titles in the display family, Montserrat, in place of Inter, and no background gradient on buttons, badges and the other components that had one.
+- The pages use `.font-h4` and `.font-h5` in place of `.h4` and `.h5`, which css 0.10 deprecates: the section titles of the privacy page, the empty state of the blog and the examples of the CSS section of the home page. The example of token-generated variables on the home page names `--cx-font-family-ui` and `--cx-font-size-ui-md`, the names of css 0.10.
+
 ## 2026-10-12
 
 ### Changed

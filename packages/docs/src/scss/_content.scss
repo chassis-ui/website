@@ -88,7 +88,7 @@
   }
 
   .cxd-subtitle {
-    @include map-font($font-context-lead, "blockquote");
+    @include map-font($font-lead, "blockquote");
     @include font();
   }
 

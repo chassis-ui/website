@@ -155,8 +155,8 @@ importers:
         specifier: ^7.3.2
         version: 7.3.2
       '@chassis-ui/css':
-        specifier: ^0.7.2
-        version: 0.7.2(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.29))(vanilla-calendar-pro@3.4.0)
+        specifier: 0.10.0-next.0
+        version: 0.10.0-next.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.29))(vanilla-calendar-pro@3.4.0)
       '@pagefind/component-ui':
         specifier: ^1.5.2
         version: 1.5.2
@@ -200,8 +200,8 @@ importers:
         specifier: ^3.7.4
         version: 3.7.4
       '@chassis-ui/css':
-        specifier: ^0.7.2
-        version: 0.7.2(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.29))(vanilla-calendar-pro@3.4.0)
+        specifier: 0.10.0-next.0
+        version: 0.10.0-next.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.29))(vanilla-calendar-pro@3.4.0)
       '@chassis-ui/docs':
         specifier: workspace:*
         version: link:../docs
@@ -209,8 +209,8 @@ importers:
         specifier: ^0.3.1
         version: 0.3.1
       '@chassis-ui/tokens':
-        specifier: ^0.7.0
-        version: 0.7.0
+        specifier: ^0.10.0
+        version: 0.10.0
       '@floating-ui/dom':
         specifier: ^1.8.0
         version: 1.8.0
@@ -588,8 +588,8 @@ packages:
     resolution: {integrity: sha512-q/ThtP9gcnEP6xlv7LrY26C2mHqdGBti/MmOVngt/M/oIGYkssmQGxPK9WzBNt2juVcH/vml2WQ+ra8LXYOTaA==}
     engines: {node: ^22.11 || ^24 || >=26}
 
-  '@chassis-ui/css@0.7.2':
-    resolution: {integrity: sha512-VZTJE7RsQK62503cwsHOeR7t4ug03IRCrs6lVJqqQ3z4U7Rb+ii6/Ics3RbuvoDlPMnsxPU8fz5KmGlh162c0w==}
+  '@chassis-ui/css@0.10.0-next.0':
+    resolution: {integrity: sha512-W1iqi+OU74IcUkXFvbylCxYp7l0IPpIkiE4hMYIz+ZR0XJnEYYdERECckspAMrhm+ny/saOeqcKzvCc3oCbX/g==}
     engines: {node: '>=22'}
     peerDependencies:
       '@floating-ui/dom': ^1.7.6
@@ -606,8 +606,8 @@ packages:
     resolution: {integrity: sha512-u940omGLvaDqQWzkLDiXXACs3UiEGgZeESbDM+7mB9Dd/L2QKkCk0XQE6sVRv3Tb4+eXDmJOLNd63scZgAKS+Q==}
     engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
-  '@chassis-ui/tokens@0.7.0':
-    resolution: {integrity: sha512-hOKHKRAFT88wa9ZMqFUaUbHsSWZShMaZj+YY3f0hH/w2vLnAmTfVCedlpUocPj0tRhwR02cokiVmd9IFAxE1Vg==}
+  '@chassis-ui/tokens@0.10.0':
+    resolution: {integrity: sha512-v7/7MLPZbtESkK4RsX1rXi+Emd1YN77Dh6/YCmfPhD5CiFgp52KllGuZsTwUyL86vzbtzGoD39YkHpQGAMIfrg==}
     engines: {node: '>=22'}
 
   '@clack/core@1.5.1':
@@ -5267,7 +5267,7 @@ snapshots:
       '@changesets/types': 7.0.0
       human-id: 4.2.1
 
-  '@chassis-ui/css@0.7.2(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.29))(vanilla-calendar-pro@3.4.0)':
+  '@chassis-ui/css@0.10.0-next.0(@floating-ui/dom@1.8.0)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.29))(vanilla-calendar-pro@3.4.0)':
     dependencies:
       '@floating-ui/dom': 1.8.0
       vanilla-calendar-pro: 3.4.0
@@ -5276,7 +5276,7 @@ snapshots:
 
   '@chassis-ui/icons@0.3.1': {}
 
-  '@chassis-ui/tokens@0.7.0': {}
+  '@chassis-ui/tokens@0.10.0': {}
 
   '@clack/core@1.5.1':
     dependencies:
