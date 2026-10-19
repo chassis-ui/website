@@ -5,7 +5,7 @@
  * Site footer with logo, license information, and navigation links.
  */
 
-import { getStaticPath } from '../../site'
+import SiteLogo from '../SiteLogo.astro'
 ---
 
 <footer class="cxd-footer py-6xl">
@@ -13,11 +13,11 @@ import { getStaticPath } from '../../site'
     <div class="grid row-gap-0">
       <div class="col-span-full md:col-span-10 lg:col-span-5 mb-md">
         <a
-          class="d-inline-flex align-items-center mb-xs text-body-emphasis text-decoration-none"
+          class="cxd-site-logo d-inline-flex align-items-center mb-md text-body-emphasis text-decoration-none"
           href="/"
           aria-label="Chassis"
         >
-          <img src={getStaticPath('images/site-logo.svg')} alt="Chassis UI" height="32" />
+          <SiteLogo />
         </a>
         <p class="mb-xs">
           This project is licensed under the MIT License, which allows for free use, modification,

@@ -1,5 +1,41 @@
 # Upgrading @chassis-ui/docs
 
+## From 0.9 to 0.10
+
+0.10.0 links one font stylesheet, `fonts/fonts.css`, in place of `fonts/text.css`,
+`fonts/display.css` and `fonts/code.css`, and inlines the logo of the navigation bar and the
+footer, `images/site-logo.svg`, in place of loading it with `<img>`. chassis-assets made both
+changes on `app/docs` on 2026-10-19: a brand has one `fonts.css`, the files of the `text`
+role are `ui` files, and the logo of the `chassis` brand is for inline use. It has no `xmlns`,
+and the classes `icon-default` and `icon-primary` of the page color its paths.
+
+### 1. Update the dependency and the assets
+
+```sh
+pnpm add -D @chassis-ui/docs@^0.10.0
+pnpm sync-submodules
+```
+
+The docs build of `chassis-assets` has `fonts/fonts.css` from `db6d64b` of `app/docs` on. With
+an earlier commit the pages show the fallback fonts. A site that does not copy the docs build
+provides `fonts/fonts.css` itself.
+
+### What changes in the package
+
+- **The head links `fonts/fonts.css`** under the static path, and no longer the three
+  stylesheets of the roles.
+- **The navigation bar and the footer inline the logo.** The build reads
+  `static/images/site-logo.svg` of the site's `public` directory and fails without it. The
+  logo is `2rem` high, its width follows its `viewBox`, and the link around it names it. A
+  logo of an earlier docs build, with its own colors, a width and a height, shows at the same
+  height.
+- **The link of the logo in the footer has the bottom margin `mb-md`,** where it was `mb-xs`.
+
+### Check the result
+
+Build the site before and after the upgrade and compare the pages in a browser, in both color
+modes: the logo takes the colors of the theme.
+
 ## From 0.8 to 0.9
 
 0.9.0 needs `@chassis-ui/css` 0.10.0 or later. css 0.10 names the font families by their

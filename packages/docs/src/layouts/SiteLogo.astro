@@ -1,0 +1,22 @@
+---
+/**
+ * SiteLogo
+ *
+ * The logo of the site, `images/site-logo.svg` of the static files, inlined: the logo of the
+ * docs build of chassis-assets colors its paths with the classes `icon-default` and
+ * `icon-primary` of `@chassis-ui/css`, which reach a file that is in the page only. The link
+ * around it names it, so the drawing is hidden from assistive technology. The build fails
+ * without the file.
+ */
+
+import fs from 'node:fs'
+import { getPublicFsPath } from '../site'
+
+const svg = fs
+  .readFileSync(getPublicFsPath('static/images/site-logo.svg'), 'utf8')
+  .replace(/^\s*<\?xml[^>]*\?>\s*/, '')
+  .replace(/^<svg\b/, '<svg aria-hidden="true" focusable="false"')
+  .trim()
+---
+
+<Fragment set:html={svg} />

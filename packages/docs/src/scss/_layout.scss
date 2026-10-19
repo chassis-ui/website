@@ -2,6 +2,14 @@
 @use "@chassis-ui/css/scss/mixins" as *;
 
 @layer custom {
+  // The navbar and the footer inline the logo. The height sets its size, also for a file that
+  // has a width and a height of its own.
+  .cxd-site-logo > svg {
+    display: block;
+    width: auto;
+    height: 2rem;
+  }
+
   .cxd-gutter {
     --cx-container-padding: #{$cxd-gutter-x * .5};
   }

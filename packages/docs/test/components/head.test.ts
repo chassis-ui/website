@@ -24,11 +24,12 @@ describe('<Head>', () => {
     expect(await renderAt('/')).toContain('<title>Page · Fixture</title>')
   })
 
-  test('links the font stylesheets of the three roles under the static path', async () => {
+  test('links the font stylesheet of the brand under the static path', async () => {
     const html = await renderAt('/fixture/')
 
+    expect(html).toContain('<link rel="stylesheet" href="/static/fonts/fonts.css">')
     for (const role of ['text', 'display', 'code']) {
-      expect(html).toContain(`<link rel="stylesheet" href="/static/fonts/${role}.css">`)
+      expect(html).not.toContain(`/static/fonts/${role}.css`)
     }
     expect(html).not.toContain('fonts.googleapis.com')
     expect(html).not.toContain('fonts.gstatic.com')

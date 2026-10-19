@@ -4,6 +4,14 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-10-19
+
+### Changed
+
+- The assets submodule is at `4382de9` of `app/docs`, where it was `784d885`. The docs build has one font stylesheet, `fonts/fonts.css`, in place of `text.css`, `display.css` and `code.css`, and the files of the `text` role are `ui` files, such as `ui-latin.woff2`. The `display` family is Montserrat, which the headings ask for since css 0.10 and which the build before did not have: the stylesheet of the pin declared Archivo Narrow. The logo, the favicons, the social image and `icons/cx-sprite.svg` are new. The sprite has `cx-react`.
+- The navigation bar and the footer inline the logo, 2rem high, and its paths take the colors of the theme. `@chassis-ui/docs` links `fonts/fonts.css` (see its changeset).
+- The modules of the home page link React Components, `/react`, after the CSS Framework.
+
 ## 2026-10-18
 
 ### Changed

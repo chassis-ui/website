@@ -249,9 +249,12 @@ function checkOutput(layout, siteDir) {
   }
 
   assert.ok(
-    page.includes(`src="${prefix}/images/site-logo.svg"`),
-    'The logo is not loaded from the static path'
+    page.includes(
+      '<svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>'
+    ),
+    'The logo is not inlined from the static files'
   )
+  assert.ok(!page.includes('images/site-logo.svg'), 'The page still loads the logo as a file')
   assert.ok(
     page.includes(`href="${prefix}/icons/chassis-icons.svg#`),
     'The icons are not loaded from the static path'

@@ -188,10 +188,10 @@ The layouts link to files under `/static/`, which the site puts into `static/` o
 | ---------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | `/static/css/chassis.css`, `/static/css/chassis.min.css`                                                                           | the `dist` folder of `@chassis-ui/css`                   |
 | `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css`                                                               | the `icons` folder of `@chassis-ui/icons`                |
-| `/static/images/site-logo.svg`, the logo of the navigation bar and the footer                                                      | the docs build of `chassis-assets`                       |
+| `/static/images/site-logo.svg`, the logo of the navigation bar and the footer. The build inlines it, and fails without the file    | the docs build of `chassis-assets`                       |
 | `/static/images/favicon.png`, `favicon-16x16.png`, `favicon-32x32.png` and `apple-touch-icon.png`                                  | the docs build of `chassis-assets`                       |
 | `/static/images/social-image.png`, the image of a page without a `thumbnail`. The build reads its size, and fails without the file | the docs build of `chassis-assets`                       |
-| `/static/fonts/text.css`, `/static/fonts/display.css`, `/static/fonts/code.css`, and the font files they load                      | the docs build of `chassis-assets`                       |
+| `/static/fonts/fonts.css`, and the font files it loads                                                                             | the docs build of `chassis-assets`                       |
 | `/static/images/manifest.json`, the web app manifest                                                                               | the site itself. The starter has one in `static/images/` |
 
 `chassis-docs vendor` builds the docs build of `chassis-assets` in the `vendor/assets` submodule. See [Commands](#commands).
