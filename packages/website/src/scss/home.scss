@@ -40,12 +40,9 @@
       --cx-fg-color: var(--cx-primary-fg-main);
       --cx-icon-color: var(--cx-fg-color);
     }
-    @include media-breakpoint-down(md) {
-      --cx-bg-color: var(--cx-bg-even);
-    }
-    // Five labels on one line are wider than the row up to about 926px: the last link was
-    // cut off. A label of a button does not wrap by default.
-    @include media-breakpoint-only(md) {
+    // Six labels on one line need a viewport of about 1230px, so they wrap up to `xl`. A label
+    // of a button does not wrap by default.
+    @include media-breakpoint-between(md, xl) {
       white-space: normal;
     }
   }

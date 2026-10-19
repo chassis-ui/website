@@ -5,6 +5,8 @@
  * About page section highlighting how to contribute to Chassis, with links to GitHub repositories and contribution guidelines.
  */
 
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+
 const repos = [
   { name: 'chassis-tokens', repo: 'tokens', description: 'Design tokens & transformers' },
   { name: 'chassis-css', repo: 'css', description: 'CSS framework' },
@@ -36,20 +38,18 @@ const repos = [
         </a>
       </div>
       <div class="lg:pt-6xl">
-        <ul class="list-group">
+        <ul class="list">
           {repos.map((repo) => (
-            <li class="list-item">
+            <li class="list-item list-action">
               <a
                 href={`https://github.com/chassis-ui/${repo.repo}`}
-                class="text-decoration-none d-flex align-items-center gap-md"
+                class="stretched-link text-decoration-none d-flex align-items-center gap-md"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <svg class="icon icon-xl icon-default" aria-hidden="true">
-                  <use href="#github-brand" />
-                </svg>
+                <Icon name="github-brand" class="icon-xl icon-default" />
                 <div>
-                  <p class="font-code font-strong m-0">{repo.name}</p>
+                  <p class="font-code m-0">{repo.name}</p>
                   <p class="fg-subtle font-sm m-0">{repo.description}</p>
                 </div>
               </a>
