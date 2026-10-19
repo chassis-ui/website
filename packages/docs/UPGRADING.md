@@ -1,5 +1,98 @@
 # Upgrading @chassis-ui/docs
 
+## From 0.8 to 0.10
+
+0.9 and 0.10 are both breaking minors, and a site on 0.8 takes them in one upgrade: the
+steps of [From 0.8 to 0.9](#from-08-to-09) and [From 0.9 to 0.10](#from-09-to-010) together,
+in this order. 0.9 reads the typography names of `@chassis-ui/css` 0.10. 0.10 links one font
+stylesheet, `fonts/fonts.css`, and inlines the logo, after chassis-assets changed both on
+`app/docs` on 2026-10-19.
+
+### 1. Update the dependencies
+
+In the package of the site, `packages/site` in most Chassis repositories:
+
+```sh
+pnpm add -D @chassis-ui/docs@^0.10.0 @chassis-ui/css@^0.10.0 @chassis-ui/tokens@^0.10.0
+```
+
+The default token source of css, `scss/vendor/_chassis-tokens.scss`, forwards the
+`@chassis-ui/tokens` that the site installs, and css 0.10 reads tokens that only tokens 0.10
+has, so the three move together. A site that takes css or tokens from its own workspace keeps
+that dependency and moves the workspace to 0.10. css 0.8 to 0.10 have changes of their own.
+Read the [changelog of css](https://github.com/chassis-ui/css/blob/main/packages/css/CHANGELOG.md)
+first.
+
+### 2. Move the `vendor/assets` submodule
+
+From the root of the repository:
+
+```sh
+pnpm sync-submodules
+git add vendor/assets
+```
+
+`sync-submodules` moves the submodule to the latest commit of `app/docs` and builds it. The
+docs build has `fonts/fonts.css` and the `ui-*` font files from `db6d64b` on, and the logo
+for inline use from `4382de9` on. With a commit before `db6d64b` the pages show the fallback
+fonts.
+
+Stage the pin, or commit it, before you run `pnpm vendor` or a build: `vendor` checks the
+submodule out at the commit that the repository records, and a build from the old pin links a
+stylesheet that is not there.
+
+chassis-assets has no submodule: its site is built from its own `source/`, which has
+`fonts.css` from `db6d64b` on. A site that does not copy the docs build provides
+`fonts/fonts.css` and the font files it names itself.
+
+### 3. Rename the typography names in your own pages and styles
+
+The table under [From 0.8 to 0.9](#2-rename-the-typography-names-in-your-own-pages-and-styles)
+lists them: `.h1` to `.h6` are `.font-h1` to `.font-h6`, `.font-text` is `.font-ui`, the
+`--cx-*-text-*` properties are `--cx-*-ui-*`, and the `$font-context-*` maps are `$font-*`.
+css 0.10 keeps `.h1` to `.h6`, `.font-text` and `--cx-font-family-text` as deprecated names.
+The other old names are gone: a Sass name that is gone fails the build, and a class or a
+custom property that is gone does nothing, so look for those in the pages.
+
+### 4. Look for the old files of the docs build in your own files
+
+The package links the new files, but a page or a stylesheet of your own may name the old
+ones:
+
+```sh
+git grep -nE "fonts/(text|display|code)\.css|text-[a-z0-9-]*\.woff2|site-logo\.svg" -- ':!vendor'
+```
+
+- **`fonts/text.css`, `fonts/display.css`, `fonts/code.css`:** link `fonts/fonts.css`.
+- **`text-*.woff2`:** the files of the `text` role are `ui-*.woff2` now, such as
+  `ui-latin.woff2` and `ui-normal.woff2`.
+- **`images/site-logo.svg` in an `<img>`:** the logo from `4382de9` on has no `xmlns`, so a
+  browser does not show it as an image, and its paths take their colors from the classes
+  `icon-default` and `icon-primary` of the page. Inline it, as the navigation bar does, or use a
+  file of `images/logo/`, which an `<img>` shows, such as `images/logo/chassis-logo-brand.svg`.
+
+### What changes on the pages
+
+- **The head links `fonts/fonts.css`** under the static path, in place of the three
+  stylesheets of the roles.
+- **The navigation bar and the footer inline the logo,** `2rem` high, in the colors of the
+  theme. The build reads `static/images/site-logo.svg` of the site's `public` directory and
+  fails without it. The link of the logo in the footer has the margin `mb-md`, where it was
+  `mb-xs`.
+- **The search of the header is `5rem` wide** from the `lg` breakpoint, the icon and the
+  shortcut, and `12.5rem` from `xl`, where it was 200px.
+- **The footer and the docs sidebar use `.font-h6` and `.font-h5`,** and `.cxd-subtitle`
+  reads `$font-lead`.
+- **From css 0.10 and tokens 0.10:** the headings and the titles are in the display family,
+  Montserrat, the default tokens have new base colors, and buttons, badges and the other
+  components that had one lose their background gradient.
+
+### Check the result
+
+Build the site before and after the upgrade and compare the pages in a browser, in both color
+modes and between 1024 and 1280 pixels, where the search of the header changes. In the
+network panel, no request under `/static/fonts/` may fail.
+
 ## From 0.9 to 0.10
 
 0.10.0 links one font stylesheet, `fonts/fonts.css`, in place of `fonts/text.css`,
@@ -11,14 +104,20 @@ and the classes `icon-default` and `icon-primary` of the page color its paths.
 
 ### 1. Update the dependency and the assets
 
+In the package of the site, then from the root of the repository:
+
 ```sh
 pnpm add -D @chassis-ui/docs@^0.10.0
 pnpm sync-submodules
+git add vendor/assets
 ```
 
 The docs build of `chassis-assets` has `fonts/fonts.css` from `db6d64b` of `app/docs` on. With
-an earlier commit the pages show the fallback fonts. A site that does not copy the docs build
-provides `fonts/fonts.css` itself.
+an earlier commit the pages show the fallback fonts. Stage or commit the pin before you run
+`pnpm vendor` or a build, which check the submodule out at the commit that the repository
+records. A site that does not copy the docs build provides `fonts/fonts.css` itself. Step 2
+and step 4 of [From 0.8 to 0.10](#from-08-to-010) say more, and how to find the old files in
+your own pages.
 
 ### What changes in the package
 
@@ -30,6 +129,9 @@ provides `fonts/fonts.css` itself.
   logo of an earlier docs build, with its own colors, a width and a height, shows at the same
   height.
 - **The link of the logo in the footer has the bottom margin `mb-md`,** where it was `mb-xs`.
+- **The search of the header is `5rem` wide** from the `lg` breakpoint, the icon and the
+  shortcut, and `12.5rem` from `xl`, where it was 200px, so that no link of the header runs
+  under it between 1024 and 1280 pixels.
 
 ### Check the result
 
