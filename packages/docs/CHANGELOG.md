@@ -1,5 +1,11 @@
 # @chassis-ui/docs
 
+## 0.10.0
+
+### Minor Changes
+
+- **Breaking.** The head links one font stylesheet, `fonts/fonts.css` under the static path, in place of `fonts/text.css`, `fonts/display.css` and `fonts/code.css`, and the navigation bar and the footer inline the logo, `images/site-logo.svg`, in place of loading it with `<img>`. chassis-assets made both changes on `app/docs` on 2026-10-19: a brand has one `fonts.css`, and the logo of the `chassis` brand has no `xmlns` and is colored by the classes `icon-default` and `icon-primary` of the page, so it shows only inline. A site moves its `vendor/assets` submodule to `db6d64b` of `app/docs` or later with `pnpm sync-submodules`; with an earlier commit the pages show the fallback fonts. The build reads `static/images/site-logo.svg` of the site's `public` directory and fails without it. The logo is `2rem` high, and the footer gives its link the margin `mb-md` in place of `mb-xs`. The search of the header is `5rem` wide from the `lg` breakpoint, the icon and the shortcut, and `12.5rem` from `xl`, where it was 200px, so that no link of the header runs under it. See [UPGRADING.md](https://github.com/chassis-ui/website/blob/main/packages/docs/UPGRADING.md#from-09-to-010).
+
 ## 0.9.0
 
 ### Minor Changes

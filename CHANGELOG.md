@@ -9,7 +9,10 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 ### Changed
 
 - The assets submodule is at `4382de9` of `app/docs`, where it was `784d885`. The docs build has one font stylesheet, `fonts/fonts.css`, in place of `text.css`, `display.css` and `code.css`, and the files of the `text` role are `ui` files, such as `ui-latin.woff2`. The `display` family is Montserrat, which the headings ask for since css 0.10 and which the build before did not have: the stylesheet of the pin declared Archivo Narrow. The logo, the favicons, the social image and `icons/cx-sprite.svg` are new. The sprite has `cx-react`.
-- The navigation bar and the footer inline the logo, 2rem high, and its paths take the colors of the theme. `@chassis-ui/docs` links `fonts/fonts.css` (see its changeset).
+- The navigation bar and the footer inline the logo, 2rem high, and its paths take the colors of the theme, and the head links `fonts/fonts.css`: `@chassis-ui/docs` 0.10.0. The starter depends on docs `^0.10.0`.
+- The search of the header is the icon and the shortcut, 5rem wide, from 1024 pixels, and 12.5rem from 1280, where it was 200px: the links Blog and Examples ran under it between 1024 and about 1130 pixels.
+- The module links of the home page are top-aligned, with less padding from 768 to 1023 pixels, where the six ran past the row, and no even background on phones. The Figma module is Figma Libraries.
+- The repositories of the about page are a list whose whole rows are links, and their GitHub icon shows: the page had no sprite with it. The branding section of the about page is left out for now.
 - The modules of the home page link React Components, `/react`, after the CSS Framework.
 
 ## 2026-10-18
