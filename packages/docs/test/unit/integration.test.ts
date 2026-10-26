@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
@@ -86,10 +87,24 @@ describe('chassisDocs: config', () => {
     expect(await loadVirtual('config')).toContain('"siteBranch":"main"')
   })
 
-  test('provides the static path to the scripts', async () => {
+  test('provides the static path and the sprite to the scripts', async () => {
     const { loadVirtual } = await setUp({})
 
-    expect(await loadVirtual('static')).toBe('export const staticPath = "/static"')
+    expect(await loadVirtual('static')).toBe(
+      'export const staticPath = "/static"\nexport const spritePath = "/static/icons/chassis-icons.svg"'
+    )
+  })
+
+  test('versions the sprite that public has when a script loads the module', async () => {
+    const { root, loadVirtual } = await setUp({})
+
+    // A site's own integration copies the file after the hook of this one.
+    fs.mkdirSync(path.join(root, 'public/static/icons'), { recursive: true })
+    fs.writeFileSync(path.join(root, 'public/static/icons/chassis-icons.svg'), '<svg></svg>')
+
+    expect(await loadVirtual('static')).toMatch(
+      /export const spritePath = "\/static\/icons\/chassis-icons\.svg\?v=[0-9a-f]{8}"$/
+    )
   })
 
   test('watches the config file', async () => {

@@ -25,6 +25,8 @@ declare module 'virtual:chassis-docs/paths' {
 declare module 'virtual:chassis-docs/static' {
   /** `staticPath` of the config, for scripts that run in the browser. */
   export const staticPath: string
+  /** URL of the icon sprite, with the version of its content. */
+  export const spritePath: string
 }
 
 declare module 'virtual:chassis-docs/styles' {}

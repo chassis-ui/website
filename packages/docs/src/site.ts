@@ -14,6 +14,7 @@ import { getNodeModulesFsPaths, resolvePackageFilePath } from './libs/paths'
 import { replaceConfigInText, replaceDocsrefInText } from './libs/remark'
 import type { ChassisConfig, DocsPage, Sidebar } from './libs/schema'
 import { resolveSiteFileUrl, resolveSourceFsPath, resolveSourceUrl } from './libs/source'
+import { versionStaticPath } from './libs/static-version'
 
 /**
  * The parsed `config.yml`.
@@ -41,6 +42,18 @@ export function getDocsPath(inputPath: string): string {
  */
 export function getStaticPath(file = ''): string {
   return joinStaticPath(config.staticPath ?? '/static', file)
+}
+
+/**
+ * URL path of a static file with the version of its content:
+ * `getVersionedStaticPath('css/chassis.min.css')` is
+ * `/static/css/chassis.min.css?v=8e2106f6`. The version is read from the file of the site's
+ * `public` directory, so a page links the file of its own build, and a browser that keeps
+ * the file fetches it again when it changes. Without that file, the path is the one of
+ * `getStaticPath()`.
+ */
+export function getVersionedStaticPath(file: string): string {
+  return versionStaticPath(getStaticPath(file), paths.publicDir)
 }
 
 /** Absolute path of the site's root: the directory that holds `astro.config.ts`. */

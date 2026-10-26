@@ -3,7 +3,7 @@ import { replacePlaceholdersInHtml } from '../../libs/placeholder'
 import { replaceIconsInHtml } from '../../libs/icon'
 import Code from './Code.astro'
 import Icon from './Icon.astro'
-import { getStaticPath } from '../../site'
+import { getStaticPath, getVersionedStaticPath } from '../../site'
 
 interface Props {
   /**
@@ -70,7 +70,11 @@ const {
 
 let markup = Array.isArray(code) ? code.join('\n') : code
 markup = replacePlaceholdersInHtml(markup)
-markup = replaceIconsInHtml(markup, getStaticPath())
+markup = replaceIconsInHtml(
+  markup,
+  getStaticPath(),
+  getVersionedStaticPath('icons/chassis-icons.svg')
+)
 markup = markup
   .split('\n')
   .map((line) => line.trimEnd())
@@ -93,7 +97,7 @@ const simplifiedMarkup = sourceMarkup
     (_match, classes) => `<img src="..."${classes ? ` class="${classes}"` : ''} alt="...">`
   )
   .replace(/(<svg class="icon\b[^"]*")\s+width="\d+"\s+height="\d+"/g, '$1')
-  .replace(/href="\/static\/icons\/chassis-icons\.svg#/g, 'href="#')
+  .replace(/href="\/static\/icons\/chassis-icons\.svg(?:\?v=[0-9a-f]+)?#/g, 'href="#')
 ---
 
 <div class="cxd-example-snippet cxd-code-snippet not-prose" data-pagefind-ignore>

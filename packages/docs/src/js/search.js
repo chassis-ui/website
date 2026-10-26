@@ -13,7 +13,7 @@
 // is needed here.
 
 import { getInstanceManager } from '@pagefind/component-ui'
-import { staticPath } from 'virtual:chassis-docs/static'
+import { spritePath } from 'virtual:chassis-docs/static'
 
 const DIALOG_SELECTOR = '#cxdSearchDialog'
 // The rows that are links. The loading skeleton reuses the class on a `<div>`,
@@ -237,7 +237,7 @@ const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => 
 const renderItem = ({ url, titleHtml, excerptHtml = '', icon, sub = false }) => `
   <a class="cxd-search-item${sub ? ' cxd-search-subitem' : ''}" href="${escapeHtml(url)}">
     <svg class="icon cxd-search-item-icon" width="16" height="16" aria-hidden="true">
-      <use href="${staticPath}/icons/chassis-icons.svg#${icon}"></use>
+      <use href="${spritePath}#${icon}"></use>
     </svg>
     <div class="cxd-search-item-body">
       <div class="cxd-search-item-title">${titleHtml}</div>

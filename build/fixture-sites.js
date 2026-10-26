@@ -176,6 +176,10 @@ function readBuiltFile(distDir, file) {
   return fs.readFileSync(builtFile, 'utf8')
 }
 
+function escapeRegExp(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 // Resolves each import path from the site, the way Node and Vite read `exports`.
 function checkExports(siteDir) {
   const script = `
@@ -239,13 +243,20 @@ function checkOutput(layout, siteDir) {
   // The pages load the static files under `staticPath`. The files stay in `static/`.
   const prefix = layout.staticPath
 
-  for (const file of [
-    'css/chassis.min.css',
-    'icons/chassis-icons.css',
-    'images/favicon.png',
-    'images/manifest.json'
-  ]) {
+  for (const file of ['images/favicon.png', 'images/manifest.json']) {
     assert.ok(page.includes(`href="${prefix}/${file}"`), `The page does not link ${prefix}/${file}`)
+  }
+
+  // The stylesheets and the sprite carry the version of their content when `public` has the
+  // file at the path of the URL, as it does for `/static`.
+  const version = prefix === '/static' ? '\\?v=[0-9a-f]{8}' : ''
+
+  for (const file of ['css/chassis.min.css', 'icons/chassis-icons.css']) {
+    assert.match(
+      page,
+      new RegExp(`href="${escapeRegExp(`${prefix}/${file}`)}${version}"`),
+      `The page does not link ${prefix}/${file}${version ? ' with a version' : ''}`
+    )
   }
 
   assert.ok(
@@ -255,8 +266,9 @@ function checkOutput(layout, siteDir) {
     'The logo is not inlined from the static files'
   )
   assert.ok(!page.includes('images/site-logo.svg'), 'The page still loads the logo as a file')
-  assert.ok(
-    page.includes(`href="${prefix}/icons/chassis-icons.svg#`),
+  assert.match(
+    page,
+    new RegExp(`href="${escapeRegExp(`${prefix}/icons/chassis-icons.svg`)}${version}#`),
     'The icons are not loaded from the static path'
   )
 

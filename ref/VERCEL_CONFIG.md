@@ -144,11 +144,8 @@ at the path of its URL, on the deployment and on a local `astro preview`. They h
 of the site in their name and were never shared.
 
 One URL for all sites is what lets the browser keep one copy of the shared CSS, fonts and
-icons. The files are sent with `max-age=0, must-revalidate`: the browser asks each time,
-and gets a 304 when the file of the site it is on is the same as its copy, and that site's
-file when it differs.
-
-The font files are the exception, see [Cache of the font files](#cache-of-the-font-files).
+icons. The browser keeps them until a page links a new version, see
+[Cache of the static files](#cache-of-the-static-files).
 
 From 2026-09-29 to 2026-10-01 each project also had a prefix of its own,
 `/<project>/static/*`, for a move away from the `Referer` header. The move was called off
@@ -192,22 +189,42 @@ proxied sibling pages as well as the website's own.
 
 HSTS is not set here. Vercel sends it for every custom domain.
 
-### Cache of the font files
+### Cache of the static files
 
-The third entry of `headers` sends the WOFF and WOFF2 files under `/static/fonts/` with
-`Cache-Control: public, max-age=604800`: a browser keeps a font for a week without asking.
-The pages load their fonts from there since 2026-10-11, where Google Fonts sent its files
-with a cache of a year, and without the rule a visitor asks for each font again on every
-page.
+Vercel sends every file with `max-age=0, must-revalidate` unless a rule says otherwise, so
+the browser asks for each file of a page on every page view. A 304 is an edge request
+like a 200, and a page of a sibling is counted on both projects. A page loads about thirty
+files, so the plan's edge requests went to files that had not changed (2026-10-26). The
+entries of `headers` after the indexing one set the cache of `/static/`:
 
-- The website has every file of `/static/fonts/`, so its deployment answers for all seven
-  sites, and the rule covers them.
-- The names have no hash. A font that changes under its name reaches a returning visitor
-  within a week. Until then the visitor has the font of before, which matters when the
-  ranges of `--subset` grow: a new character is drawn with the next font of the stack.
-- The stylesheet of the folder, `fonts.css`, is not matched and is asked for each time. A
-  stylesheet kept for a week could name a font file that a newer build no longer has.
-- The icon font under `/static/icons/` is not matched either.
+| Path                                                                       | `Cache-Control`                       |
+| -------------------------------------------------------------------------- | ------------------------------------- |
+| `/static/astro/*`                                                          | `public, max-age=31536000, immutable` |
+| `/static/{css,icons,images,js,other,tailwind}/*`, `/static/fonts/*.css`, with `?v=` | `public, max-age=31536000, immutable` |
+| The same, without `?v=`                                                    | `public, max-age=600`                 |
+| `/static/fonts/*.woff`, `/static/fonts/*.woff2`                            | `public, max-age=604800`              |
+
+- Astro's files have a hash of their content in their name, and a new build names a
+  changed file anew, so the browser never asks again. The rule covers the website's own
+  `/static/astro/` only. The siblings' `/<project>/static/astro/` come with the cache that
+  each sibling sends.
+- The layouts of `@chassis-ui/docs` link the Chassis CSS, the icon stylesheet,
+  `fonts/fonts.css` and the icon sprite with `?v=` and a hash of the file that the site
+  built with (`getVersionedStaticPath()`). A deployment with a new CSS links a new URL,
+  so a breaking CSS reaches every visitor with the pages that need it. A site whose version
+  of `@chassis-ui/docs` is older links the files without `?v=`.
+- A file without `?v=`, such as an image, reaches a returning visitor within ten minutes of
+  a change, a font within a week. Until then the visitor has the file of before.
+- The version is the hash of the site's own copy. The website serves a shared file for every
+  site, so while a sibling's assets pin differs from the website's, its `?v=` names its own
+  copy while the website sends its own: the page is styled, with either CSS, until the pins
+  move together (F65 of the [roadmap](ROADMAP.md)).
+- Vercel adds this project's headers to the responses of external rewrites, so the rules
+  can also reach the files that the referrer-based rewrites fetch from a sibling. That is safe
+  while no two siblings serve different files at the same path under `/static/` that the
+  website lacks, as none does (2026-10-26): a browser keeps one copy per URL, whichever
+  site it was on. A file that the website has is served by the website for all sites.
+- A path under `/static/` outside the folders of the table keeps Vercel's default.
 
 ### The content security policy
 
@@ -350,11 +367,15 @@ curl -sI https://chassis-ui.com/css/
 # → HTTP/2 200, no x-robots-tag
 ```
 
-Test the cache of a font file, and of a font stylesheet:
+Test the cache of a font file, of a shared stylesheet and of a page:
 ```bash
 curl -sI https://chassis-ui.com/static/fonts/ui.woff2 | grep -i cache-control
 # → cache-control: public, max-age=604800
 curl -sI https://chassis-ui.com/static/fonts/fonts.css | grep -i cache-control
+# → cache-control: public, max-age=600
+curl -sI 'https://chassis-ui.com/static/fonts/fonts.css?v=1' | grep -i cache-control
+# → cache-control: public, max-age=31536000, immutable
+curl -sI https://chassis-ui.com/ | grep -i cache-control
 # → cache-control: public, max-age=0, must-revalidate
 ```
 
@@ -368,7 +389,7 @@ curl -sI https://chassis-tokens.vercel.app/tokens/
 
 - **`vercel.json`** (chassis-website) — main rewrites, security headers, staging `X-Robots-Tag` header.
 - **`vercel.json`** (each sub-project) — `X-Robots-Tag` for `*-staging.vercel.app` hosts only.
-- **`packages/website/src/pages/robots.txt.ts`** — robots for the website, by build environment: a production build allows crawling, any other disallows it.
+- **`packages/website/src/pages/robots.txt.ts`** — robots for the website, by build environment: a production build allows crawling but for three SEO crawlers, any other disallows it.
 - **`src/pages/robots.txt.ts`** of each sub-project's site (`packages/site`, or `site/` in icons and figma) — always emits `Disallow: /` (sub-projects are never user-facing).
 
 ## Troubleshooting

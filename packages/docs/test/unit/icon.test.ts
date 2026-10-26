@@ -31,6 +31,17 @@ describe('replaceIconsInHtml', () => {
     )
   })
 
+  test('uses the given sprite for an icon without one', () => {
+    const sprite = '/static/icons/chassis-icons.svg?v=8e2106f6'
+
+    expect(replaceIconsInHtml('<Icon name="check" />', '/static', sprite)).toContain(
+      `<use href="${sprite}#check">`
+    )
+    expect(
+      replaceIconsInHtml('<Icon name="x" sprite="/icons.svg" />', '/static', sprite)
+    ).toContain('<use href="/icons.svg#x">')
+  })
+
   test('renders a font icon', () => {
     expect(replaceIconsInHtml('<Icon name="check" font />')).toBe(
       '<span class="icon cx-check" aria-hidden="true"></span>'

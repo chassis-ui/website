@@ -4,13 +4,14 @@ import { fileURLToPath } from 'node:url'
 import type { AstroIntegration, AstroUserConfig, ViteUserConfig } from 'astro'
 import type { z } from 'astro/zod'
 import { loadConfig, loadSidebar } from './libs/config'
-import { joinDocsPath } from './libs/docs-path'
+import { joinDocsPath, joinStaticPath } from './libs/docs-path'
 import { getDocsMarkdownConfig, type DocsMarkdownConfigOptions } from './libs/markdown'
 import { getInstalledPackageFsPath, getPackageRoot } from './libs/paths'
 import { remarkCxConfig, remarkCxDocsref } from './libs/remark'
 import { configSchema, type ChassisConfig, type Sidebar } from './libs/schema'
 import { chassisAutoImport, type ChassisAutoImportOptions } from './libs/shortcodes'
 import { getSiteUrl } from './libs/site'
+import { versionStaticPath } from './libs/static-version'
 
 export interface ChassisDocsOptions<TSchema extends z.ZodType = typeof configSchema> {
   /**
@@ -56,7 +57,8 @@ type VitePlugin = Extract<NonNullable<ViteUserConfig['plugins']>[number], { name
 const virtualPrefix = 'virtual:chassis-docs/'
 const resolvedPrefix = '\0' + virtualPrefix
 
-function virtualModules(modules: Record<string, string>): VitePlugin {
+// The code of each module, or a function that returns it when the module is loaded.
+function virtualModules(modules: Record<string, string | (() => string)>): VitePlugin {
   return {
     name: 'chassis-docs:virtual',
     resolveId(id) {
@@ -66,7 +68,9 @@ function virtualModules(modules: Record<string, string>): VitePlugin {
     },
     load(id) {
       if (id.startsWith(resolvedPrefix)) {
-        return modules[id.slice(resolvedPrefix.length)]
+        const code = modules[id.slice(resolvedPrefix.length)]
+
+        return typeof code === 'function' ? code() : code
       }
     }
   }
@@ -92,6 +96,7 @@ declare module 'virtual:chassis-docs/paths' {
 
 declare module 'virtual:chassis-docs/static' {
   export const staticPath: string
+  export const spritePath: string
 }
 
 declare module 'virtual:chassis-docs/styles' {}
@@ -238,8 +243,21 @@ export function chassisDocs<TSchema extends z.ZodType = typeof configSchema>(
                 paths: Object.entries(paths)
                   .map(([name, value]) => `export const ${name} = ${JSON.stringify(value)}`)
                   .join('\n'),
-                // A config that was not loaded with `loadConfig()` may lack the default.
-                static: `export const staticPath = ${JSON.stringify(config.staticPath ?? '/static')}`,
+                // A config that was not loaded with `loadConfig()` may lack the default. The
+                // version of the sprite is read when a script loads the module: a site's own
+                // integration may copy the file into `public` after this hook.
+                static: () => {
+                  const staticPath = config.staticPath ?? '/static'
+                  const spritePath = versionStaticPath(
+                    joinStaticPath(staticPath, 'icons/chassis-icons.svg'),
+                    paths.publicDir
+                  )
+
+                  return [
+                    `export const staticPath = ${JSON.stringify(staticPath)}`,
+                    `export const spritePath = ${JSON.stringify(spritePath)}`
+                  ].join('\n')
+                },
                 styles: styles.map((file) => `import ${JSON.stringify(file)}`).join('\n')
               })
             ]

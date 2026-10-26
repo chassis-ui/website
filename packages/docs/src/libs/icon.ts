@@ -18,9 +18,16 @@ interface IconOptions {
  * This is needed because the `<Example />` shortcode renders its `code` prop as raw HTML via `set:html`
  * rather than as MDX, so nested Astro components (like `<Icon />`, similar to `<Placeholder />`) are never
  * actually invoked — they need to be expanded to their rendered markup ahead of time.
+ *
+ * @param staticPath The `staticPath` of the site.
+ * @param sprite URL of the sprite that an icon without a `sprite` attribute uses.
  * @see src/components/shortcodes/Icon.astro
  */
-export function replaceIconsInHtml(html: string, staticPath = '/static') {
+export function replaceIconsInHtml(
+  html: string,
+  staticPath = '/static',
+  sprite = `${staticPath}/icons/chassis-icons.svg`
+) {
   return html.replace(iconRegex, (match) => {
     const document = htmlparser2.parseDocument(match, { xmlMode: true })
     const iconElement = document.firstChild
@@ -34,11 +41,11 @@ export function replaceIconsInHtml(html: string, staticPath = '/static') {
       throw new Error('Invalid icon element.')
     }
 
-    return renderIconToString(getOptionsWithDefaults(iconElement.attribs, staticPath))
+    return renderIconToString(getOptionsWithDefaults(iconElement.attribs, sprite))
   })
 }
 
-function getOptionsWithDefaults(attribs: Record<string, string>, staticPath: string): IconOptions {
+function getOptionsWithDefaults(attribs: Record<string, string>, sprite: string): IconOptions {
   if (!attribs.name) {
     throw new Error('Icon element is missing the required "name" attribute.')
   }
@@ -48,7 +55,7 @@ function getOptionsWithDefaults(attribs: Record<string, string>, staticPath: str
     class: attribs.class,
     size: attribs.size ? Number(attribs.size.replace(/[{}]/g, '')) : 24,
     font: attribs.font !== undefined && attribs.font !== '{false}',
-    sprite: attribs.sprite || `${staticPath}/icons/chassis-icons.svg`,
+    sprite: attribs.sprite || sprite,
     title: attribs.title
   }
 }

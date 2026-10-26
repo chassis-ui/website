@@ -242,6 +242,8 @@ Two kinds of URL are the site's own to move:
 
 A social image named in the frontmatter as `static/images/…` is read from the `public` directory and linked under `staticPath`.
 
+The layouts link the Chassis CSS, the icon stylesheet, `fonts/fonts.css` and the icon sprite with a version: `/static/css/chassis.min.css?v=8e2106f6`, the first 8 characters of the MD5 hash of the file. A new file is a new URL, so a host can let the browser keep these files for good. The version is read from the file of `public` at the path of the URL, so a site under a prefix whose `public` holds the files in `static/` links them without one.
+
 ### 5. Use the layouts
 
 ```astro
@@ -283,6 +285,7 @@ chassisDocs({
 | `getSiteRoot()`, `getSiteFsPath(file)`             | Absolute path of the site's root, or of a file in it                |
 | `getPublicFsPath(file)`                            | Absolute path of a file in the `public` directory                   |
 | `getStaticPath(file)`                              | URL path of a static file, under `staticPath` of the config         |
+| `getVersionedStaticPath(file)`                     | The same, with `?v=` and a hash of the file in `public`             |
 | `getSourceFsPath(file)`                            | Absolute path of a file that a `file` prop names                    |
 | `getSourceUrl(file)`                               | URL of a source file on GitHub, at the tag of the current version   |
 | `getSiteFileUrl(filePath)`                         | URL of a file of the site on GitHub, on the site's branch           |

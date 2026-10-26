@@ -1,5 +1,5 @@
 ---
-import { getStaticPath } from '../../site'
+import { getVersionedStaticPath } from '../../site'
 
 /**
  * Icon
@@ -31,7 +31,7 @@ const {
   size = 24,
   font = false,
   title,
-  sprite = getStaticPath('icons/chassis-icons.svg'),
+  sprite = getVersionedStaticPath('icons/chassis-icons.svg'),
   ...rest
 } = Astro.props
 ---

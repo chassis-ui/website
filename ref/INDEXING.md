@@ -38,11 +38,11 @@ Indexing is controlled with **two layers**:
 
 | Host | `robots.txt` | `X-Robots-Tag` |
 |---|---|---|
-| `chassis-ui.com` | `Disallow:` (allow all) + sitemap | (none) |
+| `chassis-ui.com` | `Disallow:` (allow all but three SEO crawlers) + sitemap | (none) |
 | `staging.chassis-ui.com` | `Disallow: /` | `noindex, nofollow` |
 | `chassis-<project>.vercel.app` (production previews of the six sub-projects) | `Disallow: /` | (none — would leak via proxy) |
 | `chassis-<project>-staging.vercel.app` (staging previews) | `Disallow: /` | `noindex, nofollow` |
-| `chassis-website-ozgurgunes.vercel.app` (the website's production deployment) | `Disallow:` (allow all) + sitemap of `chassis-ui.com` | `noindex`, which Vercel adds |
+| `chassis-website-ozgurgunes.vercel.app` (the website's production deployment) | `Disallow:` (allow all but three SEO crawlers) + sitemap of `chassis-ui.com` | `noindex`, which Vercel adds |
 | `chassis-website-git-staging-ozgurgunes.vercel.app` (the website's staging deployment) | `Disallow: /` | `noindex`, which Vercel adds |
 
 ## 📂 Where each rule lives
@@ -50,6 +50,8 @@ Indexing is controlled with **two layers**:
 ### Website (chassis-website)
 
 **`packages/website/src/pages/robots.txt.ts`** — emits sitemap and `Disallow:` only when the build is a production Astro build (`import.meta.env.PROD`) **and** either `VERCEL_ENV` is unset or equals `production`. Staging (`VERCEL_ENV=preview`) and local dev builds emit `Disallow: /`.
+
+The production file also has a `Disallow: /` group for each of `barkrowler`, `AhrefsBot` and `SemrushBot`. They are SEO crawlers: they bring no visitors and spend the plan's edge requests (2026-10-26). Baiduspider and Amazonbot are allowed.
 
 ```ts
 const vercelEnv = process.env.VERCEL_ENV
@@ -158,7 +160,7 @@ done
 
 | URL | robots.txt | `X-Robots-Tag` |
 |---|---|---|
-| `chassis-ui.com/*` | `Disallow:` (allow) | (none) |
+| `chassis-ui.com/*` | `Disallow:` (allow), `Disallow: /` for three SEO crawlers | (none) |
 | `staging.chassis-ui.com/*` | `Disallow: /` | `noindex, nofollow` |
 | `chassis-<project>.vercel.app/*` | `Disallow: /` | (none) |
 | `chassis-<project>-staging.vercel.app/*` | `Disallow: /` | `noindex, nofollow` |

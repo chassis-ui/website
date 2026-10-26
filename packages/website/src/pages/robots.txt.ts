@@ -7,10 +7,14 @@ export const GET: APIRoute = function GET({ site }) {
   const vercelEnv = process.env.VERCEL_ENV
   const allowCrawling = import.meta.env.PROD && (!vercelEnv || vercelEnv === 'production')
 
-  const robotsTxt = `# www.robotstxt.org${allowCrawling ? '\n# Allow crawling of all content' : ''}
+  // SEO crawlers bring no visitors and spend the edge requests of the Vercel plan.
+  const blockedBots = ['barkrowler', 'AhrefsBot', 'SemrushBot']
+  const blockedGroups = blockedBots.map((bot) => `User-agent: ${bot}\nDisallow: /\n`).join('\n')
+
+  const robotsTxt = `# www.robotstxt.org${allowCrawling ? '\n# Allow crawling of all content but the SEO crawlers' : ''}
 User-agent: *
 Disallow: ${allowCrawling ? '' : '/'}
-${allowCrawling ? `Sitemap: ${new URL('sitemap-index.xml', site)}\n` : ''}`
+${allowCrawling ? `\n${blockedGroups}\nSitemap: ${new URL('sitemap-index.xml', site)}\n` : ''}`
 
   return new Response(robotsTxt, {
     headers: {

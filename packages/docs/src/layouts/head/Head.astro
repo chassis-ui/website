@@ -5,7 +5,7 @@
  * HTML head section with meta tags, stylesheets, and SEO configuration.
  */
 
-import { getConfig, getStaticPath } from '../../site'
+import { getConfig, getVersionedStaticPath } from '../../site'
 import { isHomePath } from '../../libs/docs-path'
 import type { Layout } from '../../libs/layout'
 import Stylesheet from './Stylesheet.astro'
@@ -46,7 +46,7 @@ const pageTitle = isHome
   family of every role. A link, not an `@import` in the styles, so that the browser finds it
   with the page and not after the stylesheet that imports it
 -->
-<link rel="stylesheet" href={getStaticPath('fonts/fonts.css')} />
+<link rel="stylesheet" href={getVersionedStaticPath('fonts/fonts.css')} />
 
 <meta name="description" content={description} />
 

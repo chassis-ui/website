@@ -1,5 +1,5 @@
 import { Tooltip } from '@chassis-ui/css'
-import { staticPath } from 'virtual:chassis-docs/static'
+import { spritePath } from 'virtual:chassis-docs/static'
 
 // Helper to detect the user's preferred theme
 function getPreferredTheme() {
@@ -44,7 +44,7 @@ function toggleTheme(button) {
   const iconUse = button.querySelector('use')
   if (iconUse) {
     const iconHref = newTheme === 'dark' ? 'sun-solid' : 'moon-solid'
-    iconUse.setAttribute('href', `${staticPath}/icons/chassis-icons.svg#${iconHref}`)
+    iconUse.setAttribute('href', `${spritePath}#${iconHref}`)
   }
 }
 
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const example = button.closest('.cxd-example-snippet')?.querySelector('.cxd-example')
       const currentTheme = example?.getAttribute('data-cx-theme') || preferredTheme
       const iconHref = currentTheme === 'dark' ? 'sun-solid' : 'moon-solid'
-      iconUse.setAttribute('href', `${staticPath}/icons/chassis-icons.svg#${iconHref}`)
+      iconUse.setAttribute('href', `${spritePath}#${iconHref}`)
     }
 
     // Add event listener if not already set through onclick
