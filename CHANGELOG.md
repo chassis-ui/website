@@ -4,6 +4,16 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-10-26
+
+### Changed
+
+- The assets submodule is at `v0.5.0` of chassis-assets, `1e37c96` of `app/docs`, where it was `4382de9`. The docs build has a web app manifest, `other/manifest.json`, with a maskable icon, `favicon.svg`, a real `favicon.ico` and `site-logomark.svg`, and `images/logo/` has `logo-{light,dark,black,white}` in place of the `chassis-{logo,icon}-*` banners. `other/default.tokens.json` is gone.
+- The head links `/static/other/manifest.json` of the assets, named Chassis UI, in place of the website's own `/static/images/manifest.json`, which is gone: `@chassis-ui/docs` 0.11.0. The starter depends on docs `^0.11.0` and keeps a manifest with its own name at `static/other/manifest.json`.
+- The pages link the Chassis CSS, the icon stylesheet, `fonts/fonts.css` and the icon sprite with `?v=` and a hash of the file. Vercel sends those with `Cache-Control: public, max-age=31536000, immutable`, like the files of `/static/astro/`, and the files under `/static/` without `?v=` with `max-age=600`, where every file had `max-age=0, must-revalidate`: a browser asked for each file of a page on every page view, and each answer was an edge request of the plan.
+- The branding section of the about page is back, with the light and the dark logo for download.
+- `robots.txt` of production disallows `barkrowler`, `AhrefsBot` and `SemrushBot`, SEO crawlers that made a large part of the requests.
+
 ## 2026-10-19
 
 ### Changed

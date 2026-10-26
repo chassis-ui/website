@@ -420,6 +420,7 @@ The integration provides five modules: `virtual:chassis-docs/config`, `virtual:c
 
 | `@chassis-ui/docs` | Requires Astro             | Requires `@chassis-ui/css` | Requires Node | Built with                             |
 | ------------------ | -------------------------- | -------------------------- | ------------- | -------------------------------------- |
+| 0.11.0             | `^7.0.0`                   | `>=0.10.0`                 | `>=22.12.0`   | Astro 7.3.8, css 0.10.0, tokens 0.10.0 |
 | 0.10.0             | `^7.0.0`                   | `>=0.10.0`                 | `>=22.12.0`   | Astro 7.3.8, css 0.10.0, tokens 0.10.0 |
 | 0.9.0              | `^7.0.0`                   | `>=0.10.0`                 | `>=22.12.0`   | Astro 7.3.8, css 0.10.0, tokens 0.10.0 |
 | 0.8.0              | `^7.0.0`                   | `>=0.6.0`                  | `>=22.12.0`   | Astro 7.3.5, css 0.7.1, tokens 0.7.0   |

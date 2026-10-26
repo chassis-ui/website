@@ -1,5 +1,15 @@
 # @chassis-ui/docs
 
+## 0.11.0
+
+### Minor Changes
+
+- **Breaking.** The head links the web app manifest of the docs build of `chassis-assets`, `other/manifest.json` under the static path, in place of `images/manifest.json`, which each site provided itself. chassis-assets added it in `v0.5.0` of `app/docs` on 2026-10-23, with a maskable icon. A site moves its `vendor/assets` submodule to `v0.5.0` or later with `pnpm sync-submodules`, and deletes its own `images/manifest.json`; with an earlier commit the page links a manifest that is not there. The starter keeps a manifest with its own name at `static/other/manifest.json`. See [UPGRADING.md](https://github.com/chassis-ui/website/blob/main/packages/docs/UPGRADING.md#from-010-to-011).
+
+### Patch Changes
+
+- The head links the Chassis CSS, `icons/chassis-icons.css` and `fonts/fonts.css` with `?v=` and the first 8 characters of the MD5 hash of the file, and the `<Icon>` shortcode, the icons of `<Example>` and `<ResizableExample>`, the search results and the color mode button of the examples load the sprite the same way: `/static/css/chassis.min.css?v=8e2106f6`. A new file is a new URL, so a host can let the browser keep these files for good, and a new CSS reaches a visitor with the pages that need it. The hash is read from the file of the site's `public` directory at the path of the URL; without that file the URL has no version, as before. `getVersionedStaticPath(file)` of `@chassis-ui/docs/site` returns such a URL, `replaceIconsInHtml()` takes the sprite as a third argument, and `virtual:chassis-docs/static` exports `spritePath`.
+
 ## 0.10.0
 
 ### Minor Changes
