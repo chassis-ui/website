@@ -1,5 +1,45 @@
 # Upgrading @chassis-ui/docs
 
+## From 0.10 to 0.11
+
+0.11.0 links the web app manifest of the docs build of `chassis-assets`,
+`other/manifest.json` under the static path, in place of `images/manifest.json`, which each
+site provided itself. chassis-assets added the manifest, with a maskable icon, in `v0.5.0`
+of `app/docs` on 2026-10-23.
+
+### 1. Update the dependency and the assets
+
+In the package of the site, then from the root of the repository:
+
+```sh
+pnpm add -D @chassis-ui/docs@^0.11.0
+pnpm sync-submodules
+git add vendor/assets
+```
+
+The docs build has `other/manifest.json` from `v0.5.0` on. With an earlier commit the page
+links a manifest that is not there. Stage or commit the pin before you run `pnpm vendor` or a
+build, which check the submodule out at the commit that the repository records.
+
+### 2. Remove the site's own manifest
+
+Delete `images/manifest.json` from the files that the site copies into `public/static/`,
+`static/static/images/` in most Chassis repositories. A site that keeps a manifest with a name
+of its own puts it at `static/other/manifest.json` of what it copies after the docs build, as
+the starter does, and names the icons `../images/…`.
+
+### What changes in the package
+
+- **The head links `other/manifest.json`** under the static path, and no longer
+  `images/manifest.json`.
+- The pages link the Chassis CSS, `icons/chassis-icons.css`, `fonts/fonts.css` and the icon
+  sprite with `?v=` and a hash of the file, so a host can cache them for good.
+
+### Check the result
+
+Open the page in a browser and check that the manifest loads: in Chrome, Application >
+Manifest names the site and shows its icons.
+
 ## From 0.8 to 0.10
 
 0.9 and 0.10 are both breaking minors, and a site on 0.8 takes them in one upgrade: the

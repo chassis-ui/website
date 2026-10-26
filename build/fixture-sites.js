@@ -236,14 +236,14 @@ function checkOutput(layout, siteDir) {
   assert.match(readBuiltFile(distDir, 'shortcodes/index.html'), /http-equiv="refresh"/)
   assert.match(readBuiltFile(distDir, 'docs/shortcodes/index.html'), /http-equiv="refresh"/)
   readBuiltFile(distDir, 'static/images/site-logo.svg')
-  readBuiltFile(distDir, 'static/images/manifest.json')
+  readBuiltFile(distDir, 'static/other/manifest.json')
   readBuiltFile(distDir, 'static/css/chassis.min.css')
   readBuiltFile(distDir, 'static/icons/chassis-icons.css')
 
   // The pages load the static files under `staticPath`. The files stay in `static/`.
   const prefix = layout.staticPath
 
-  for (const file of ['images/favicon.png', 'images/manifest.json']) {
+  for (const file of ['images/favicon.png', 'other/manifest.json']) {
     assert.ok(page.includes(`href="${prefix}/${file}"`), `The page does not link ${prefix}/${file}`)
   }
 

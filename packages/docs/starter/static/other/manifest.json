@@ -1,19 +1,19 @@
 {
-  "name": "Chassis",
-  "short_name": "Chassis",
+  "name": "Chassis Docs Starter",
+  "short_name": "Chassis Docs",
   "icons": [
     {
-      "src": "android-chrome-192x192.png",
+      "src": "../images/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "android-chrome-512x512.png",
+      "src": "../images/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
-  "start_url": "/?utm_source=a2hs",
+  "start_url": "/",
   "theme_color": "#00A4CC",
   "background_color": "#00A4CC",
   "display": "standalone"

@@ -184,15 +184,15 @@ export const collections = {
 
 The layouts link to files under `/static/`, which the site puts into `static/` of its `public` directory:
 
-| URL                                                                                                                                | From                                                     |
-| ---------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| `/static/css/chassis.css`, `/static/css/chassis.min.css`                                                                           | the `dist` folder of `@chassis-ui/css`                   |
-| `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css`                                                               | the `icons` folder of `@chassis-ui/icons`                |
-| `/static/images/site-logo.svg`, the logo of the navigation bar and the footer. The build inlines it, and fails without the file    | the docs build of `chassis-assets`                       |
-| `/static/images/favicon.png`, `favicon-16x16.png`, `favicon-32x32.png` and `apple-touch-icon.png`                                  | the docs build of `chassis-assets`                       |
-| `/static/images/social-image.png`, the image of a page without a `thumbnail`. The build reads its size, and fails without the file | the docs build of `chassis-assets`                       |
-| `/static/fonts/fonts.css`, and the font files it loads                                                                             | the docs build of `chassis-assets`                       |
-| `/static/images/manifest.json`, the web app manifest                                                                               | the site itself. The starter has one in `static/images/` |
+| URL                                                                                                                                | From                                                                                                                      |
+| ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `/static/css/chassis.css`, `/static/css/chassis.min.css`                                                                           | the `dist` folder of `@chassis-ui/css`                                                                                    |
+| `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css`                                                               | the `icons` folder of `@chassis-ui/icons`                                                                                 |
+| `/static/images/site-logo.svg`, the logo of the navigation bar and the footer. The build inlines it, and fails without the file    | the docs build of `chassis-assets`                                                                                        |
+| `/static/images/favicon.png`, `favicon-16x16.png`, `favicon-32x32.png` and `apple-touch-icon.png`                                  | the docs build of `chassis-assets`                                                                                        |
+| `/static/images/social-image.png`, the image of a page without a `thumbnail`. The build reads its size, and fails without the file | the docs build of `chassis-assets`                                                                                        |
+| `/static/fonts/fonts.css`, and the font files it loads                                                                             | the docs build of `chassis-assets`                                                                                        |
+| `/static/other/manifest.json`, the web app manifest                                                                                | the docs build of `chassis-assets`, `v0.5.0` or later. A site may put its own in its `static/other/`, as the starter does |
 
 `chassis-docs vendor` builds the docs build of `chassis-assets` in the `vendor/assets` submodule. See [Commands](#commands).
 
@@ -210,9 +210,9 @@ The sites of the Chassis projects read these files besides, by name, from the do
 | ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
 | `icons/cx-sprite.svg`                                                    | The home page of each of the seven sites, which imports it. The build fails without it                          |
 | `images/apple-touch-icon.png`, `images/favicon.png`                      | Each of the seven sites, which copies them to `/apple-touch-icon.png` and `/favicon.ico`                        |
-| `images/android-chrome-192x192.png`, `images/android-chrome-512x512.png` | The `manifest.json` of each of the seven sites                                                                  |
+| `images/android-chrome-192x192.png`, `images/android-chrome-512x512.png` | `other/manifest.json` of the docs build, which the head links                                                   |
 | `images/home/`                                                           | The home page of the website. The home page of chassis-tokens reads `comp-gallery-*` of it                      |
-| `images/logo/chassis-{logo,icon}-{brand,white}-banner.svg`               | The about page of the website                                                                                   |
+| `images/logo/logo-{light,dark}.svg`                                      | The about page of the website                                                                                   |
 | `images/social-image.png`                                                | The blog of the website, for a post without an image                                                            |
 | `images/site-logo.svg`                                                   | The examples of the navbar page of chassis-css. The README of `@chassis-ui/react`, by its URL on chassis-ui.com |
 | `images/figma/components/`                                               | The component pages of chassis-figma                                                                            |
