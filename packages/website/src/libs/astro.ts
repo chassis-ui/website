@@ -25,7 +25,8 @@ const staticFileAliases = {
   '/images/favicon.png': '/favicon.ico'
 }
 
-// Pages excluded from the generated sitemap.
+// Pages excluded from the generated sitemap, by path. A staging build has the URL of its
+// deployment as its `site`, so the pages are matched by their path and not by their URL.
 const sitemapExcludes = ['/404', '/docs', '/examples/vanilla-html']
 
 // Sub-project paths whose sitemaps are injected into the root sitemap-index.xml
@@ -49,7 +50,8 @@ interface ChassisOptions {
  */
 export function chassis({ config, root }: ChassisOptions): AstroIntegration[] {
   const baseURL = config.baseURL.replace(/\/$/, '')
-  const sitemapExcludedUrls = sitemapExcludes.map((url) => `${config.baseURL}${url}/`)
+  const basePath = new URL(baseURL).pathname.replace(/\/$/, '')
+  const sitemapExcludedPaths = sitemapExcludes.map((page) => `${basePath}${page}/`)
 
   // `astro check` / `astro sync` doesn't need static assets copied into _site.
   // Track the command so the config:done hook can skip expensive file copies.
@@ -90,7 +92,7 @@ export function chassis({ config, root }: ChassisOptions): AstroIntegration[] {
     // https://github.com/withastro/astro/issues/6475
     mdx() as AstroIntegration,
     sitemap({
-      filter: (page) => sitemapFilter(page, baseURL, sitemapExcludedUrls)
+      filter: (page) => sitemapFilter(page, basePath, sitemapExcludedPaths)
     }),
     {
       // Must run AFTER `@astrojs/sitemap` writes `sitemap-index.xml`.
@@ -199,10 +201,12 @@ function aliasStatic(paths: SitePaths) {
 
 /**
  * Returns `false` for pages that should be excluded from the sitemap:
- * explicitly excluded URLs, and any page under `/test`.
+ * the paths of `sitemapExcludes`, and any page under `/test`.
  */
-function sitemapFilter(page: string, baseURL: string, excludedUrls: string[]) {
-  if (excludedUrls.includes(page) || page.startsWith(`${baseURL}/test`)) {
+function sitemapFilter(page: string, basePath: string, excludedPaths: string[]) {
+  const { pathname } = new URL(page)
+
+  if (excludedPaths.includes(pathname) || pathname.startsWith(`${basePath}/test`)) {
     return false
   }
 

@@ -14,6 +14,10 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 - The branding section of the about page is back, with the light and the dark logo for download.
 - `robots.txt` of production disallows `barkrowler`, `AhrefsBot` and `SemrushBot`, SEO crawlers that made a large part of the requests.
 
+### Fixed
+
+- The sitemap of a staging build leaves out `/404/`, `/docs/` and `/examples/vanilla-html/`, as the production sitemap does. A staging build has the URL of its deployment as its site, and the pages were matched by their `chassis-ui.com` URL, so none was left out: the Lighthouse check of staging followed the redirect of `/examples/vanilla-html/` and failed on the accessibility of example-1.chassis-ui.com, a site of the vanilla-example repository.
+
 ## 2026-10-19
 
 ### Changed
