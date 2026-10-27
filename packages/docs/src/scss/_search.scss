@@ -77,25 +77,28 @@
     color: var(--cx-fg-subtle);
   }
 
-  .cxd-search-trigger-label,
-  .cxd-search-trigger-shortcut {
-    display: none;
-
-    @include media-breakpoint-up(lg) {
-      display: inline-flex;
-    }
-  }
-
+  // The label is the accessible name of the trigger, so on phones it is
+  // hidden from view only.
   .cxd-search-trigger-label {
+    display: inline-flex;
     flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    @include media-breakpoint-down(lg) {
+      @include visually-hidden();
+    }
   }
 
   .cxd-search-trigger-shortcut {
+    display: none;
     flex-shrink: 0;
     gap: .125rem;
+
+    @include media-breakpoint-up(lg) {
+      display: inline-flex;
+    }
   }
 
   .cxd-search-trigger-key {

@@ -607,7 +607,8 @@ const isMac = () => {
 
 // Fill in `.cxd-search-trigger-shortcut` slots with the platform-correct hint
 // and reveal them. Rendered hidden by SearchTrigger.astro so non-JS visitors
-// never see a misleading shortcut key.
+// never see a misleading shortcut key. The hint stays out of the accessible
+// name, which is the trigger's label; `aria-keyshortcuts` announces it.
 const setupTriggerShortcuts = () => {
   const mac = isMac()
   const modifier = mac ? '⌘' : 'Ctrl '
@@ -615,6 +616,7 @@ const setupTriggerShortcuts = () => {
 
   for (const slot of document.querySelectorAll('.cxd-search-trigger-shortcut')) {
     slot.innerHTML = `<kbd class="cxd-search-trigger-key">${modifier}K</kbd>`
+    slot.setAttribute('aria-hidden', 'true')
     slot.hidden = false
     slot.closest('.cxd-search-trigger')?.setAttribute('aria-keyshortcuts', ariaKeyshortcut)
   }

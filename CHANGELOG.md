@@ -11,6 +11,10 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 - The website and the starter of `@chassis-ui/docs` use `@chassis-ui/css` 0.11.1 and `@chassis-ui/tokens` 0.10.1, and `@chassis-ui/docs` is built and tested with them. Its peer range stays `>=0.10.0`. On the pages of the site one thing changes: the arrow of the "Read more" and "Back to Blog" links of the blog is 16 pixels, `1em` of the link text, where it was 18, as css 0.11.0 sizes the icon of an icon link. The CDN links of the installation page are for css 0.11.1; they were for 0.7.2, and the text said 0.7.1.
 - The site is built with Astro 7.4.2, where it was 7.3.8. The pages are the same but for the version in their `generator` tag, and the scripts and the stylesheet of the site have new file names.
 
+### Fixed
+
+- The search trigger of the header is named by its label, and the ⌘K hint is out of its accessible name. axe-core 4.14 checks that the visible text of a control is part of its name, and failed every page on the hint.
+
 ## 2026-10-26
 
 ### Changed
