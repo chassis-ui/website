@@ -57,6 +57,16 @@ export function getVersionedStaticPath(file: string): string {
   return versionStaticPath(getStaticPath(file), paths.publicDir)
 }
 
+/**
+ * A URL path of a file of the site's `public` directory with the version of its content:
+ * `getVersionedPublicPath('/static/images/home/hero.webp')` is
+ * `/static/images/home/hero.webp?v=1a2b3c4d`. For a path that a page or a prop already holds.
+ * Without that file, the path is returned as it is.
+ */
+export function getVersionedPublicPath(urlPath: string): string {
+  return versionStaticPath(urlPath, paths.publicDir)
+}
+
 function getMediaCloudName(): string {
   const cloudName = config.media?.cloudinary
 

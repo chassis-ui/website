@@ -1,0 +1,71 @@
+---
+/**
+ * Gallery Image
+ *
+ * An image of the static files in the four files that chassis-assets exports for it: `name`,
+ * `name@2x`, `name-small` and `name-small@2x`. The `srcset` lists each file that exists with
+ * its width, read from the file, so the browser picks the smallest file that fills `sizes` on
+ * the screen. Each file is linked with the version of its content.
+ */
+
+import { getStaticImageSize } from '@chassis-ui/docs'
+import { getPublicFsPath, getVersionedPublicPath } from '@chassis-ui/docs/site'
+
+interface Props {
+  /** URL path of the image's main file, e.g. `/static/images/home/comp-gallery-light.webp` */
+  imgPath: string
+  /** Alternative text for the image */
+  alt: string
+  /** Width of the image in the layout, as the `sizes` attribute. Default `100vw` */
+  sizes?: string
+  /** Additional CSS classes */
+  classes?: string
+  /** Enable lazy loading */
+  lazyload?: boolean
+  /** Any other attribute is passed through to the rendered element. */
+  [key: string]: unknown
+}
+
+const { imgPath, alt, sizes = '100vw', classes = '', lazyload = true, ...rest } = Astro.props
+
+const [, base, extension] = imgPath.match(/^(.+)(\.[a-z0-9]+)$/i) ?? []
+
+if (!base) {
+  throw new Error(`<GalleryImage> needs the path of an image file, not "${imgPath}".`)
+}
+
+const variants = await Promise.all(
+  [`${base}-small`, `${base}-small@2x`, base, `${base}@2x`].map(async (name) => {
+    const urlPath = `${name}${extension}`
+
+    try {
+      return { urlPath, ...(await getStaticImageSize(getPublicFsPath(urlPath))) }
+    } catch {
+      return undefined
+    }
+  })
+)
+const files = variants.filter((file) => file !== undefined).sort((a, b) => a.width - b.width)
+const main = files.find((file) => file.urlPath === imgPath)
+
+if (!main) {
+  throw new Error(`<GalleryImage> found no image at "${imgPath}" in the public directory.`)
+}
+
+const srcset = files
+  .map((file) => `${getVersionedPublicPath(file.urlPath)} ${file.width}w`)
+  .join(', ')
+---
+
+<img
+  class={['image', classes].filter(Boolean).join(' ')}
+  src={getVersionedPublicPath(main.urlPath)}
+  srcset={srcset}
+  sizes={sizes}
+  alt={alt}
+  width={main.width}
+  height={main.height}
+  loading={lazyload ? 'lazy' : undefined}
+  decoding="async"
+  {...rest}
+/>

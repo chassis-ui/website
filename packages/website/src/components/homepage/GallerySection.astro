@@ -5,7 +5,13 @@
  * Display component gallery images with light/dark mode variants.
  */
 
-import GalleryImage from '@components/shortcodes/GalleryImage.astro'
+import GalleryImage from './GalleryImage.astro'
+
+// The image is as wide as the container's content, 87rem from 2xl and the viewport less the
+// padding below, and the scroll animation of `gsap.js` scales the gallery by 1.25. So the
+// browser picks a file for 1.25 times the width of the content.
+const sizes =
+  '(width >= 96rem) 109rem, (width >= 48rem) calc(125vw - 3.75rem), calc(125vw - 2.5rem)'
 ---
 
 <div id="gallery-section" class="home-section py-6xl">
@@ -14,17 +20,15 @@ import GalleryImage from '@components/shortcodes/GalleryImage.astro'
       <div class="gallery-image bg-evident">
         <GalleryImage
           imgPath="/static/images/home/comp-gallery-light.webp"
-          alt="Chassis UI"
+          alt="A sheet of Chassis UI components: buttons, alerts, form fields, a date picker, tables, a chart, chips and tabs"
+          sizes={sizes}
           classes="mb-5xl fluid w-100 visible-light t-0"
-          width={1240}
-          height={1080}
         />
         <GalleryImage
           imgPath="/static/images/home/comp-gallery-dark.webp"
-          alt="Chassis UI"
+          alt="A sheet of Chassis UI components: buttons, alerts, form fields, a date picker, tables, a chart, chips and tabs"
+          sizes={sizes}
           classes="mb-5xl fluid w-100 visible-dark"
-          width={1240}
-          height={1080}
         />
       </div>
     </div>

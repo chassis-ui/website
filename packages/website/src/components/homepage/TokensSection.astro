@@ -7,6 +7,7 @@
 
 import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 import FeatureSlider from '@components/FeatureSlider.astro'
+import { getVersionedStaticPath } from '@chassis-ui/docs/site'
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 ---
 
@@ -35,7 +36,7 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
             automatically with your codebase.
           </Fragment>
           <img
-            src="/static/images/home/tokens-visual.svg"
+            src={getVersionedStaticPath('images/home/tokens-visual.svg')}
             alt="Visual representation of centralized token definitions in Figma"
             class="image fluid w-100"
             width="512"
@@ -50,7 +51,7 @@ import Code from '@chassis-ui/docs/shortcodes/Code.astro'
             system
           </Fragment>
           <img
-            src="/static/images/home/tokens-scheme.svg"
+            src={getVersionedStaticPath('images/home/tokens-scheme.svg')}
             alt="Diagram showing token reference relationships and cascading updates"
             class="image fluid w-100"
             width="512"

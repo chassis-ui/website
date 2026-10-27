@@ -287,6 +287,7 @@ chassisDocs({
 | `getPublicFsPath(file)`                            | Absolute path of a file in the `public` directory                   |
 | `getStaticPath(file)`                              | URL path of a static file, under `staticPath` of the config         |
 | `getVersionedStaticPath(file)`                     | The same, with `?v=` and a hash of the file in `public`             |
+| `getVersionedPublicPath(urlPath)`                  | A URL path of a file in `public`, with `?v=` and the file's hash    |
 | `getMediaUrl(path, transform)`                     | URL of a copy of an image of the media library                      |
 | `getMediaSrcSet(path, widths, transform)`          | The `srcset` of an image of the media library                       |
 | `getSourceFsPath(file)`                            | Absolute path of a file that a `file` prop names                    |

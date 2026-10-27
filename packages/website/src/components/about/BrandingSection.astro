@@ -4,6 +4,8 @@
  *
  * About page section highlighting the Chassis logo and icon, with download links for use in articles, talks, and other references.
  */
+
+import { getVersionedStaticPath } from '@chassis-ui/docs/site'
 ---
 
 <section class="py-3xl md:py-6xl">
@@ -21,12 +23,12 @@
         <div class="grid gap-md grid-cols-2">
           <div>
             <a
-              href="/static/images/logo/logo-light.svg"
+              href={getVersionedStaticPath('images/logo/logo-light.svg')}
               download
               class="d-flex p-3xl border border-subtle rounded"
             >
               <img
-                src="/static/images/logo/logo-light.svg"
+                src={getVersionedStaticPath('images/logo/logo-light.svg')}
                 alt="Chassis logo"
                 class="object-fit-cover w-100"
                 width="320"
@@ -35,12 +37,12 @@
           </div>
           <div>
             <a
-              href="/static/images/logo/logo-dark.svg"
+              href={getVersionedStaticPath('images/logo/logo-dark.svg')}
               download
               class="d-flex p-3xl border border-subtle rounded bg-inverse"
             >
               <img
-                src="/static/images/logo/logo-dark.svg"
+                src={getVersionedStaticPath('images/logo/logo-dark.svg')}
                 alt="Chassis logo"
                 class="object-fit-cover w-100"
                 width="320"
