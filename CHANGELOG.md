@@ -6,6 +6,11 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 
 ## 2026-10-27
 
+### Added
+
+- The blog post "A Palette Isn't a Color System", on the two layers of Chassis Tokens: the palettes a brand derives from its base colors, and the roles every context maps to them.
+- The covers of the blog come from a media library on Cloudinary, named in `config.yml`, and the pages load resized copies from `res.cloudinary.com`, in AVIF or WebP when the browser accepts them: `<MediaImage>` of `@chassis-ui/docs` 0.11.1. The policy allows images from that host. The color system post has a cover; the two posts that repeated the default image no longer set one. The social image of a post is a 1200 × 630 crop of its cover, and shared links get the large card on X, whose type the head misspelt.
+
 ### Changed
 
 - The website and the starter of `@chassis-ui/docs` use `@chassis-ui/css` 0.11.1 and `@chassis-ui/tokens` 0.10.1, and `@chassis-ui/docs` is built and tested with them. Its peer range stays `>=0.10.0`. On the pages of the site one thing changes: the arrow of the "Read more" and "Back to Blog" links of the blog is 16 pixels, `1em` of the link text, where it was 18, as css 0.11.0 sizes the icon of an icon link. The CDN links of the installation page are for css 0.11.1; they were for 0.7.2, and the text said 0.7.1.
@@ -14,7 +19,8 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 
 ### Fixed
 
-- The search trigger of the header is named by its label, and the ⌘K hint is out of its accessible name. axe-core 4.14 checks that the visible text of a control is part of its name, and failed every page on the hint.
+- The search trigger of the header is named by its label, and the ⌘K hint is out of its accessible name: `@chassis-ui/docs` 0.11.1. axe-core 4.14 checks that the visible text of a control is part of its name, and failed every page on the hint.
+- The images of the home and about pages, the default image of the blog and both files of a `<ResponsiveImage>` are linked with `?v=` and a hash of the file, so Vercel lets browsers keep them for a year instead of asking again after ten minutes: `@chassis-ui/docs` 0.11.1. The gallery of the home page lists its files with their widths, so the browser picks one by width, and the gallery and the Figma carousel have alt texts that describe the pictures.
 
 ## 2026-10-26
 

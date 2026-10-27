@@ -1,5 +1,13 @@
 # @chassis-ui/docs
 
+## 0.11.1
+
+### Patch Changes
+
+- Images of a media library on Cloudinary, for images that do not belong in the repository. `media.cloudinary` of `config.yml` names the account, and a page names an image by its path in the library. `<MediaImage>` of `@chassis-ui/docs/components/MediaImage.astro` renders it with a `srcset` of copies up to twice its width, in AVIF or WebP when the browser accepts them, cropped around the subject when it has a `height`. A `thumbnail` of `media:` and a path links a 1200 × 630 JPEG copy in the social meta tags, with its size and type and without loading it. `getMediaUrl()` and `getMediaSrcSet()` of `@chassis-ui/docs/site` return the URLs, the root entry exports the functions they use, and `zMediaPath` of `@chassis-ui/docs/schema` checks a path in a content schema. The social meta tags now name the large card for X, `summary_large_image`, which the misspelt `summary_lg_image` did not, and give the `og:image:type` of the thumbnail's file instead of `image/png` for every image.
+- The search trigger of the header takes its accessible name from its label, "Search docs…" by default, instead of an `aria-label` that left out the shortcut hint the trigger shows, ⌘K or Ctrl K. axe-core 4.14 reports that as `label-content-name-mismatch`. The hint is `aria-hidden`, and `aria-keyshortcuts` still announces the shortcut. Below the `lg` breakpoint the label is visually hidden instead of `display: none`, so the icon-only trigger keeps its name. Nothing changes on screen.
+- `<ResponsiveImage>` links both files of an image with `?v=` and the hash of the file in the site's `public` directory, like the shared stylesheets, so a host can let the browser keep them for good. A path without a file in `public` is linked as before. `getVersionedPublicPath(urlPath)` of `@chassis-ui/docs/site` versions a URL path that a page or a prop already holds, such as `/static/images/home/hero.webp`.
+
 ## 0.11.0
 
 ### Minor Changes
