@@ -6,6 +6,7 @@ import { tagsToArray } from '@libs/blog'
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
 import MediaImage from '@chassis-ui/docs/components/MediaImage.astro'
+import { getVersionedStaticPath } from '@chassis-ui/docs/site'
 import type { CollectionEntry } from 'astro:content'
 import '@scss/blog.scss'
 
@@ -100,7 +101,7 @@ const { Content } = await render(blogPage)
           />
         ) : (
           <img
-            src="/static/images/social-image.png"
+            src={getVersionedStaticPath('images/social-image.png')}
             alt={data.title}
             width="1200"
             height="630"
