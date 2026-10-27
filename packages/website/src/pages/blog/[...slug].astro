@@ -5,6 +5,7 @@ import { blogPages } from '@libs/content'
 import { tagsToArray } from '@libs/blog'
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+import MediaImage from '@chassis-ui/docs/components/MediaImage.astro'
 import type { CollectionEntry } from 'astro:content'
 import '@scss/blog.scss'
 
@@ -42,7 +43,7 @@ const { Content } = await render(blogPage)
   frontmatter={{
     description: data.description,
     title: data.title,
-    thumbnail: data.image?.url,
+    thumbnail: data.image && `media:${data.image.src}`,
     extraJs: data.extraJs
   }}
   layout="blog"
@@ -86,11 +87,26 @@ const { Content } = await render(blogPage)
           </div>
         </header>
 
-        <img
-          src={data.image?.url || '/static/images/social-image.png'}
-          alt={data.image?.alt || data.title}
-          class="image rounded fluid w-100 mb-xl lg:mb-3xl"
-        />
+        {data.image ? (
+          <MediaImage
+            src={data.image.src}
+            alt={data.image.alt}
+            width={1200}
+            height={630}
+            sizes="(width >= 96rem) 58rem, (width >= 64rem) 83vw, 100vw"
+            loading="eager"
+            fetchpriority="high"
+            class="image rounded fluid w-100 mb-xl lg:mb-3xl"
+          />
+        ) : (
+          <img
+            src="/static/images/social-image.png"
+            alt={data.title}
+            width="1200"
+            height="630"
+            class="image rounded fluid w-100 mb-xl lg:mb-3xl"
+          />
+        )}
 
         <Content components={{ pre: Code }} />
       </article>

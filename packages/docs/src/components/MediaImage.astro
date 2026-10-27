@@ -1,0 +1,59 @@
+---
+/**
+ * Media Image
+ *
+ * An image of the media library that `media` of the config names. The `srcset` has a copy
+ * of the image at several widths, and the browser loads the smallest that fills the image,
+ * in AVIF or WebP when it accepts them.
+ */
+
+import type { HTMLAttributes } from 'astro/types'
+import { getMediaImageWidths } from '../libs/media'
+import { getMediaSrcSet, getMediaUrl } from '../site'
+
+interface Props extends Omit<
+  HTMLAttributes<'img'>,
+  'alt' | 'height' | 'sizes' | 'src' | 'srcset' | 'width'
+> {
+  /** Path of the image in the media library, e.g. `"blog/2026/color-system/cover.jpg"` */
+  src: string
+  /** Alternative text for the image */
+  alt: string
+  /** Largest width in CSS pixels that the image is shown at */
+  width: number
+  /**
+   * Height in CSS pixels at `width`. The image is cropped to the ratio of `width` and
+   * `height`, around its subject. Without it, the image keeps its own ratio and the `height`
+   * attribute is left out
+   */
+  height?: number
+  /** Widths of the copies in the `srcset`. Default: the widths up to twice `width` */
+  widths?: number[]
+  /** The `sizes` attribute. Default: `width` pixels, or the width of the viewport when smaller */
+  sizes?: string
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  widths = getMediaImageWidths(width),
+  sizes = `(width >= ${width}px) ${width}px, 100vw`,
+  loading = 'lazy',
+  decoding = 'async',
+  ...rest
+} = Astro.props
+---
+
+<img
+  src={getMediaUrl(src, { width, height })}
+  srcset={getMediaSrcSet(src, widths, { width, height })}
+  sizes={sizes}
+  alt={alt}
+  width={width}
+  height={height}
+  loading={loading}
+  decoding={decoding}
+  {...rest}
+/>

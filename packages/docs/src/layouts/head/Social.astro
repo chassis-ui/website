@@ -7,14 +7,18 @@
 
 import { getRemoteImageSize, getStaticImageSize } from '../../libs/image'
 import type { Layout } from '../../libs/layout'
-import { getConfig, getPublicFsPath, getStaticPath } from '../../site'
+import { getImageType } from '../../libs/media'
+import { getConfig, getMediaUrl, getPublicFsPath, getStaticPath } from '../../site'
 
 interface Props {
   /** Page description */
   description: string
   /** Current layout context */
   layout: Layout
-  /** Social media thumbnail image */
+  /**
+   * Social media thumbnail image: a file in `static/` of the `public` directory, a URL, or
+   * `media:` and the path of an image in the media library
+   */
   thumbnail: string
   /** Page title */
   title: string
@@ -22,18 +26,27 @@ interface Props {
 
 const { description, layout, thumbnail, title } = Astro.props
 
-// A file in `static/` of the `public` directory is read from there, and linked under
-// `staticPath` of the config.
+// An image of the media library is linked as a JPEG copy at the size that the social
+// networks show, so its size is known without loading it. A file in `static/` of the
+// `public` directory is read from there, and linked under `staticPath` of the config.
+const mediaFile = thumbnail.match(/^media:(.+)$/)?.[1]
 const staticFile = thumbnail.match(/^\/?static\/(.+)$/)?.[1]
-const socialImageUrl = new URL(staticFile ? getStaticPath(staticFile) : thumbnail, Astro.site)
 const isRemoteThumbnail = /^https?:\/\//i.test(thumbnail)
-const socialImageSize = isRemoteThumbnail
-  ? await getRemoteImageSize(thumbnail)
-  : await getStaticImageSize(getPublicFsPath(thumbnail))
+const mediaSize = { width: 1200, height: 630 }
+
+const socialImageUrl = mediaFile
+  ? getMediaUrl(mediaFile, { ...mediaSize, format: 'jpg' })
+  : new URL(staticFile ? getStaticPath(staticFile) : thumbnail, Astro.site).href
+const socialImageType = mediaFile ? 'image/jpeg' : getImageType(thumbnail)
+const socialImageSize = mediaFile
+  ? mediaSize
+  : isRemoteThumbnail
+    ? await getRemoteImageSize(thumbnail)
+    : await getStaticImageSize(getPublicFsPath(thumbnail))
 const { xUsername } = getConfig()
 ---
 
-<meta name="twitter:card" content="summary_lg_image" />
+<meta name="twitter:card" content="summary_large_image" />
 {xUsername && <meta name="twitter:site" content={`@${xUsername}`} />}
 {xUsername && <meta name="twitter:creator" content={`@${xUsername}`} />}
 <meta name="twitter:title" content={title} />
@@ -46,6 +59,6 @@ const { xUsername } = getConfig()
 <meta property="og:type" content={layout === 'docs' ? 'article' : 'website'} />
 <meta property="og:site_name" content={getConfig().title} />
 <meta property="og:image" content={socialImageUrl} />
-<meta property="og:image:type" content="image/png" />
+{socialImageType && <meta property="og:image:type" content={socialImageType} />}
 <meta property="og:image:width" content={String(socialImageSize.width)} />
 <meta property="og:image:height" content={String(socialImageSize.height)} />

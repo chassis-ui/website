@@ -1,6 +1,6 @@
 import { defineCollection } from 'astro:content'
 import { glob } from 'astro/loaders'
-import { calloutsSchema, docsSchema, z } from '@chassis-ui/docs/schema'
+import { calloutsSchema, docsSchema, z, zMediaPath } from '@chassis-ui/docs/schema'
 
 const blogSchema = z.object({
   author: z.string(),
@@ -12,8 +12,9 @@ const blogSchema = z.object({
     })
     .array()
     .optional(),
+  /** Cover image: its public ID in the media library, e.g. `blog-2026-color-system-cover`. */
   image: z.object({
-    url: z.string(),
+    src: zMediaPath,
     alt: z.string()
   }),
   pubDate: z.date(),

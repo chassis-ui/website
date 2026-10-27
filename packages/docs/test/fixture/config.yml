@@ -9,3 +9,5 @@ currentVersion: '1.2.3'
 sourceDir: 'source'
 sourcePath: 'packages/docs/test/fixture/source'
 sitePath: 'packages/docs/test/fixture'
+media:
+  cloudinary: 'fixture'

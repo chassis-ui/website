@@ -1,4 +1,5 @@
 import { z } from 'astro/zod'
+import { isMediaPath } from './media'
 
 // Sites extend the schemas below. They must use this `z`, so that the site and the package
 // share one copy of Zod.
@@ -16,6 +17,14 @@ export const zPrefixedVersionSemver = z
   .regex(new RegExp(`^v${unboundSemverRegex.source}$`))
 
 export const zLanguageCode = z.string().regex(/^[a-z]{2}(?:-[a-zA-Z]{2})?$/)
+
+/** The path of an image in the media library, e.g. `blog/2026/color-system/cover.jpg`. */
+export const zMediaPath = z
+  .string()
+  .refine(
+    isMediaPath,
+    'Expected the path of an image in the media library, such as "blog/cover.jpg"'
+  )
 
 const zHeadingRange = z.object({
   min: z.number().int().min(1).max(6),
@@ -56,6 +65,15 @@ export const configSchema = z.strictObject({
   githubOrg: z
     .string()
     .regex(/^[\w.-]+$/, 'Expected a GitHub organisation name, not a URL')
+    .optional(),
+  /**
+   * The media library that `<MediaImage>` and a `media:` thumbnail load images from: the
+   * cloud name of a Cloudinary account, e.g. `{ cloudinary: "chassis" }`.
+   */
+  media: z
+    .strictObject({
+      cloudinary: z.string().regex(/^[\w-]+$/, 'Expected a Cloudinary cloud name, not a URL')
+    })
     .optional(),
   /** Repository URL, e.g. `"https://github.com/chassis-ui/css"`. */
   repo: z.url(),

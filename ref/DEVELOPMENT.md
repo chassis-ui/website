@@ -80,6 +80,47 @@ empties `packages/website/public/` and fills it again:
 
 `public/` is generated. Change the sources, not the copies.
 
+### Blog images
+
+Images of the blog are not in this repository or in chassis-assets, which holds design
+assets only. They are in the media library on Cloudinary, the account that `media.cloudinary`
+of `packages/website/config.yml` names, and the pages load resized copies from
+`res.cloudinary.com`. See
+[Images of the media library](../packages/docs/README.md#images-of-the-media-library) for
+the component and the URLs.
+
+The public ID of an image is its URL, and the folder of the library is only where the image
+is listed: an image can move to another folder and keep its URL. So the public ID carries
+everything that tells two images apart: `blog-<year>-<slug>-<role>`, where the slug is the
+name of the post's file and the role says what the image is, such as `cover`, or `diagram`
+for an image inside the post. For example, `blog-2026-color-system-cover` belongs to
+`content/blog/2026/color-system.mdx`. Lowercase and hyphens only.
+
+To give a post a cover:
+
+1. Export the cover at the ratio of the page, 1200 × 630, at 2400 × 1260. The page crops any
+   other ratio around what Cloudinary takes for the subject, which can cut what matters, and
+   enlarges an image narrower than 2400 pixels for the largest screens.
+2. Upload it to the folder `blog/<year>/` of the media library, with the public ID above.
+   Check the public ID that the library shows after the upload: depending on the upload
+   settings, it can get a random suffix.
+3. Set the public ID and a description of the picture in the front matter of the post. An
+   extension is optional:
+
+   ```yaml
+   image:
+     src: blog-2026-color-system-cover
+     alt: A color wheel in an open swatch book, on paint chips beside paint jars and brushes
+   ```
+
+4. Open the post and the blog page in `pnpm dev`. A wrong public ID shows a broken image: the
+   build does not load the images, so it cannot find one that is missing.
+
+A post without `image` shows the default social image of the assets. Never replace an image
+in the library under the same public ID: the browsers and the CDN keep a copy for up to 30
+days. Upload the new version under a new public ID, such as `blog-2026-color-system-cover-2`,
+and change the front matter.
+
 ### Search
 
 `pagefind.yml` selects the pages that search covers: About, the examples page, the blog

@@ -1,0 +1,5 @@
+---
+'@chassis-ui/docs': patch
+---
+
+Images of a media library on Cloudinary, for images that do not belong in the repository. `media.cloudinary` of `config.yml` names the account, and a page names an image by its path in the library. `<MediaImage>` of `@chassis-ui/docs/components/MediaImage.astro` renders it with a `srcset` of copies up to twice its width, in AVIF or WebP when the browser accepts them, cropped around the subject when it has a `height`. A `thumbnail` of `media:` and a path links a 1200 × 630 JPEG copy in the social meta tags, with its size and type and without loading it. `getMediaUrl()` and `getMediaSrcSet()` of `@chassis-ui/docs/site` return the URLs, the root entry exports the functions they use, and `zMediaPath` of `@chassis-ui/docs/schema` checks a path in a content schema. The social meta tags now name the large card for X, `summary_large_image`, which the misspelt `summary_lg_image` did not, and give the `og:image:type` of the thumbnail's file instead of `image/png` for every image.

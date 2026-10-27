@@ -106,24 +106,25 @@ repo: 'https://github.com/chassis-ui/css'
 currentVersion: '0.5.2'
 ```
 
-| Key                                           | Required | Meaning                                                                                                                    |
-| --------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `title`, `subtitle`, `description`, `authors` | yes      | Used in the page title and the meta tags                                                                                   |
-| `baseURL`                                     | yes      | Canonical URL of the site. The page at its path is the home page: `/css/` for `https://chassis-ui.com/css/`                |
-| `docsPath`                                    | yes      | URL path of the docs pages. Starts with `/`                                                                                |
-| `staticPath`                                  | no       | URL path that the pages load the static files from. Default `/static`. See [A site under a prefix](#a-site-under-a-prefix) |
-| `repo`                                        | yes      | URL of the repository                                                                                                      |
-| `currentVersion`                              | yes      | Version that the site documents. Links to source files use the tag `v<currentVersion>`                                     |
-| `githubOrg`                                   | no       | GitHub organisation name, not a URL. The header links to it                                                                |
-| `figmaHandle`                                 | no       | Figma Community handle. The header links to it                                                                             |
-| `xUsername`                                   | no       | X handle. Used in the social meta tags                                                                                     |
-| `analytics.googleId`                          | no       | Google Analytics ID. In production builds, loaded after the visitor accepts in a consent banner                            |
-| `anchors.min`, `anchors.max`                  | no       | Heading levels that get an anchor link. Default 2 to 5                                                                     |
-| `toc.min`, `toc.max`                          | no       | Heading levels in the table of contents. Default 2 to 6                                                                    |
-| `sourceDir`                                   | no       | Directory that `file` props are relative to, from the site's root, e.g. `"../css"`. Default `"."`                          |
-| `sourcePath`                                  | no       | The same directory from the root of the repository, e.g. `"packages/css"`                                                  |
-| `sitePath`                                    | no       | The site's root from the root of the repository, e.g. `"packages/site"`                                                    |
-| `siteBranch`                                  | no       | The branch that "View on GitHub" links to. Default `main`                                                                  |
+| Key                                           | Required | Meaning                                                                                                                            |
+| --------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `title`, `subtitle`, `description`, `authors` | yes      | Used in the page title and the meta tags                                                                                           |
+| `baseURL`                                     | yes      | Canonical URL of the site. The page at its path is the home page: `/css/` for `https://chassis-ui.com/css/`                        |
+| `docsPath`                                    | yes      | URL path of the docs pages. Starts with `/`                                                                                        |
+| `staticPath`                                  | no       | URL path that the pages load the static files from. Default `/static`. See [A site under a prefix](#a-site-under-a-prefix)         |
+| `repo`                                        | yes      | URL of the repository                                                                                                              |
+| `currentVersion`                              | yes      | Version that the site documents. Links to source files use the tag `v<currentVersion>`                                             |
+| `githubOrg`                                   | no       | GitHub organisation name, not a URL. The header links to it                                                                        |
+| `figmaHandle`                                 | no       | Figma Community handle. The header links to it                                                                                     |
+| `xUsername`                                   | no       | X handle. Used in the social meta tags                                                                                             |
+| `media.cloudinary`                            | no       | Cloud name of the Cloudinary account that holds the media library. See [Images of the media library](#images-of-the-media-library) |
+| `analytics.googleId`                          | no       | Google Analytics ID. In production builds, loaded after the visitor accepts in a consent banner                                    |
+| `anchors.min`, `anchors.max`                  | no       | Heading levels that get an anchor link. Default 2 to 5                                                                             |
+| `toc.min`, `toc.max`                          | no       | Heading levels in the table of contents. Default 2 to 6                                                                            |
+| `sourceDir`                                   | no       | Directory that `file` props are relative to, from the site's root, e.g. `"../css"`. Default `"."`                                  |
+| `sourcePath`                                  | no       | The same directory from the root of the repository, e.g. `"packages/css"`                                                          |
+| `sitePath`                                    | no       | The site's root from the root of the repository, e.g. `"packages/site"`                                                            |
+| `siteBranch`                                  | no       | The branch that "View on GitHub" links to. Default `main`                                                                          |
 
 `file` props are those of `<ScssDocs>`, `<ScssDocsSimple>`, `<JsDocs>` and `<Code filePath>`.
 
@@ -286,6 +287,8 @@ chassisDocs({
 | `getPublicFsPath(file)`                            | Absolute path of a file in the `public` directory                   |
 | `getStaticPath(file)`                              | URL path of a static file, under `staticPath` of the config         |
 | `getVersionedStaticPath(file)`                     | The same, with `?v=` and a hash of the file in `public`             |
+| `getMediaUrl(path, transform)`                     | URL of a copy of an image of the media library                      |
+| `getMediaSrcSet(path, widths, transform)`          | The `srcset` of an image of the media library                       |
 | `getSourceFsPath(file)`                            | Absolute path of a file that a `file` prop names                    |
 | `getSourceUrl(file)`                               | URL of a source file on GitHub, at the tag of the current version   |
 | `getSiteFileUrl(filePath)`                         | URL of a file of the site on GitHub, on the site's branch           |
@@ -294,6 +297,39 @@ chassisDocs({
 | `createDataLoader(definitions)`                    | A `getData(name)` function for the site's own YAML files in `data/` |
 
 Code that runs while Astro loads its configuration uses the library functions of the root entry instead: `loadConfig()`, `loadData()`, `loadSidebar()` and the path helpers.
+
+## Images of the media library
+
+Images that do not belong in the repository, such as the covers of blog posts, are in a media library on Cloudinary. `media.cloudinary` of `config.yml` is the cloud name of the account, and a page names an image by its path in the library, such as `blog/2026/color-system/cover.jpg`. The path is the public ID of the image, with or without an extension. The folders of the library do not take part in it unless the public ID has them. A URL, a path that starts with `/`, `..` and a query are refused.
+
+```astro
+---
+import MediaImage from '@chassis-ui/docs/components/MediaImage.astro'
+---
+
+<MediaImage
+  src="blog/2026/color-system/cover.jpg"
+  alt="Paint chips beside an empty floor plan"
+  width={1200}
+  height={630}
+  sizes="(width >= 64rem) 50vw, 100vw"
+/>
+```
+
+| Prop     | Meaning                                                                                                              |
+| -------- | -------------------------------------------------------------------------------------------------------------------- |
+| `src`    | Path of the image in the media library                                                                               |
+| `alt`    | Alternative text                                                                                                     |
+| `width`  | Largest width in CSS pixels that the image is shown at                                                               |
+| `height` | Height at `width`. The image is cropped to that ratio, around its subject. Without it, the image keeps its own ratio |
+| `widths` | Widths of the copies in the `srcset`. Default: the widths from 320 to 2400 up to twice `width`, and `width`          |
+| `sizes`  | The `sizes` attribute. Default: `width` pixels, or the width of the viewport when smaller                            |
+
+Other attributes go to the `<img>`. `loading` is `lazy` and `decoding` is `async` unless the page sets them. A browser that accepts AVIF or WebP gets that format.
+
+A `thumbnail` of `media:` and a path, such as `media:blog/2026/color-system/cover.jpg`, links a 1200 × 630 JPEG copy, cropped around the subject, in the social meta tags. Its size is known, so the build does not load it. `zMediaPath` of `@chassis-ui/docs/schema` checks a path in a content schema of the site.
+
+The page CSP of the host must allow images from `https://res.cloudinary.com`. Only `src/libs/media.ts` knows the URL format of Cloudinary, so a move to another provider changes that file and the config key, and no page.
 
 ## Commands
 
@@ -397,18 +433,18 @@ A rule or filter applies to every file that the command checks. To make an excep
 
 These import paths are the public API.
 
-| Path                            | Contents                                                                                                                                                                                                                           |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@chassis-ui/docs`              | Library functions that work anywhere: config and data loaders, path helpers, `getSiteUrl`, `getDocsMarkdownConfig`, the remark and rehype plugins, `chassisAutoImport`, `generateToc`, `highlightCode`, image and string utilities |
-| `@chassis-ui/docs/integration`  | `chassisDocs()` and the type of its options                                                                                                                                                                                        |
-| `@chassis-ui/docs/schema`       | `z`, `configSchema`, `sidebarSchema`, `docsSchema`, `calloutsSchema`, the version validators, and the types `ChassisConfig`, `Sidebar`, `SidebarItem`, `DocsFrontmatter`, `DocsPage`                                               |
-| `@chassis-ui/docs/site`         | What pages read from the site. See above                                                                                                                                                                                           |
-| `@chassis-ui/docs/layouts/*`    | `BaseLayout.astro`, `DocsLayout.astro`, `RedirectLayout.astro`, `SingleLayout.astro`                                                                                                                                               |
-| `@chassis-ui/docs/components/*` | `DocsSidebar.astro`, `FeatureCard.astro`, `NavLink.astro`, `ResponsiveImage.astro`, `TableOfContents.astro`, `ThemeToggler.astro`                                                                                                  |
-| `@chassis-ui/docs/shortcodes/*` | The MDX shortcodes                                                                                                                                                                                                                 |
-| `@chassis-ui/docs/js/*`         | Client-side scripts: `example-mode.js`, `clipboard.ts`, `color-modes.js` and others                                                                                                                                                |
-| `@chassis-ui/docs/scss/main`    | The styles of the package. The integration loads them when the site has no stylesheet of its own                                                                                                                                   |
-| `@chassis-ui/docs/scss/vars`    | The Sass variables and custom properties of the docs, for a site's own stylesheets                                                                                                                                                 |
+| Path                            | Contents                                                                                                                                                                                                                                  |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@chassis-ui/docs`              | Library functions that work anywhere: config and data loaders, path helpers, `getSiteUrl`, `getDocsMarkdownConfig`, the remark and rehype plugins, `chassisAutoImport`, `generateToc`, `highlightCode`, image, media and string utilities |
+| `@chassis-ui/docs/integration`  | `chassisDocs()` and the type of its options                                                                                                                                                                                               |
+| `@chassis-ui/docs/schema`       | `z`, `configSchema`, `sidebarSchema`, `docsSchema`, `calloutsSchema`, the version validators, `zMediaPath`, and the types `ChassisConfig`, `Sidebar`, `SidebarItem`, `DocsFrontmatter`, `DocsPage`                                        |
+| `@chassis-ui/docs/site`         | What pages read from the site. See above                                                                                                                                                                                                  |
+| `@chassis-ui/docs/layouts/*`    | `BaseLayout.astro`, `DocsLayout.astro`, `RedirectLayout.astro`, `SingleLayout.astro`                                                                                                                                                      |
+| `@chassis-ui/docs/components/*` | `DocsSidebar.astro`, `FeatureCard.astro`, `MediaImage.astro`, `NavLink.astro`, `ResponsiveImage.astro`, `TableOfContents.astro`, `ThemeToggler.astro`                                                                                     |
+| `@chassis-ui/docs/shortcodes/*` | The MDX shortcodes                                                                                                                                                                                                                        |
+| `@chassis-ui/docs/js/*`         | Client-side scripts: `example-mode.js`, `clipboard.ts`, `color-modes.js` and others                                                                                                                                                       |
+| `@chassis-ui/docs/scss/main`    | The styles of the package. The integration loads them when the site has no stylesheet of its own                                                                                                                                          |
+| `@chassis-ui/docs/scss/vars`    | The Sass variables and custom properties of the docs, for a site's own stylesheets                                                                                                                                                        |
 
 No other path resolves: `exports` in `package.json` lists these and nothing else. The layouts and components are listed by name, so the folders inside `layouts/` and `components/` are not reachable.
 

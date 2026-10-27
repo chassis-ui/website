@@ -47,6 +47,7 @@
     "./layouts/SingleLayout.astro": "./src/layouts/SingleLayout.astro",
     "./components/DocsSidebar.astro": "./src/components/DocsSidebar.astro",
     "./components/FeatureCard.astro": "./src/components/FeatureCard.astro",
+    "./components/MediaImage.astro": "./src/components/MediaImage.astro",
     "./components/NavLink.astro": "./src/components/NavLink.astro",
     "./components/ResponsiveImage.astro": "./src/components/ResponsiveImage.astro",
     "./components/TableOfContents.astro": "./src/components/TableOfContents.astro",

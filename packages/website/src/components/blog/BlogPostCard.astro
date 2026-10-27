@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content'
 import { formatDate, getReadingTime, getBlogPostUrl } from '@libs/blog'
 import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+import MediaImage from '@chassis-ui/docs/components/MediaImage.astro'
 
 interface Props {
   post: CollectionEntry<'blog'>
@@ -14,11 +15,25 @@ const url = getBlogPostUrl(post)
 <article class="grid row-gap-0 mb-xl pb-xl border-bottom border-subtle">
   <div class="col-span-full lg:col-span-4 mb-md lg:mb-0">
     <a href={url} class="d-block">
-      <img
-        src={post.data.image?.url || '/static/images/social-image.png'}
-        alt={post.data.image?.alt || post.data.title}
-        class="image rounded fluid w-100"
-      />
+      {post.data.image ? (
+        <MediaImage
+          src={post.data.image.src}
+          alt={post.data.image.alt}
+          width={1200}
+          height={630}
+          sizes="(width >= 96rem) 28rem, (width >= 64rem) 31vw, 100vw"
+          class="image rounded fluid w-100"
+        />
+      ) : (
+        <img
+          src="/static/images/social-image.png"
+          alt={post.data.title}
+          width="1200"
+          height="630"
+          loading="lazy"
+          class="image rounded fluid w-100"
+        />
+      )}
     </a>
   </div>
   <div class="col-span-full lg:col-span-8">

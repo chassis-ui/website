@@ -18,6 +18,10 @@ githubOrg:              "chassis-ui"
 figmaHandle:            "chassis_ui"
 xUsername:              "chassis_ui"
 
+# The media library of the blog images. See "Blog images" in ref/DEVELOPMENT.md.
+media:
+  cloudinary:           "bknbaorg"
+
 analytics:
   googleId:             "G-QGR8C28VYN"
 

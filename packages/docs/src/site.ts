@@ -14,6 +14,7 @@ import { getNodeModulesFsPaths, resolvePackageFilePath } from './libs/paths'
 import { replaceConfigInText, replaceDocsrefInText } from './libs/remark'
 import type { ChassisConfig, DocsPage, Sidebar } from './libs/schema'
 import { resolveSiteFileUrl, resolveSourceFsPath, resolveSourceUrl } from './libs/source'
+import { getMediaImageSrcSet, getMediaImageUrl, type MediaTransform } from './libs/media'
 import { versionStaticPath } from './libs/static-version'
 
 /**
@@ -54,6 +55,31 @@ export function getStaticPath(file = ''): string {
  */
 export function getVersionedStaticPath(file: string): string {
   return versionStaticPath(getStaticPath(file), paths.publicDir)
+}
+
+function getMediaCloudName(): string {
+  const cloudName = config.media?.cloudinary
+
+  if (!cloudName) {
+    throw new Error('An image of the media library needs `media.cloudinary` in `config.yml`.')
+  }
+
+  return cloudName
+}
+
+/**
+ * URL of a copy of an image of the media library, which `media` of the config names:
+ * `getMediaUrl('blog/cover.jpg', { width: 800 })`.
+ *
+ * @throws When the config has no `media`.
+ */
+export function getMediaUrl(file: string, transform?: MediaTransform): string {
+  return getMediaImageUrl(getMediaCloudName(), file, transform)
+}
+
+/** The `srcset` of an image of the media library, with a copy at each of `widths`. */
+export function getMediaSrcSet(file: string, widths: number[], transform?: MediaTransform): string {
+  return getMediaImageSrcSet(getMediaCloudName(), file, widths, transform)
 }
 
 /** Absolute path of the site's root: the directory that holds `astro.config.ts`. */
