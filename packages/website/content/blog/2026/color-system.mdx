@@ -1,0 +1,145 @@
+---
+title: A Palette Isn't a Color System
+description: A palette tells you which colors exist. It doesn't tell you what any of them is for, and in a multi-brand, white-label system that gap is where color starts to drift. Here is how Chassis closes it.
+author: Özgür Güneş
+pubDate: 2026-10-27
+tags: design systems, design tokens, color, dark mode, multi-brand, white-label
+image:
+  url: /static/images/social-image.png
+  alt: Chassis social image
+---
+
+A palette is usually the first thing a design system defines. For many products, it's also where the color system quietly ends.
+
+That's fine while there is one product and one brand. It stops being fine the moment the same system has to carry several brands, a dark mode, and white-label applications whose colors you don't even know yet.
+
+I've spent a good part of the last few years on systems built for exactly that situation, and I've come to think the hard part was never picking the colors. It's building a system that can absorb a new brand, a new theme, or a rebrand without every designer and engineer re-deciding every screen. That is why Chassis treats color as two questions instead of one.
+
+## How we got here
+
+Early interfaces used whatever the eyedropper picked off a mockup. Every screen accumulated its own blue and its own gray, and consistency across a product became a matter of luck.
+
+Semantic naming fixed the worst of it. Instead of writing `#1976D2`, teams wrote `primary`, `warning`, `success`. The name carried intent, and an interface became easier to maintain because the intent survived the handoff.
+
+Numeric scales pushed further, popularized by systems like Material Design. Instead of one primary blue, a whole run of them, `primary-10` through `primary-90`, light to dark. Designers got room to pick the right shade for the job instead of forcing one value everywhere. For a single brand, this is where most systems stand today, and early Chassis stood there too. It's a solid foundation. It just isn't the whole answer.
+
+## Where a scale stops helping
+
+A numeric scale describes shades. It doesn't describe how the shades should be used, and that gap shows up as soon as two components ask similar questions of it.
+
+Take an info banner and a warning banner. The info banner's background sits comfortably at `info-10`. The warning banner, doing the same job in yellow, often needs `warning-20`, because yellow reads brighter than blue at the same position on a scale. Each choice is defensible on its own. Together they mean two components that should feel equivalent no longer share the same logic, and nothing in the palette flags the mismatch.
+
+Dark mode adds a second layer of the same problem. The light banner uses `info-10`; its dark twin needs something like `info-80`. A different component with a similar-looking surface may need an entirely different pair. Multiply that across a real product and designers stop asking "which token?" and start asking "which shade is correct this time?" That question is the sound of implementation detail leaking into everyday design work.
+
+## Multi-brand makes it worse
+
+Now put several brands on the same product. One runs a deep blue as its primary color. Another runs a bright yellow. A third runs a vibrant lime.
+
+If every component assumes white text sits safely on the primary color, one of those brands fails an accessibility check the moment it's plugged in. The same assumption repeats quietly for borders, highlighted surfaces, and anything else that bakes in a fixed relationship between two colors. A system that only defines palettes leaves those calls to every product team, and every team solves them differently. The consistency the design system was supposed to guarantee disappears again, one layer deeper.
+
+## Two questions, two layers
+
+Chassis separates "which colors exist" from "what is this color for", and answers them in two different layers of tokens.
+
+### Primitives: what exists
+
+The first layer is descriptive. Chassis Tokens defines nine palettes: `primary`, `secondary`, `neutral`, `danger`, `success`, `warning`, `info`, plus `black` and `white`. Each hue is a scale of eleven shades, `05`, `10` through `90`, and `95`, with `50` as the base color itself. Around that scale sit a `contrast` color, the color that reads best on top of the hue, a `transparent` variant, and a run of transparency steps of the base color.
+
+A brand doesn't hand-pick those shades. It sets the base color of each palette, and the shades are derived from it: each step is the base lightened or darkened by a share defined in a token of its own. A brand that needs a hand-tuned scale can still override individual shades; one of our demo brands replaces its entire primary scale, and another replaces its neutrals. But nobody is matching eleven shades per palette by eye, and nobody is inventing a twelfth on a Tuesday afternoon.
+
+Crucially, this layer says nothing about where any color goes. It only answers "what is the brand color, what are its lighter and darker variants, and what gives it the best contrast".
+
+### Contexts: what it's for
+
+The second layer describes intent. A component never asks for `primary-40`. It asks for a role inside a context.
+
+A context is a meaning: `default` for the page, `alternate` for a prominent region such as a sidebar or a banner, then `primary`, `secondary`, `neutral`, `success`, `danger`, `warning`, `info`, and fixed `black` and `white`. Every context carries the same set of 39 roles, grouped by what they paint:
+
+- **Foreground**: `fg-main`, `fg-subtle`, `fg-slight` for text at three emphases, plus `fg-highlight`, `fg-solid`, `fg-inverse`, `fg-active`.
+- **Background**: `bg-main`, `bg-even`, `bg-evident` for surfaces at three depths, plus `bg-highlight`, `bg-solid`, `bg-inverse`, `bg-active`.
+- **Border** and **icon**: `border-main`, `border-subtle`, `icon-main`, `icon-subtle`, `icon-slight`.
+- **Cue**, **dim**, and **link**: the checked state of inputs, backdrops, and links in their four states.
+- **Interaction**: `bg-idle`, `bg-hover`, `bg-press`, `bg-disabled` and their `fg` partners.
+- **Base**: the context's own hue as `base-color`, with `contrast-color` and `transparent-color`.
+
+A designer picks the context that matches the meaning of the interface and the role that matches the job. The warning banner is `warning` context, `bg-main` behind `fg-main`, with `border-main` and `icon-main`. The info banner is exactly the same recipe in the `info` context. Whether yellow needs a `20` where blue needs a `10` is no longer the designer's problem: it's answered once, in the mapping.
+
+## The mapping is the system
+
+Underneath, every role is a reference to a primitive. The chain for a button's idle text color, simplified from the token source, looks like this:
+
+```text
+color.button.default.fg-idle                        component token
+  {color.context.default.fg-idle}                   context token, set by the theme
+    {color.base.context.light.default.fg-idle}      base token of the light theme, set by the brand
+      {color.base.primitive.light.neutral.90}       primitive scale, set by the brand
+        {color.base.primitive.light.neutral.base}   base color of the brand, set by the brand
+```
+
+Three things are worth noticing in that chain.
+
+First, the component asks for a role, the role resolves to a mapping, and the mapping resolves to a shade. No layer skips another. A button never knows which neutral it's wearing.
+
+Second, roles are built from other roles. `fg-subtle` isn't a separate shade; it's `fg-main` with the alpha of an opacity token. `border-subtle` is `fg-main` again, at a lower alpha. That keeps the subtle text, the subtle border, and the subtle icon in the same family on every surface, in every brand, without anyone choosing three shades that happen to look related.
+
+Third, the colored contexts get a slightly different recipe where it matters. In the `default` context, `fg-subtle` uses the ordinary subtle alpha. In `warning`, `success`, and the other tinted contexts, it uses a separate, higher alpha, because colored text loses contrast faster than gray text when it fades. That rule is encoded in one token, not remembered by each designer.
+
+## Dark mode is another mapping
+
+The dark theme doesn't bring a second set of colors. By default, the dark primitives reference the light ones: the same brand blue, the same derived scale. What changes is which shade each role points at.
+
+In the `default` context, light mode maps `fg-main` to `neutral-90` and `bg-main` to white. Dark mode maps `fg-main` to `neutral-10` and `bg-main` to `neutral-95`. `icon-main` moves from `primary-50` to `primary-40`, a step lighter, because the brand hue needs a little lift against a dark surface. The roles never change. The components never change. The mapping underneath moves.
+
+On the web, Chassis CSS writes every role once, with both values:
+
+```css
+:root {
+  color-scheme: light dark;
+  --default-bg-main: light-dark(#ffffff, #1b1d1e);
+  --default-fg-main: light-dark(#1b1d1e, #f0f1f2);
+}
+
+[data-cx-theme="dark"] {
+  color-scheme: dark;
+}
+```
+
+With no attribute, the page follows the visitor's system preference. `data-cx-theme="dark"` on `<html>` sets the whole page; on a single card it sets that card. Because `color-scheme` is inherited, a dark card in a light page needs nothing else. There is no second stylesheet, no `bg-inverse` trick, and no component that has to know it's inside a dark region.
+
+The same holds on iOS and Android, where the build writes a `UIColor` that switches on the interface style, or a `values-night` resource set, from the same source files. One mapping, every platform.
+
+## Brands become configuration
+
+This is where the split pays for itself. Here are three things that are real brand-level decisions in Chassis, none of which touched a screen.
+
+**The yellow brand.** Each palette carries its own `contrast` color. The default brand's warning hue is a dark amber, so its contrast is white. The Chassis brand's warning hue is a bright gold, so its contrast is black. Every solid warning button, badge, and chip picks up the right text color because `fg-solid` resolves to the palette's contrast, not to "white". The accessibility check that the lime-green brand would have failed is answered in one line of the brand file.
+
+**Icons that follow text.** `icon-main` is a role of its own. In the default brand it points at the primary hue, so icons read as brand accents. A brand that wants icons to follow the body text repoints that one token at `fg-main`, and every icon in the product follows, on every platform, with no design change.
+
+**Highlights borrowed from another palette.** One of our demo brands wants highlighted rows and checked inputs to use its info blue rather than its orange primary. It remaps `fg-highlight`, `bg-highlight`, and `cue-main` in the `default` context to the `info` palette, in light and in dark, and the product's selection color changes while its buttons stay orange.
+
+In Figma, these brands are modes of one variable collection. A designer flips the brand mode and the same screens re-color. In code, a brand is a token build: a project compiles `@chassis-ui/tokens` for one brand, and the names in the stylesheet don't change. Brand is never a class or an attribute, because nothing in the markup should know which brand it is.
+
+## What a designer and an engineer actually touch
+
+The names are the contract, and they are the same name all the way down. The Figma variable `color/context/primary/fg-main` becomes the CSS custom property `--primary-fg-main`, the utility class `primary-fg-main`, the Swift constant `ColorContextPrimaryFgMain`, and the Android resource `color_context_primary_fg_main`. No translation table, no "what did we call this on mobile".
+
+In markup, the page sits in the `default` context, so its roles drop the prefix: `fg-main`, `bg-even`, `border-subtle`. A region that needs another palette re-aims every role at once with the context class:
+
+```html
+<div class="card context warning">
+  <h3 class="card-title">Payment overdue</h3>
+  <p class="fg-subtle">Your invoice from March is still open.</p>
+  <a class="link" href="/billing">Review billing</a>
+</div>
+```
+
+Inside that card, `fg-subtle` is the warning palette's subtle text, the link is the warning palette's link, and the border is the warning palette's border, without a single `warning-` prefix in the children. Swap `warning` for `success` and the whole region changes meaning.
+
+The rule we hold ourselves to, and encode in the tooling that turns Chassis Figma designs into Chassis markup, is simple: ask for a role, never for a shade. A primitive like `primary-40` on a surface is a signal that a context token is missing, not a shortcut to take. When that rule holds, a brand change is a token change, a theme change is a mapping change, and a design change is the only thing that requires opening a design file.
+
+## Designing with intent
+
+One idea sits underneath all of this: a design should express intent, not implementation. A designer placing an icon shouldn't need to know which shade of blue represents the brand this quarter. Someone building a warning banner shouldn't have to remember that yellow behaves differently from blue halfway down a scale. And when a brand's colors change six months from now, product teams shouldn't redesign hundreds of screens to catch up.
+
+Color is usually the first thing a design system defines carefully, and the first thing that drifts once more than one brand, platform, or team is involved. Separating what a color looks like from what it's for doesn't remove that complexity. It decides where it lives. In Chassis, it lives in the mapping between primitives and contexts, which is one place to get right, instead of in every screen, every component, and every judgment call along the way.
