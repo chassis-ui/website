@@ -8,7 +8,7 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 
 ### Changed
 
-- The website and the starter of `@chassis-ui/docs` use `@chassis-ui/css` 0.14.0 and take the design tokens from `@chassis-ui/website-tokens` 0.1.0, where they were css 0.11.1 and `@chassis-ui/tokens` 0.10.1, and `@chassis-ui/docs` is built and tested with css 0.14.0. Its peer range stays `>=0.10.0`. `@chassis-ui/tokens` is now the builder of token repositories, and the docs pages say which package does what. The CDN links of the installation page are for css 0.14.0.
+- The website and the starter of `@chassis-ui/docs` use `@chassis-ui/css` 0.14.0 and take the design tokens from `@chassis-ui/website-tokens` 0.1.0, where they were css 0.11.1 and `@chassis-ui/tokens` 0.10.1, and `@chassis-ui/docs` 0.12.0 is built and tested with css 0.14.0, and its `getChassisTokensFsPath()` finds the new package. Its peer range stays `>=0.10.0`, and the starter depends on docs `^0.12.0`. On the pages of the site one thing changes: the questions of the home page, a flush accordion, have no background of their own and show the background of their card, as css 0.13.0 sets. `@chassis-ui/tokens` is now the builder of token repositories, and the docs pages say which package does what. The CDN links of the installation page are for css 0.14.0.
 - The canary builds the site of chassis-tokens with `pnpm --filter chassis-tokens-site build` alone: the `tokens:site` script it ran first no longer exists there.
 
 ## 2026-10-27

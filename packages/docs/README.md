@@ -455,23 +455,24 @@ The integration provides five modules: `virtual:chassis-docs/config`, `virtual:c
 
 "Requires" is what `package.json` of each version declares. "Built with" is what the website in this repository resolved and built when the version was released. CI also builds the [starter site](starter/) with the newest versions that its ranges accept.
 
-| `@chassis-ui/docs` | Requires Astro             | Requires `@chassis-ui/css` | Requires Node | Built with                             |
-| ------------------ | -------------------------- | -------------------------- | ------------- | -------------------------------------- |
-| 0.11.1             | `^7.0.0`                   | `>=0.10.0`                 | `>=22.12.0`   | Astro 7.4.2, css 0.11.1, tokens 0.10.1 |
-| 0.11.0             | `^7.0.0`                   | `>=0.10.0`                 | `>=22.12.0`   | Astro 7.3.8, css 0.10.0, tokens 0.10.0 |
-| 0.10.0             | `^7.0.0`                   | `>=0.10.0`                 | `>=22.12.0`   | Astro 7.3.8, css 0.10.0, tokens 0.10.0 |
-| 0.9.0              | `^7.0.0`                   | `>=0.10.0`                 | `>=22.12.0`   | Astro 7.3.8, css 0.10.0, tokens 0.10.0 |
-| 0.8.0              | `^7.0.0`                   | `>=0.6.0`                  | `>=22.12.0`   | Astro 7.3.5, css 0.7.1, tokens 0.7.0   |
-| 0.7.0              | `^7.0.0`                   | `>=0.6.0`                  | `>=22.12.0`   | Astro 7.3.5, css 0.6.0, tokens 0.6.0   |
-| 0.6.3              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.6.0   |
-| 0.6.2              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.6.0   |
-| 0.6.1              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.6.0   |
-| 0.6.0              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.5.3   |
-| 0.5.1              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.5.3   |
-| 0.5.0              | `^7.0.0`                   | `^0.5.0-0`                 | not declared  | not recorded                           |
-| 0.4.0              | `^7.0.0`                   | `^0.4.0`                   | not declared  | not recorded                           |
-| 0.3.0 to 0.3.10    | `^7.0.0`                   | `>=0.3.1` to `>=0.3.4`     | not declared  | not recorded                           |
-| 0.1.0 to 0.2.0     | `^5.0.0`, 0.1.0–0.1.1 `^4` | not declared               | not declared  | not recorded                           |
+| `@chassis-ui/docs` | Requires Astro             | Requires `@chassis-ui/css` | Requires Node | Built with                                    |
+| ------------------ | -------------------------- | -------------------------- | ------------- | --------------------------------------------- |
+| 0.12.0             | `^7.0.0`                   | `>=0.10.0`                 | `>=22.12.0`   | Astro 7.4.2, css 0.14.0, website-tokens 0.1.0 |
+| 0.11.1             | `^7.0.0`                   | `>=0.10.0`                 | `>=22.12.0`   | Astro 7.4.2, css 0.11.1, tokens 0.10.1        |
+| 0.11.0             | `^7.0.0`                   | `>=0.10.0`                 | `>=22.12.0`   | Astro 7.3.8, css 0.10.0, tokens 0.10.0        |
+| 0.10.0             | `^7.0.0`                   | `>=0.10.0`                 | `>=22.12.0`   | Astro 7.3.8, css 0.10.0, tokens 0.10.0        |
+| 0.9.0              | `^7.0.0`                   | `>=0.10.0`                 | `>=22.12.0`   | Astro 7.3.8, css 0.10.0, tokens 0.10.0        |
+| 0.8.0              | `^7.0.0`                   | `>=0.6.0`                  | `>=22.12.0`   | Astro 7.3.5, css 0.7.1, tokens 0.7.0          |
+| 0.7.0              | `^7.0.0`                   | `>=0.6.0`                  | `>=22.12.0`   | Astro 7.3.5, css 0.6.0, tokens 0.6.0          |
+| 0.6.3              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.6.0          |
+| 0.6.2              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.6.0          |
+| 0.6.1              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.6.0          |
+| 0.6.0              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.5.3          |
+| 0.5.1              | `^7.0.0`                   | `^0.5.0-0`                 | `>=22.12.0`   | Astro 7.3.5, css 0.5.2, tokens 0.5.3          |
+| 0.5.0              | `^7.0.0`                   | `^0.5.0-0`                 | not declared  | not recorded                                  |
+| 0.4.0              | `^7.0.0`                   | `^0.4.0`                   | not declared  | not recorded                                  |
+| 0.3.0 to 0.3.10    | `^7.0.0`                   | `>=0.3.1` to `>=0.3.4`     | not declared  | not recorded                                  |
+| 0.1.0 to 0.2.0     | `^5.0.0`, 0.1.0–0.1.1 `^4` | not declared               | not declared  | not recorded                                  |
 
 `@chassis-ui/website-tokens` is not a dependency of the package, but a site installs it: the default token source of `@chassis-ui/css`, `scss/vendor/_chassis-tokens.scss`, forwards `@chassis-ui/website-tokens/dist/web/docs/chassis/main` from the site's `node_modules`, so the site needs the tokens that its css is built on: css 0.14 on website-tokens 0.1. Until 0.13, css forwarded `@chassis-ui/tokens`, on the tokens of its own version: css 0.10 on tokens 0.10, css 0.7 on tokens 0.7. `@chassis-ui/tokens` is now the builder of token repositories, with the `chassis-tokens` command. A site with tokens of its own puts them on the Sass load path in place of those, as [Styles](#styles) says.
 
