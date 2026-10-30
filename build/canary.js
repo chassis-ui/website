@@ -39,7 +39,7 @@ const siblings = {
   tokens: {
     repository: 'chassis-ui/tokens',
     site: 'packages/site',
-    build: [['tokens:site'], ['--filter', 'chassis-tokens-site', 'build']]
+    build: [['--filter', 'chassis-tokens-site', 'build']]
   },
   css: {
     repository: 'chassis-ui/css',

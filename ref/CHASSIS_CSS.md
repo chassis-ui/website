@@ -6,7 +6,7 @@
 
 **Target Audience**: LLMs, AI assistants, and automated code conversion tools
 
-**Framework Context**: Chassis CSS is a modern CSS framework that uses a sophisticated design token system with semantic naming conventions that differ significantly from Bootstrap's BEM-like approach. It synchronizes with Figma components via design tokens from the `@chassis-ui/tokens` package.
+**Framework Context**: Chassis CSS is a modern CSS framework that uses a sophisticated design token system with semantic naming conventions that differ significantly from Bootstrap's BEM-like approach. It synchronizes with Figma components via design tokens from the `@chassis-ui/website-tokens` package.
 
 ## Overview
 
@@ -15,7 +15,7 @@ Chassis CSS is part of the Chassis UI ecosystem:
 - **Repository:** https://github.com/chassis-ui/css
 - **Package:** `@chassis-ui/css`
 - **Documentation:** https://chassis-ui.com/css/
-- **Dependencies:** Built on tokens from `@chassis-ui/tokens`
+- **Dependencies:** Built on tokens from `@chassis-ui/website-tokens`
 
 ## Quick Reference for LLMs
 

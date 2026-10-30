@@ -13,9 +13,9 @@ Chassis is a **hybrid monorepo + multi-repository** design system:
 - **chassis-website** (this repo) is a pnpm monorepo containing `packages/website` (the
   main chassis-ui.com site) and `packages/docs` (the shared `@chassis-ui/docs` package
   used by every Chassis project's documentation site).
-- **chassis-tokens, chassis-css, chassis-icons, chassis-assets, chassis-figma,
-  chassis-react** are each independent repositories, developed and released on their own
-  schedule.
+- **chassis-tokens, chassis-website-tokens, chassis-css, chassis-icons, chassis-assets,
+  chassis-figma, chassis-react** are each independent repositories, developed and released
+  on their own schedule.
 - All of it is presented as one site at `chassis-ui.com` via Vercel proxy routing — see
   [DEPLOYMENT.md](DEPLOYMENT.md) for the URL map and [VERCEL_CONFIG.md](VERCEL_CONFIG.md)
   for how the rewrites work.
@@ -55,14 +55,14 @@ chassis-website/
 Each sibling project has an Astro documentation site that depends on `@chassis-ui/docs`
 from npm, and deploys it to Vercel on its own. Where the site lives differs:
 
-| Project        | Site            | What it distributes                                                |
-| -------------- | --------------- | ------------------------------------------------------------------ |
-| chassis-tokens | `packages/site` | `@chassis-ui/tokens` on npm, from `packages/tokens`                |
-| chassis-css    | `packages/site` | `@chassis-ui/css` on npm, from `packages/css`                      |
-| chassis-react  | `packages/site` | `@chassis-ui/react` on npm, from `packages/react`                  |
-| chassis-assets | `packages/site` | Fonts, images and other assets, from `packages/assets`. Not on npm |
-| chassis-icons  | `site/`         | `@chassis-ui/icons` on npm, from the repository root               |
-| chassis-figma  | `site/`         | Nothing. Documentation of the Figma libraries only                 |
+| Project        | Site            | What it distributes                                                    |
+| -------------- | --------------- | ---------------------------------------------------------------------- |
+| chassis-tokens | `packages/site` | `@chassis-ui/tokens` on npm, the token builder, from `packages/tokens` |
+| chassis-css    | `packages/site` | `@chassis-ui/css` on npm, from `packages/css`                          |
+| chassis-react  | `packages/site` | `@chassis-ui/react` on npm, from `packages/react`                      |
+| chassis-assets | `packages/site` | Fonts, images and other assets, from `packages/assets`. Not on npm     |
+| chassis-icons  | `site/`         | `@chassis-ui/icons` on npm, from the repository root                   |
+| chassis-figma  | `site/`         | Nothing. Documentation of the Figma libraries only                     |
 
 tokens, css, react and assets are pnpm workspaces with the package and the site side by
 side. icons and figma are single packages with the site in a folder.
@@ -76,9 +76,10 @@ chassis-ui.com. The examples page of the website links it.
 How each project's output reaches consumers differs, and this is a deliberate design
 choice per project, not an inconsistency to be fixed:
 
-- **chassis-tokens, chassis-css, chassis-icons, chassis-react** publish npm packages under
-  semver. `chassis-website` and other Node consumers install them from the npm registry
-  (see Dependency Model below).
+- **chassis-website-tokens, chassis-css, chassis-icons, chassis-react** publish npm packages
+  under semver. `chassis-website` and other Node consumers install them from the npm registry
+  (see Dependency Model below). **chassis-tokens** publishes the builder that
+  chassis-website-tokens is built with, and this repository does not install it.
 - **chassis-assets** ships fonts, images, and other binary assets that are also consumed
   by non-Node clients — e.g. native iOS and Android apps — which have no use for an npm
   package. It is never published to npm; every Chassis site, this one included, pulls it in
@@ -101,13 +102,13 @@ depends on:
     "@chassis-ui/css": "^x.y.z",
     "@chassis-ui/docs": "workspace:*",
     "@chassis-ui/icons": "^x.y.z",
-    "@chassis-ui/tokens": "^x.y.z"
+    "@chassis-ui/website-tokens": "^x.y.z"
   }
 }
 ```
 
-`@chassis-ui/css`, `@chassis-ui/icons`, and `@chassis-ui/tokens` are published from their
-own repos, each on its own version: the numbers are not coordinated. Check
+`@chassis-ui/css`, `@chassis-ui/icons`, and `@chassis-ui/website-tokens` are published from
+their own repos, each on its own version: the numbers are not coordinated. Check
 `packages/website/package.json` for the exact current ranges rather than trusting a
 number written here. `@chassis-ui/docs` is versioned inside this monorepo (see
 `packages/docs/package.json`), and the "Compatibility" table of its README says which
@@ -115,7 +116,7 @@ versions of `@chassis-ui/css` and Astro each release works with.
 
 ### Local Development via pnpm Workspace Overrides
 
-`@chassis-ui/css`, `@chassis-ui/icons`, and `@chassis-ui/tokens` resolve from the npm
+`@chassis-ui/css`, `@chassis-ui/icons`, and `@chassis-ui/website-tokens` resolve from the npm
 registry. `pnpm-workspace.yaml` carries no overrides. To try an unpublished change of
 `chassis-css` or `chassis-icons` in the website, add a `link:` override to a sibling
 checkout for the time of the test. [DEVELOPMENT.md](DEVELOPMENT.md#using-an-unpublished-chassis-css-or-icons)

@@ -17,8 +17,8 @@ vendor/      # Git submodule(s), e.g. vendor/assets (chassis-ui/assets)
 ```
 
 Related sibling repos (separate git projects, not part of this monorepo):
-`chassis-tokens`, `chassis-css`, `chassis-assets`, `chassis-icons`, `chassis-figma`,
-`chassis-react`, `chassis-vanilla-example`.
+`chassis-tokens`, `chassis-website-tokens`, `chassis-css`, `chassis-assets`, `chassis-icons`,
+`chassis-figma`, `chassis-react`, `chassis-vanilla-example`.
 
 ## Setup & commands
 

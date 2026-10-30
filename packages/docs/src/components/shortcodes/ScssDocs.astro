@@ -108,7 +108,7 @@ try {
       loadPaths: [
         scssLoadPath,
         getSourceFsPath('scss/vendor'),
-        // Vite's own Sass importer resolves bare npm specifiers (e.g. `@chassis-ui/tokens/...`)
+        // Vite's own Sass importer resolves bare npm specifiers (e.g. `@chassis-ui/website-tokens/...`)
         // through its module resolver, independent of `loadPaths`. This raw Sass JS API call
         // bypasses Vite, so `node_modules` must be added here explicitly.
         ...getNodeModulesPaths()

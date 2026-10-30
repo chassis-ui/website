@@ -4,6 +4,13 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-10-31
+
+### Changed
+
+- The website and the starter of `@chassis-ui/docs` use `@chassis-ui/css` 0.14.0 and take the design tokens from `@chassis-ui/website-tokens` 0.1.0, where they were css 0.11.1 and `@chassis-ui/tokens` 0.10.1, and `@chassis-ui/docs` is built and tested with css 0.14.0. Its peer range stays `>=0.10.0`. `@chassis-ui/tokens` is now the builder of token repositories, and the docs pages say which package does what. The CDN links of the installation page are for css 0.14.0.
+- The canary builds the site of chassis-tokens with `pnpm --filter chassis-tokens-site build` alone: the `tokens:site` script it ran first no longer exists there.
+
 ## 2026-10-27
 
 ### Added

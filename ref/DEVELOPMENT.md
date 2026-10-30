@@ -17,7 +17,7 @@ The website depends on `@chassis-ui/docs` as `workspace:*`, so it always uses th
 `packages/docs`. A change there shows in `pnpm dev` at once. The package has no build
 step: sites consume its `.astro` and `.ts` files directly.
 
-`@chassis-ui/css`, `@chassis-ui/tokens` and `@chassis-ui/icons` come from npm, at the
+`@chassis-ui/css`, `@chassis-ui/website-tokens` and `@chassis-ui/icons` come from npm, at the
 ranges in `packages/website/package.json`.
 
 ## How the site is built

@@ -90,18 +90,35 @@ describe('getInstalledPackageFsPath', () => {
 })
 
 describe('getChassisTokensFsPath', () => {
-  test.each(['dist/web/docs/chassis', 'dist/tokens/web/docs/chassis'])(
-    'finds the docs build in %s',
-    (folder) => {
-      const { site } = repository({
-        [`packages/site/node_modules/@chassis-ui/tokens/${folder}/`]: ''
-      })
+  test('finds the docs build of @chassis-ui/website-tokens', () => {
+    const { site } = repository({
+      'packages/site/node_modules/@chassis-ui/website-tokens/dist/web/docs/chassis/': ''
+    })
 
-      expect(getChassisTokensFsPath({ root: site })).toBe(
-        path.join(site, 'node_modules/@chassis-ui/tokens', folder)
-      )
-    }
-  )
+    expect(getChassisTokensFsPath({ root: site })).toBe(
+      path.join(site, 'node_modules/@chassis-ui/website-tokens/dist/web/docs/chassis')
+    )
+  })
+
+  test('does not fall back to @chassis-ui/tokens, the builder', () => {
+    const { site } = repository({
+      'packages/site/node_modules/@chassis-ui/tokens/dist/web/docs/chassis/': ''
+    })
+
+    expect(() => getChassisTokensFsPath({ root: site })).toThrow(
+      "Could not find the package '@chassis-ui/website-tokens'"
+    )
+  })
+
+  test('uses dir, from the root', () => {
+    const { site } = repository({
+      'packages/site/node_modules/@chassis-ui/tokens/dist/web/docs/chassis/': ''
+    })
+
+    expect(getChassisTokensFsPath({ root: site, dir: 'node_modules/@chassis-ui/tokens' })).toBe(
+      path.join(site, 'node_modules/@chassis-ui/tokens/dist/web/docs/chassis')
+    )
+  })
 })
 
 describe('getChassisAssetsFsPath', () => {

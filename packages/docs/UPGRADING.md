@@ -1,5 +1,51 @@
 # Upgrading @chassis-ui/docs
 
+## From 0.11 to 0.12
+
+The tokens of the Chassis sites moved to `@chassis-ui/website-tokens`, with the same `dist/`
+layout and the same token names as `@chassis-ui/tokens` 0.11 and 0.12. `@chassis-ui/tokens`
+becomes the builder of token repositories, with the `chassis-tokens` command, and drops its
+`dist/` in a later release. `@chassis-ui/css` 0.14 forwards the new package.
+
+### 1. Update the dependencies
+
+In the package of the site:
+
+```sh
+pnpm add -D @chassis-ui/docs@^0.12.0 @chassis-ui/css@^0.14.0 @chassis-ui/website-tokens@^0.1.0
+pnpm remove @chassis-ui/tokens
+```
+
+The peer range of `@chassis-ui/css` stays `>=0.10.0`, so a site can take the package first and
+css later: css before 0.14 still forwards `@chassis-ui/tokens`, and that site keeps it until
+it moves. css 0.12 to 0.14 have changes of their own. Read the
+[changelog of css](https://github.com/chassis-ui/css/blob/main/packages/css/CHANGELOG.md)
+first. A site that takes its tokens from a workspace package of its own keeps that dependency.
+
+### 2. Move a token source of your own
+
+A `_chassis-tokens.scss` of the site that forwards `@chassis-ui/tokens/dist/...` keeps working
+while `@chassis-ui/tokens` 0.12 ships `dist/`. Move it to
+`@chassis-ui/website-tokens/dist/...`. The rest of the path stays the same.
+
+### What changes in the package
+
+- **`getChassisTokensFsPath()` finds `@chassis-ui/website-tokens`.** There is no fallback to
+  `@chassis-ui/tokens`: without the new package it throws, and names it. A site that stays on
+  the old package passes `{ dir: 'node_modules/@chassis-ui/tokens' }`.
+- **`getChassisTokensFsPath()` finds `dist/web/docs/chassis` only**, with or without `dir`.
+  `dist/tokens/web/docs/chassis` was the folder of tokens releases that no supported version of
+  css reads.
+
+A site that passes `dir` with its own folder, in the current layout, needs no change. The
+integration and the Sass load path do not change: the default token source is still the one of
+the css that the site installs.
+
+### Check the result
+
+Build the site. Without the package that its css forwards, the build stops at the first
+stylesheet, with Sass reporting that it cannot find the file to import.
+
 ## From 0.10 to 0.11
 
 0.11.0 links the web app manifest of the docs build of `chassis-assets`,

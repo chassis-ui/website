@@ -355,8 +355,8 @@ git commit -m "chore(release): @chassis-ui/docs <version>"
 `changeset:version` bumps `packages/docs/package.json`, writes the entry in
 `packages/docs/CHANGELOG.md` and deletes the changesets. Add a row for the version to
 [Compatibility](packages/docs/README.md#compatibility) in the package README, with the
-versions of Astro, `@chassis-ui/css` and `@chassis-ui/tokens` in `pnpm-lock.yaml`, and
-commit it with the rest.
+versions of Astro, `@chassis-ui/css` and `@chassis-ui/website-tokens` in `pnpm-lock.yaml`,
+and commit it with the rest.
 
 Push the commit to `develop`. Besides CI, the push runs the canary,
 `.github/workflows/canary.yml`: it builds the site of each Chassis repository whose range

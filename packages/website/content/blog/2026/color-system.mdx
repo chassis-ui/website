@@ -118,7 +118,7 @@ This is where the split pays for itself. Here are three things that are real bra
 
 **Highlights borrowed from another palette.** One of our demo brands wants highlighted rows and checked inputs to use its info blue rather than its orange primary. It remaps `fg-highlight`, `bg-highlight`, and `cue-main` in the `default` context to the `info` palette, in light and in dark, and the product's selection color changes while its buttons stay orange.
 
-In Figma, these brands are modes of one variable collection. A designer flips the brand mode and the same screens re-color. In code, a brand is a token build: a project compiles `@chassis-ui/tokens` for one brand, and the names in the stylesheet don't change. Brand is never a class or an attribute, because nothing in the markup should know which brand it is.
+In Figma, these brands are modes of one variable collection. A designer flips the brand mode and the same screens re-color. In code, a brand is a token build: a project builds its tokens with `@chassis-ui/tokens` for one brand, and the names in the stylesheet don't change. Brand is never a class or an attribute, because nothing in the markup should know which brand it is.
 
 ## What a designer and an engineer actually touch
 

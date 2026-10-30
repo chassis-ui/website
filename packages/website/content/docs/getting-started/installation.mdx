@@ -4,11 +4,11 @@ description: Add Chassis CSS and Chassis Icons to a web project from npm, and us
 toc: true
 ---
 
-Chassis CSS, Chassis Icons and Chassis Tokens are published to npm as `@chassis-ui/css`, `@chassis-ui/icons` and `@chassis-ui/tokens`. This page adds them to a web project. [Chassis CSS](/css/docs/getting-started/installation/) and [Chassis Icons](/icons/) document each package in full.
+Chassis CSS, Chassis Icons and the design tokens of Chassis are published to npm as `@chassis-ui/css`, `@chassis-ui/icons` and `@chassis-ui/website-tokens`. This page adds them to a web project. [Chassis CSS](/css/docs/getting-started/installation/) and [Chassis Icons](/icons/) document each package in full.
 
 ## Requirements
 
-- [Node.js](https://nodejs.org/) 22 or later. `@chassis-ui/css` and `@chassis-ui/tokens` require it in their `engines` field.
+- [Node.js](https://nodejs.org/) 22.12 or later. `@chassis-ui/website-tokens` requires it in its `engines` field, and `@chassis-ui/css` requires Node.js 22.
 - A package manager: [pnpm](https://pnpm.io/), [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/).
 
 ## Install the packages
@@ -34,7 +34,7 @@ pnpm add @floating-ui/dom vanilla-calendar-pro
 
 Two more peer dependencies are optional: `postcss-prefix-custom-properties`, for the [PostCSS step](#add-the-prefix-to-custom-properties) of a Sass build, and `tailwindcss`, for the Tailwind CSS entry.
 
-You need `@chassis-ui/tokens` only when you [compile from Sass](#compile-from-sass). The compiled CSS already contains the default tokens.
+You need `@chassis-ui/website-tokens` only when you [compile from Sass](#compile-from-sass). The compiled CSS already contains the default tokens.
 
 ## Use the compiled CSS
 
@@ -101,7 +101,7 @@ Serve the sprite from the same origin as the page. `<use>` does not load a sprit
 Compile Chassis CSS from its Sass source to change its settings or use other tokens. Install the tokens and [Dart Sass](https://sass-lang.com/dart-sass/):
 
 ```sh
-pnpm add @chassis-ui/tokens
+pnpm add @chassis-ui/website-tokens
 pnpm add -D sass
 ```
 
@@ -115,7 +115,7 @@ Chassis CSS uses the Sass module system. Configure the settings with `@use ... w
 @use "@chassis-ui/css/scss/chassis";
 ```
 
-Sass needs two load paths: `node_modules`, and the `scss/vendor` folder of `@chassis-ui/css`. That folder holds `_chassis-tokens.scss`, which forwards the default tokens from `@chassis-ui/tokens`. To use other tokens, put a `_chassis-tokens.scss` of your own in a folder that comes before it on the load path.
+Sass needs two load paths: `node_modules`, and the `scss/vendor` folder of `@chassis-ui/css`. That folder holds `_chassis-tokens.scss`, which forwards the default tokens from `@chassis-ui/website-tokens`. To use other tokens, put a `_chassis-tokens.scss` of your own in a folder that comes before it on the load path.
 
 ```sh
 pnpm exec sass \
@@ -155,12 +155,12 @@ The prefix is optional unless you use the Tailwind CSS entry. The [installation 
 
 ## Try it from a CDN
 
-To try Chassis CSS without installing anything, load it from jsDelivr, as the [quick start](/css/docs/getting-started/quick-start/) of Chassis CSS does. These links are for version 0.11.1:
+To try Chassis CSS without installing anything, load it from jsDelivr, as the [quick start](/css/docs/getting-started/quick-start/) of Chassis CSS does. These links are for version 0.14.0:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@chassis-ui/css@0.11.1/dist/css/chassis.min.css" integrity="sha384-ZSWES0mK9toeDOpb2Zgj4gf3tw53P4CsZoLAQIqPNnFywuSWObV3BO4onoE/9obh" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@chassis-ui/css@0.14.0/dist/css/chassis.min.css" integrity="sha384-lDzLKprPM68pAchvByLYQJxnW5mqsw6+40MjyE9EeXG1sub3gmOItrSXLUUnmZLf" crossorigin="anonymous">
 
-<script type="module" src="https://cdn.jsdelivr.net/npm/@chassis-ui/css@0.11.1/dist/js/chassis.bundle.min.js" integrity="sha384-quX9M/QyJwijGU7oGLfD9iVFBbAdSZrIUmMxdtBRperWN5QfPzOsGHtamgwTWBOQ" crossorigin="anonymous"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@chassis-ui/css@0.14.0/dist/js/chassis.bundle.min.js" integrity="sha384-Du/Sv3rXK6JMypXaEI9ayalblI5XrFGBAEMRKSaYOskg7H7AhcFx0QAdqmf8vTUf" crossorigin="anonymous"></script>
 ```
 
 The CDN build uses the default tokens and settings. For your own tokens or settings, install the packages and compile from Sass.

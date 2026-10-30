@@ -117,18 +117,13 @@ export function getInstalledPackageFsPath(name: string, root = process.cwd()): s
 }
 
 /**
- * The docs build of `@chassis-ui/tokens`. The folder moved from `dist/tokens/web/docs` to
- * `dist/web/docs` between releases of the tokens package, and both are found.
+ * The docs build of `@chassis-ui/website-tokens`, or of the tokens that `dir` names.
  */
 export function getChassisTokensFsPath(options: ChassisPathOptions = {}): string {
   const tokens =
-    resolveDir(options) ?? getInstalledPackageFsPath('@chassis-ui/tokens', options.root)
+    resolveDir(options) ?? getInstalledPackageFsPath('@chassis-ui/website-tokens', options.root)
 
-  return findUp(
-    tokens,
-    ['dist/web/docs/chassis', 'dist/tokens/web/docs/chassis'],
-    'the docs build of @chassis-ui/tokens'
-  )
+  return findUp(tokens, ['dist/web/docs/chassis'], 'the docs build of the tokens')
 }
 
 /**
