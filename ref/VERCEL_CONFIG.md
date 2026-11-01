@@ -2,7 +2,7 @@
 
 > **Document Purpose:** Technical reference for Vercel proxy routing configuration
 > **Last Updated:** October 2026
-> **Audience:** Developers working on chassis-website deployment
+> **Audience:** Developers working on chassis-ui/website deployment
 
 This document describes how environment-specific URL routing works for the Chassis ecosystem using Vercel rewrites and conditional headers.
 
@@ -387,7 +387,7 @@ curl -sI https://chassis-tokens.vercel.app/tokens/
 
 ## Configuration Files Reference
 
-- **`vercel.json`** (chassis-website) — main rewrites, security headers, staging `X-Robots-Tag` header.
+- **`vercel.json`** (chassis-ui/website) — main rewrites, security headers, staging `X-Robots-Tag` header.
 - **`vercel.json`** (each sub-project) — `X-Robots-Tag` for `*-staging.vercel.app` hosts only.
 - **`packages/website/src/pages/robots.txt.ts`** — robots for the website, by build environment: a production build allows crawling but for three SEO crawlers, any other disallows it.
 - **`src/pages/robots.txt.ts`** of each sub-project's site (`packages/site`, or `site/` in icons and figma) — always emits `Disallow: /` (sub-projects are never user-facing).

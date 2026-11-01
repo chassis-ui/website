@@ -48,9 +48,9 @@ stylesheet, with Sass reporting that it cannot find the file to import.
 
 ## From 0.10 to 0.11
 
-0.11.0 links the web app manifest of the docs build of `chassis-assets`,
+0.11.0 links the web app manifest of the docs build of `chassis-ui/assets`,
 `other/manifest.json` under the static path, in place of `images/manifest.json`, which each
-site provided itself. chassis-assets added the manifest, with a maskable icon, in `v0.5.0`
+site provided itself. chassis-ui/assets added the manifest, with a maskable icon, in `v0.5.0`
 of `app/docs` on 2026-10-23.
 
 ### 1. Update the dependency and the assets
@@ -91,7 +91,7 @@ Manifest names the site and shows its icons.
 0.9 and 0.10 are both breaking minors, and a site on 0.8 takes them in one upgrade: the
 steps of [From 0.8 to 0.9](#from-08-to-09) and [From 0.9 to 0.10](#from-09-to-010) together,
 in this order. 0.9 reads the typography names of `@chassis-ui/css` 0.10. 0.10 links one font
-stylesheet, `fonts/fonts.css`, and inlines the logo, after chassis-assets changed both on
+stylesheet, `fonts/fonts.css`, and inlines the logo, after chassis-ui/assets changed both on
 `app/docs` on 2026-10-19.
 
 ### 1. Update the dependencies
@@ -127,7 +127,7 @@ Stage the pin, or commit it, before you run `pnpm vendor` or a build: `vendor` c
 submodule out at the commit that the repository records, and a build from the old pin links a
 stylesheet that is not there.
 
-chassis-assets has no submodule: its site is built from its own `source/`, which has
+chassis-ui/assets has no submodule: its site is built from its own `source/`, which has
 `fonts.css` from `db6d64b` on. A site that does not copy the docs build provides
 `fonts/fonts.css` and the font files it names itself.
 
@@ -183,7 +183,7 @@ network panel, no request under `/static/fonts/` may fail.
 
 0.10.0 links one font stylesheet, `fonts/fonts.css`, in place of `fonts/text.css`,
 `fonts/display.css` and `fonts/code.css`, and inlines the logo of the navigation bar and the
-footer, `images/site-logo.svg`, in place of loading it with `<img>`. chassis-assets made both
+footer, `images/site-logo.svg`, in place of loading it with `<img>`. chassis-ui/assets made both
 changes on `app/docs` on 2026-10-19: a brand has one `fonts.css`, the files of the `text`
 role are `ui` files, and the logo of the `chassis` brand is for inline use. It has no `xmlns`,
 and the classes `icon-default` and `icon-primary` of the page color its paths.
@@ -198,7 +198,7 @@ pnpm sync-submodules
 git add vendor/assets
 ```
 
-The docs build of `chassis-assets` has `fonts/fonts.css` from `db6d64b` of `app/docs` on. With
+The docs build of `chassis-ui/assets` has `fonts/fonts.css` from `db6d64b` of `app/docs` on. With
 an earlier commit the pages show the fallback fonts. Stage or commit the pin before you run
 `pnpm vendor` or a build, which check the submodule out at the commit that the repository
 records. A site that does not copy the docs build provides `fonts/fonts.css` itself. Step 2
@@ -276,7 +276,7 @@ keep their values, so nothing of the package moves.
 0.8.0 loads the fonts from the site's own static files, no longer from Google Fonts. The
 head of every page links `fonts/text.css`, `fonts/display.css` and `fonts/code.css` under
 the static path, `/static/` by default. The three stylesheets and the font files they load
-are in the docs build of `chassis-assets`, which a site copies into `static/` already.
+are in the docs build of `chassis-ui/assets`, which a site copies into `static/` already.
 
 ### 1. Update the dependency
 
@@ -317,7 +317,7 @@ The step is optional, and it does two things:
   page loads when it has a character of it. A page in English loads `text-latin.woff2`,
   69 KB, where the whole `text.woff2` is 349 KB. A character outside the ranges is drawn
   with the next font of the font stack, so name the range of every script your pages use:
-  a name that `chassis-assets` knows, or a range written as `U+0370-03FF`. See
+  a name that `chassis-ui/assets` knows, or a range written as `U+0370-03FF`. See
   [Commands](README.md#commands) in the README.
 - The optical size axis of Inter is fixed at 14. See "What changes on the pages" below.
 
@@ -566,7 +566,7 @@ export const getData = createDataLoader({
 - Remove the `astro:build:done` hook that calls `validateChassisDocsPaths()`.
 - Import `getChassisAssetsFsPath`, `getChassisCSSFsPath`, `getChassisIconsFsPath` and
   `getChassisTokensFsPath` from `@chassis-ui/docs` and call them with `{ root }`. Pass
-  `dir` when the folder is not the installed package, as in `chassis-css`, which copies
+  `dir` when the folder is not the installed package, as in `chassis-ui/css`, which copies
   from `../css/dist`.
 - Replace `getDocsFsPath()` with `root`, `getDocsPublicFsPath()` with
   `path.join(root, 'public')`, and `getDocsStaticFsPath()` with

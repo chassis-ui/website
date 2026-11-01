@@ -20,7 +20,7 @@ Each Chassis project (tokens, css, icons, assets, figma, react) has its own stag
 
 ## 🏗 Deployment Architecture
 
-### Main Website (chassis-website)
+### Main Website (chassis-ui/website)
 
 **Repository:** `chassis-ui/website`  
 **Hosting:** Vercel  
@@ -98,7 +98,7 @@ only. The deployment that Vercel makes after each of the two then starts `lighth
 `links.yml` and `csp.yml`. The pushes to `develop` are not cancelled by a newer one, so each
 commit keeps its results; a newer push to a pull request cancels the run of the older.
 
-### Releasing chassis-website
+### Releasing the website
 
 With the work merged into `develop`:
 
@@ -223,7 +223,7 @@ Vercel automatically sets environment variables:
 3. Push the same commit to `staging` and check the staging site.
 4. Push the same commit to `main`.
 
-The commands are under [Releasing chassis-website](#releasing-chassis-website).
+The commands are under [Releasing the website](#releasing-the-website).
 
 ### Version Coordination
 
@@ -293,7 +293,7 @@ pnpm check:astro
 # Build vendor/assets at the pinned commit, as Vercel does
 pnpm vendor
 
-# Move the pin to the latest app/docs of chassis-assets, then commit it on its own
+# Move the pin to the latest app/docs of chassis-ui/assets, then commit it on its own
 pnpm sync-submodules
 git add vendor/assets
 git commit -m "chore: update the assets submodule"

@@ -6,9 +6,9 @@
 
 ## Overview
 
-`@chassis-ui/docs` powers every documentation site in the Chassis ecosystem: the main `chassis-ui.com` website and the docs of `chassis-css`, `chassis-tokens`, `chassis-icons`, `chassis-figma`, `chassis-assets` and `chassis-react`. It ships layouts, navigation components, shortcodes for MDX, content-processing utilities and SCSS, so each site stays consistent without copying code.
+`@chassis-ui/docs` powers every documentation site in the Chassis ecosystem: the main `chassis-ui.com` website and the docs of `chassis-ui/css`, `chassis-ui/tokens`, `chassis-ui/icons`, `chassis-ui/figma`, `chassis-ui/assets` and `chassis-ui/react`. It ships layouts, navigation components, shortcodes for MDX, content-processing utilities and SCSS, so each site stays consistent without copying code.
 
-> [!NOTE] This package is developed inside the [`chassis-website`](https://github.com/chassis-ui/website) monorepo at `packages/docs/` and published to npm. Source, issues, and pull requests live in that repository.
+> [!NOTE] This package is developed inside the [`chassis-ui/website`](https://github.com/chassis-ui/website) monorepo at `packages/docs/` and published to npm. Source, issues, and pull requests live in that repository.
 
 Coming from an earlier version? See [UPGRADING.md](UPGRADING.md).
 
@@ -185,17 +185,17 @@ export const collections = {
 
 The layouts link to files under `/static/`, which the site puts into `static/` of its `public` directory:
 
-| URL                                                                                                                                | From                                                                                                                      |
-| ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `/static/css/chassis.css`, `/static/css/chassis.min.css`                                                                           | the `dist` folder of `@chassis-ui/css`                                                                                    |
-| `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css`                                                               | the `icons` folder of `@chassis-ui/icons`                                                                                 |
-| `/static/images/site-logo.svg`, the logo of the navigation bar and the footer. The build inlines it, and fails without the file    | the docs build of `chassis-assets`                                                                                        |
-| `/static/images/favicon.png`, `favicon-16x16.png`, `favicon-32x32.png` and `apple-touch-icon.png`                                  | the docs build of `chassis-assets`                                                                                        |
-| `/static/images/social-image.png`, the image of a page without a `thumbnail`. The build reads its size, and fails without the file | the docs build of `chassis-assets`                                                                                        |
-| `/static/fonts/fonts.css`, and the font files it loads                                                                             | the docs build of `chassis-assets`                                                                                        |
-| `/static/other/manifest.json`, the web app manifest                                                                                | the docs build of `chassis-assets`, `v0.5.0` or later. A site may put its own in its `static/other/`, as the starter does |
+| URL                                                                                                                                | From                                                                                                                         |
+| ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `/static/css/chassis.css`, `/static/css/chassis.min.css`                                                                           | the `dist` folder of `@chassis-ui/css`                                                                                       |
+| `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css`                                                               | the `icons` folder of `@chassis-ui/icons`                                                                                    |
+| `/static/images/site-logo.svg`, the logo of the navigation bar and the footer. The build inlines it, and fails without the file    | the docs build of `chassis-ui/assets`                                                                                        |
+| `/static/images/favicon.png`, `favicon-16x16.png`, `favicon-32x32.png` and `apple-touch-icon.png`                                  | the docs build of `chassis-ui/assets`                                                                                        |
+| `/static/images/social-image.png`, the image of a page without a `thumbnail`. The build reads its size, and fails without the file | the docs build of `chassis-ui/assets`                                                                                        |
+| `/static/fonts/fonts.css`, and the font files it loads                                                                             | the docs build of `chassis-ui/assets`                                                                                        |
+| `/static/other/manifest.json`, the web app manifest                                                                                | the docs build of `chassis-ui/assets`, `v0.5.0` or later. A site may put its own in its `static/other/`, as the starter does |
 
-`chassis-docs vendor` builds the docs build of `chassis-assets` in the `vendor/assets` submodule. See [Commands](#commands).
+`chassis-docs vendor` builds the docs build of `chassis-ui/assets` in the `vendor/assets` submodule. See [Commands](#commands).
 
 Nothing else of the docs build is read by the package. A site copies the whole build into `static/`, and its own pages may read more of it.
 
@@ -207,20 +207,20 @@ A site that type-checks with `astro check` declares the `@chassis-ui/css` module
 
 The sites of the Chassis projects read these files besides, by name, from the docs build of the `chassis` brand:
 
-| File of the docs build                                                   | Read by                                                                                                         |
-| ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| `icons/cx-sprite.svg`                                                    | The home page of each of the seven sites, which imports it. The build fails without it                          |
-| `images/apple-touch-icon.png`, `images/favicon.png`                      | Each of the seven sites, which copies them to `/apple-touch-icon.png` and `/favicon.ico`                        |
-| `images/android-chrome-192x192.png`, `images/android-chrome-512x512.png` | `other/manifest.json` of the docs build, which the head links                                                   |
-| `images/home/`                                                           | The home page of the website. The home page of chassis-tokens reads `comp-gallery-*` of it                      |
-| `images/logo/logo-{light,dark}.svg`                                      | The about page of the website                                                                                   |
-| `images/social-image.png`                                                | The blog of the website, for a post without an image                                                            |
-| `images/site-logo.svg`                                                   | The examples of the navbar page of chassis-css. The README of `@chassis-ui/react`, by its URL on chassis-ui.com |
-| `images/figma/components/`                                               | The component pages of chassis-figma                                                                            |
+| File of the docs build                                                   | Read by                                                                                                            |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `icons/cx-sprite.svg`                                                    | The home page of each of the seven sites, which imports it. The build fails without it                             |
+| `images/apple-touch-icon.png`, `images/favicon.png`                      | Each of the seven sites, which copies them to `/apple-touch-icon.png` and `/favicon.ico`                           |
+| `images/android-chrome-192x192.png`, `images/android-chrome-512x512.png` | `other/manifest.json` of the docs build, which the head links                                                      |
+| `images/home/`                                                           | The home page of the website. The home page of chassis-ui/tokens reads `comp-gallery-*` of it                      |
+| `images/logo/logo-{light,dark}.svg`                                      | The about page of the website                                                                                      |
+| `images/social-image.png`                                                | The blog of the website, for a post without an image                                                               |
+| `images/site-logo.svg`                                                   | The examples of the navbar page of chassis-ui/css. The README of `@chassis-ui/react`, by its URL on chassis-ui.com |
+| `images/figma/components/`                                               | The component pages of chassis-ui/figma                                                                            |
 
-The vanilla HTML example, in the `vanilla-example` repository, builds the assets itself from a `vendor/assets` submodule of its own, for the brand of each of its sites, and takes `fonts/text.css`, `fonts/display.css` and `fonts/code.css`, the font files they load, the license of each font and `images/logo/chassis-icon-brand.svg`.
+The vanilla HTML example, in the `chassis-ui/vanilla-example` repository, builds the assets itself from a `vendor/assets` submodule of its own, for the brand of each of its sites, and takes `fonts/text.css`, `fonts/display.css` and `fonts/code.css`, the font files they load, the license of each font and `images/logo/chassis-icon-brand.svg`.
 
-`contracts` in `chassis.checks.json` of `chassis-assets` names the files that a site reads, with the code that reads each, and `pnpm assets:contract` there checks a build against it.
+`contracts` in `chassis.checks.json` of `chassis-ui/assets` names the files that a site reads, with the code that reads each, and `pnpm assets:contract` there checks a build against it.
 
 #### A site under a prefix
 
@@ -357,7 +357,7 @@ The package installs a `chassis-docs` command with the build steps that every Ch
 
 `vendor` and `sync-submodules` work from any folder of the repository. They need Git, Git LFS and pnpm. `sync-submodules --branch <name>`, or the `SUBMODULE_BRANCH` variable, follows another branch.
 
-Both take `--subset <range>`, which writes the fonts of the build with the characters of the range only, so that a page downloads smaller font files. A range is a name that `chassis-assets` knows, such as `latin` or `latin-ext`, or a range written as `U+0370-03FF`, and the option is repeatable:
+Both take `--subset <range>`, which writes the fonts of the build with the characters of the range only, so that a page downloads smaller font files. A range is a name that `chassis-ui/assets` knows, such as `latin` or `latin-ext`, or a range written as `U+0370-03FF`, and the option is repeatable:
 
 ```json
 {
@@ -369,9 +369,9 @@ Both take `--subset <range>`, which writes the fonts of the build with the chara
 
 A character outside the ranges is drawn with the next font of the font stack. With the option, the commands install the package of the build in the submodule, `pnpm install --filter ./packages/assets --prod`, in place of `pnpm install --ignore-workspace`: it holds the package that subsets a font.
 
-`--subset` also fixes the axes of a variable font that `chassis-assets` names for the brand: the optical size of Inter at 14, so that text has the width it had with Google Fonts. A site that builds without `--subset` sets `font-optical-sizing: none` in its styles for the same look.
+`--subset` also fixes the axes of a variable font that `chassis-ui/assets` names for the brand: the optical size of Inter at 14, so that text has the width it had with Google Fonts. A site that builds without `--subset` sets `font-optical-sizing: none` in its styles for the same look.
 
-`--split`, with `--subset`, writes each font in a file per range as well, such as `text-latin.woff2` and `text-latin-ext.woff2`, and the stylesheets name them with a `unicode-range`: a page loads the file of a range only when it has a character of it. `--no-split` writes one file per font. Without either, the setting of `chassis-assets` decides, which is one file.
+`--split`, with `--subset`, writes each font in a file per range as well, such as `text-latin.woff2` and `text-latin-ext.woff2`, and the stylesheets name them with a `unicode-range`: a page loads the file of a range only when it has a character of it. `--no-split` writes one file per font. Without either, the setting of `chassis-ui/assets` decides, which is one file.
 
 Each command exits with 1 when it fails, so a script or CI job stops there.
 
@@ -508,15 +508,15 @@ Everything else may change in a patch release: the rendered HTML, class names, t
 
 This package is part of the Chassis Design System's multi-repository architecture:
 
-| Project                                                  | Description                                                    |
-| -------------------------------------------------------- | -------------------------------------------------------------- |
-| [chassis-website](https://github.com/chassis-ui/website) | **Main website and home of `@chassis-ui/docs` (this package)** |
-| [chassis-css](https://github.com/chassis-ui/css)         | CSS framework and component library                            |
-| [chassis-tokens](https://github.com/chassis-ui/tokens)   | Design token generation and management                         |
-| [chassis-icons](https://github.com/chassis-ui/icons)     | Icon library and build toolkit                                 |
-| [chassis-assets](https://github.com/chassis-ui/assets)   | Multi-platform asset management                                |
-| [chassis-figma](https://github.com/chassis-ui/figma)     | Figma component documentation                                  |
-| [chassis-react](https://github.com/chassis-ui/react)     | React component library                                        |
+| Project                                                     | Description                                                    |
+| ----------------------------------------------------------- | -------------------------------------------------------------- |
+| [chassis-ui/website](https://github.com/chassis-ui/website) | **Main website and home of `@chassis-ui/docs` (this package)** |
+| [chassis-ui/css](https://github.com/chassis-ui/css)         | CSS framework and component library                            |
+| [chassis-ui/tokens](https://github.com/chassis-ui/tokens)   | Design token generation and management                         |
+| [chassis-ui/icons](https://github.com/chassis-ui/icons)     | Icon library and build toolkit                                 |
+| [chassis-ui/assets](https://github.com/chassis-ui/assets)   | Multi-platform asset management                                |
+| [chassis-ui/figma](https://github.com/chassis-ui/figma)     | Figma component documentation                                  |
+| [chassis-ui/react](https://github.com/chassis-ui/react)     | React component library                                        |
 
 All documentation sites in the ecosystem share this package for consistent layouts, components, and styling.
 

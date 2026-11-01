@@ -30,9 +30,9 @@ ranges in `packages/website/package.json`.
    output is `vendor/assets/dist/web/docs/chassis`. The script passes three `--subset`
    ranges, so the fonts of the output hold these characters only: `latin` and `latin-ext`,
    the languages that are written in Latin letters, and `symbols2`, the range of
-   chassis-assets that has the box drawing characters of the file trees on the home page.
+   chassis-ui/assets that has the box drawing characters of the file trees on the home page.
    With `--subset` the build also fixes the optical size axis of Inter at 14, which
-   chassis-assets sets for the brand: text has the width it had with Google Fonts. The
+   chassis-ui/assets sets for the brand: text has the width it had with Google Fonts. The
    script passes `--split` too, so each font is also written in a file per range, such as
    `text-latin.woff2`, and a page loads the file of a range only when it has a character
    of it. With `--subset` the command installs the package of the build in the submodule,
@@ -82,7 +82,7 @@ empties `packages/website/public/` and fills it again:
 
 ### Blog images
 
-Images of the blog are not in this repository or in chassis-assets, which holds design
+Images of the blog are not in this repository or in chassis-ui/assets, which holds design
 assets only. They are in the media library on Cloudinary, the account that `media.cloudinary`
 of `packages/website/config.yml` names, and the pages load resized copies from
 `res.cloudinary.com`. See
@@ -129,18 +129,18 @@ the index of the last build.
 
 ## The `vendor/assets` submodule
 
-`vendor/assets` is [chassis-assets](https://github.com/chassis-ui/assets) at a commit that
+`vendor/assets` is [chassis-ui/assets](https://github.com/chassis-ui/assets) at a commit that
 this repository pins. Every build uses that commit, so the same commit of this repository
 always builds the same site.
 
 - `pnpm vendor` builds the pinned commit. Run it after cloning and whenever the pin
   changes, for example after a pull.
 - `pnpm sync-submodules` moves the pin to the latest commit of the `app/docs` branch of
-  chassis-assets and builds it. `SUBMODULE_BRANCH=<branch>` picks another branch. Check
+  chassis-ui/assets and builds it. `SUBMODULE_BRANCH=<branch>` picks another branch. Check
   the site, then commit `vendor/assets` on its own.
 - `pnpm dev` does not touch the submodule.
 
-Changes to the assets belong in the chassis-assets repository, not in `vendor/assets`.
+Changes to the assets belong in the chassis-ui/assets repository, not in `vendor/assets`.
 
 ## Examples
 
@@ -182,7 +182,11 @@ repository in icons and figma:
 ```bash
 cd packages/docs
 pnpm pack --pack-destination /tmp
-cd ../../../chassis-css/packages/site
+```
+
+Then, in that package of your checkout of the sibling:
+
+```bash
 pnpm add -D /tmp/chassis-ui-docs-<version>.tgz
 ```
 
@@ -190,16 +194,16 @@ Revert the sibling's `package.json` and lockfile afterwards.
 
 ### Using an unpublished Chassis CSS or Icons
 
-To try a change of `chassis-css` or `chassis-icons` in the website before it is
-published, override the dependency with a sibling checkout, next to this one on disk:
+To try a change of `chassis-ui/css` or `chassis-ui/icons` in the website before it is
+published, override the dependency with your checkout of it, wherever that is on disk:
 
 ```yaml
 # pnpm-workspace.yaml
 packages:
   - 'packages/*'
 overrides:
-  '@chassis-ui/css': link:../chassis-css/packages/css
-  '@chassis-ui/icons': link:../chassis-icons
+  '@chassis-ui/css': link:<checkout of chassis-ui/css>/packages/css
+  '@chassis-ui/icons': link:<checkout of chassis-ui/icons>
 ```
 
 Run `pnpm install`. Remove the override before you commit.
@@ -216,7 +220,7 @@ Chassis CSS uses `@use`, not `@import`. A breakpoint is a prefix of a utility cl
 
 ## Troubleshooting
 
-**The dev server stops with "Could not find the docs build of chassis-assets".** The
+**The dev server stops with "Could not find the docs build of chassis-ui/assets".** The
 vendor assets are not built. Run `pnpm vendor`.
 
 **Images are missing or broken.** Git LFS was not installed when the submodule was

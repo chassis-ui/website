@@ -17,8 +17,8 @@ vendor/      # Git submodule(s), e.g. vendor/assets (chassis-ui/assets)
 ```
 
 Related sibling repos (separate git projects, not part of this monorepo):
-`chassis-tokens`, `chassis-website-tokens`, `chassis-css`, `chassis-assets`, `chassis-icons`,
-`chassis-figma`, `chassis-react`, `chassis-vanilla-example`.
+`chassis-ui/tokens`, `chassis-ui/website-tokens`, `chassis-ui/css`, `chassis-ui/assets`,
+`chassis-ui/icons`, `chassis-ui/figma`, `chassis-ui/react`, `chassis-ui/vanilla-example`.
 
 ## Setup & commands
 
@@ -48,8 +48,10 @@ Run the relevant lint/check command after making changes before considering a ta
   (`stylelint.config.js`) — don't hand-format against their rules.
 - Content (blog, docs) lives in Astro content collections under
   `packages/website/src/content`.
+- Name a sibling by its GitHub repository, as in `chassis-ui/css`. Never by a local folder
+  name or a relative path: those differ per contributor.
 - `vendor/assets` is a git submodule — don't edit its contents directly here; changes
-  belong in the `chassis-assets` repo.
+  belong in the `chassis-ui/assets` repo.
 
 ## Reference docs
 

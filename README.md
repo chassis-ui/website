@@ -32,7 +32,7 @@ packages/
     test/       Its unit and component tests
 api/            The contact form endpoint, a Vercel function
 build/          Build, validation and release scripts
-vendor/assets/  The chassis-assets submodule: logo, favicons and fonts
+vendor/assets/  The chassis-ui/assets submodule: logo, favicons and fonts
 ref/            Reference documents for maintainers
 ```
 
@@ -52,16 +52,16 @@ The build writes the site to `_site/`.
 
 ## Chassis ecosystem
 
-| Project                                                                | What it is                                                                          | Docs                                       |
-| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------ |
-| **chassis-website**                                                    | This repository: chassis-ui.com and `@chassis-ui/docs`                              | [chassis-ui.com](https://chassis-ui.com)   |
-| [chassis-tokens](https://github.com/chassis-ui/tokens)                 | The token builder, published as `@chassis-ui/tokens`                                | [/tokens/](https://chassis-ui.com/tokens/) |
-| [chassis-website-tokens](https://github.com/chassis-ui/website-tokens) | The tokens of the Chassis sites and apps, published as `@chassis-ui/website-tokens` | [/tokens/](https://chassis-ui.com/tokens/) |
-| [chassis-css](https://github.com/chassis-ui/css)                       | The CSS framework, published as `@chassis-ui/css`                                   | [/css/](https://chassis-ui.com/css/)       |
-| [chassis-icons](https://github.com/chassis-ui/icons)                   | The icon library, published as `@chassis-ui/icons`                                  | [/icons/](https://chassis-ui.com/icons/)   |
-| [chassis-assets](https://github.com/chassis-ui/assets)                 | Fonts, images and other assets for web and native apps. Not on npm                  | [/assets/](https://chassis-ui.com/assets/) |
-| [chassis-figma](https://github.com/chassis-ui/figma)                   | Documentation of the Figma libraries                                                | [/figma/](https://chassis-ui.com/figma/)   |
-| [chassis-react](https://github.com/chassis-ui/react)                   | React components, published as `@chassis-ui/react`                                  | Not yet routed on chassis-ui.com           |
+| Project                                                                   | What it is                                                                          | Docs                                       |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------ |
+| **chassis-ui/website**                                                    | This repository: chassis-ui.com and `@chassis-ui/docs`                              | [chassis-ui.com](https://chassis-ui.com)   |
+| [chassis-ui/tokens](https://github.com/chassis-ui/tokens)                 | The token builder, published as `@chassis-ui/tokens`                                | [/tokens/](https://chassis-ui.com/tokens/) |
+| [chassis-ui/website-tokens](https://github.com/chassis-ui/website-tokens) | The tokens of the Chassis sites and apps, published as `@chassis-ui/website-tokens` | [/tokens/](https://chassis-ui.com/tokens/) |
+| [chassis-ui/css](https://github.com/chassis-ui/css)                       | The CSS framework, published as `@chassis-ui/css`                                   | [/css/](https://chassis-ui.com/css/)       |
+| [chassis-ui/icons](https://github.com/chassis-ui/icons)                   | The icon library, published as `@chassis-ui/icons`                                  | [/icons/](https://chassis-ui.com/icons/)   |
+| [chassis-ui/assets](https://github.com/chassis-ui/assets)                 | Fonts, images and other assets for web and native apps. Not on npm                  | [/assets/](https://chassis-ui.com/assets/) |
+| [chassis-ui/figma](https://github.com/chassis-ui/figma)                   | Documentation of the Figma libraries                                                | [/figma/](https://chassis-ui.com/figma/)   |
+| [chassis-ui/react](https://github.com/chassis-ui/react)                   | React components, published as `@chassis-ui/react`                                  | Not yet routed on chassis-ui.com           |
 
 ## License
 

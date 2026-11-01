@@ -16,7 +16,7 @@ This document describes how indexing is allowed on the production domain (`chass
 | `chassis-{tokens,css,icons,figma,assets,react}-staging.vercel.app/*` (staging Vercel previews) | ❌ No |
 | `chassis-website-*.vercel.app/*` (the website's own Vercel hosts) | ❌ No |
 
-The sub-project sites (`chassis-tokens`, `chassis-css`, etc.) exist only as proxy targets behind `chassis-ui.com`. Crawlers must never index those URLs directly.
+The sub-project sites (`chassis-ui/tokens`, `chassis-ui/css`, etc.) exist only as proxy targets behind `chassis-ui.com`. Crawlers must never index those URLs directly.
 
 ## 🧱 Strategy Overview
 
@@ -47,7 +47,7 @@ Indexing is controlled with **two layers**:
 
 ## 📂 Where each rule lives
 
-### Website (chassis-website)
+### Website (chassis-ui/website)
 
 **`packages/website/src/pages/robots.txt.ts`** — emits sitemap and `Disallow:` only when the build is a production Astro build (`import.meta.env.PROD`) **and** either `VERCEL_ENV` is unset or equals `production`. Staging (`VERCEL_ENV=preview`) and local dev builds emit `Disallow: /`.
 
@@ -78,7 +78,7 @@ The file decides by the build, not by the host, so the website's production depl
 }
 ```
 
-### Sub-projects (chassis-tokens, chassis-css, chassis-icons, chassis-figma, chassis-assets, chassis-react)
+### Sub-projects (chassis-ui/tokens, chassis-ui/css, chassis-ui/icons, chassis-ui/figma, chassis-ui/assets, chassis-ui/react)
 
 **`src/pages/robots.txt.ts`** of the site (`packages/site` in tokens, css, assets and react, `site/` in icons and figma) — always emits `Disallow: /`. These hosts are never user-facing; they only serve as proxy targets.
 
@@ -167,7 +167,7 @@ done
 
 ## 📝 Canonical URLs
 
-`getSiteUrl()` in `packages/docs/src/libs/site.ts` determines the Astro `site` value used for sitemap generation and canonical `<link>` tags. In production (`VERCEL_ENV === 'production'`) it returns `config.baseURL`, which is set to the correct path-prefixed `chassis-ui.com` URL in each project's `config.yml` (e.g. `https://chassis-ui.com/tokens` for chassis-tokens).
+`getSiteUrl()` in `packages/docs/src/libs/site.ts` determines the Astro `site` value used for sitemap generation and canonical `<link>` tags. In production (`VERCEL_ENV === 'production'`) it returns `config.baseURL`, which is set to the correct path-prefixed `chassis-ui.com` URL in each project's `config.yml` (e.g. `https://chassis-ui.com/tokens` for chassis-ui/tokens).
 
 This means sub-project sitemaps and canonical tags correctly reference `chassis-ui.com/...` URLs in production builds — not the bare `*.vercel.app` host.
 

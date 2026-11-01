@@ -25,7 +25,7 @@ repositories use. See [`build/fixture-sites.js`](https://github.com/chassis-ui/w
    pnpm dev
    ```
 
-   `pnpm vendor` builds the docs build of chassis-assets at the commit that the repository
+   `pnpm vendor` builds the docs build of chassis-ui/assets at the commit that the repository
    pins. Run it again when the pin moves.
 
 `pnpm lint:html` validates the built site. See
@@ -50,14 +50,14 @@ A site in `site/` whose dependencies are in the root of the repository runs
 
 ## What is in it
 
-| File                             | Purpose                                                                                                                                                                            |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `astro.config.ts`                | The integration of the package, MDX, and the Sass load path that the styles of `@chassis-ui/css` need                                                                              |
-| `src/libs/static.ts`             | Copies the files that the layouts link to under `/static/` into `public/static/`: those of the Chassis packages, then `static/` of the site                                        |
-| `static/`                        | The site's own files under `/static/`. It holds a web app manifest of the site's own, in place of the one of the docs build of `chassis-assets`, and names two icons of that build |
-| `src/content.config.ts`          | The `docs` and `callouts` collections, with the schemas of the package                                                                                                             |
-| `src/pages/docs/[...slug].astro` | Renders each page of the `docs` collection with `DocsLayout`                                                                                                                       |
-| `src/pages/[...alias].astro`     | Redirects the paths in the `aliases` of a page to the page                                                                                                                         |
-| `src/env.d.ts`                   | Declares `@chassis-ui/css`, which has no types                                                                                                                                     |
+| File                             | Purpose                                                                                                                                                                               |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `astro.config.ts`                | The integration of the package, MDX, and the Sass load path that the styles of `@chassis-ui/css` need                                                                                 |
+| `src/libs/static.ts`             | Copies the files that the layouts link to under `/static/` into `public/static/`: those of the Chassis packages, then `static/` of the site                                           |
+| `static/`                        | The site's own files under `/static/`. It holds a web app manifest of the site's own, in place of the one of the docs build of `chassis-ui/assets`, and names two icons of that build |
+| `src/content.config.ts`          | The `docs` and `callouts` collections, with the schemas of the package                                                                                                                |
+| `src/pages/docs/[...slug].astro` | Renders each page of the `docs` collection with `DocsLayout`                                                                                                                          |
+| `src/pages/[...alias].astro`     | Redirects the paths in the `aliases` of a page to the page                                                                                                                            |
+| `src/env.d.ts`                   | Declares `@chassis-ui/css`, which has no types                                                                                                                                        |
 
 The [README of the package](https://www.npmjs.com/package/@chassis-ui/docs) describes each part.

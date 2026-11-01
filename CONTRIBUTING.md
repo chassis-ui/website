@@ -36,8 +36,8 @@ You need:
 Then:
 
 ```bash
-git clone --recursive https://github.com/chassis-ui/website.git chassis-website
-cd chassis-website
+git clone --recursive https://github.com/chassis-ui/website.git
+cd website
 pnpm install
 pnpm vendor
 pnpm dev
@@ -66,7 +66,7 @@ Run them from the root of the repository.
 | `pnpm test:fixtures`   | Builds the starter site from the packed package, in both layouts. See [Tests](#tests)                        |
 | `pnpm check`           | `astro check` on both packages, then `pnpm audit --prod`                                                     |
 | `pnpm vendor`          | Builds the `vendor/assets` submodule at the pinned commit, with a subset of each font: Latin characters      |
-| `pnpm sync-submodules` | Moves the `vendor/assets` pin to the latest `app/docs` of chassis-assets, and builds it                      |
+| `pnpm sync-submodules` | Moves the `vendor/assets` pin to the latest `app/docs` of chassis-ui/assets, and builds it                      |
 | `pnpm changeset`       | Describes a change to `@chassis-ui/docs` for its changelog. See [Releases](#releases)                        |
 
 The scripts behind them are in `package.json`. `site:*` scripts act on `packages/website`,
@@ -147,7 +147,7 @@ test fails after an update, give both the same range and run `pnpm install`.
 
 `pnpm test:fixtures` packs `@chassis-ui/docs`, installs it into copies of the starter site
 in `packages/docs/starter`, builds them and checks the output. It needs network access for
-the install. A stand-in replaces the docs build of chassis-assets. Name a layout, `root` or
+the install. A stand-in replaces the docs build of chassis-ui/assets. Name a layout, `root` or
 `packages`, to build only that one.
 
 `pnpm test:canary` builds the sites of the sibling repositories with the packed package:
