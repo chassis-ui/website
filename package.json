@@ -77,7 +77,7 @@
     "astro:preview": "pnpm --filter chassis-website astro preview"
   },
   "dependencies": {
-    "resend": "^6.34.1"
+    "resend": "^6.37.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
