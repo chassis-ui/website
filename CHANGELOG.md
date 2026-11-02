@@ -4,6 +4,12 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-11-03
+
+### Fixed
+
+- The logos of the about page sit on a white and a black box in both colour modes, so each stays readable.
+
 ## 2026-11-02
 
 ### Changed
