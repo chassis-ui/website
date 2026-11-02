@@ -207,16 +207,15 @@ A site that type-checks with `astro check` declares the `@chassis-ui/css` module
 
 The sites of the Chassis projects read these files besides, by name, from the docs build of the `chassis` brand:
 
-| File of the docs build                                                   | Read by                                                                                                            |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| `icons/cx-sprite.svg`                                                    | The home page of each of the seven sites, which imports it. The build fails without it                             |
-| `images/apple-touch-icon.png`, `images/favicon.png`                      | Each of the seven sites, which copies them to `/apple-touch-icon.png` and `/favicon.ico`                           |
-| `images/android-chrome-192x192.png`, `images/android-chrome-512x512.png` | `other/manifest.json` of the docs build, which the head links                                                      |
-| `images/home/`                                                           | The home page of the website. The home page of chassis-ui/tokens reads `comp-gallery-*` of it                      |
-| `images/logo/logo-{light,dark}.svg`                                      | The about page of the website                                                                                      |
-| `images/social-image.png`                                                | The blog of the website, for a post without an image                                                               |
-| `images/site-logo.svg`                                                   | The examples of the navbar page of chassis-ui/css. The README of `@chassis-ui/react`, by its URL on chassis-ui.com |
-| `images/figma/components/`                                               | The component pages of chassis-ui/figma                                                                            |
+| File of the docs build                                                   | Read by                                                                                                                                          |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `icons/cx-sprite.svg`                                                    | The home page of each of the seven sites, which imports it. The build fails without it                                                           |
+| `images/apple-touch-icon.png`, `images/favicon.png`                      | Each of the seven sites, which copies them to `/apple-touch-icon.png` and `/favicon.ico`                                                         |
+| `images/android-chrome-192x192.png`, `images/android-chrome-512x512.png` | `other/manifest.json` of the docs build, which the head links                                                                                    |
+| `images/home/`                                                           | The home page of the website                                                                                                                     |
+| `images/logo/logo-{light,dark,black,white}.svg`                          | The about page of the website, the navbar and brand pages of chassis-ui/css, and the README of `@chassis-ui/react`, by its URL on chassis-ui.com |
+| `images/social-image.png`                                                | The blog of the website, for a post without an image                                                                                             |
+| `images/figma/components/`                                               | The component pages of chassis-ui/figma                                                                                                          |
 
 The examples in `chassis-ui/vanilla-example`, `chassis-ui/ios-example` and `chassis-ui/android-example` take the archive of a brand from a release of `chassis-ui/website-assets` themselves, and do not use this package.
 
