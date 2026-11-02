@@ -4,6 +4,17 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-11-02
+
+### Changed
+
+- The site takes its assets from release 0.5.0 of `chassis-ui/website-assets`, pinned with their digests in `vendor/assets.json`, in place of building the `vendor/assets` submodule of `chassis-ui/assets`, which is gone with Git LFS from CI: `@chassis-ui/docs` 0.13.0. `pnpm sync-assets` replaces `pnpm sync-submodules`, and `pnpm dev` runs `pnpm vendor` first. The pages, the stylesheet of the site and `chassis.min.css` are the same. The images are optimized at the same sizes, and the fonts have files for Cyrillic, Greek and arrows, which a page loads only when it has such a character.
+- The site takes the design tokens from `@chassis-ui/website-tokens` 0.3.0, where it was 0.1.0. The stylesheet of the site is the same to the byte.
+
+### Added
+
+- `CHASSIS_BRAND=sinefil pnpm dev` previews the site with the tokens, fonts and logos of another brand. See "Preview another brand" in [ref/DEVELOPMENT.md](ref/DEVELOPMENT.md). The site is deployed for `chassis` only.
+
 ## 2026-10-31
 
 ### Changed

@@ -1,16 +1,20 @@
+import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
+import { strToU8, zipSync } from 'fflate'
 import { afterEach, describe, expect, test, vi } from 'vitest'
-import { ASSETS_OUTPUT, ASSETS_PATH, buildAssets, syncAssets } from '../../src/cli/assets.js'
+import { ASSETS_PATH, CHECKOUT_VARIABLE, syncAssets, vendorAssets } from '../../src/cli/assets.js'
 import { defaultIgnores, expandPaths, findHtmlFiles, isIgnored } from '../../src/cli/files.js'
 import { defaultConfig, mergeConfig } from '../../src/cli/html-validate.js'
 import { main } from '../../src/cli/main.js'
 import { CommandError } from '../../src/cli/shared.js'
 import { DEFAULT_FILTERS, readFilterFile, vnuArgs } from '../../src/cli/vnu.js'
+import { ASSETS_PIN } from '../../src/libs/brand.js'
 import { createTempDir } from '../helpers/temp'
 
 afterEach(() => {
   vi.restoreAllMocks()
+  vi.unstubAllEnvs()
 })
 
 function silence() {
@@ -148,161 +152,218 @@ describe('vnu', () => {
   })
 })
 
-// Records the commands, and answers the queries of `git` like a checkout would.
-function fakeRun(root: string, answers: Record<string, string | Error> = {}) {
-  const calls: string[] = []
-  const run = (command: string, args: string[], options: { cwd?: string } = {}) => {
-    const line = [command, ...args].join(' ')
-    const where = path.relative(root, options.cwd ?? root) || '.'
+// A zip of the given files, and a `fetch` that serves it and the release of the GitHub API.
+function fakeRelease(files: Record<string, string>) {
+  const zip = Buffer.from(
+    zipSync(Object.fromEntries(Object.entries(files).map(([name, text]) => [name, strToU8(text)])))
+  )
+  const digest = `sha256:${createHash('sha256').update(zip).digest('hex')}`
+  const urls: string[] = []
+  const fetcher = async (url: string) => {
+    urls.push(url)
 
-    calls.push(`${where}: ${line}`)
-
-    if (line.startsWith('pnpm assets:site')) {
-      fs.mkdirSync(path.join(root, ASSETS_PATH, ASSETS_OUTPUT), { recursive: true })
-    }
-
-    const answer = answers[line]
-
-    if (answer instanceof Error) throw answer
-    return answer ?? ''
+    return url.startsWith('https://api.github.com')
+      ? Response.json({
+          tag_name: 'v1.2.0',
+          assets: [
+            { name: 'website-assets-web-docs-sinefil-1.2.0.zip', digest: 'sha256:b' },
+            { name: 'website-assets-web-docs-chassis-1.2.0.zip', digest },
+            { name: 'website-assets-ios-demo-chassis-1.2.0.zip', digest: 'sha256:c' },
+            { name: 'website-assets-manifest-1.2.0.json', digest: 'sha256:d' }
+          ]
+        })
+      : new Response(zip)
   }
 
-  return { calls, run }
+  return { digest, fetcher, urls }
 }
 
-const build = [
-  `${ASSETS_PATH}: git lfs install --local`,
-  `${ASSETS_PATH}: git lfs pull`,
-  `${ASSETS_PATH}: pnpm install --ignore-workspace`,
-  `${ASSETS_PATH}: pnpm assets:site`
-]
-
-describe('buildAssets', () => {
-  test('checks out the pinned commit and builds it', () => {
-    silence()
-    const root = createTempDir({ [`${ASSETS_PATH}/`]: '' })
-    const { calls, run } = fakeRun(root)
-
-    buildAssets({ root, run })
-
-    expect(calls).toEqual([`.: git submodule update --init ${ASSETS_PATH}`, ...build])
+function pinOf(digest: string, brand = 'chassis') {
+  return JSON.stringify({
+    repository: 'chassis-ui/website-assets',
+    version: '1.2.0',
+    app: 'docs',
+    brand,
+    archives: {
+      'website-assets-web-docs-chassis-1.2.0.zip': digest,
+      'website-assets-web-docs-sinefil-1.2.0.zip': 'sha256:b'
+    }
   })
+}
 
-  test('fails when the build writes nothing', () => {
+describe('vendorAssets', () => {
+  const output = path.join(ASSETS_PATH, 'dist/web/docs/chassis')
+
+  function setup(digestOverride?: string) {
     silence()
-    const root = createTempDir({ [`${ASSETS_PATH}/`]: '' })
-    const run = () => ''
+    const release = fakeRelease({ 'fonts/fonts.css': 'a', 'images/logo.svg': 'b' })
+    const root = createTempDir({
+      '.git/': '',
+      [ASSETS_PIN]: pinOf(digestOverride ?? release.digest)
+    })
 
-    expect(() => buildAssets({ root, run })).toThrow(/wrote nothing/)
-  })
+    return { ...release, root, cacheDir: createTempDir() }
+  }
 
-  test('installs the package of the build and subsets the fonts when ranges are given', () => {
-    silence()
-    const root = createTempDir({ [`${ASSETS_PATH}/`]: '' })
-    const { calls, run } = fakeRun(root)
+  test('unpacks the pinned archive, and leaves no file of its own in the folder', async () => {
+    const { root, cacheDir, fetcher, urls } = setup()
 
-    buildAssets({ root, run, subset: ['latin', 'latin-ext'] })
+    await vendorAssets({ root, cacheDir, fetcher: fetcher as typeof fetch })
 
-    expect(calls.slice(-2)).toEqual([
-      `${ASSETS_PATH}: pnpm install --filter ./packages/assets --prod --config.confirmModulesPurge=false`,
-      `${ASSETS_PATH}: pnpm assets:site --subset latin latin-ext`
+    expect(urls).toEqual([
+      'https://github.com/chassis-ui/website-assets/releases/download/v1.2.0/website-assets-web-docs-chassis-1.2.0.zip'
     ])
+    expect(fs.readFileSync(path.join(root, output, 'fonts/fonts.css'), 'utf8')).toBe('a')
+    expect(fs.readdirSync(path.join(root, output)).toSorted()).toEqual(['fonts', 'images'])
   })
 
-  test('passes the decision on the split of a font after the ranges', () => {
-    silence()
-    const root = createTempDir({ [`${ASSETS_PATH}/`]: '' })
-    const split = fakeRun(root)
-    const whole = fakeRun(root)
+  test('does nothing when the folder holds that archive, and keeps a download in the cache', async () => {
+    const { root, cacheDir, fetcher, urls } = setup()
+    const options = { root, cacheDir, fetcher: fetcher as typeof fetch }
 
-    buildAssets({ root, run: split.run, subset: ['latin'], split: true })
-    buildAssets({ root, run: whole.run, subset: ['latin'], split: false })
+    await vendorAssets(options)
+    fs.writeFileSync(path.join(root, output, 'fonts/fonts.css'), 'kept')
+    await vendorAssets(options)
 
-    expect(split.calls.at(-1)).toBe(`${ASSETS_PATH}: pnpm assets:site --subset latin --split`)
-    expect(whole.calls.at(-1)).toBe(`${ASSETS_PATH}: pnpm assets:site --subset latin --no-split`)
+    expect(urls).toHaveLength(1)
+    expect(fs.readFileSync(path.join(root, output, 'fonts/fonts.css'), 'utf8')).toBe('kept')
+
+    fs.rmSync(path.join(root, ASSETS_PATH), { recursive: true })
+    await vendorAssets(options)
+
+    expect(urls).toHaveLength(1)
+    expect(fs.readFileSync(path.join(root, output, 'fonts/fonts.css'), 'utf8')).toBe('a')
   })
 
-  test('fails before it touches the submodule when a split has no ranges', () => {
-    silence()
-    const root = createTempDir({ [`${ASSETS_PATH}/`]: '' })
-    const { calls, run } = fakeRun(root)
+  test('replaces what is in the folder, such as an older checkout', async () => {
+    const { root, cacheDir, fetcher } = setup()
 
-    expect(() => buildAssets({ root, run, split: true })).toThrow(/need --subset/)
-    expect(() => syncAssets({ root, run, split: false })).toThrow(/need --subset/)
-    expect(calls).toEqual([])
+    fs.mkdirSync(path.join(root, output), { recursive: true })
+    fs.writeFileSync(path.join(root, output, 'stale.txt'), '')
+
+    await vendorAssets({ root, cacheDir, fetcher: fetcher as typeof fetch })
+
+    expect(fs.existsSync(path.join(root, output, 'stale.txt'))).toBe(false)
+  })
+
+  test('fails on a wrong digest, and writes nothing', async () => {
+    const { root, cacheDir, fetcher } = setup('sha256:wrong')
+
+    await expect(
+      vendorAssets({ root, cacheDir, fetcher: fetcher as typeof fetch })
+    ).rejects.toThrow(/the SHA-256 is/)
+    expect(fs.existsSync(path.join(root, output))).toBe(false)
+    expect(fs.readdirSync(cacheDir)).toEqual([])
+  })
+
+  test('replaces a file of the cache that does not match the pin', async () => {
+    const { root, cacheDir, fetcher, digest } = setup()
+    const cached = path.join(
+      cacheDir,
+      'assets/chassis-ui-website-assets/website-assets-web-docs-chassis-1.2.0.zip'
+    )
+
+    fs.mkdirSync(path.dirname(cached), { recursive: true })
+    fs.writeFileSync(cached, 'damaged')
+
+    await vendorAssets({ root, cacheDir, fetcher: fetcher as typeof fetch })
+
+    expect(`sha256:${createHash('sha256').update(fs.readFileSync(cached)).digest('hex')}`).toBe(
+      digest
+    )
+  })
+
+  test('fails on an unknown brand or app and names what the pin has', async () => {
+    const { root, cacheDir, fetcher, urls } = setup()
+
+    vi.stubEnv('CHASSIS_BRAND', 'acme')
+
+    await expect(
+      vendorAssets({ root, cacheDir, fetcher: fetcher as typeof fetch })
+    ).rejects.toThrow(/brand 'acme' at 1.2.0. It has: docs-chassis, docs-sinefil/)
+    expect(urls).toEqual([])
+  })
+
+  test('fails without a pin, and on a brand that is no name', async () => {
+    silence()
+    const root = createTempDir({ '.git/': '' })
+
+    await expect(vendorAssets({ root })).rejects.toThrow(/assets.json is missing/)
+
+    vi.stubEnv('CHASSIS_BRAND', '../up')
+
+    await expect(vendorAssets({ root })).rejects.toThrow(CommandError)
+  })
+
+  test('copies the build of a local checkout, and returns to the release without it', async () => {
+    const { root, cacheDir, fetcher } = setup()
+    const options = { root, cacheDir, fetcher: fetcher as typeof fetch }
+    const checkout = createTempDir({ 'dist/web/docs/chassis/fonts/fonts.css': 'local' })
+
+    await vendorAssets(options)
+
+    vi.stubEnv(CHECKOUT_VARIABLE, checkout)
+    await vendorAssets(options)
+
+    expect(fs.readFileSync(path.join(root, output, 'fonts/fonts.css'), 'utf8')).toBe('local')
+
+    vi.unstubAllEnvs()
+    await vendorAssets(options)
+
+    expect(fs.readFileSync(path.join(root, output, 'fonts/fonts.css'), 'utf8')).toBe('a')
   })
 })
 
 describe('syncAssets', () => {
-  test('pulls the branch that is checked out', () => {
+  test('writes the digest of every web archive, keeps the brand, and unpacks', async () => {
     silence()
-    const root = createTempDir({ [`${ASSETS_PATH}/.git`]: '' })
-    const { calls, run } = fakeRun(root, { 'git rev-parse --abbrev-ref HEAD': 'app/docs\n' })
-
-    syncAssets({ root, run })
-
-    expect(calls.slice(0, 2)).toEqual([
-      `${ASSETS_PATH}: git rev-parse --abbrev-ref HEAD`,
-      `${ASSETS_PATH}: git pull --ff-only origin app/docs`
-    ])
-    expect(calls.slice(2, 6)).toEqual(build)
-  })
-
-  test('subsets the fonts of the build when ranges are given', () => {
-    silence()
-    const root = createTempDir({ [`${ASSETS_PATH}/.git`]: '' })
-    const { calls, run } = fakeRun(root, { 'git rev-parse --abbrev-ref HEAD': 'app/docs\n' })
-
-    syncAssets({ root, run, subset: ['latin'] })
-
-    expect(calls).toContain(`${ASSETS_PATH}: pnpm assets:site --subset latin`)
-    expect(calls).not.toContain(`${ASSETS_PATH}: pnpm install --ignore-workspace`)
-  })
-
-  test('creates the branch from the fetch when a fresh checkout has none', () => {
-    silence()
-    const root = createTempDir({ [`${ASSETS_PATH}/.git`]: '' })
-    const { calls, run } = fakeRun(root, {
-      'git rev-parse --abbrev-ref HEAD': 'HEAD\n',
-      'git rev-parse --verify --quiet refs/heads/main': new Error('no branch')
+    const { digest, fetcher, urls } = fakeRelease({ 'fonts/fonts.css': 'a' })
+    const root = createTempDir({
+      '.git/': '',
+      [ASSETS_PIN]: JSON.stringify({ version: '1.0.0', brand: 'chassis', app: 'docs' })
     })
 
-    syncAssets({ root, branch: 'main', run })
+    await syncAssets({ root, cacheDir: createTempDir(), fetcher: fetcher as typeof fetch })
 
-    expect(calls).toContain(`${ASSETS_PATH}: git fetch origin main`)
-    expect(calls).toContain(`${ASSETS_PATH}: git checkout -b main FETCH_HEAD`)
+    expect(urls[0]).toBe('https://api.github.com/repos/chassis-ui/website-assets/releases/latest')
+    expect(JSON.parse(fs.readFileSync(path.join(root, ASSETS_PIN), 'utf8'))).toEqual({
+      repository: 'chassis-ui/website-assets',
+      version: '1.2.0',
+      app: 'docs',
+      brand: 'chassis',
+      archives: {
+        'website-assets-web-docs-chassis-1.2.0.zip': digest,
+        'website-assets-web-docs-sinefil-1.2.0.zip': 'sha256:b'
+      }
+    })
+    expect(fs.existsSync(path.join(root, ASSETS_PATH, 'dist/web/docs/chassis/fonts'))).toBe(true)
   })
 
-  test('checks out the local branch when there is one', () => {
+  test('takes a version and a repository, and writes the pin when there is none', async () => {
     silence()
-    const root = createTempDir({ [`${ASSETS_PATH}/.git`]: '' })
-    const { calls, run } = fakeRun(root, { 'git rev-parse --abbrev-ref HEAD': 'HEAD\n' })
+    const { fetcher, urls } = fakeRelease({})
+    const root = createTempDir({ '.git/': '' })
 
-    syncAssets({ root, run })
-
-    expect(calls).toContain(`${ASSETS_PATH}: git checkout app/docs`)
-  })
-
-  test('initialises the submodule first when it is missing', () => {
-    silence()
-    const root = createTempDir()
-    const { calls, run } = fakeRun(root, { 'git rev-parse --abbrev-ref HEAD': 'app/docs\n' })
-
-    syncAssets({ root, run })
-
-    expect(calls[0]).toBe(`.: git submodule update --init ${ASSETS_PATH}`)
-  })
-
-  test('stops when the submodule has uncommitted changes', () => {
-    silence()
-    const root = createTempDir({ [`${ASSETS_PATH}/.git`]: '' })
-    const { calls, run } = fakeRun(root, {
-      'git rev-parse --abbrev-ref HEAD': 'HEAD\n',
-      'git status --porcelain': ' M package.json\n'
+    await syncAssets({
+      root,
+      version: '1.2.0',
+      repository: 'chassis-ui/website-assets',
+      cacheDir: createTempDir(),
+      fetcher: fetcher as typeof fetch
     })
 
-    expect(() => syncAssets({ root, run })).toThrow(/uncommitted changes/)
-    expect(calls).not.toContain(`${ASSETS_PATH}: git fetch origin app/docs`)
+    expect(urls[0]).toBe(
+      'https://api.github.com/repos/chassis-ui/website-assets/releases/tags/v1.2.0'
+    )
+    expect(fs.existsSync(path.join(root, ASSETS_PIN))).toBe(true)
+  })
+
+  test('fails on a request that fails', async () => {
+    silence()
+    const root = createTempDir({ '.git/': '' })
+    const fetcher = async () => new Response('', { status: 403 })
+
+    await expect(syncAssets({ root, fetcher: fetcher as typeof fetch })).rejects.toThrow(/HTTP 403/)
   })
 })
 
@@ -323,9 +384,8 @@ describe('main', () => {
     expect(await main(['vnu', '--bogus'])).toBe(1)
     expect(await main(['vendor', 'extra'])).toBe(1)
     expect(await main(['vendor', '--subset'])).toBe(1)
-    expect(await main(['vendor', '--subset', 'latin', 'latin-ext'])).toBe(1)
-    expect(await main(['vendor', '--split'])).toBe(1)
-    expect(await main(['vendor', '--subset', 'latin', '--split', '--no-split'])).toBe(1)
+    expect(await main(['sync-submodules'])).toBe(1)
+    expect(await main(['sync-assets', '--version'])).toBe(1)
   })
 
   test('fails when the output folder does not exist', async () => {

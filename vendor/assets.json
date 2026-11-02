@@ -1,0 +1,10 @@
+{
+  "repository": "chassis-ui/website-assets",
+  "version": "0.5.0",
+  "app": "docs",
+  "brand": "chassis",
+  "archives": {
+    "website-assets-web-docs-chassis-0.5.0.zip": "sha256:13ecf9d5f408bbee25f96cb6f3e561b8e0bf84e96b1dfece6e5ccce6102fc05c",
+    "website-assets-web-docs-sinefil-0.5.0.zip": "sha256:7607def400786792af9132267d2a84d2874766d4524f4dcea3b7e6df00dd016d"
+  }
+}

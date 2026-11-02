@@ -6,7 +6,7 @@ import type { z } from 'astro/zod'
 import { loadConfig, loadSidebar } from './libs/config'
 import { joinDocsPath, joinStaticPath } from './libs/docs-path'
 import { getDocsMarkdownConfig, type DocsMarkdownConfigOptions } from './libs/markdown'
-import { getInstalledPackageFsPath, getPackageRoot } from './libs/paths'
+import { getBrandTokensLoadPath, getInstalledPackageFsPath, getPackageRoot } from './libs/paths'
 import { remarkCxConfig, remarkCxDocsref } from './libs/remark'
 import { configSchema, type ChassisConfig, type Sidebar } from './libs/schema'
 import { chassisAutoImport, type ChassisAutoImportOptions } from './libs/shortcodes'
@@ -102,9 +102,15 @@ declare module 'virtual:chassis-docs/static' {
 declare module 'virtual:chassis-docs/styles' {}
 `
 
-// The folder of `@chassis-ui/css` with its default `_chassis-tokens.scss`, when the site has
-// the package installed.
+export { writeBrandCSS } from './libs/brand-css'
+
+// The folder with the `_chassis-tokens.scss` of the brand of the build: for the default brand
+// the one of `@chassis-ui/css`, when the site has the package installed.
 function getDefaultTokensLoadPath(root: string): string | undefined {
+  const brandLoadPath = getBrandTokensLoadPath(root)
+
+  if (brandLoadPath) return brandLoadPath
+
   try {
     return path.join(getInstalledPackageFsPath('@chassis-ui/css', root), 'scss/vendor')
   } catch {

@@ -61,6 +61,9 @@ const removedImports = [
   '@chassis-ui/docs/src/js/color-modes.js'
 ]
 
+// The brand of the preview build. A brand of `@chassis-ui/website-tokens` other than the default.
+const previewBrand = 'sinefil'
+
 const layouts = {
   root: {
     sitePath: 'site',
@@ -82,9 +85,9 @@ const layouts = {
   }
 }
 
-function run(command, args, cwd) {
+function run(command, args, cwd, env = {}) {
   console.log(`\n$ ${[command, ...args].join(' ')}  (in ${cwd})`)
-  execFileSync(command, args, { cwd, stdio: 'inherit' })
+  execFileSync(command, args, { cwd, stdio: 'inherit', env: { ...process.env, ...env } })
 }
 
 function readJson(file) {
@@ -151,17 +154,19 @@ function createRepository(name, layout, tarball, tempDir) {
     )
   }
 
-  // Every Chassis site has the docs build of chassis-assets as the `vendor/assets` submodule.
-  // It takes a Git LFS pull and a build, and the fixture tests the package, not the assets,
-  // so a stand-in holds the two files that the layouts need at build time.
-  const imagesDir = path.join(repositoryDir, 'vendor/assets/dist/web/docs/chassis/images')
+  // Every Chassis site unpacks an archive of the assets into `vendor/assets`. The fixture
+  // tests the package, not the assets, so a stand-in for each brand holds the two files that
+  // the layouts need at build time.
+  for (const brand of ['chassis', previewBrand]) {
+    const imagesDir = path.join(repositoryDir, `vendor/assets/dist/web/docs/${brand}/images`)
 
-  fs.mkdirSync(imagesDir, { recursive: true })
-  fs.writeFileSync(path.join(imagesDir, 'social-image.png'), pixelPng)
-  fs.writeFileSync(
-    path.join(imagesDir, 'site-logo.svg'),
-    '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>\n'
-  )
+    fs.mkdirSync(imagesDir, { recursive: true })
+    fs.writeFileSync(path.join(imagesDir, 'social-image.png'), pixelPng)
+    fs.writeFileSync(
+      path.join(imagesDir, 'site-logo.svg'),
+      '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>\n'
+    )
+  }
 
   run('git', ['init', '--quiet'], repositoryDir)
 
@@ -292,6 +297,30 @@ function checkOutput(layout, siteDir) {
   )
 }
 
+// A build for another brand has the tokens of that brand in the CSS of the CSS package, which
+// the package compiles for it, and in the site's own stylesheet.
+function checkPreview(layout, repositoryDir, siteDir) {
+  const distDir = path.join(siteDir, 'dist')
+  const readCss = () => readBuiltFile(distDir, 'static/css/chassis.min.css')
+  const defaultCss = readCss()
+
+  run('pnpm', layout.build, repositoryDir, { CHASSIS_BRAND: previewBrand })
+
+  const previewCss = readCss()
+
+  assert.notEqual(previewCss, defaultCss, 'The CSS was not compiled for the brand')
+  assert.match(previewCss, /--chassis-prefix:\s*cx-/, 'The CSS has no prefix')
+  assert.throws(
+    () =>
+      execFileSync('pnpm', layout.build, {
+        cwd: repositoryDir,
+        stdio: 'pipe',
+        env: { ...process.env, CHASSIS_BRAND: 'no-such-brand' }
+      }),
+    'A brand without assets did not fail the build'
+  )
+}
+
 const args = process.argv.slice(2)
 const keep = args.includes('--keep')
 const names = args.filter((arg) => !arg.startsWith('--'))
@@ -324,6 +353,7 @@ try {
     checkOutput(layout, siteDir)
     // The command of the package, from the packed package, with its optional peer
     run('pnpm', layout.lint, repositoryDir)
+    checkPreview(layout, repositoryDir, siteDir)
     console.log(`\nThe '${name}' layout built and passed its checks.`)
   }
 } finally {

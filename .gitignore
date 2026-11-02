@@ -1,4 +1,5 @@
 # Site
+vendor/assets
 _site
 .astro
 packages/website/dist

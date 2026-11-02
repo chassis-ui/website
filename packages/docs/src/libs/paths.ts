@@ -1,6 +1,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { getChassisBrand, getSearchDirectories } from './brand.js'
+
+export { getChassisBrand }
 
 // Public paths of the package and the directories behind them. They match `exports` in
 // `package.json`.
@@ -40,27 +43,6 @@ export function resolvePackageFilePath(file: string, packageRoot = getPackageRoo
   }
 
   return path.join(packageRoot, target, ...rest)
-}
-
-// The repository root is the nearest ancestor with a `.git` entry or a pnpm workspace file.
-function getSearchDirectories(root: string): string[] {
-  const directories: string[] = []
-  let current = path.resolve(root)
-
-  while (true) {
-    directories.push(current)
-
-    const isRepositoryRoot =
-      fs.existsSync(path.join(current, '.git')) ||
-      fs.existsSync(path.join(current, 'pnpm-workspace.yaml'))
-    const parent = path.dirname(current)
-
-    if (isRepositoryRoot || parent === current) {
-      return directories
-    }
-
-    current = parent
-  }
 }
 
 /**
@@ -117,27 +99,49 @@ export function getInstalledPackageFsPath(name: string, root = process.cwd()): s
 }
 
 /**
- * The docs build of `@chassis-ui/website-tokens`, or of the tokens that `dir` names.
+ * The tokens of the brand and the app of the build, in `@chassis-ui/website-tokens` or in the
+ * tokens that `dir` names. See `getChassisBrand()`.
  */
 export function getChassisTokensFsPath(options: ChassisPathOptions = {}): string {
   const tokens =
     resolveDir(options) ?? getInstalledPackageFsPath('@chassis-ui/website-tokens', options.root)
+  const { brand, app } = getChassisBrand({ root: options.root })
 
-  return findUp(tokens, ['dist/web/docs/chassis'], 'the docs build of the tokens')
+  return findUp(tokens, [`dist/web/${app}/${brand}`], 'the docs build of the tokens')
 }
 
 /**
- * The docs build of `chassis-assets`: in the `vendor/assets` submodule, or in `dist` for the
- * site of `chassis-assets` itself.
+ * A Sass load path with the `_chassis-tokens.scss` of the brand of the build, written for it,
+ * or nothing for the default brand, which the default token source of `@chassis-ui/css` loads.
+ */
+export function getBrandTokensLoadPath(root = process.cwd()): string | undefined {
+  const { brand, app, isDefault } = getChassisBrand({ root })
+
+  if (isDefault) return undefined
+
+  const tokens = path.join(getChassisTokensFsPath({ root }), 'main')
+  const directory = path.join(root, 'node_modules/.cache/chassis-docs/tokens', app, brand)
+  const forward = path.relative(directory, tokens).split(path.sep).join('/')
+
+  fs.mkdirSync(directory, { recursive: true })
+  fs.writeFileSync(path.join(directory, '_chassis-tokens.scss'), `@forward "${forward}";\n`)
+
+  return directory
+}
+
+/**
+ * The assets of the brand and the app of the build: in `vendor/assets`, where `chassis-docs
+ * vendor` unpacks them, or in `dist` of a repository that builds them. See `getChassisBrand()`.
  */
 export function getChassisAssetsFsPath(options: ChassisPathOptions = {}): string {
-  return (
-    resolveDir(options) ??
-    findUp(
-      options.root ?? process.cwd(),
-      ['vendor/assets/dist/web/docs/chassis', 'dist/web/docs/chassis'],
-      'the docs build of chassis-assets'
-    )
+  if (options.dir) return resolveDir(options) as string
+
+  const { brand, app } = getChassisBrand({ root: options.root })
+
+  return findUp(
+    options.root ?? process.cwd(),
+    [`vendor/assets/dist/web/${app}/${brand}`, `dist/web/${app}/${brand}`],
+    'the assets of the site. Run chassis-docs vendor'
   )
 }
 

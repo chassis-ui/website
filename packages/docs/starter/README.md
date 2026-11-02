@@ -9,24 +9,19 @@ repositories use. See [`build/fixture-sites.js`](https://github.com/chassis-ui/w
 ## Start
 
 1. Copy this folder into your repository, for example as `site/` or `packages/site/`.
-2. Add the `vendor/assets` submodule to your repository, on the `app/docs` branch of
-   [chassis-ui/assets](https://github.com/chassis-ui/assets). The layouts link to the logo,
-   favicons and social image from it.
-
-   ```sh
-   git submodule add -b app/docs https://github.com/chassis-ui/assets.git vendor/assets
-   ```
-
-3. Install the dependencies, build the assets and start the dev server.
+2. Install the dependencies, pin the release of the assets and start the dev server. The
+   layouts link to the logo, favicons and social image from them.
 
    ```sh
    pnpm install
-   pnpm vendor
+   pnpm sync-assets
    pnpm dev
    ```
 
-   `pnpm vendor` builds the docs build of chassis-ui/assets at the commit that the repository
-   pins. Run it again when the pin moves.
+   `pnpm sync-assets` writes `vendor/assets.json`, with the latest release of
+   [chassis-ui/website-assets](https://github.com/chassis-ui/website-assets). Commit that file,
+   and add `vendor/assets` to `.gitignore`. `pnpm dev` unpacks the archive of the release.
+   `CHASSIS_BRAND=sinefil pnpm dev` previews another brand.
 
 `pnpm lint:html` validates the built site. See
 [Commands](https://www.npmjs.com/package/@chassis-ui/docs#commands) in the README of the

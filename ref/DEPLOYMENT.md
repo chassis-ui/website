@@ -151,7 +151,7 @@ None of the workflows in `.github/workflows/` deploys:
 | `release.yml`    | Push to `main`, or manual `workflow_dispatch` on `main`                                                            | Publishes the version in `packages/docs/package.json` when npm does not have it, after checking that CI passed on the commit, then creates the GitHub release. Trusted publishing with provenance. A prerelease goes to the dist-tag named by its version. See [Releases](../CONTRIBUTING.md#releases) |
 | `canary.yml`     | Pushes to `develop` that set a version of `@chassis-ui/docs` that npm does not have, or manual `workflow_dispatch` | Builds the site of each sibling whose range accepts the version, with the packed package, with `build/canary.js`. Reports only: nothing requires it. See [Releases](../CONTRIBUTING.md#releases)                                                                                                       |
 
-No workflow moves the `vendor/assets` pin. The build uses the pinned commit, and the pin moves only when someone runs `pnpm sync-submodules` and commits the result. See [DEVELOPMENT.md](DEVELOPMENT.md#the-vendorassets-submodule).
+No workflow moves the pin in `vendor/assets.json`. The build uses the pinned release, and the pin moves only when someone runs `pnpm sync-assets` and commits the result. See [DEVELOPMENT.md](DEVELOPMENT.md#the-assets).
 
 Every action in them is pinned to a commit. The checkout does not keep the token of the
 job (`persist-credentials: false`), and the permissions are `contents: read`. Two jobs of
@@ -259,7 +259,7 @@ Before pushing to `main`:
 - [ ] CI is green on the commit. GitHub rejects the push otherwise
 - [ ] Preview deployment works correctly
 - [ ] Staging deployment tested (if applicable)
-- [ ] The `vendor/assets` pin is the commit you mean to deploy: `git submodule status`
+- [ ] `vendor/assets.json` pins the release you mean to deploy
 - [ ] Dependencies are up to date
 - [ ] Breaking changes documented
 - [ ] `pnpm changeset:version` run and committed (if releasing @chassis-ui/docs)
@@ -287,16 +287,16 @@ pnpm check:astro
 # → Check Vercel dashboard settings. .env.example names them
 ```
 
-### Submodule Issues
+### Assets Issues
 
 ```bash
-# Build vendor/assets at the pinned commit, as Vercel does
+# Unpack the pinned archive, as Vercel does
 pnpm vendor
 
-# Move the pin to the latest app/docs of chassis-ui/assets, then commit it on its own
-pnpm sync-submodules
-git add vendor/assets
-git commit -m "chore: update the assets submodule"
+# Move the pin to the latest release of chassis-ui/website-assets, then commit it on its own
+pnpm sync-assets
+git add vendor/assets.json
+git commit -m "chore: update the assets"
 ```
 
 ### Proxy Routing Not Working

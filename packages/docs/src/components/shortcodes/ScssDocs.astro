@@ -1,7 +1,8 @@
 ---
 import fs from 'node:fs'
 import * as sass from 'sass'
-import { getNodeModulesPaths, getSourceFsPath } from '../../site'
+import { getNodeModulesPaths, getSiteRoot, getSourceFsPath } from '../../site'
+import { getBrandTokensLoadPath } from '../../libs/paths'
 import { extractDocsSnippet } from '../../libs/snippet'
 import Code from './Code.astro'
 
@@ -107,6 +108,8 @@ try {
     const result = await sass.compileStringAsync(scssInput, {
       loadPaths: [
         scssLoadPath,
+        // The tokens of a brand other than the default, ahead of the default token source.
+        ...[getBrandTokensLoadPath(getSiteRoot())].filter((dir) => dir !== undefined),
         getSourceFsPath('scss/vendor'),
         // Vite's own Sass importer resolves bare npm specifiers (e.g. `@chassis-ui/website-tokens/...`)
         // through its module resolver, independent of `loadPaths`. This raw Sass JS API call

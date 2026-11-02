@@ -30,25 +30,22 @@ You need:
   or later works too, see `engines` in `package.json`.
 - pnpm, at the version that `packageManager` in `package.json` names. `corepack enable`
   sets it up. Do not use npm or Yarn.
-- Git and [Git LFS](https://git-lfs.com). The images of the `vendor/assets` submodule are
-  stored with LFS.
 
 Then:
 
 ```bash
-git clone --recursive https://github.com/chassis-ui/website.git
+git clone https://github.com/chassis-ui/website.git
 cd website
 pnpm install
-pnpm vendor
 pnpm dev
 ```
 
 The site runs at `http://localhost:4321`.
 
-`pnpm vendor` builds the docs assets of the `vendor/assets` submodule: logo, favicons and
-fonts. The site cannot start without them. It builds the commit that this repository pins,
-so run it again when that pin changes. If you cloned without `--recursive`, it checks the
-submodule out first.
+`pnpm dev` runs `pnpm vendor` first, which unpacks the assets into `vendor/assets`: logo,
+favicons and fonts. The site cannot start without them. They come from the release of
+chassis-ui/website-assets that `vendor/assets.json` pins, and the first run downloads about
+36 MB. To preview another brand, set `CHASSIS_BRAND`, as in `CHASSIS_BRAND=sinefil pnpm dev`.
 
 ## Commands
 
@@ -65,8 +62,8 @@ Run them from the root of the repository.
 | `pnpm test`            | Runs the unit and component tests once. `pnpm test:watch` runs them on every change                          |
 | `pnpm test:fixtures`   | Builds the starter site from the packed package, in both layouts. See [Tests](#tests)                        |
 | `pnpm check`           | `astro check` on both packages, then `pnpm audit --prod`                                                     |
-| `pnpm vendor`          | Builds the `vendor/assets` submodule at the pinned commit, with a subset of each font: Latin characters      |
-| `pnpm sync-submodules` | Moves the `vendor/assets` pin to the latest `app/docs` of chassis-ui/assets, and builds it                      |
+| `pnpm vendor`          | Unpacks the pinned archive of the assets into `vendor/assets`. `pnpm dev` and `pnpm build` run it            |
+| `pnpm sync-assets`     | Moves `vendor/assets.json` to the latest release of chassis-ui/website-assets, and unpacks it                |
 | `pnpm changeset`       | Describes a change to `@chassis-ui/docs` for its changelog. See [Releases](#releases)                        |
 
 The scripts behind them are in `package.json`. `site:*` scripts act on `packages/website`,
@@ -98,9 +95,8 @@ redirects to Vercel's login, whose links cannot be checked.
 files of `packages/website` and `packages/docs`, fixes what they can, and stops the commit
 when a problem is left. `git commit --no-verify` skips it.
 
-`pnpm dev` does not touch the submodule. Moving the pin is a change of its own: run
-`pnpm sync-submodules`, check the site, and commit `vendor/assets` in a commit that does
-nothing else.
+Moving the pin is a change of its own: run `pnpm sync-assets`, check the site, and commit
+`vendor/assets.json` in a commit that does nothing else.
 
 ## Branches and pull requests
 
@@ -147,14 +143,14 @@ test fails after an update, give both the same range and run `pnpm install`.
 
 `pnpm test:fixtures` packs `@chassis-ui/docs`, installs it into copies of the starter site
 in `packages/docs/starter`, builds them and checks the output. It needs network access for
-the install. A stand-in replaces the docs build of chassis-ui/assets. Name a layout, `root` or
+the install. A stand-in replaces the assets. Name a layout, `root` or
 `packages`, to build only that one.
 
 `pnpm test:canary` builds the sites of the sibling repositories with the packed package:
 shallow clones of their default branches, each installing the tarball in place of the
 version it has. It skips a sibling whose range does not accept the version, unless
 `--all` is given. Name siblings, such as `css react`, to build only those. Run `pnpm vendor`
-first: the docs build of `vendor/assets` is copied into each sibling. How each sibling
+first: the assets of `vendor/assets` are copied into each sibling. How each sibling
 builds its site is in `build/canary.js`, and follows the `build` scripts of the siblings.
 
 ## Component Guidelines

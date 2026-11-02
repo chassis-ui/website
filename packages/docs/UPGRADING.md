@@ -1,5 +1,41 @@
 # Upgrading @chassis-ui/docs
 
+## From 0.12 to 0.13
+
+`chassis-docs vendor` takes the assets from a release of `chassis-ui/website-assets`. A site has no `vendor/assets` submodule and no Git LFS step any more.
+
+### 1. Update the dependencies
+
+```sh
+pnpm add -D @chassis-ui/docs@^0.13.0 @chassis-ui/website-tokens@^0.3.0
+```
+
+### 2. Replace the submodule with a pin
+
+```sh
+git rm vendor/assets
+git rm .gitmodules   # when it names no other submodule
+rm -rf .git/modules/vendor/assets
+echo vendor/assets >> .gitignore
+pnpm exec chassis-docs sync-assets
+```
+
+Commit `vendor/assets.json`, which the last command writes.
+
+### 3. Update the scripts and CI
+
+- `chassis-docs vendor` takes no options: drop `--subset`, `--split` and `--no-split`.
+- `chassis-docs sync-submodules` is `chassis-docs sync-assets`. `--branch` and `SUBMODULE_BRANCH` are gone.
+- Drop `submodules: true` and any Git LFS step from CI, and any build of `vendor/assets`.
+
+### 4. Compare the site
+
+The archive of `chassis-ui/website-assets` 0.5.0 differs from the frozen `app/docs` branch of `chassis-ui/assets`. Compare the built site before and after. The `chassis-{logo,icon}-*` images are gone: read `images/logo/logo-{light,dark,black,white}.svg`. Fira Code 6.2 is 2.56% wider than the code font of the old pages.
+
+### 5. Optional: preview another brand
+
+Call `writeBrandCSS()` after the copy of the CSS, and add `postcss`, `autoprefixer` and `postcss-prefix-custom-properties` to the site. See [A preview of another brand](./README.md#a-preview-of-another-brand). The starter shows it in `src/libs/static.ts`. A site without it builds as before, and a preview keeps the CSS of `chassis`.
+
 ## From 0.11 to 0.12
 
 The tokens of the Chassis sites moved to `@chassis-ui/website-tokens`, with the same `dist/`

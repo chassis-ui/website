@@ -1,5 +1,5 @@
 import { parseArgs } from 'node:util'
-import { DEFAULT_BRANCH, buildAssets, syncAssets } from './assets.js'
+import { CHECKOUT_VARIABLE, syncAssets, vendorAssets } from './assets.js'
 import { DEFAULT_PATHS, defaultIgnores } from './files.js'
 import { htmlValidate } from './html-validate.js'
 import { CommandError, log } from './shared.js'
@@ -7,21 +7,16 @@ import { vnu } from './vnu.js'
 
 export const usage = `Usage: chassis-docs <command> [options]
 
-Paths are relative to the working directory. vendor and sync-submodules work from any
-folder of the repository.
+Paths are relative to the working directory. vendor and sync-assets work from any folder
+of the repository.
 
 Commands:
-  vendor                 Build vendor/assets at the commit that the repository pins
-  sync-submodules        Move vendor/assets to the latest commit of a branch, and build it
-      --branch <name>    The branch of chassis-assets (default: $SUBMODULE_BRANCH or ${DEFAULT_BRANCH})
-
-  Both builds:
-      --subset <range>   Write the web fonts with the characters of a range only, such as
-                         latin or U+0370-03FF. Repeatable
-      --split            With --subset, write a font in a file per range, which a page
-                         loads when it has a character of the range
-      --no-split         With --subset, write a font in one file (default: the setting
-                         of chassis-assets)
+  vendor                 Unpack the archive of the assets that vendor/assets.json pins into
+                         vendor/assets. $CHASSIS_BRAND and $CHASSIS_APP choose another one,
+                         and $${CHECKOUT_VARIABLE} copies the build of a local checkout
+  sync-assets            Move vendor/assets.json to a release of the assets, and unpack it
+      --version <x.y.z>  The release (default: the latest)
+      --repository <o/r> The GitHub repository (default: the one of vendor/assets.json)
   html-validate [paths]  Validate the HTML files in paths (default: _site) with html-validate
       --config <file>    A JSON config of html-validate, added to the defaults
   vnu [paths]            Validate paths (default: _site) with the Nu Html Checker. Needs Java
@@ -35,21 +30,6 @@ Commands:
 
 html-validate and vnu need the html-validate and vnu-jar packages in the site's devDependencies.`
 
-const fontOptions = {
-  subset: { type: 'string', multiple: true },
-  split: { type: 'boolean' },
-  'no-split': { type: 'boolean' }
-}
-
-// `--split` is true and `--no-split` is false. Neither leaves the decision to chassis-assets.
-function splitOf(values) {
-  if (values.split && values['no-split']) {
-    throw new CommandError('Give --split or --no-split, not both.')
-  }
-
-  return values.split ? true : values['no-split'] ? false : undefined
-}
-
 const ignoreOptions = {
   ignore: { type: 'string', multiple: true },
   'no-default-ignore': { type: 'boolean' }
@@ -62,20 +42,16 @@ function ignoresOf(values, paths) {
 
 const commands = {
   vendor: {
-    options: { ...fontOptions },
-    run: ({ values }) => {
-      buildAssets({ subset: values.subset, split: splitOf(values) })
+    options: {},
+    run: async () => {
+      await vendorAssets()
       return 0
     }
   },
-  'sync-submodules': {
-    options: { branch: { type: 'string' }, ...fontOptions },
-    run: ({ values }) => {
-      syncAssets({
-        branch: values.branch ?? process.env.SUBMODULE_BRANCH ?? DEFAULT_BRANCH,
-        subset: values.subset,
-        split: splitOf(values)
-      })
+  'sync-assets': {
+    options: { version: { type: 'string' }, repository: { type: 'string' } },
+    run: async ({ values }) => {
+      await syncAssets({ version: values.version, repository: values.repository })
       return 0
     }
   },

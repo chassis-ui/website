@@ -1,8 +1,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { describe, expect, test } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import {
+  getBrandTokensLoadPath,
   getChassisAssetsFsPath,
+  getChassisBrand,
   getChassisCSSFsPath,
   getChassisIconsFsPath,
   getChassisTokensFsPath,
@@ -12,6 +14,10 @@ import {
   resolvePackageFilePath
 } from '../../src/libs/paths'
 import { createTempDir } from '../helpers/temp'
+
+afterEach(() => {
+  vi.unstubAllEnvs()
+})
 
 describe('getPackageRoot', () => {
   test('returns the directory of the package', () => {
@@ -121,8 +127,93 @@ describe('getChassisTokensFsPath', () => {
   })
 })
 
+describe('getChassisBrand', () => {
+  test('is the default brand without a pin', () => {
+    const { site } = repository({})
+
+    expect(getChassisBrand({ root: site })).toEqual({
+      brand: 'chassis',
+      app: 'docs',
+      isDefault: true
+    })
+  })
+
+  test('reads the pin at the root of the repository', () => {
+    const { site } = repository({
+      'vendor/assets.json': JSON.stringify({ brand: 'sinefil', app: 'demo' })
+    })
+
+    expect(getChassisBrand({ root: site })).toEqual({
+      brand: 'sinefil',
+      app: 'demo',
+      isDefault: false
+    })
+  })
+
+  test('takes the variables over the pin', () => {
+    const { site } = repository({ 'vendor/assets.json': JSON.stringify({ brand: 'sinefil' }) })
+
+    vi.stubEnv('CHASSIS_BRAND', 'acme')
+    vi.stubEnv('CHASSIS_APP', 'demo')
+
+    expect(getChassisBrand({ root: site })).toMatchObject({ brand: 'acme', app: 'demo' })
+  })
+
+  test('rejects a brand that is no name', () => {
+    vi.stubEnv('CHASSIS_BRAND', '../up')
+
+    expect(() => getChassisBrand()).toThrow('Expected letters, digits and hyphens')
+  })
+})
+
+describe('getBrandTokensLoadPath', () => {
+  test('is nothing for the default brand', () => {
+    const { site } = repository({})
+
+    expect(getBrandTokensLoadPath(site)).toBeUndefined()
+  })
+
+  test('forwards the tokens of the brand', () => {
+    const { site } = repository({
+      'packages/site/node_modules/@chassis-ui/website-tokens/dist/web/docs/sinefil/main.scss': ''
+    })
+
+    vi.stubEnv('CHASSIS_BRAND', 'sinefil')
+
+    const directory = getBrandTokensLoadPath(site) as string
+    const [, target] = /"(.+)"/.exec(
+      fs.readFileSync(path.join(directory, '_chassis-tokens.scss'), 'utf8')
+    ) as RegExpExecArray
+
+    expect(fs.existsSync(`${path.resolve(directory, target)}.scss`)).toBe(true)
+  })
+
+  test('fails on a brand that the tokens do not have', () => {
+    const { site } = repository({
+      'packages/site/node_modules/@chassis-ui/website-tokens/dist/web/docs/chassis/': ''
+    })
+
+    vi.stubEnv('CHASSIS_BRAND', 'acme')
+
+    expect(() => getBrandTokensLoadPath(site)).toThrow('dist/web/docs/acme')
+  })
+})
+
 describe('getChassisAssetsFsPath', () => {
-  test('finds the submodule at the root of the repository', () => {
+  test('finds the folder of the brand', () => {
+    const { root, site } = repository({
+      'vendor/assets/dist/web/docs/chassis/': '',
+      'vendor/assets/dist/web/docs/sinefil/': ''
+    })
+
+    vi.stubEnv('CHASSIS_BRAND', 'sinefil')
+
+    expect(getChassisAssetsFsPath({ root: site })).toBe(
+      path.join(root, 'vendor/assets/dist/web/docs/sinefil')
+    )
+  })
+
+  test('finds the assets at the root of the repository', () => {
     const { root, site } = repository({ 'vendor/assets/dist/web/docs/chassis/': '' })
 
     expect(getChassisAssetsFsPath({ root: site })).toBe(

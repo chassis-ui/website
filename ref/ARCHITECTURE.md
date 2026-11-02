@@ -1,7 +1,7 @@
 # Chassis Ecosystem Architecture
 
 > **Scope:** this document covers the _shape_ of the ecosystem and the _why_ behind its
-> non-obvious decisions (why a project is a submodule instead of an npm package, why an
+> non-obvious decisions (why the assets are a pinned release instead of an npm package, why an
 > override mechanism exists). Setup and commands are in [CONTRIBUTING.md](../CONTRIBUTING.md).
 > How the parts work is in [DEVELOPMENT.md](DEVELOPMENT.md), [DEPLOYMENT.md](DEPLOYMENT.md),
 > [VERCEL_CONFIG.md](VERCEL_CONFIG.md), and [INDEXING.md](INDEXING.md).
@@ -45,7 +45,8 @@ Chassis is a **hybrid monorepo + multi-repository** design system:
 │       └── astro.config.ts
 ├── api/                         # Vercel functions: the contact form and the CSP reports
 ├── vendor/
-│   └── assets/                  # chassis-ui/assets submodule
+│   ├── assets.json              # the pinned release of chassis-ui/website-assets
+│   └── assets/                  # unpacked from it, not committed
 ├── build/                       # Build, validation and release scripts
 └── _site/                       # Build output
 ```
@@ -80,11 +81,11 @@ choice per project, not an inconsistency to be fixed:
   under semver. `chassis-ui/website` and other Node consumers install them from the npm registry
   (see Dependency Model below). **chassis-ui/tokens** publishes the builder that
   chassis-ui/website-tokens is built with, and this repository does not install it.
-- **chassis-ui/assets** ships fonts, images, and other binary assets that are also consumed
-  by non-Node clients — e.g. native iOS and Android apps — which have no use for an npm
-  package. It is never published to npm; every Chassis site, this one included, pulls it in
-  as a git submodule (`vendor/assets`, at a pinned commit of the `app/docs` branch) and
-  builds it (see Git Submodules below).
+- **chassis-ui/website-assets** holds the fonts, images and other binary assets of the Chassis
+  sites and apps, which non-Node clients, such as native iOS and Android apps, read too. It
+  releases an archive per platform, app and brand. Every Chassis site, this one included, pins
+  a release and downloads the archive of its brand (see The assets below).
+  **chassis-ui/assets** is the build, on npm as `@chassis-ui/assets`; the sites do not use it.
 - **chassis-ui/figma** is documentation only — it has no distributable package, npm or
   otherwise.
 
@@ -122,9 +123,9 @@ registry. `pnpm-workspace.yaml` carries no overrides. To try an unpublished chan
 checkout of it for the time of the test. [DEVELOPMENT.md](DEVELOPMENT.md#using-an-unpublished-chassis-css-or-icons)
 shows how.
 
-`chassis-ui/assets` isn't part of this mechanism — it's never an npm dependency of
+`chassis-ui/website-assets` isn't part of this mechanism — it's not an npm dependency of
 `chassis-ui/website`. Changes to it are made in its own repository, and reach this one when
-the `vendor/assets` pin moves.
+the pin in `vendor/assets.json` moves.
 
 To try an unpublished `@chassis-ui/docs` in a sibling project, pack it and install the
 tarball there. See "Trying a change in a sibling project" in [DEVELOPMENT.md](DEVELOPMENT.md).
@@ -165,7 +166,7 @@ The package has four entry points:
 | `@chassis-ui/docs/site`        | What pages and components read from the site, such as `getConfig()`  |
 
 It also installs the `chassis-docs` command, with the build steps that every site shares:
-building and moving the `vendor/assets` submodule, and validating the built HTML. A site
+unpacking the pinned assets and moving the pin, and validating the built HTML. A site
 calls it from the scripts of its `package.json` instead of keeping copies of those scripts.
 
 What stays in each site is what differs between sites: `src/libs/astro.ts`, which copies
@@ -182,7 +183,7 @@ current contract.
 No site loads a file from another project's deployment by its URL. Each site copies what
 it needs into its own build, under `/static/`: the compiled CSS and JavaScript of
 `@chassis-ui/css` and the icon font of `@chassis-ui/icons` from `node_modules`, and the
-fonts and images of chassis-ui/assets from the docs build of `vendor/assets`.
+fonts and images of chassis-ui/website-assets from `vendor/assets`.
 `src/libs/astro.ts` of the site does the copying. See "What the site copies into
 `public/`" in [DEVELOPMENT.md](DEVELOPMENT.md).
 
@@ -203,18 +204,17 @@ a visitor of the staging site to Vercel's login.
 - How the host-header rewrites actually work: [VERCEL_CONFIG.md](VERCEL_CONFIG.md)
 - Which hosts are indexable and why: [INDEXING.md](INDEXING.md)
 
-## Git Submodules
+## The assets
 
-`vendor/assets` is the only submodule in chassis-ui/website. It is `chassis-ui/assets` at a
-pinned commit of the `app/docs` branch. Builds use the pinned commit, so the same commit of
-this repository always builds the same site. `pnpm vendor` builds it, and
-`pnpm sync-submodules` moves the pin. Both run a command of `@chassis-ui/docs`, so every
-site handles the submodule the same way. See "The `vendor/assets` submodule" in
-[DEVELOPMENT.md](DEVELOPMENT.md).
+chassis-ui/website has no submodule. `vendor/assets.json` pins a release of
+chassis-ui/website-assets with the digest of each web archive, so the same commit of this
+repository always builds the same site. `pnpm vendor` unpacks the archive, and
+`pnpm sync-assets` moves the pin. Both run a command of `@chassis-ui/docs`, so every site
+handles the assets the same way. See "The assets" in [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Related Documentation
 
-- [DEVELOPMENT.md](DEVELOPMENT.md) — how the build, the submodule and the package work, troubleshooting
+- [DEVELOPMENT.md](DEVELOPMENT.md) — how the build, the assets and the package work, troubleshooting
 - [DEPLOYMENT.md](DEPLOYMENT.md) — environments, release process, GitHub Actions
 - [VERCEL_CONFIG.md](VERCEL_CONFIG.md) — proxy routing mechanics
 - [INDEXING.md](INDEXING.md) — search engine indexing rules per host

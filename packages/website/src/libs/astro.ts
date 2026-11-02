@@ -8,6 +8,7 @@ import {
   getChassisCSSFsPath,
   getChassisIconsFsPath
 } from '@chassis-ui/docs'
+import { writeBrandCSS } from '@chassis-ui/docs/integration'
 import type { SiteConfig } from './config'
 
 // Directories that the site copies files from and to.
@@ -69,8 +70,8 @@ export function chassis({ config, root }: ChassisOptions): AstroIntegration[] {
         'astro:config:done': () => {
           if (cmd === 'sync') return
 
-          // Found here, not when the config loads: `astro check` runs without the
-          // `vendor/assets` build, and the helpers fail when a folder is missing.
+          // Found here, not when the config loads: `astro check` runs without
+          // `vendor/assets`, and the helpers fail when a folder is missing.
           const paths: SitePaths = {
             assets: getChassisAssetsFsPath({ root }),
             css: getChassisCSSFsPath({ root }),
@@ -83,6 +84,7 @@ export function chassis({ config, root }: ChassisOptions): AstroIntegration[] {
           copyStatic(paths)
           copyChassisAssets(paths)
           copyChassisCSS(paths)
+          writeBrandCSS({ root, destination: path.join(paths.public, 'static') })
           copyChassisIcons(paths)
           aliasStatic(paths)
           copyPagefindIndex(root, paths)

@@ -1,159 +1,274 @@
+import { createHash } from 'node:crypto'
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
+import { unzipSync } from 'fflate'
+import {
+  ASSETS_PIN,
+  DEFAULT_APP,
+  DEFAULT_BRAND,
+  findPinRoot,
+  getChassisBrand
+} from '../libs/brand.js'
 import { CommandError, log, run as defaultRun } from './shared.js'
 
-/** Where every Chassis site has chassis-assets as a submodule. */
+/** Where every Chassis site unpacks the assets. Not committed. */
 export const ASSETS_PATH = 'vendor/assets'
 
-/** The docs build of chassis-assets, inside the submodule. `getChassisAssetsFsPath()` reads it. */
-export const ASSETS_OUTPUT = 'dist/web/docs/chassis'
+/** The repository whose releases hold the assets of the Chassis sites. */
+export const DEFAULT_REPOSITORY = 'chassis-ui/website-assets'
 
-/** The branch of chassis-assets that the docs sites follow. */
-export const DEFAULT_BRANCH = 'app/docs'
-
-/** The package of the build inside the submodule, which names the packages its options load. */
-export const ASSETS_PACKAGE = './packages/assets'
+/** The variable that names a local checkout of the assets, to use its build in place of a release. */
+export const CHECKOUT_VARIABLE = 'CHASSIS_ASSETS_CHECKOUT'
 
 /**
- * The root of the repository that contains the working directory, so that the commands
- * work from a site's folder too.
- * @param {typeof defaultRun} run
+ * The folder of a brand, under `vendor/assets` and in a build of the assets.
+ * @param {{ app: string, brand: string }} selection
  */
+export function assetsOutput({ app, brand }) {
+  return `dist/web/${app}/${brand}`
+}
+
+/** The root of the repository, for a command that runs before the repository has a pin. */
 function repositoryRoot(run) {
-  return run('git', ['rev-parse', '--show-toplevel'], { quiet: true }).trim()
+  return findPinRoot() ?? run('git', ['rev-parse', '--show-toplevel'], { quiet: true }).trim()
 }
 
-/**
- * Checks out `vendor/assets` at the commit that the repository pins, and builds it.
- * @param {{ root?: string, subset?: string[], split?: boolean, run?: typeof defaultRun }} [options]
- */
-export function buildAssets({
-  run = defaultRun,
-  root = repositoryRoot(run),
-  subset = [],
-  split
-} = {}) {
-  const fonts = fontOptions(subset, split)
-
-  log(`Building ${ASSETS_PATH} at the pinned commit`)
-  run('git', ['submodule', 'update', '--init', ASSETS_PATH], { cwd: root })
-  buildCheckout(root, run, fonts)
-}
-
-/**
- * Moves `vendor/assets` to the latest commit of `branch`, and builds it. The repository
- * then has a changed submodule pointer to commit.
- * @param {{ root?: string, branch?: string, subset?: string[], split?: boolean, run?: typeof defaultRun }} [options]
- */
-export function syncAssets({
-  run = defaultRun,
-  root = repositoryRoot(run),
-  branch = DEFAULT_BRANCH,
-  subset = [],
-  split
-} = {}) {
-  const fonts = fontOptions(subset, split)
-  const dir = path.join(root, ASSETS_PATH)
-  const git = (args, quiet = true) => run('git', args, { cwd: dir, quiet })
-
-  log(`Moving ${ASSETS_PATH} to the latest ${branch}`)
-
-  if (!fs.existsSync(path.join(dir, '.git'))) {
-    run('git', ['submodule', 'update', '--init', ASSETS_PATH], { cwd: root })
-  }
-
-  if (git(['rev-parse', '--abbrev-ref', 'HEAD']).trim() !== branch) {
-    if (git(['status', '--porcelain']).trim()) {
-      throw new CommandError(
-        `${ASSETS_PATH} has uncommitted changes. Commit or discard them, then run the command again.`
-      )
-    }
-
-    // A fresh checkout, as on CI, has the submodule at a detached HEAD, fetched for the
-    // pinned commit only: there is neither a local branch nor a remote-tracking one.
-    git(['fetch', 'origin', branch])
-
-    if (hasLocalBranch(git, branch)) {
-      git(['checkout', branch])
-    } else {
-      git(['checkout', '-b', branch, 'FETCH_HEAD'])
-    }
-  }
-
-  git(['pull', '--ff-only', 'origin', branch])
-  buildCheckout(root, run, fonts)
-
-  const commit = git(['rev-parse', '--short', 'HEAD']).trim()
-  const moved = run('git', ['status', '--porcelain', '--', ASSETS_PATH], {
-    cwd: root,
-    quiet: true
-  }).trim()
-
-  if (moved) {
-    log(`${ASSETS_PATH} is at ${commit}. Check the site, then commit ${ASSETS_PATH} on its own.`)
-  } else {
-    log(`${ASSETS_PATH} is already at the latest ${branch}, ${commit}.`, 'success')
-  }
-}
-
-function hasLocalBranch(git, branch) {
+function selectionOf(root) {
   try {
-    git(['rev-parse', '--verify', '--quiet', `refs/heads/${branch}`])
-    return true
-  } catch {
-    return false
+    return getChassisBrand({ root })
+  } catch (error) {
+    throw new CommandError(error.message, { cause: error })
   }
+}
+
+function readPin(root) {
+  const file = path.join(root, ASSETS_PIN)
+
+  if (!fs.existsSync(file)) {
+    throw new CommandError(`${ASSETS_PIN} is missing. Run chassis-docs sync-assets to write it.`)
+  }
+
+  return JSON.parse(fs.readFileSync(file, 'utf8'))
+}
+
+/** The start of the name of a web archive of the repository. */
+function archivePrefix(repository) {
+  return `${repository.split('/')[1]}-web-`
+}
+
+// Downloads are kept outside the repository, by repository and name, as the name holds the
+// version. Keyed by the version alone, a cache served the archive of another repository.
+function defaultCacheDir() {
+  return path.join(process.env.XDG_CACHE_HOME || path.join(os.homedir(), '.cache'), 'chassis-docs')
+}
+
+function sha256(data) {
+  return `sha256:${createHash('sha256').update(data).digest('hex')}`
+}
+
+async function download(url, fetcher, options) {
+  const response = await fetcher(url, options).catch((error) => {
+    throw new CommandError(`${url}: ${error.message}`, { cause: error })
+  })
+
+  if (!response.ok) {
+    throw new CommandError(`${url}: HTTP ${response.status}`)
+  }
+
+  return response
+}
+
+// The archive from the cache, or downloaded into it. A file of the cache that does not match
+// the pin is replaced. A download that does not match fails, and stays out of the cache.
+async function fetchArchive({ repository, version, name, digest, cacheDir, fetcher }) {
+  const cached = path.join(cacheDir, 'assets', repository.replace('/', '-'), name)
+
+  if (fs.existsSync(cached)) {
+    const data = fs.readFileSync(cached)
+
+    if (sha256(data) === digest) return data
+
+    fs.rmSync(cached)
+  }
+
+  log(`Downloading ${name} from ${repository}`)
+
+  const url = `https://github.com/${repository}/releases/download/v${version}/${name}`
+  const response = await download(url, fetcher)
+  const data = Buffer.from(await response.arrayBuffer())
+  const actual = sha256(data)
+
+  if (actual !== digest) {
+    throw new CommandError(`${name}: the SHA-256 is ${actual}, and ${ASSETS_PIN} has ${digest}.`)
+  }
+
+  fs.mkdirSync(path.dirname(cached), { recursive: true })
+  fs.writeFileSync(cached, data)
+
+  return data
+}
+
+// Writes the whole archive into a folder of its own, then puts that in the place of `output`.
+function unpack(data, output) {
+  const work = `${output}.tmp`
+  const files = unzipSync(data, { filter: ({ name }) => !name.endsWith('/') })
+
+  fs.rmSync(work, { force: true, recursive: true })
+  fs.mkdirSync(work, { recursive: true })
+
+  for (const [name, content] of Object.entries(files)) {
+    const file = path.join(work, name)
+
+    if (!file.startsWith(work + path.sep)) {
+      throw new CommandError(`The archive has a file outside its folder: ${name}`)
+    }
+
+    fs.mkdirSync(path.dirname(file), { recursive: true })
+    fs.writeFileSync(file, content)
+  }
+
+  fs.rmSync(output, { force: true, recursive: true })
+  fs.renameSync(work, output)
+}
+
+// A build of the assets from a checkout, for work on the assets and a site at once.
+function copyCheckout(checkout, selection, output, stamp) {
+  const source = path.resolve(checkout, assetsOutput(selection))
+
+  if (!fs.existsSync(source)) {
+    throw new CommandError(
+      `${CHECKOUT_VARIABLE} is ${checkout}, which has no ${assetsOutput(selection)}. Build it there first.`
+    )
+  }
+
+  fs.rmSync(output, { force: true, recursive: true })
+  fs.mkdirSync(path.dirname(output), { recursive: true })
+  fs.cpSync(source, output, { recursive: true })
+  // So that the next run without the variable takes the release again.
+  fs.rmSync(stamp, { force: true })
+  log(`Copied ${source} to ${path.join(ASSETS_PATH, assetsOutput(selection))}`, 'success')
 }
 
 /**
- * The options of the build for the fonts: the ranges of `--subset`, then `--split` or
- * `--no-split` when the site decides it, and nothing when the fonts stay whole. Without
- * either of the two, the build takes `split` of `chassis.subset` of chassis-assets.
- * @param {string[]} subset
- * @param {boolean} [split]
- * @returns {string[]}
+ * Fills `vendor/assets/dist/web/<app>/<brand>` with the archive of the release that
+ * `vendor/assets.json` pins. It does nothing when the folder already holds that archive.
+ * @param {{ root?: string, cacheDir?: string, fetcher?: typeof fetch, run?: typeof defaultRun }} [options]
  */
-function fontOptions(subset, split) {
-  if (subset.length === 0) {
-    if (split !== undefined) {
-      throw new CommandError('--split and --no-split need --subset: a font is split by its ranges.')
-    }
+export async function vendorAssets({
+  run = defaultRun,
+  root = repositoryRoot(run),
+  cacheDir = defaultCacheDir(),
+  fetcher = fetch
+} = {}) {
+  const selection = selectionOf(root)
+  const output = path.join(root, ASSETS_PATH, assetsOutput(selection))
+  // Beside the folder and not in it: a site copies the whole folder to its static files.
+  const stamp = `${output}.sha256`
+  const checkout = process.env[CHECKOUT_VARIABLE]
 
-    return []
+  if (checkout) {
+    copyCheckout(checkout, selection, output, stamp)
+    return
   }
 
-  const decided = split === undefined ? [] : [split ? '--split' : '--no-split']
+  const { repository = DEFAULT_REPOSITORY, version, archives = {} } = readPin(root)
+  const prefix = archivePrefix(repository)
+  const name = `${prefix}${selection.app}-${selection.brand}-${version}.zip`
+  const digest = archives[name]
 
-  return ['--subset', ...subset, ...decided]
+  if (!digest) {
+    const known = Object.keys(archives)
+      .map((archive) => archive.slice(prefix.length, -`-${version}.zip`.length))
+      .join(', ')
+
+    throw new CommandError(
+      `${ASSETS_PIN} has no archive for the app '${selection.app}' and the brand '${selection.brand}' at ${version}. It has: ${known || 'none'}. These are <app>-<brand>.`
+    )
+  }
+
+  if (fs.existsSync(output) && fs.existsSync(stamp) && fs.readFileSync(stamp, 'utf8') === digest) {
+    log(`${path.join(ASSETS_PATH, assetsOutput(selection))} is at ${version}.`, 'success')
+    return
+  }
+
+  const data = await fetchArchive({ repository, version, name, digest, cacheDir, fetcher })
+
+  fs.mkdirSync(path.dirname(output), { recursive: true })
+  unpack(data, output)
+  fs.writeFileSync(stamp, digest)
+  log(`Unpacked ${name} to ${path.join(ASSETS_PATH, assetsOutput(selection))}`, 'success')
 }
 
-function buildCheckout(root, run, fonts = []) {
-  const dir = path.join(root, ASSETS_PATH)
+/**
+ * Moves `vendor/assets.json` to a release, the latest without `version`, with the digest of
+ * every web archive of the release, and unpacks the archive of the build.
+ * @param {{ root?: string, version?: string, repository?: string, cacheDir?: string, fetcher?: typeof fetch, run?: typeof defaultRun }} [options]
+ */
+export async function syncAssets({
+  run = defaultRun,
+  root = repositoryRoot(run),
+  version,
+  repository,
+  cacheDir = defaultCacheDir(),
+  fetcher = fetch
+} = {}) {
+  const file = path.join(root, ASSETS_PIN)
+  const pin = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : {}
+  const source = repository ?? pin.repository ?? DEFAULT_REPOSITORY
+  const release = version ? `tags/v${version}` : 'latest'
+  // A token raises the limit of the GitHub API, 60 requests an hour without one
+  const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN
+  const response = await download(
+    `https://api.github.com/repos/${source}/releases/${release}`,
+    fetcher,
+    {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        ...(token && { Authorization: `Bearer ${token}` })
+      }
+    }
+  )
+  const { tag_name: tag, assets } = await response.json()
+  const moved = tag.replace(/^v/, '')
+  const prefix = archivePrefix(source)
+  const web = assets.filter(({ name }) => name.startsWith(prefix) && name.endsWith('.zip'))
 
-  // The images are stored with Git LFS. Without it they are pointer files.
-  run('git', ['lfs', 'install', '--local'], { cwd: dir, quiet: true })
-  run('git', ['lfs', 'pull'], { cwd: dir })
+  if (web.length === 0) {
+    throw new CommandError(`${source} ${tag} has no web archive.`)
+  }
 
-  if (fonts.length > 0) {
-    // The subsetter is a package that the build loads, so the package of the build is
-    // installed, without the tools of its tests. Where an install without the workspace
-    // ran before, pnpm removes its modules first, and would ask.
-    run(
-      'pnpm',
-      ['install', '--filter', ASSETS_PACKAGE, '--prod', '--config.confirmModulesPurge=false'],
-      { cwd: dir }
-    )
-    run('pnpm', ['assets:site', ...fonts], { cwd: dir })
+  const archives = {}
+
+  for (const { name, digest } of web.toSorted((a, b) => a.name.localeCompare(b.name))) {
+    if (!digest) {
+      throw new CommandError(`GitHub reports no digest for ${name} of ${source} ${tag}.`)
+    }
+
+    archives[name] = digest
+  }
+
+  fs.mkdirSync(path.dirname(file), { recursive: true })
+  fs.writeFileSync(
+    file,
+    `${JSON.stringify(
+      {
+        repository: source,
+        version: moved,
+        app: pin.app ?? DEFAULT_APP,
+        brand: pin.brand ?? DEFAULT_BRAND,
+        archives
+      },
+      null,
+      2
+    )}\n`
+  )
+
+  await vendorAssets({ run, root, cacheDir, fetcher })
+
+  if (moved === pin.version) {
+    log(`${ASSETS_PIN} is already at ${moved}.`, 'success')
   } else {
-    run('pnpm', ['install', '--ignore-workspace'], { cwd: dir })
-    run('pnpm', ['assets:site'], { cwd: dir })
+    log(`${ASSETS_PIN} is at ${moved}. Check the site, then commit it.`)
   }
-
-  const output = path.join(dir, ASSETS_OUTPUT)
-
-  if (!fs.existsSync(output)) {
-    throw new CommandError(`The build of ${ASSETS_PATH} wrote nothing to ${ASSETS_OUTPUT}.`)
-  }
-
-  log(`Built ${path.join(ASSETS_PATH, ASSETS_OUTPUT)}`, 'success')
 }

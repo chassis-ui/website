@@ -70,11 +70,9 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      # vendor/assets is built once here and copied into each sibling
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          submodules: true
           persist-credentials: false
 
       - name: Setup pnpm
@@ -89,7 +87,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build vendor/assets
+      # The archive is downloaded once here and copied into each sibling
+      - name: Unpack the assets
         run: pnpm vendor
 
       - name: Build the sibling sites

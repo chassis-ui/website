@@ -195,11 +195,11 @@ The layouts link to files under `/static/`, which the site puts into `static/` o
 | `/static/fonts/fonts.css`, and the font files it loads                                                                             | the docs build of `chassis-ui/assets`                                                                                        |
 | `/static/other/manifest.json`, the web app manifest                                                                                | the docs build of `chassis-ui/assets`, `v0.5.0` or later. A site may put its own in its `static/other/`, as the starter does |
 
-`chassis-docs vendor` builds the docs build of `chassis-ui/assets` in the `vendor/assets` submodule. See [Commands](#commands).
+`chassis-docs vendor` unpacks them into `vendor/assets`, from a release of `chassis-ui/website-assets`. See [Commands](#commands). "The docs build of `chassis-ui/assets`" above means that archive, built by `@chassis-ui/assets`.
 
 Nothing else of the docs build is read by the package. A site copies the whole build into `static/`, and its own pages may read more of it.
 
-These helpers find the folders, whether `node_modules` is in the site's root or in the root of the repository: `getChassisCSSFsPath()`, `getChassisIconsFsPath()`, `getChassisAssetsFsPath()` and `getChassisTokensFsPath()`. Each takes `{ root, dir }`. `getChassisTokensFsPath()` finds the docs build of `@chassis-ui/website-tokens`, and `dir` names other tokens with the same `dist/web/docs/chassis` folder.
+These helpers find the folders, whether `node_modules` is in the site's root or in the root of the repository: `getChassisCSSFsPath()`, `getChassisIconsFsPath()`, `getChassisAssetsFsPath()` and `getChassisTokensFsPath()`. Each takes `{ root, dir }`. `getChassisTokensFsPath()` finds the docs build of `@chassis-ui/website-tokens`, and `dir` names other tokens with the same `dist/web/<app>/<brand>` folders. The assets and the tokens follow the brand and the app of the build, which `getChassisBrand()` returns. See [A preview of another brand](#a-preview-of-another-brand).
 
 A site that type-checks with `astro check` declares the `@chassis-ui/css` module, which has no types: `declare module '@chassis-ui/css'`.
 
@@ -218,9 +218,9 @@ The sites of the Chassis projects read these files besides, by name, from the do
 | `images/site-logo.svg`                                                   | The examples of the navbar page of chassis-ui/css. The README of `@chassis-ui/react`, by its URL on chassis-ui.com |
 | `images/figma/components/`                                               | The component pages of chassis-ui/figma                                                                            |
 
-The vanilla HTML example, in the `chassis-ui/vanilla-example` repository, builds the assets itself from a `vendor/assets` submodule of its own, for the brand of each of its sites, and takes `fonts/text.css`, `fonts/display.css` and `fonts/code.css`, the font files they load, the license of each font and `images/logo/chassis-icon-brand.svg`.
+The examples in `chassis-ui/vanilla-example`, `chassis-ui/ios-example` and `chassis-ui/android-example` take the archive of a brand from a release of `chassis-ui/website-assets` themselves, and do not use this package.
 
-`contracts` in `chassis.checks.json` of `chassis-ui/assets` names the files that a site reads, with the code that reads each, and `pnpm assets:contract` there checks a build against it.
+`contracts` in `chassis.checks.json` of `chassis-ui/website-assets` names the files that a site reads, with the code that reads each, and `pnpm assets:contract` there checks a build against it.
 
 #### A site under a prefix
 
@@ -340,38 +340,51 @@ The package installs a `chassis-docs` command with the build steps that every Ch
 {
   "scripts": {
     "vendor": "chassis-docs vendor",
-    "sync-submodules": "chassis-docs sync-submodules",
+    "sync-assets": "chassis-docs sync-assets",
     "lint:html": "chassis-docs html-validate _site",
     "lint:vnu": "chassis-docs vnu _site"
   }
 }
 ```
 
-| Command                              | What it does                                                                                                                                                        |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `chassis-docs vendor`                | Checks out the `vendor/assets` submodule at the commit that the repository pins, pulls its Git LFS files, installs its dependencies and runs its `pnpm assets:site` |
-| `chassis-docs sync-submodules`       | Moves `vendor/assets` to the latest commit of the `app/docs` branch and builds it. Commit the new pointer afterwards                                                |
-| `chassis-docs html-validate [paths]` | Validates the HTML files in `paths` with [html-validate](https://html-validate.org)                                                                                 |
-| `chassis-docs vnu [paths]`           | Validates `paths` with the [Nu Html Checker](https://validator.github.io/validator/). Skipped, with a warning, when Java is missing                                 |
-| `chassis-docs help`                  | Lists the commands and their options                                                                                                                                |
+| Command                              | What it does                                                                                                                                                                                    |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chassis-docs vendor`                | Unpacks the archive of the assets that `vendor/assets.json` pins into `vendor/assets/dist/web/<app>/<brand>`, and checks its SHA-256. It does nothing when the folder already holds the archive |
+| `chassis-docs sync-assets`           | Moves `vendor/assets.json` to the latest release of the assets, with the digest of each web archive, and unpacks it. Commit the file afterwards                                                 |
+| `chassis-docs html-validate [paths]` | Validates the HTML files in `paths` with [html-validate](https://html-validate.org)                                                                                                             |
+| `chassis-docs vnu [paths]`           | Validates `paths` with the [Nu Html Checker](https://validator.github.io/validator/). Skipped, with a warning, when Java is missing                                                             |
+| `chassis-docs help`                  | Lists the commands and their options                                                                                                                                                            |
 
-`vendor` and `sync-submodules` work from any folder of the repository. They need Git, Git LFS and pnpm. `sync-submodules --branch <name>`, or the `SUBMODULE_BRANCH` variable, follows another branch.
-
-Both take `--subset <range>`, which writes the fonts of the build with the characters of the range only, so that a page downloads smaller font files. A range is a name that `chassis-ui/assets` knows, such as `latin` or `latin-ext`, or a range written as `U+0370-03FF`, and the option is repeatable:
+`vendor` and `sync-assets` work from any folder of the repository, and need neither Git LFS nor a submodule. `sync-assets --version <x.y.z>` picks a release, and `--repository <owner/name>` another repository with the same archive names. It asks the GitHub API, and sends `GH_TOKEN` or `GITHUB_TOKEN` when one is set. `vendor` only downloads the archive, into `chassis-docs/assets/` of `XDG_CACHE_HOME` or `~/.cache`.
 
 ```json
 {
-  "scripts": {
-    "vendor": "chassis-docs vendor --subset latin --subset latin-ext --split"
+  "repository": "chassis-ui/website-assets",
+  "version": "0.5.0",
+  "app": "docs",
+  "brand": "chassis",
+  "archives": {
+    "website-assets-web-docs-chassis-0.5.0.zip": "sha256:…",
+    "website-assets-web-docs-sinefil-0.5.0.zip": "sha256:…"
   }
 }
 ```
 
-A character outside the ranges is drawn with the next font of the font stack. With the option, the commands install the package of the build in the submodule, `pnpm install --filter ./packages/assets --prod`, in place of `pnpm install --ignore-workspace`: it holds the package that subsets a font.
+`vendor/assets` is not committed: add it to `.gitignore`. `CHASSIS_ASSETS_CHECKOUT=<path>` names a local checkout of the assets, and `vendor` copies its `dist/web/<app>/<brand>` instead, for work on the assets and a site at once.
 
-`--subset` also fixes the axes of a variable font that `chassis-ui/assets` names for the brand: the optical size of Inter at 14, so that text has the width it had with Google Fonts. A site that builds without `--subset` sets `font-optical-sizing: none` in its styles for the same look.
+#### A preview of another brand
 
-`--split`, with `--subset`, writes each font in a file per range as well, such as `text-latin.woff2` and `text-latin-ext.woff2`, and the stylesheets name them with a `unicode-range`: a page loads the file of a range only when it has a character of it. `--no-split` writes one file per font. Without either, the setting of `chassis-ui/assets` decides, which is one file.
+`CHASSIS_BRAND` and `CHASSIS_APP` choose another archive and other tokens for one run, over `brand` and `app` of `vendor/assets.json`, whose defaults are `chassis` and `docs`. Each brand has its own folder, and a brand or an app that the pin or the tokens lack fails the build. The tokens of a site's own `_chassis-tokens.scss` still win.
+
+```sh
+CHASSIS_BRAND=sinefil chassis-docs vendor && CHASSIS_BRAND=sinefil astro dev
+```
+
+The files in `dist/css` of `@chassis-ui/css` hold the tokens of `chassis`, so a site calls `writeBrandCSS()` of `@chassis-ui/docs/integration` after it copies them. It compiles `css/chassis.css` and `css/chassis.min.css` for the brand, and does nothing for the default brand. For another brand it needs `postcss`, `autoprefixer` and `postcss-prefix-custom-properties` in the site.
+
+```ts
+writeBrandCSS({ root, destination: path.join(publicDir, 'static') })
+```
 
 Each command exits with 1 when it fails, so a script or CI job stops there.
 

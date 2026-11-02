@@ -7,8 +7,8 @@
  * A sibling whose range does not accept the version would not get it, and is skipped.
  *
  * Each sibling is a shallow clone of its default branch in a temporary directory. Nothing
- * is pushed. Instead of each sibling pulling and building chassis-assets, the docs build
- * of this repository's `vendor/assets` is copied into each: run `pnpm vendor` first.
+ * is pushed. The assets that this repository unpacks into `vendor/assets` are copied into
+ * each, in place of a download per sibling: run `pnpm vendor` first.
  *
  * Usage: node build/canary.js [sibling ...] [--all] [--keep]
  *
@@ -32,7 +32,7 @@ const packageDir = path.join(repositoryRoot, 'packages/docs')
 const assetsBuild = path.join(repositoryRoot, 'vendor/assets/dist/web/docs/chassis')
 const assetsTarget = 'vendor/assets/dist/web/docs/chassis'
 
-// How each sibling builds its site, without moving its submodule and without Pagefind.
+// How each sibling builds its site, without moving its assets and without Pagefind.
 // `site` is the folder whose package.json names @chassis-ui/docs. Keep this in step with
 // the `build` scripts of the siblings.
 const siblings = {
@@ -49,15 +49,12 @@ const siblings = {
   assets: {
     repository: 'chassis-ui/assets',
     site: 'packages/site',
-    // The docs build is chassis-assets' own output, copied in place of `pnpm assets:site`,
-    // which needs the Git LFS files of the repository.
-    assetsTarget: 'dist/web/docs/chassis',
     build: [['astro:build']]
   },
   icons: {
     repository: 'chassis-ui/icons',
-    site: '.',
-    build: [['icons'], ['site:pages'], ['astro:build']]
+    site: 'packages/site',
+    build: [['icons'], ['astro:build']]
   },
   figma: {
     repository: 'chassis-ui/figma',
@@ -168,7 +165,7 @@ function canary(name, sibling, tarball, version, tempDir, all) {
     return { name, range, result: 'skipped', note: `the range does not accept ${version}` }
   }
 
-  const target = path.join(repositoryDir, sibling.assetsTarget ?? assetsTarget)
+  const target = path.join(repositoryDir, assetsTarget)
 
   fs.mkdirSync(path.dirname(target), { recursive: true })
   fs.cpSync(assetsBuild, target, { recursive: true })
@@ -233,7 +230,7 @@ for (const name of selected) {
 
 assert.ok(
   fs.existsSync(assetsBuild),
-  `The docs build of chassis-assets is missing from ${assetsBuild}. Run pnpm vendor first.`
+  `The assets are missing from ${assetsBuild}. Run pnpm vendor first.`
 )
 
 const { version } = readJson(path.join(packageDir, 'package.json'))

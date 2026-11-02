@@ -109,11 +109,9 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      # vendor/assets is built at the commit pinned in this repository
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          submodules: true
           persist-credentials: false
 
       - name: Setup pnpm
@@ -155,7 +153,7 @@ jobs:
         layout: [root, packages]
 
     steps:
-      # No submodule: the fixture writes a stand-in for the docs build of chassis-assets
+      # The fixture writes a stand-in for the assets
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

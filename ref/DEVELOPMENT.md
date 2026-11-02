@@ -25,18 +25,11 @@ ranges in `packages/website/package.json`.
 `pnpm build` runs `pnpm site:build`, which Vercel runs too. It runs three steps in turn:
 
 1. **Vendor assets.** `pnpm vendor` runs `chassis-docs vendor`, a command of
-   `@chassis-ui/docs`. It checks out `vendor/assets` at the commit this repository pins,
-   pulls its Git LFS files, installs its dependencies and runs its `pnpm assets:site`. The
-   output is `vendor/assets/dist/web/docs/chassis`. The script passes three `--subset`
-   ranges, so the fonts of the output hold these characters only: `latin` and `latin-ext`,
-   the languages that are written in Latin letters, and `symbols2`, the range of
-   chassis-ui/assets that has the box drawing characters of the file trees on the home page.
-   With `--subset` the build also fixes the optical size axis of Inter at 14, which
-   chassis-ui/assets sets for the brand: text has the width it had with Google Fonts. The
-   script passes `--split` too, so each font is also written in a file per range, such as
-   `text-latin.woff2`, and a page loads the file of a range only when it has a character
-   of it. With `--subset` the command installs the package of the build in the submodule,
-   which holds the package that subsets a font.
+   `@chassis-ui/docs`. It takes the archive of the brand from the release of
+   chassis-ui/website-assets that `vendor/assets.json` pins, checks its SHA-256 against the
+   pin, and unpacks it into `vendor/assets/dist/web/docs/chassis`. It does nothing when that
+   folder already holds the archive. The release has made the choices about the fonts: they
+   are split by range, so a page loads the file of a range only when it has a character of it.
 2. **Site.** `astro build` in `packages/website`. Astro writes to `_site/`.
 3. **Search.** `pagefind --site _site` indexes the pages that `pagefind.yml` selects.
 
@@ -73,7 +66,7 @@ empties `packages/website/public/` and fills it again:
 | From                                     | To               |
 | ---------------------------------------- | ---------------- |
 | `packages/website/static/`               | `/`              |
-| The docs build of `vendor/assets`        | `/static/`       |
+| The assets in `vendor/assets`            | `/static/`       |
 | `dist` of `@chassis-ui/css`              | `/static/`       |
 | `icons` of `@chassis-ui/icons`           | `/static/icons/` |
 | `_site/pagefind/`, when a build made one | `/pagefind/`     |
@@ -127,20 +120,42 @@ and change the front matter.
 posts and the docs guide. The dev server has search only after a build, because it serves
 the index of the last build.
 
-## The `vendor/assets` submodule
+## The assets
 
-`vendor/assets` is [chassis-ui/assets](https://github.com/chassis-ui/assets) at a commit that
-this repository pins. Every build uses that commit, so the same commit of this repository
-always builds the same site.
+`vendor/assets.json` pins a release of
+[chassis-ui/website-assets](https://github.com/chassis-ui/website-assets), with the SHA-256 of
+each web archive, so the same commit of this repository always builds the same site.
+`vendor/assets` is what `pnpm vendor` unpacks from it, and is not committed.
 
-- `pnpm vendor` builds the pinned commit. Run it after cloning and whenever the pin
-  changes, for example after a pull.
-- `pnpm sync-submodules` moves the pin to the latest commit of the `app/docs` branch of
-  chassis-ui/assets and builds it. `SUBMODULE_BRANCH=<branch>` picks another branch. Check
-  the site, then commit `vendor/assets` on its own.
-- `pnpm dev` does not touch the submodule.
+- `pnpm vendor` unpacks the pinned archive. `pnpm dev` and `pnpm build` run it, and it does
+  nothing when the folder already holds the archive. A download is kept in `~/.cache/chassis-docs`
+  (`XDG_CACHE_HOME` moves it). A digest that does not match fails the command.
+- `pnpm sync-assets` moves the pin to the latest release and unpacks it. `--version` picks
+  another release. Check the site, compare it with the build before the move, then commit
+  `vendor/assets.json` on its own.
+- `CHASSIS_ASSETS_CHECKOUT=<path>` names a local checkout of chassis-ui/website-assets, and
+  `pnpm vendor` copies its `dist/web/<app>/<brand>` instead, for work on the assets and a site
+  at once. Without the variable the next run takes the release again.
 
-Changes to the assets belong in the chassis-ui/assets repository, not in `vendor/assets`.
+Changes to the assets belong in the chassis-ui/website-assets repository, not in `vendor/assets`.
+
+### Preview another brand
+
+The site is deployed for the `chassis` brand. Set `CHASSIS_BRAND` to see it with another:
+
+```bash
+CHASSIS_BRAND=sinefil pnpm dev
+```
+
+The archive of the brand is downloaded the first time and unpacked beside the others, and only
+the brand of the run reaches `public/`. The tokens come from `@chassis-ui/website-tokens`, and
+`css/chassis.css` and `css/chassis.min.css` are compiled with them, in place of the files of
+`@chassis-ui/css`, which hold the tokens of `chassis`: a start takes some seconds longer. The
+look changes and the words do not: `config.yml` and the pages stay those of Chassis.
+
+`CHASSIS_APP` picks the app in the same way. The releases have one web app today, `docs`, so
+another value fails and lists what exists. `brand` and `app` of `vendor/assets.json` are the
+defaults, and an unknown brand fails before anything is written.
 
 ## Examples
 
@@ -220,11 +235,8 @@ Chassis CSS uses `@use`, not `@import`. A breakpoint is a prefix of a utility cl
 
 ## Troubleshooting
 
-**The dev server stops with "Could not find the docs build of chassis-ui/assets".** The
-vendor assets are not built. Run `pnpm vendor`.
-
-**Images are missing or broken.** Git LFS was not installed when the submodule was
-checked out, so the images are pointer files. Run `git lfs install`, then `pnpm vendor`.
+**The site stops with "Could not find the assets of the site".** `astro` ran without
+`pnpm vendor`. Run `pnpm vendor`, or start it with `pnpm dev`.
 
 **The build uses stale files.** Run `pnpm clean`, then `pnpm install` and `pnpm build`.
 

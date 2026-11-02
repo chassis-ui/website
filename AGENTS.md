@@ -13,7 +13,7 @@ packages/
   website/   # Main Astro site (src/components, content, layouts, libs, pages, styles)
   docs/      # Shared @chassis-ui/docs utilities (TypeScript)
 build/       # Checks and release scripts (check-links.js, fixture-sites.js, etc.)
-vendor/      # Git submodule(s), e.g. vendor/assets (chassis-ui/assets)
+vendor/      # assets.json pins the release of chassis-ui/website-assets; assets/ is unpacked, not committed
 ```
 
 Related sibling repos (separate git projects, not part of this monorepo):
@@ -24,9 +24,9 @@ Related sibling repos (separate git projects, not part of this monorepo):
 
 - Package manager: **pnpm** (see `packageManager` in package.json). Do not use npm/yarn.
 - Node: 24 (`.nvmrc`); `engines` allows `>=22.12.0`.
-- Install: `pnpm install`, then `pnpm vendor` once (builds `vendor/assets` at the pinned commit)
-- Dev server: `pnpm dev` (Astro dev at `localhost:4321`; does not touch the submodule)
-- Build: `pnpm build` (vendor assets + site + pagefind, as Vercel); `pnpm site` adds vnu HTML lint
+- Install: `pnpm install`
+- Dev server: `pnpm dev` (`pnpm vendor`, then Astro dev at `localhost:4321`). `CHASSIS_BRAND=sinefil pnpm dev` previews another brand
+- Build: `pnpm build` (`pnpm vendor` + site + pagefind, as Vercel); `pnpm site` adds vnu HTML lint
 - Preview: `pnpm preview` (serves `_site/`)
 - Lint: `pnpm lint` (eslint + stylelint + prettier for both packages, then `pnpm spellcheck`)
 - Format: `pnpm format` (prettier --write for both packages)
@@ -50,8 +50,9 @@ Run the relevant lint/check command after making changes before considering a ta
   `packages/website/src/content`.
 - Name a sibling by its GitHub repository, as in `chassis-ui/css`. Never by a local folder
   name or a relative path: those differ per contributor.
-- `vendor/assets` is a git submodule — don't edit its contents directly here; changes
-  belong in the `chassis-ui/assets` repo.
+- `vendor/assets` is unpacked from a release — don't edit its contents; changes belong in the
+  `chassis-ui/website-assets` repo.
+- The brand switch is for previews. The website is deployed for the `chassis` brand only.
 
 ## Reference docs
 
@@ -78,5 +79,5 @@ area rather than re-deriving from source:
 - Work that belongs in a sibling repo is not done from a session in this repo: tell the
   maintainer.
 - Don't edit generated output in `_site/`, `.cache/`, or `node_modules/`.
-- Submodule sync (`pnpm sync-submodules`) moves the pin to the latest `app/docs` of
-  `chassis-ui/assets` — be aware changes there originate from a different repo.
+- `pnpm sync-assets` moves the pin in `vendor/assets.json` to the latest release of
+  `chassis-ui/website-assets` — be aware changes there originate from a different repo.
