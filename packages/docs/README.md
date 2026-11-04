@@ -36,7 +36,7 @@ pnpm add @chassis-ui/docs
 
 Two more are optional. They are needed by the [commands](#commands) that validate HTML: `html-validate` `^11.0.0` and `vnu-jar` `>=26.0.0`.
 
-A site also installs `@astrojs/mdx` and the rest of the Chassis stack, `@chassis-ui/website-tokens` and `@chassis-ui/icons`.
+A site also installs `@astrojs/mdx` and the rest of the Chassis stack, `@chassis-ui/website-tokens` and `@chassis-ui/website-icons`.
 
 ## Setup
 
@@ -188,7 +188,7 @@ The layouts link to files under `/static/`, which the site puts into `static/` o
 | URL                                                                                                                                | From                                                                                                                         |
 | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `/static/css/chassis.css`, `/static/css/chassis.min.css`                                                                           | the `dist` folder of `@chassis-ui/css`                                                                                       |
-| `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css`                                                               | the `icons` folder of `@chassis-ui/icons`                                                                                    |
+| `/static/icons/chassis-icons.svg`, `/static/icons/chassis-icons.css`                                                               | the `dist/web` folder of `@chassis-ui/website-icons`                                                                         |
 | `/static/images/site-logo.svg`, the logo of the navigation bar and the footer. The build inlines it, and fails without the file    | the docs build of `chassis-ui/assets`                                                                                        |
 | `/static/images/favicon.png`, `favicon-16x16.png`, `favicon-32x32.png` and `apple-touch-icon.png`                                  | the docs build of `chassis-ui/assets`                                                                                        |
 | `/static/images/social-image.png`, the image of a page without a `thumbnail`. The build reads its size, and fails without the file | the docs build of `chassis-ui/assets`                                                                                        |
@@ -199,7 +199,7 @@ The layouts link to files under `/static/`, which the site puts into `static/` o
 
 Nothing else of the docs build is read by the package. A site copies the whole build into `static/`, and its own pages may read more of it.
 
-These helpers find the folders, whether `node_modules` is in the site's root or in the root of the repository: `getChassisCSSFsPath()`, `getChassisIconsFsPath()`, `getChassisAssetsFsPath()` and `getChassisTokensFsPath()`. Each takes `{ root, dir }`. `getChassisTokensFsPath()` finds the docs build of `@chassis-ui/website-tokens`, and `dir` names other tokens with the same `dist/web/<app>/<brand>` folders. The assets and the tokens follow the brand and the app of the build, which `getChassisBrand()` returns. See [A preview of another brand](#a-preview-of-another-brand).
+These helpers find the folders, whether `node_modules` is in the site's root or in the root of the repository: `getChassisCSSFsPath()`, `getChassisIconsFsPath()`, `getChassisAssetsFsPath()` and `getChassisTokensFsPath()`. Each takes `{ root, dir }`. `getChassisIconsFsPath()` finds the `dist/web` folder of `@chassis-ui/website-icons`, and `dir` names another folder with the same files. `getChassisTokensFsPath()` finds the docs build of `@chassis-ui/website-tokens`, and `dir` names other tokens with the same `dist/web/<app>/<brand>` folders. The assets and the tokens follow the brand and the app of the build, which `getChassisBrand()` returns. See [A preview of another brand](#a-preview-of-another-brand).
 
 A site that type-checks with `astro check` declares the `@chassis-ui/css` module, which has no types: `declare module '@chassis-ui/css'`.
 
@@ -404,7 +404,7 @@ What a site can change:
 
 The defaults:
 
-- Both skip `static/icons` in each path, where a site copies `@chassis-ui/icons`, whose preview page is not the site's.
+- Both skip `static/icons` in each path, where a site copies `@chassis-ui/website-icons`, whose preview page is not the site's.
 - `html-validate` extends `html-validate:recommended` and `html-validate:document`. It turns off `void-style`, since Astro writes void elements with a slash, `no-inline-style`, since Shiki writes inline styles, and `require-sri`. `heading-level` lets a page start at `h2`, as the dialogs of the layouts do.
 - `vnu` fails on warnings as well as errors, and leaves out "Trailing slash on void elements", which Astro writes.
 

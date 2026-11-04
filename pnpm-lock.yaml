@@ -217,9 +217,9 @@ importers:
       '@chassis-ui/docs':
         specifier: workspace:*
         version: link:../docs
-      '@chassis-ui/icons':
-        specifier: ^0.3.1
-        version: 0.3.1
+      '@chassis-ui/website-icons':
+        specifier: ^0.1.0
+        version: 0.1.0
       '@chassis-ui/website-tokens':
         specifier: ^0.3.0
         version: 0.3.0
@@ -544,9 +544,9 @@ packages:
       tailwindcss:
         optional: true
 
-  '@chassis-ui/icons@0.3.1':
-    resolution: {integrity: sha512-u940omGLvaDqQWzkLDiXXACs3UiEGgZeESbDM+7mB9Dd/L2QKkCk0XQE6sVRv3Tb4+eXDmJOLNd63scZgAKS+Q==}
-    engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
+  '@chassis-ui/website-icons@0.1.0':
+    resolution: {integrity: sha512-TPVgmtqYr17pq1mJ0SFDS7EcGklCeJ+D31zSNnYgH+/m6D085mo1EGhUs95dcGcgRy13vzDWsHoNEVstIwzX9g==}
+    engines: {node: '>=22.12.0'}
 
   '@chassis-ui/website-tokens@0.3.0':
     resolution: {integrity: sha512-eHMXqFSzEcyuYJ5mdpVDiG5CjeTEXcmrWZRAwIAHQoUIDQccmzJOi7d9iAU4qixlS5DfHcg3+wMh9aGzvyrJFA==}
@@ -5159,7 +5159,7 @@ snapshots:
     optionalDependencies:
       postcss-prefix-custom-properties: 0.1.0(postcss@8.5.31)
 
-  '@chassis-ui/icons@0.3.1': {}
+  '@chassis-ui/website-icons@0.1.0': {}
 
   '@chassis-ui/website-tokens@0.3.0': {}
 

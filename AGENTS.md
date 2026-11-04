@@ -18,7 +18,7 @@ vendor/      # assets.json pins the release of chassis-ui/website-assets; assets
 
 Related sibling repos (separate git projects, not part of this monorepo):
 `chassis-ui/tokens`, `chassis-ui/website-tokens`, `chassis-ui/css`, `chassis-ui/assets`,
-`chassis-ui/icons`, `chassis-ui/figma`, `chassis-ui/react`, `chassis-ui/vanilla-example`.
+`chassis-ui/icons`, `chassis-ui/website-icons`, `chassis-ui/figma`, `chassis-ui/react`, `chassis-ui/vanilla-example`.
 
 ## Setup & commands
 

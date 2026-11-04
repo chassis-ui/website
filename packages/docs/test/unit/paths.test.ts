@@ -239,17 +239,17 @@ describe('getChassisAssetsFsPath', () => {
 })
 
 describe('getChassisCSSFsPath and getChassisIconsFsPath', () => {
-  test('return the dist folder of the CSS package and the icons package', () => {
+  test('return the dist folder of the CSS package and dist/web of the icons package', () => {
     const { root, site } = repository({
       'node_modules/@chassis-ui/css/package.json': '{}',
-      'node_modules/@chassis-ui/icons/package.json': '{}'
+      'node_modules/@chassis-ui/website-icons/package.json': '{}'
     })
 
     expect(getChassisCSSFsPath({ root: site })).toBe(
       path.join(root, 'node_modules/@chassis-ui/css/dist')
     )
     expect(getChassisIconsFsPath({ root: site })).toBe(
-      path.join(root, 'node_modules/@chassis-ui/icons')
+      path.join(root, 'node_modules/@chassis-ui/website-icons/dist/web')
     )
   })
 
@@ -258,6 +258,9 @@ describe('getChassisCSSFsPath and getChassisIconsFsPath', () => {
 
     expect(getChassisCSSFsPath({ root: site, dir: '../css/dist' })).toBe(
       path.join(site, '../css/dist')
+    )
+    expect(getChassisIconsFsPath({ root: site, dir: '../icons/dist/web' })).toBe(
+      path.join(site, '../icons/dist/web')
     )
   })
 })

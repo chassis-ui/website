@@ -153,7 +153,13 @@ export function getChassisCSSFsPath(options: ChassisPathOptions = {}): string {
   )
 }
 
-/** The folder of `@chassis-ui/icons`. */
+/**
+ * The `dist/web` folder of `@chassis-ui/website-icons`, with the icon font, its stylesheets
+ * and the SVG sprite, or the folder of icons that `dir` names.
+ */
 export function getChassisIconsFsPath(options: ChassisPathOptions = {}): string {
-  return resolveDir(options) ?? getInstalledPackageFsPath('@chassis-ui/icons', options.root)
+  return (
+    resolveDir(options) ??
+    path.join(getInstalledPackageFsPath('@chassis-ui/website-icons', options.root), 'dist/web')
+  )
 }

@@ -4,6 +4,12 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-11-04
+
+### Changed
+
+- The site takes its icons from `@chassis-ui/website-icons` 0.1.0, where the icons of the Chassis sites moved, in place of `@chassis-ui/icons` 0.3.1, which is now the builder of icon sets: `@chassis-ui/docs` 0.14.0, whose `getChassisIconsFsPath()` returns the `dist/web` folder of the new package. The files under `/static/icons/` keep their names. The installation and introduction pages name the new package and its `dist/` paths, and say which package does what.
+
 ## 2026-11-03
 
 ### Fixed

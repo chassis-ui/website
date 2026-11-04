@@ -15,7 +15,7 @@ import { writeBrandCSS } from '@chassis-ui/docs/integration'
  * - the logo, favicons, fonts and social image, from the assets that `chassis-docs vendor`
  *   unpacks into `vendor/assets`, from a release of https://github.com/chassis-ui/website-assets
  * - the CSS of `@chassis-ui/css`, compiled for the brand when it is not the default one
- * - the icon font and sprite of `@chassis-ui/icons`
+ * - the icon font and sprite of `@chassis-ui/website-icons`
  * - the site's own files, from `static/`: a web app manifest with the starter's name, in
  *   place of `other/manifest.json` of the docs build. They are copied last, so one replaces
  *   a file of the same name
@@ -39,11 +39,9 @@ export function chassisStatic(): AstroIntegration {
         fs.cpSync(getChassisAssetsFsPath({ root }), destination, { recursive: true })
         fs.cpSync(getChassisCSSFsPath({ root }), destination, { recursive: true })
         writeBrandCSS({ root, destination })
-        fs.cpSync(
-          path.join(getChassisIconsFsPath({ root }), 'icons'),
-          path.join(destination, 'icons'),
-          { recursive: true }
-        )
+        fs.cpSync(getChassisIconsFsPath({ root }), path.join(destination, 'icons'), {
+          recursive: true
+        })
         fs.cpSync(path.join(root, 'static'), destination, { recursive: true })
       }
     }

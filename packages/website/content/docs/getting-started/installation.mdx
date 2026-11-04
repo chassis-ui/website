@@ -1,10 +1,10 @@
 ---
 title: Installation
-description: Add Chassis CSS and Chassis Icons to a web project from npm, and use the compiled CSS or compile it from the Sass source.
+description: Add Chassis CSS and the icons of Chassis to a web project from npm, and use the compiled CSS or compile it from the Sass source.
 toc: true
 ---
 
-Chassis CSS, Chassis Icons and the design tokens of Chassis are published to npm as `@chassis-ui/css`, `@chassis-ui/icons` and `@chassis-ui/website-tokens`. This page adds them to a web project. [Chassis CSS](/css/docs/getting-started/installation/) and [Chassis Icons](/icons/) document each package in full.
+Chassis CSS, the icons of Chassis and the design tokens of Chassis are published to npm as `@chassis-ui/css`, `@chassis-ui/website-icons` and `@chassis-ui/website-tokens`. This page adds them to a web project. [Chassis CSS](/css/docs/getting-started/installation/) and [Chassis Icons](/icons/) document each package in full.
 
 ## Requirements
 
@@ -13,17 +13,17 @@ Chassis CSS, Chassis Icons and the design tokens of Chassis are published to npm
 
 ## Install the packages
 
-Install Chassis CSS and Chassis Icons:
+Install Chassis CSS and the icons of Chassis:
 
 ```sh
 # pnpm
-pnpm add @chassis-ui/css @chassis-ui/icons
+pnpm add @chassis-ui/css @chassis-ui/website-icons
 
 # npm
-npm install @chassis-ui/css @chassis-ui/icons
+npm install @chassis-ui/css @chassis-ui/website-icons
 
 # yarn
-yarn add @chassis-ui/css @chassis-ui/icons
+yarn add @chassis-ui/css @chassis-ui/website-icons
 ```
 
 The JavaScript plugins of Chassis CSS use two peer dependencies: `@floating-ui/dom` for menus, popovers and tooltips, and `vanilla-calendar-pro` for the datepicker. npm 7 and later installs them automatically. To install them yourself:
@@ -74,12 +74,12 @@ The [JavaScript guide](/css/docs/getting-started/javascript/) of Chassis CSS cov
 
 ## Add the icons
 
-`@chassis-ui/icons` holds the icon font and the SVG sprite in its `icons/` folder, and each icon as an SVG file in `svgs/`.
+`@chassis-ui/website-icons` holds the icon font and the SVG sprite in its `dist/web/` folder, and each icon as an SVG file in `dist/svgs/`.
 
 To use the icon font, link its stylesheet and give an element the `cx-` class of the icon. The `icon` class comes from Chassis CSS:
 
 ```html
-<link rel="stylesheet" href="node_modules/@chassis-ui/icons/icons/chassis-icons.min.css">
+<link rel="stylesheet" href="node_modules/@chassis-ui/website-icons/dist/web/chassis-icons.min.css">
 
 <span class="icon cx-rocket-solid" aria-hidden="true"></span>
 ```
@@ -90,7 +90,7 @@ To use the SVG sprite, reference an icon by its name:
 
 ```html
 <svg class="icon" width="24" height="24" aria-hidden="true">
-  <use href="node_modules/@chassis-ui/icons/icons/chassis-icons.svg#rocket-solid"></use>
+  <use href="node_modules/@chassis-ui/website-icons/dist/web/chassis-icons.svg#rocket-solid"></use>
 </svg>
 ```
 

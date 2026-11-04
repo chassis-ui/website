@@ -23,7 +23,7 @@ function silence() {
   vi.spyOn(console, 'log').mockReturnValue()
 }
 
-// A site's output folder, with the icon files that a site copies from @chassis-ui/icons
+// A site's output folder, with the icon files that a site copies from @chassis-ui/website-icons
 function createSite() {
   return createTempDir({
     '_site/index.html': '',

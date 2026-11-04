@@ -17,7 +17,7 @@ The website depends on `@chassis-ui/docs` as `workspace:*`, so it always uses th
 `packages/docs`. A change there shows in `pnpm dev` at once. The package has no build
 step: sites consume its `.astro` and `.ts` files directly.
 
-`@chassis-ui/css`, `@chassis-ui/website-tokens` and `@chassis-ui/icons` come from npm, at the
+`@chassis-ui/css`, `@chassis-ui/website-tokens` and `@chassis-ui/website-icons` come from npm, at the
 ranges in `packages/website/package.json`.
 
 ## How the site is built
@@ -63,13 +63,13 @@ Say in the commit message why the exception is right. See
 Before each dev or build run, the site's integration in `packages/website/src/libs/astro.ts`
 empties `packages/website/public/` and fills it again:
 
-| From                                     | To               |
-| ---------------------------------------- | ---------------- |
-| `packages/website/static/`               | `/`              |
-| The assets in `vendor/assets`            | `/static/`       |
-| `dist` of `@chassis-ui/css`              | `/static/`       |
-| `icons` of `@chassis-ui/icons`           | `/static/icons/` |
-| `_site/pagefind/`, when a build made one | `/pagefind/`     |
+| From                                      | To               |
+| ----------------------------------------- | ---------------- |
+| `packages/website/static/`                | `/`              |
+| The assets in `vendor/assets`             | `/static/`       |
+| `dist` of `@chassis-ui/css`               | `/static/`       |
+| `dist/web` of `@chassis-ui/website-icons` | `/static/icons/` |
+| `_site/pagefind/`, when a build made one  | `/pagefind/`     |
 
 `public/` is generated. Change the sources, not the copies.
 
@@ -209,8 +209,9 @@ Revert the sibling's `package.json` and lockfile afterwards.
 
 ### Using an unpublished Chassis CSS or Icons
 
-To try a change of `chassis-ui/css` or `chassis-ui/icons` in the website before it is
-published, override the dependency with your checkout of it, wherever that is on disk:
+To try a change of `chassis-ui/css` or `chassis-ui/website-icons` in the website before it is
+published, build your checkout of it and override the dependency with it, wherever that is on
+disk:
 
 ```yaml
 # pnpm-workspace.yaml
@@ -218,7 +219,7 @@ packages:
   - 'packages/*'
 overrides:
   '@chassis-ui/css': link:<checkout of chassis-ui/css>/packages/css
-  '@chassis-ui/icons': link:<checkout of chassis-ui/icons>
+  '@chassis-ui/website-icons': link:<checkout of chassis-ui/website-icons>
 ```
 
 Run `pnpm install`. Remove the override before you commit.

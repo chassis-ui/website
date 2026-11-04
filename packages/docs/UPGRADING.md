@@ -1,5 +1,47 @@
 # Upgrading @chassis-ui/docs
 
+## From 0.13 to 0.14
+
+The icons of the Chassis sites moved to `@chassis-ui/website-icons`, with the same files, icon
+names and code points as `@chassis-ui/icons` 0.4.0-next.0. Its files are in `dist/`:
+`icons/chassis-icons.*` is `dist/web/chassis-icons.*`, and `svgs/<name>.svg` is
+`dist/svgs/<name>.svg`. `@chassis-ui/icons` is the builder of icon sets from 0.4.0, with the
+`chassis-icons` command, and holds no icons.
+
+### 1. Update the dependencies
+
+In the package of the site:
+
+```sh
+pnpm add -D @chassis-ui/docs@^0.14.0 @chassis-ui/website-icons@^0.1.0
+pnpm remove @chassis-ui/icons
+```
+
+A site that builds its own set with `@chassis-ui/icons` keeps that dependency.
+
+### 2. Copy the folder that the helper returns
+
+`getChassisIconsFsPath()` returns the `dist/web` folder, where it returned the root of the
+package. Copy that folder into `static/icons`, without joining `icons` to it:
+
+```ts
+fs.cpSync(getChassisIconsFsPath({ root }), path.join(destination, 'icons'), { recursive: true })
+```
+
+A site that passes `dir` names the folder of the files, such as
+`node_modules/@chassis-ui/website-icons/dist/web`, where it named the root of the package.
+
+### 3. Move the paths of your own
+
+A page or stylesheet of the site that names `@chassis-ui/icons/icons/...` or
+`@chassis-ui/icons/svgs/...` names `@chassis-ui/website-icons/dist/web/...` or
+`@chassis-ui/website-icons/dist/svgs/...`. The new package has 501 of the 503 icons of
+`@chassis-ui/icons` 0.3.1: `road-outline-1` and `road-solid-1` are gone.
+
+### Check the result
+
+Build the site. `/static/icons/` holds the same files as before, under the same names.
+
 ## From 0.12 to 0.13
 
 `chassis-docs vendor` takes the assets from a release of `chassis-ui/website-assets`. A site has no `vendor/assets` submodule and no Git LFS step any more.

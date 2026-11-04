@@ -7,7 +7,7 @@ export const DEFAULT_PATHS = ['_site']
 
 /**
  * The folders to skip when no `--ignore` is given: `static/icons` of each path, the files
- * that a site copies from `@chassis-ui/icons`. They include a preview page of their own.
+ * that a site copies from `@chassis-ui/website-icons`. They include a preview page of their own.
  * @param {string[]} paths
  */
 export function defaultIgnores(paths) {
