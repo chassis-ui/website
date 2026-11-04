@@ -124,7 +124,7 @@
     "@chassis-ui/css": "^0.14.0",
     "@pagefind/component-ui": "^1.5.2",
     "@shikijs/transformers": "^4.5.0",
-    "astro": "^7.4.2",
+    "astro": "^7.4.4",
     "autoprefixer": "^10.6.1",
     "html-validate": "^11.17.0",
     "postcss": "^8.5.31",
