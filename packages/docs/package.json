@@ -117,7 +117,7 @@
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
     "unified": "^11.0.5",
-    "unist-util-visit": "^5.1.0"
+    "unist-util-visit": "^5.2.0"
   },
   "devDependencies": {
     "@astrojs/markdown-remark": "^7.3.4",
