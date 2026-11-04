@@ -136,8 +136,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       medium-zoom:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.1.2
+        version: 1.1.2
       remark:
         specifier: ^15.0.1
         version: 15.0.1
@@ -3384,8 +3384,8 @@ packages:
   mdn-data@2.37.2:
     resolution: {integrity: sha512-rz9YOBGItdSbe7HcSArUbhiAv4SB/4DKRYg96CSFS2CcIYMbUvBtZlzA1NCbk2AdgbmYwMqwNblLpR441lLeiQ==}
 
-  medium-zoom@1.1.0:
-    resolution: {integrity: sha512-ewyDsp7k4InCUp3jRmwHBRFGyjBimKps/AJLjRSox+2q/2H4p/PNpQf+pwONWlJiOudkBXtbdmVbFjqyybfTmQ==}
+  medium-zoom@1.1.2:
+    resolution: {integrity: sha512-0wTqeCQ4NGzjPghi7i2lMI6RyGj9N60fGvzY9HiNcxDTcvOw7S+ri7K3xVkrIZ+2uzUg4w/KSVMDdZXYMtHkdw==}
 
   meow@13.2.0:
     resolution: {integrity: sha512-pxQJQzB6djGPXh08dacEloMFopsOqGVRKFPYvPOt9XDZ1HasbgDZA74CJGreSU4G3Ak7EFJGoiH2auq+yXISgA==}
@@ -8244,7 +8244,7 @@ snapshots:
 
   mdn-data@2.37.2: {}
 
-  medium-zoom@1.1.0: {}
+  medium-zoom@1.1.2: {}
 
   meow@13.2.0: {}
 
