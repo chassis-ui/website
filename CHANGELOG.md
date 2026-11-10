@@ -4,6 +4,13 @@ Changes to the website at [chassis-ui.com](https://chassis-ui.com) and to the to
 
 The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.md](packages/docs/CHANGELOG.md). It also holds the history of this repository up to 0.5.1, when the two shared this file.
 
+## 2026-11-10
+
+### Changed
+
+- The site is built with Astro 7.4.7, where it was 7.4.2, and Pagefind 1.6.0, where it was 1.5.2. The pages are the same but for the version in their `generator` tag. The scripts of the search dialog and of the image zoom have new file names, and the search index is split over more files.
+- `astro check` works again with the Astro 7.4.7 dependency tree: `pnpm-workspace.yaml` gives `@astrojs/astro2tsx` the `@emnapi/runtime` that matches its `@emnapi/core`, in place of the 2.0 beta that rolldown 1.3 brings in.
+
 ## 2026-11-04
 
 ### Changed

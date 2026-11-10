@@ -7,3 +7,12 @@ packages:
 # in .github/dependabot.yml, which exempts the same packages.
 minimumReleaseAgeExclude:
   - '@chassis-ui/*'
+
+# @astrojs/astro2tsx (under @astrojs/check) pins @emnapi/core but leaves @emnapi/runtime to peer
+# resolution, which picks the 2.0 beta that rolldown 1.3 brings in. The mismatched pair throws on
+# load and `astro check` reports @astrojs/check as missing. Give the runtime the same version as
+# the core. Remove when astro2tsx declares it.
+packageExtensions:
+  '@astrojs/astro2tsx@0.1.2':
+    dependencies:
+      '@emnapi/runtime': 1.11.3
