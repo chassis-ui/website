@@ -6,21 +6,12 @@
   // Pagefind search UI
   //
 
+  // In the flow of the navbar, between the links and the icons, from `lg`.
   .cxd-search {
-    position: relative;
+    display: flex;
+    align-items: center;
 
     @include media-breakpoint-up(lg) {
-      position: absolute;
-      top: 20%;
-      right: 11.5rem;
-      width: 5rem;
-
-      [dir="rtl"] & {
-        right: auto;
-        left: 11.5rem;
-      }
-    }
-    @include media-breakpoint-up(xl) {
       width: 12.5rem;
     }
   }

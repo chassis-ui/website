@@ -1,36 +1,114 @@
+// The blog: the list of posts, the pagination, the post and its pager.
+
 @use "@chassis-ui/css/scss/mixins" as *;
 
 @layer custom {
+  //
+  // List
+  //
+
+  .blog-rows {
+    border-block-end: var(--cx-border-width-md) solid var(--cx-border-subtle);
+
+    > .blog-row {
+      border-block-start: var(--cx-border-width-md) solid var(--cx-border-subtle);
+    }
+  }
+
+  .blog-row-title {
+    color: var(--cx-fg-main);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .blog-row-more {
+    color: var(--cx-link-main);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .blog-pagination {
+    border-block-start: var(--cx-border-width-md) solid var(--cx-border-subtle);
+  }
+
+  //
+  // Post
+  //
+
+  .blog-back {
+    border-block-end: var(--cx-border-width-md) solid var(--cx-border-subtle);
+  }
+
+  // The back link: the font of a medium button, upper case, in the colour of links.
+  .blog-back-link {
+    @include font-size(var(--cx-font-size-md));
+    font-weight: var(--cx-font-weight-strong);
+    color: var(--cx-link-main);
+    text-decoration: none;
+    text-transform: uppercase;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // The text of a post: paragraphs in body/large, headings h2 with space above.
   .blog-article {
-    :where(h2, h3, h4, h5, h6) {
-      margin-block: var(--space-3xl) var(--space-lg);
-      font-weight: var(--font-weight-strong);
+    :where(p, li, dt, dd) {
+      font-family: var(--cx-font-family-body);
+      @include font-size(var(--cx-font-size-body-lg));
+      @include line-height(var(--cx-line-height-body-lg));
     }
-    :where(p, li, dt, dd, blockquote) {
-      @include font-size(var(--font-size-lg));
-      font-weight: var(--font-weight-elegant);
-      @include line-height(1.625);
+
+    :where(p, ol, ul, figure, blockquote) {
+      margin-block: 0 var(--cx-space-xl);
     }
-    :where(p, ol, ul) {
-      margin-block-end: var(--space-xl);
+
+    :where(h2) {
+      margin-block: var(--cx-space-xl) var(--cx-space-md);
+      font-family: var(--cx-font-family-heading);
+      @include font-size(var(--cx-font-size-h2));
+      @include line-height(var(--cx-line-height-h2));
+      font-weight: var(--cx-font-weight-heading);
     }
-    @include media-breakpoint-up(md) {
-      :where(h2, h3, h4, h5, h6) {
-        margin-block: var(--space-5xl) var(--space-lg);
-      }
-      :where(b, strong) {
-        font-weight: var(--font-weight-strong);
-      }
-      :where(p, ol, ul) {
-        margin-block-end: var(--space-xl);
-      }
-      :where(.attribution) {
-        @include font-size(var(--font-size-md));
-      }
-      :where(figure:has(blockquote), blockquote:not(figure > blockquote)) {
-        padding-inline-start: var(--space-2xl);
-        border-inline-start: .25rem solid var(--border-main);
-      }
+
+    :where(h3, h4, h5, h6) {
+      margin-block: var(--cx-space-xl) var(--cx-space-sm);
+    }
+
+    > :last-child {
+      margin-block-end: 0;
+    }
+
+    :where(figure:has(blockquote), blockquote:not(figure > blockquote)) {
+      padding-inline-start: var(--cx-space-2xl);
+      border-inline-start: var(--cx-border-width-2xl) solid var(--cx-border-main);
+    }
+  }
+
+  // The previous and next posts: two cards without a border.
+  .blog-pager {
+    row-gap: var(--cx-space-md);
+  }
+
+  .blog-pager-link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cx-space-2xs);
+    padding: var(--cx-space-md) var(--cx-space-lg);
+    color: var(--cx-link-main);
+    text-decoration: none;
+    background-color: var(--cx-bg-even);
+    @include border-radius(var(--cx-border-radius-md));
+
+    &:hover {
+      background-color: var(--cx-bg-evident);
     }
   }
 }

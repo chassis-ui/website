@@ -1,7 +1,7 @@
 ---
 import type { GetStaticPathsOptions } from 'astro'
 import BlogLayout from '@layouts/BlogLayout.astro'
-import BlogPostCard from '@components/blog/BlogPostCard.astro'
+import BlogPostList from '@components/blog/BlogPostList.astro'
 import { getConfig } from '@chassis-ui/docs/site'
 import type { SiteConfig } from '@libs/config'
 import { blogPages } from '@libs/content'
@@ -65,15 +65,7 @@ const frontmatter = {
     </li>
   </ol>
 
-  {page.data.length > 0 ? (
-    <div class="mb-xl">
-      {page.data.map((post: BlogPost) => (
-        <BlogPostCard post={post} />
-      ))}
-    </div>
-  ) : (
-    <p>No posts found.</p>
-  )}
+  <BlogPostList posts={page.data} />
 
   <Pagination page={page} baseUrl={`/blog/tags/${encodeURIComponent(tag)}`} />
 </BlogLayout>

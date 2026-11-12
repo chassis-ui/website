@@ -251,13 +251,13 @@ Group imports in this order:
 import type { CollectionEntry } from 'astro:content'
 
 // 2. External packages
-import { gsap } from 'gsap'
+import sitemap from '@astrojs/sitemap'
 
 // 3. Internal shared packages
 import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 
 // 4. Local components
-import Hero from '@components/homepage/HeroSection.astro'
+import Hero from '@components/home/HeroSection.astro'
 
 // 5. Utilities
 import { formatDate } from '@libs/blog'

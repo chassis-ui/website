@@ -1,0 +1,91 @@
+---
+/**
+ * Start Section
+ *
+ * Three cards of doors, each door a link to the documentation of a package. The hero's
+ * "Getting Started" button scrolls here (`#start`).
+ */
+
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+import SectionHead from './SectionHead.astro'
+
+const groups = [
+  {
+    label: 'YOU OWN THE DECISIONS',
+    doors: [
+      {
+        name: 'Tokens',
+        href: '/tokens/docs/',
+        body: 'Define colour, type, spacing and motion once, per brand.'
+      },
+      {
+        name: 'Figma',
+        href: '/figma/docs/',
+        body: 'Build the screens on components bound to those tokens.'
+      }
+    ]
+  },
+  {
+    label: 'YOU OWN THE FILES',
+    doors: [
+      {
+        name: 'Assets',
+        href: '/assets/docs/',
+        body: 'One folder for every brand’s logos, images and fonts, built per platform.'
+      },
+      {
+        name: 'Icons',
+        href: '/icons/docs/',
+        body: 'One icon set, named once, for design and code.'
+      }
+    ]
+  },
+  {
+    label: 'YOU WANT TO BUILD TODAY',
+    doors: [
+      {
+        name: 'CSS',
+        href: '/css/docs/',
+        body: 'Utility classes and custom properties, in Chassis styling until your tokens arrive.'
+      },
+      {
+        name: 'React',
+        href: '/react/docs/',
+        body: 'Accessible components on React Aria, styled by the same CSS.'
+      }
+    ]
+  }
+]
+---
+
+<section class="home-section" id="start" aria-labelledby="home-start-title">
+  <div class="container 2xl home-section-body">
+    <SectionHead
+      id="home-start-title"
+      eyebrow="READY TO START?"
+      title={['Pick the door that matches', 'what you already have.']}
+      lead="Each door opens the docs of that package. You can add the other packages later, in any order."
+    />
+    <div class="grid">
+      {groups.map((group) => (
+        <div class="col-span-full md:col-span-4 bg-even rounded-md pt-lg px-xl pb-sm vstack gap-sm">
+          <h3 class="font-label-sm primary-fg-main m-0">{group.label}</h3>
+          <ul class="m-0 p-0 home-doors">
+            {group.doors.map((door) => (
+              <li class="vstack gap-xs py-md">
+                <a
+                  class="home-door font-title d-inline-flex align-items-center gap-xs"
+                  href={door.href}
+                >
+                  {door.name}
+                  <Icon name="arrow-right-outline" class="icon-reset icon-sm" />
+                </a>
+                <p class="font-body fg-subtle m-0">{door.body}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

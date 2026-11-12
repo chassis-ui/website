@@ -2,38 +2,43 @@
 /**
  * Theme Toggler
  *
- * Button to toggle between light, dark, and auto themes.
+ * Button that opens a menu of the light, dark and auto themes. The navbar shows the icon and a
+ * caret; the navigation dialog of small screens also shows the label (`label`). A page can hold
+ * several togglers: `color-modes.js` keeps every `[data-cxd-theme-toggler]` in step.
  */
 
 import type { Layout } from '../libs/layout'
 import Icon from './shortcodes/Icon.astro'
 
 interface Props {
-  /** Current layout context */
-  layout: Layout
+  /** Additional CSS classes of the button. */
+  class?: string
+  /** Current layout context. Kept for the pages that pass it. */
+  layout?: Layout
+  /** Show the label next to the icon, as in the navigation dialog. */
+  label?: boolean
+  /** Where the menu opens, as `data-cx-placement`. */
+  placement?: string
 }
 
-const { layout } = Astro.props
+const { class: className, label = false, placement = 'bottom-end' } = Astro.props
 ---
 
 <button
-  class="nav-link caret px-0 lg:px-xs"
-  id="cxd-theme"
+  class:list={['nav-link caret cxd-theme-toggler', className]}
   type="button"
   aria-expanded="false"
   data-cx-toggle="menu"
   aria-label="Toggle theme (auto)"
-  data-cx-placement="bottom-end"
+  data-cx-placement={placement}
+  data-cxd-theme-toggler
 >
   <Icon name="circle-half-solid" class="theme-icon-active" />
-  <span
-    class=`${layout === 'examples' ? 'visually-hidden' : 'lg:d-none ms-xs'}`
-    id="cxd-theme-text"
-  >
+  <span class:list={[label ? null : 'visually-hidden']} data-cxd-theme-text>
     Toggle theme
   </span>
 </button>
-<ul class="menu" role="menu" aria-label="Theme options">
+<ul class="menu" aria-label="Theme options">
   <li>
     <button type="button" class="menu-item" data-cx-theme-value="light">
       <Icon name="sun-solid" class="menu-item-icon" />

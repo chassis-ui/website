@@ -53,7 +53,7 @@ if (frontmatter.toc) {
 ---
 
 <BaseLayout {...Astro.props} layout="docs" overrides={{ body: bodyProps }}>
-  <div slot="main" class="container fluid cxd-gutter cxd-layout">
+  <div slot="main" class="container 2xl cxd-layout">
     <aside class="cxd-sidebar">
       <dialog
         class="max-lg:drawer drawer-start"
@@ -98,12 +98,13 @@ if (frontmatter.toc) {
                   )
               }
               <a
-                class="button default sm"
+                class="button default"
                 href={githubUrl}
                 title="View and edit this file on GitHub"
                 target="_blank"
                 rel="noopener"
               >
+                <Icon name="github-brand" />
                 View on GitHub
               </a>
             </div>

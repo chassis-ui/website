@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
+import '@scss/pages.scss'
 
 // Keep this page in step with what the sites load. See ref/VERCEL_CONFIG.md for the hosts
 // in the content security policy, and `Consent.astro` in the package for analytics.
@@ -10,12 +11,14 @@ const updated = '12 October 2026'
   title="Privacy Policy"
   description="What the Chassis sites collect, why, and what you can do about it."
 >
-  <section class="py-3xl md:py-6xl">
+  <section class="py-6xl">
     <div class="container 2xl">
       <div class="grid">
-        <div class="col-span-full lg:col-span-10 lg:col-start-2 xl:col-span-8 xl:col-start-3">
-          <h1>Privacy Policy</h1>
-          <p class="fg-subtle">Last updated {updated}.</p>
+        <div class="col-span-full lg:col-span-8 lg:col-start-3 privacy">
+          <header class="vstack gap-md">
+            <h1 class="font-h1 m-0">Privacy Policy</h1>
+            <p class="fg-subtle m-0">Last updated {updated}.</p>
+          </header>
 
           <p>
             This notice covers chassis-ui.com and the documentation of the Chassis projects it
@@ -24,7 +27,7 @@ const updated = '12 October 2026'
             <a href="mailto:support@chassis-ui.com">support@chassis-ui.com</a>.
           </p>
 
-          <h2 class="font-h4 mt-xl mb-xs">Analytics</h2>
+          <h2 class="font-h3 pt-xl pb-md m-0">Analytics</h2>
           <p>
             With your consent, the sites use Google Analytics to count visits and see which pages
             are read. Nothing is sent to Google, and no analytics cookie is set, until you accept in
@@ -45,7 +48,7 @@ const updated = '12 October 2026'
             </button>
           </p>
 
-          <h2 class="font-h4 mt-xl mb-xs">Contact form</h2>
+          <h2 class="font-h3 pt-xl pb-md m-0">Contact form</h2>
           <p>
             When you send the form on the home page, we receive your name, your email address, your
             company if you give it, and the topic you choose. They reach us by email through our
@@ -53,20 +56,20 @@ const updated = '12 October 2026'
             the conversation needs it, and do not add your address to any list.
           </p>
 
-          <h2 class="font-h4 mt-xl mb-xs">Hosting</h2>
+          <h2 class="font-h3 pt-xl pb-md m-0">Hosting</h2>
           <p>
             The sites are hosted by Vercel. To serve and protect them, Vercel handles your IP
             address and the details of each request, and keeps request logs for a short time. The
             contact form counts requests per IP address to stop abuse.
           </p>
 
-          <h2 class="font-h4 mt-xl mb-xs">Stored in your browser</h2>
+          <h2 class="font-h3 pt-xl pb-md m-0">Stored in your browser</h2>
           <p>
             Besides the analytics cookies above, the sites keep two settings in your browser's local
             storage: your colour theme and your analytics choice. They never leave your browser.
           </p>
 
-          <h2 class="font-h4 mt-xl mb-xs">Your rights</h2>
+          <h2 class="font-h3 pt-xl pb-md m-0">Your rights</h2>
           <p>
             You can ask what we hold about you, and ask us to correct or delete it. You can withdraw
             your analytics consent at any time, without affecting what was collected before.

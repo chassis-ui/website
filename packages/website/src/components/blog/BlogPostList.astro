@@ -1,0 +1,40 @@
+---
+/**
+ * Blog Post List
+ *
+ * The posts of a blog page, in groups by year, newest first: a year heading, then a row per
+ * post.
+ */
+
+import type { CollectionEntry } from 'astro:content'
+import BlogPostRow from './BlogPostRow.astro'
+
+interface Props {
+  posts: CollectionEntry<'blog'>[]
+}
+
+const { posts } = Astro.props
+const years = new Map<number, CollectionEntry<'blog'>[]>()
+
+posts.forEach((post) => {
+  const year = (post.data.pubDate ?? new Date()).getFullYear()
+  years.set(year, [...(years.get(year) ?? []), post])
+})
+---
+
+{posts.length > 0 ? (
+  [...years.entries()].map(([year, yearPosts]) => (
+    <section class="vstack gap-md" aria-labelledby={`blog-year-${year}`}>
+      <h2 class="font-h3 fg-subtle m-0" id={`blog-year-${year}`}>
+        {year}
+      </h2>
+      <div class="blog-rows">
+        {yearPosts.map((post) => (
+          <BlogPostRow post={post} />
+        ))}
+      </div>
+    </section>
+  ))
+) : (
+  <p class="font-body-lg fg-subtle">No posts yet.</p>
+)}

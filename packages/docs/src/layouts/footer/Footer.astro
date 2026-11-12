@@ -2,102 +2,84 @@
 /**
  * Footer
  *
- * Site footer with logo, license information, and navigation links.
+ * Site footer: the logo and the line about Chassis, three columns of links, then the copyright
+ * with the privacy links on a hairline. Every link is a path of chassis-ui.com, so the footer
+ * is the same on every Chassis site.
  */
 
 import SiteLogo from '../SiteLogo.astro'
+
+const columns = [
+  {
+    title: 'Docs',
+    links: [
+      { href: '/tokens', label: 'Design Tokens' },
+      { href: '/figma', label: 'Figma Library' },
+      { href: '/css', label: 'CSS Framework' },
+      { href: '/react', label: 'React Components' },
+      { href: '/assets', label: 'Asset Distributor' },
+      { href: '/icons', label: 'Icon Builder' }
+    ]
+  },
+  {
+    title: 'Github',
+    links: [
+      { href: 'https://github.com/chassis-ui/tokens', label: 'Chassis Tokens' },
+      { href: 'https://github.com/chassis-ui/figma', label: 'Chassis Figma' },
+      { href: 'https://github.com/chassis-ui/css', label: 'Chassis CSS' },
+      { href: 'https://github.com/chassis-ui/react', label: 'Chassis React' },
+      { href: 'https://github.com/chassis-ui/assets', label: 'Chassis Assets' },
+      { href: 'https://github.com/chassis-ui/icons', label: 'Chassis Icons' }
+    ]
+  },
+  {
+    title: 'Project',
+    links: [
+      { href: '/about', label: 'About' },
+      { href: '/blog', label: 'Blog' },
+      { href: '/examples', label: 'Examples' },
+      { href: 'https://github.com/chassis-ui', label: 'Contribute' },
+      { href: 'https://x.com/chassis_ui', label: '@chassis_ui on X' }
+    ]
+  }
+]
+const year = new Date().getFullYear()
 ---
 
-<footer class="cxd-footer py-6xl">
-  <div class="container 2xl fg-subtle">
-    <div class="grid row-gap-0">
-      <div class="col-span-full md:col-span-10 lg:col-span-5 mb-md">
-        <a
-          class="cxd-site-logo d-inline-flex align-items-center mb-md text-body-emphasis text-decoration-none"
-          href="/"
-          aria-label="Chassis"
-        >
+<footer class="cxd-footer">
+  <div class="container 2xl vstack gap-6xl">
+    <div class="grid row-gap-6xl">
+      <div class="col-span-full lg:col-span-6 vstack gap-xl align-items-start">
+        <a class="cxd-site-logo" href="/" aria-label="Chassis">
           <SiteLogo />
         </a>
-        <p class="mb-xs">
-          This project is licensed under the MIT License, which allows for free use, modification,
-          and distribution of the software.
-        </p>
-        <p>
-          <a href="/privacy/" class="fg-main">
-            Privacy
-          </a>
-          <button hidden data-consent-open type="button" class="cxd-footer-link fg-main ms-md">
-            Cookie settings
-          </button>
+        <p class="m-0 lg:pe-6xl">
+          One source of truth for every brand and platform. An open-source design system framework.
         </p>
       </div>
-      <div class="col-span-full sm:col-span-4 lg:col-span-2 lg:col-start-7 mb-md">
-        <p class="font-h6 mb-xs">Docs</p>
-        <ul class="nav">
-          <li>
-            <a href="/tokens">Design Tokens</a>
-          </li>
-          <li>
-            <a href="/figma">Figma Library</a>
-          </li>
-          <li>
-            <a href="/css">CSS Framework</a>
-          </li>
-          <li>
-            <a href="/react">React Components</a>
-          </li>
-          <li>
-            <a href="/assets">Asset Distributor</a>
-          </li>
-          <li>
-            <a href="/icons">Icon Generator</a>
-          </li>
-        </ul>
+      <div class="col-span-full lg:col-span-6 cxd-footer-columns">
+        {columns.map((column) => (
+          <div class="vstack gap-xs">
+            <h2 class="font-h5 m-0">{column.title}</h2>
+            <ul class="vstack gap-xs m-0 p-0">
+              {column.links.map((link) => (
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
-      <div class="col-span-full sm:col-span-4 lg:col-span-2 mb-md">
-        <p class="font-h6 mb-xs">Github</p>
-        <ul class="nav">
-          <li>
-            <a href="https://github.com/chassis-ui/tokens">Chassis Tokens</a>
-          </li>
-          <li>
-            <a href="https://github.com/chassis-ui/figma">Chassis Figma</a>
-          </li>
-          <li>
-            <a href="https://github.com/chassis-ui/css">Chassis CSS</a>
-          </li>
-          <li>
-            <a href="https://github.com/chassis-ui/react">Chassis React</a>
-          </li>
-          <li>
-            <a href="https://github.com/chassis-ui/assets">Chassis Assets</a>
-          </li>
-          <li>
-            <a href="https://github.com/chassis-ui/icons">Chassis Icons</a>
-          </li>
-        </ul>
-      </div>
-      <div class="col-span-full sm:col-span-4 lg:col-span-2 mb-md">
-        <p class="font-h6 mb-xs">Project</p>
-        <ul class="nav">
-          <li>
-            <a href="/about">About</a>
-          </li>
-          <li>
-            <a href="/blog">Blog</a>
-          </li>
-          <li>
-            <a href="/examples">Examples</a>
-          </li>
-          <li>
-            <a href="https://github.com/chassis-ui">Contribute</a>
-          </li>
-          <li>
-            <a href="https://x.com/chassis_ui">@chassis_ui on X</a>
-          </li>
-        </ul>
-      </div>
+    </div>
+    <div class="cxd-footer-bottom">
+      <p class="m-0">&copy;{year} Chassis UI</p>
+      <p class="d-flex gap-md m-0">
+        <a href="/privacy/">Privacy</a>
+        <button hidden data-consent-open type="button" class="cxd-footer-link">
+          Cookie Settings
+        </button>
+      </p>
     </div>
   </div>
 </footer>

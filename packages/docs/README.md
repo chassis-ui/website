@@ -379,7 +379,7 @@ The package installs a `chassis-docs` command with the build steps that every Ch
 CHASSIS_BRAND=sinefil chassis-docs vendor && CHASSIS_BRAND=sinefil astro dev
 ```
 
-The files in `dist/css` of `@chassis-ui/css` hold the tokens of `chassis`, so a site calls `writeBrandCSS()` of `@chassis-ui/docs/integration` after it copies them. It compiles `css/chassis.css` and `css/chassis.min.css` for the brand, and does nothing for the default brand. For another brand it needs `postcss`, `autoprefixer` and `postcss-prefix-custom-properties` in the site.
+The files in `dist/css` of `@chassis-ui/css` hold the tokens of `chassis`, so a site calls `writeBrandCSS()` of `@chassis-ui/docs/integration` after it copies them. It compiles `css/chassis.css` and `css/chassis.min.css` for the brand, and does nothing for the default brand unless `defaultBrand: true` is passed, for a site that installs a newer `@chassis-ui/website-tokens` than the one the files of `@chassis-ui/css` were built with. For another brand it needs `postcss`, `autoprefixer` and `postcss-prefix-custom-properties` in the site.
 
 ```ts
 writeBrandCSS({ root, destination: path.join(publicDir, 'static') })

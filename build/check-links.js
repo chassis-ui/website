@@ -55,7 +55,8 @@ function owner(page) {
 // The project a broken link is reported under: the proxied project that it points into,
 // or else the project of the page that it is on
 function reportedUnder(link) {
-  const url = new URL(link.url)
+  // A fragment that is missing on its page is reported with a URL relative to that page.
+  const url = new URL(link.url, link.parent)
 
   if (live && url.host === live.host) {
     const project = url.pathname.match(PROXIED)?.[1]

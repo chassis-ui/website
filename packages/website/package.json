@@ -28,7 +28,7 @@
     "@chassis-ui/css": "^0.14.0",
     "@chassis-ui/docs": "workspace:*",
     "@chassis-ui/website-icons": "^0.1.0",
-    "@chassis-ui/website-tokens": "^0.3.0",
+    "@chassis-ui/website-tokens": "^0.4.0-next.0",
     "@floating-ui/dom": "^1.8.0",
     "@pagefind/component-ui": "^1.6.0",
     "@shikijs/transformers": "^4.6.0",

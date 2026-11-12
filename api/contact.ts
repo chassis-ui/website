@@ -15,7 +15,7 @@ const TOPIC_LABELS: Record<string, string> = {
 // The form sends four short fields. Anything larger is not from the form.
 const MAX_BODY_BYTES = 8 * 1024
 
-// The same limits are set as `maxlength` on the form in `SupportSection.astro`.
+// The same limits are set as `maxlength` on the form in `ContactSection.astro` of the home page.
 const MAX_LENGTHS = { name: 100, email: 254, company: 100 } as const
 
 function reply(status: number, body: Record<string, unknown>): Response {

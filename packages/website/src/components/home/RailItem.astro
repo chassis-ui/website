@@ -1,0 +1,19 @@
+---
+/**
+ * Rail Item
+ *
+ * One station on a rail: a line on top with a dot at its start, then the content. Items of a
+ * row draw one continuous line across the gap between them (see `.home-rail` in home.scss).
+ */
+
+interface Props {
+  /** Additional CSS classes, the column span of the item. */
+  class?: string
+}
+
+const { class: className } = Astro.props
+---
+
+<li class:list={['home-rail-item vstack gap-xs', className]}>
+  <slot />
+</li>

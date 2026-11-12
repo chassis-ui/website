@@ -2,17 +2,22 @@
 import { render } from 'astro:content'
 import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
 import { blogPages } from '@libs/content'
-import { tagsToArray } from '@libs/blog'
+import { getBlogPostUrl, getReadingTime, tagsToArray } from '@libs/blog'
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
 import MediaImage from '@chassis-ui/docs/components/MediaImage.astro'
 import { getVersionedStaticPath } from '@chassis-ui/docs/site'
 import type { CollectionEntry } from 'astro:content'
+import '@scss/pages.scss'
 import '@scss/blog.scss'
 
 export async function getStaticPaths() {
-  return blogPages.map((blogPage: CollectionEntry<'blog'>) => {
-    // Ensure blogPage is an object, not an array
+  // Newest first, so the previous post is the older one and the next post the newer one.
+  const posts = [...blogPages].sort(
+    (a, b) => (b.data.pubDate?.getTime() ?? 0) - (a.data.pubDate?.getTime() ?? 0)
+  )
+
+  return posts.map((blogPage: CollectionEntry<'blog'>, index) => {
     const pubDate = new Date(blogPage.data.pubDate || Date.now())
     const year = pubDate.getFullYear()
     const month = String(pubDate.getMonth() + 1).padStart(2, '0')
@@ -23,21 +28,33 @@ export async function getStaticPaths() {
 
     return {
       params: { slug: `${year}/${month}/${day}/${slug}` },
-      props: { blogPage }
+      props: { blogPage, previous: posts[index + 1], next: posts[index - 1] }
     }
   })
 }
 
 type Props = {
   blogPage: CollectionEntry<'blog'>
+  previous?: CollectionEntry<'blog'>
+  next?: CollectionEntry<'blog'>
 }
 
-const { blogPage } = Astro.props as Props
+const { blogPage, previous, next } = Astro.props as Props
 const { data } = blogPage
 const tags = tagsToArray(data.tags)
 
 // Use the render function from astro:content for custom loaders
 const { Content } = await render(blogPage)
+const date = data.pubDate
+  ? new Date(data.pubDate).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  : ''
+const byline = [data.author, date, getReadingTime(blogPage.body || '')]
+  .filter(Boolean)
+  .join('  ·  ')
 ---
 
 <BaseLayout
@@ -50,42 +67,29 @@ const { Content } = await render(blogPage)
   layout="blog"
 >
   <div class="container 2xl">
-    <nav class="py-md border-bottom border-subtle mb-xl" aria-label="Breadcrumb">
-      <a href="/blog" class="icon-link text-decoration-none">
-        <Icon name="arrow-left-outline" class="icon-adaptive" /> Back to Blog
+    <nav class="blog-back py-xl" aria-label="Breadcrumb">
+      <a href="/blog/" class="blog-back-link d-inline-flex align-items-center gap-xs">
+        <Icon name="arrow-left-outline" class="icon-reset icon-sm" />
+        Back to Blog
       </a>
     </nav>
-    <div class="lg:w-10/12 2xl:w-8/12 mx-auto">
-      {data.tags && (
-        <div class="d-flex flex-wrap gap-xs justify-content-center my-xl lg:my-3xl">
-          {tags.map((tag) => (
-            <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip primary smooth">
-              {tag}
-            </a>
-          ))}
-        </div>
-      )}
-      <article class="blog-article mb-3xl">
-        <header class="mb-xl text-center">
-          <h1 class="font-5xl mb-md">{data.title}</h1>
-
-          <div class="d-flex align-items-center justify-content-center fg-subtle mb-md">
-            <time datetime={data.pubDate?.toISOString()}>
-              {data.pubDate
-                ? new Date(data.pubDate).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })
-                : ''}
-            </time>
-            {data.author && (
-              <>
-                <span class="mx-sm">•</span>
-                <span>by {data.author}</span>
-              </>
-            )}
-          </div>
+    <div class="grid">
+      <article class="col-span-full lg:col-span-8 lg:col-start-3 vstack gap-3xl pt-md pb-6xl">
+        {tags.length > 0 && (
+          <ul class="page-list d-flex flex-wrap gap-md" aria-label="Tags">
+            {tags.map((tag) => (
+              <li>
+                <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip primary smooth">
+                  {tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+        <header class="vstack gap-3xl">
+          <h1 class="font-hero m-0">{data.title}</h1>
+          <p class="font-lg m-0">{byline}</p>
+          {data.description && <p class="font-lead m-0">{data.description}</p>}
         </header>
 
         {data.image ? (
@@ -94,28 +98,48 @@ const { Content } = await render(blogPage)
             alt={data.image.alt}
             width={1200}
             height={630}
-            sizes="(width >= 96rem) 58rem, (width >= 64rem) 83vw, 100vw"
+            sizes="(width >= 96rem) 58rem, (width >= 64rem) 66vw, 100vw"
             loading="eager"
             fetchpriority="high"
-            class="image rounded fluid w-100 mb-xl lg:mb-3xl"
+            class="image fluid w-100 rounded-md"
           />
         ) : (
           <img
             src={getVersionedStaticPath('images/social-image.png')}
-            alt={data.title}
+            alt=""
             width="1200"
             height="630"
-            class="image rounded fluid w-100 mb-xl lg:mb-3xl"
+            class="image fluid w-100 rounded-md"
           />
         )}
 
-        <Content components={{ pre: Code }} />
+        <div class="blog-article">
+          <Content components={{ pre: Code }} />
+        </div>
+
+        {(previous || next) && (
+          <nav class="grid blog-pager" aria-label="Other posts">
+            {previous && (
+              <a
+                href={getBlogPostUrl(previous)}
+                class="col-span-full md:col-span-6 blog-pager-link"
+              >
+                <span class="font-label-sm fg-subtle">Previous</span>
+                <span class="font-title-sm">{previous.data.title}</span>
+              </a>
+            )}
+            {next && (
+              <a
+                href={getBlogPostUrl(next)}
+                class="col-span-full md:col-span-6 md:col-start-7 blog-pager-link text-end"
+              >
+                <span class="font-label-sm fg-subtle">Next</span>
+                <span class="font-title-sm">{next.data.title}</span>
+              </a>
+            )}
+          </nav>
+        )}
       </article>
     </div>
-    <nav class="py-md border-top border-subtle mb-xl" aria-label="Post navigation">
-      <a href="/blog" class="icon-link text-decoration-none">
-        <Icon name="arrow-left-outline" class="icon-adaptive" /> Back to Blog
-      </a>
-    </nav>
   </div>
 </BaseLayout>

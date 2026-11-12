@@ -1,0 +1,65 @@
+---
+/**
+ * Blog Post Row
+ *
+ * One post of a blog list on a hairline: the cover on four columns, then the date, the title,
+ * the author and the reading time, the description and a "Read More" link.
+ */
+
+import type { CollectionEntry } from 'astro:content'
+import { getReadingTime, getBlogPostUrl } from '@libs/blog'
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+import MediaImage from '@chassis-ui/docs/components/MediaImage.astro'
+import { getVersionedStaticPath } from '@chassis-ui/docs/site'
+
+interface Props {
+  post: CollectionEntry<'blog'>
+}
+
+const { post } = Astro.props
+const url = getBlogPostUrl(post)
+const date = post.data.pubDate ?? new Date()
+const day = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long' })
+const byline = [post.data.author, getReadingTime(post.body || '')].filter(Boolean).join('  ·  ')
+---
+
+<article class="grid row-gap-md py-3xl blog-row">
+  <a href={url} class="col-span-full md:col-span-4" tabindex="-1" aria-hidden="true">
+    {post.data.image ? (
+      <MediaImage
+        src={post.data.image.src}
+        alt=""
+        width={1200}
+        height={630}
+        sizes="(width >= 96rem) 28rem, (width >= 48rem) 31vw, 100vw"
+        class="image fluid w-100 rounded-md"
+      />
+    ) : (
+      <img
+        src={getVersionedStaticPath('images/social-image.png')}
+        alt=""
+        width="1200"
+        height="630"
+        loading="lazy"
+        class="image fluid w-100 rounded-md"
+      />
+    )}
+  </a>
+  <div class="col-span-full md:col-span-8 vstack gap-xs align-items-start">
+    <time datetime={date.toISOString()} class="font-label fg-subtle">
+      {day}
+    </time>
+    <h3 class="font-h2 m-0">
+      <a href={url} class="blog-row-title">
+        {post.data.title}
+      </a>
+    </h3>
+    <p class="fg-subtle m-0">{byline}</p>
+    {post.data.description && <p class="font-body m-0">{post.data.description}</p>}
+    <a href={url} class="blog-row-more font-sm font-strong d-inline-flex align-items-center gap-xs">
+      Read More
+      <Icon name="arrow-right-outline" class="icon-reset icon-sm" />
+      <span class="visually-hidden">: {post.data.title}</span>
+    </a>
+  </div>
+</article>

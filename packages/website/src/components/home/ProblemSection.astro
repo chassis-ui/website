@@ -1,0 +1,40 @@
+---
+/**
+ * Problem Section
+ *
+ * Five numbered pains on hairline rows: a statement and its consequence.
+ */
+
+import SectionHead from './SectionHead.astro'
+
+const pains = [
+  ['A token changed in Figma.', 'Three codebases did not.'],
+  ['The web has tokens.', 'iOS and Android have raw values.'],
+  ['Brand B is a fork of brand A.', 'Nobody dares to pull updates.'],
+  ['Custom icon required.', 'Four names for the same icon.'],
+  ['Dark mode came later.', 'By hand, once per platform.']
+]
+---
+
+<section class="home-section" aria-labelledby="home-problem-title">
+  <div class="container 2xl home-section-body">
+    <SectionHead
+      id="home-problem-title"
+      eyebrow="THE PROBLEM"
+      title={['Design systems assume', 'one brand, one platform.']}
+      lead="Real products are a passenger app, a driver app and an ops console, each on a different stack and platform, expected to feel like one. Chassis is for what happens then."
+    />
+    <ol class="home-rows">
+      {pains.map(([statement, consequence], index) => (
+        <li class="grid row-gap-md py-3xl">
+          <span class="col-span-full md:col-span-1 font-code font-lg fg-primary" aria-hidden="true">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <p class="col-span-full md:col-span-11 font-h2 m-0">
+            {statement} <span class="d-block md:d-inline fg-subtle">{consequence}</span>
+          </p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

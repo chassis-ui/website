@@ -32,13 +32,6 @@
     }
   }
 
-  .docs-body .navbar,
-  .docs-body .cxd-footer {
-    .container.#{\32 xl} {
-      max-width: 100%;
-    }
-  }
-
   code {
     color: var(--cxd-code-color, var(--cx-code-color));
     pre & {

@@ -20,8 +20,6 @@
       grid-template-areas: "sidebar main";
       grid-template-columns: 14rem auto;
       gap: $cxd-gutter-x;
-      padding: 0 1rem;
-      margin: 0 auto;
     }
   }
 
@@ -59,7 +57,7 @@
         "intro   toc"
         "content toc";
       grid-template-rows: auto 1fr;
-      grid-template-columns: auto 14rem;
+      grid-template-columns: auto 15rem;
     }
   }
 

@@ -1,15 +1,18 @@
 ---
 import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
-import Hero from '@components/homepage/HeroSection.astro'
-import Gallery from '@components/homepage/GallerySection.astro'
-import Tokens from '@components/homepage/TokensSection.astro'
-import Assets from '@components/homepage/AssetsSection.astro'
-import Figma from '@components/homepage/FigmaSection.astro'
-import CSS from '@components/homepage/CSSSection.astro'
-import Support from '@components/homepage/SupportSection.astro'
-import Icons from '@components/homepage/IconsSection.astro'
-import HomeIcons from '/static/icons/cx-sprite.svg?raw'
+import { getVersionedStaticPath } from '@chassis-ui/docs/site'
 import type { LayoutOverridesHTMLAttributes } from '@chassis-ui/docs'
+import { previewBrandFiles } from '@libs/brand-preview'
+import Hero from '@components/home/HeroSection.astro'
+import Problem from '@components/home/ProblemSection.astro'
+import Idea from '@components/home/IdeaSection.astro'
+import Switch from '@components/home/SwitchSection.astro'
+import Team from '@components/home/TeamSection.astro'
+import Packages from '@components/home/PackagesSection.astro'
+import Start from '@components/home/StartSection.astro'
+import Facts from '@components/home/FactsSection.astro'
+import Questions from '@components/home/QuestionsSection.astro'
+import HomeIcons from '/static/icons/cx-sprite.svg?raw'
 import '@scss/home.scss'
 
 const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
@@ -18,24 +21,21 @@ bodyProps['class'] = 'home-body'
 
 <BaseLayout {...Astro.props} overrides={{ body: bodyProps }}>
   <Fragment slot="styles">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    {/* The second brand of the Switch cards: its fonts, and its CSS scoped to the cards. */}
+    <link rel="stylesheet" href={getVersionedStaticPath(previewBrandFiles.fonts)} />
+    <link rel="stylesheet" href={getVersionedStaticPath(previewBrandFiles.css)} />
   </Fragment>
 
   <Hero />
-  <Gallery />
-  <Tokens />
-  <Figma />
-  <Assets />
-  <CSS />
-  <Icons />
-  <Support />
+  <Problem />
+  <Idea />
+  <Switch />
+  <Packages />
+  <Team />
+  <Start />
+  <Facts />
+  <Questions />
   <div hidden>
     <Fragment set:html={HomeIcons} />
   </div>
-
-  <Fragment slot="scripts">
-    <script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-    <script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
-    <script is:inline src="/static/js/gsap.js"></script>
-  </Fragment>
 </BaseLayout>

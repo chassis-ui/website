@@ -173,6 +173,21 @@ describe('getBrandTokensLoadPath', () => {
     expect(getBrandTokensLoadPath(site)).toBeUndefined()
   })
 
+  test('forwards the installed tokens of the default brand when asked', () => {
+    const { site } = repository({
+      'packages/site/node_modules/@chassis-ui/website-tokens/dist/web/docs/chassis/main.scss': ''
+    })
+
+    const directory = getBrandTokensLoadPath(site, { defaultBrand: true }) as string
+    const [, target] = /"(.+)"/.exec(
+      fs.readFileSync(path.join(directory, '_chassis-tokens.scss'), 'utf8')
+    ) as RegExpExecArray
+
+    expect(path.resolve(directory, target)).toBe(
+      path.join(site, 'node_modules/@chassis-ui/website-tokens/dist/web/docs/chassis/main')
+    )
+  })
+
   test('forwards the tokens of the brand', () => {
     const { site } = repository({
       'packages/site/node_modules/@chassis-ui/website-tokens/dist/web/docs/sinefil/main.scss': ''

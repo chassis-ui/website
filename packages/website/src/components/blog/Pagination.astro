@@ -2,58 +2,64 @@
 /**
  * Pagination
  *
- * Navigation component for paginated content like blog posts.
+ * The pages of a paginated blog list, centred on a hairline. Nothing is rendered for one page.
  */
 
+import type { Page } from 'astro'
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+
 export interface Props {
-  /** Page object containing pagination data */
-  page: any
-  /** Base URL for pagination links */
+  /** The page that `paginate()` gives the route. */
+  page: Page
+  /** The URL of the first page: the others are `{baseUrl}/{n}`. */
   baseUrl: string
   /** Accessible label for the navigation element */
   ariaLabel?: string
 }
 
 const { page, baseUrl, ariaLabel = 'Blog pagination' } = Astro.props
-
-// Generate URL for a specific page number
-function getPageUrl(pageNum: number): string {
-  return pageNum === 1 ? baseUrl : `${baseUrl}/${pageNum}`
-}
+const pageUrl = (pageNum: number) => (pageNum === 1 ? baseUrl : `${baseUrl}/${pageNum}`)
+const pages = Array.from({ length: page.lastPage }, (_, i) => i + 1)
 ---
 
 {page.lastPage > 1 && (
-  <nav aria-label={ariaLabel} class="d-flex justify-content-center">
+  <nav aria-label={ariaLabel} class="blog-pagination d-flex justify-content-center p-md">
     <ul class="pagination">
-      {page.url.prev && (
-        <li class="page-item">
-          <a href={page.url.prev} class="page-link" aria-label="Previous page">
-            ← Previous
+      <li class:list={[{ disabled: !page.url.prev }]}>
+        {page.url.prev ? (
+          <a class="pagination-link" href={page.url.prev} aria-label="Previous page">
+            <Icon name="chevron-left-solid" class="directional-icon" />
           </a>
-        </li>
-      )}
-
-      {Array.from({ length: page.lastPage }, (_, i) => i + 1).map((pageNum) => (
-        <li class={`page-item ${pageNum === page.currentPage ? 'active' : ''}`}>
-          {pageNum === page.currentPage ? (
-            <span class="page-link" aria-current="page">
-              {pageNum}
-            </span>
-          ) : (
-            <a href={getPageUrl(pageNum)} class="page-link" aria-label={`Page ${pageNum}`}>
+        ) : (
+          <span class="pagination-link" aria-disabled="true">
+            <Icon name="chevron-left-solid" class="directional-icon" />
+          </span>
+        )}
+      </li>
+      {pages.map((pageNum) =>
+        pageNum === page.currentPage ? (
+          <li class="active" aria-current="page">
+            <span class="pagination-link">{pageNum}</span>
+          </li>
+        ) : (
+          <li>
+            <a class="pagination-link" href={pageUrl(pageNum)} aria-label={`Page ${pageNum}`}>
               {pageNum}
             </a>
-          )}
-        </li>
-      ))}
-
-      {page.url.next && (
-        <li class="page-item">
-          <a href={page.url.next} class="page-link" aria-label="Next page">
-            Next →
-          </a>
-        </li>
+          </li>
+        )
       )}
+      <li class:list={[{ disabled: !page.url.next }]}>
+        {page.url.next ? (
+          <a class="pagination-link" href={page.url.next} aria-label="Next page">
+            <Icon name="chevron-right-solid" class="directional-icon" />
+          </a>
+        ) : (
+          <span class="pagination-link" aria-disabled="true">
+            <Icon name="chevron-right-solid" class="directional-icon" />
+          </span>
+        )}
+      </li>
     </ul>
   </nav>
 )}

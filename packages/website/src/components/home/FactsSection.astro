@@ -1,0 +1,27 @@
+---
+/**
+ * Facts Section
+ *
+ * Four facts about the project between two hairlines, under the doors.
+ */
+
+const facts = [
+  ['MIT License', 'Every package is free to own'],
+  ['Open Source', 'Source codes are on Github'],
+  ['W3C Standards', 'Tokens in the DTCG format'],
+  ['Public Library', 'Download from Figma Community']
+]
+---
+
+<section class="home-facts" aria-label="Facts">
+  <div class="container 2xl">
+    <dl class="grid py-xl m-0 home-facts-list">
+      {facts.map(([fact, detail]) => (
+        <div class="col-span-6 md:col-span-3 vstack gap-2xs">
+          <dt class="font-h5 mb-2xs">{fact}</dt>
+          <dd class="font-sm m-0">{detail}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>

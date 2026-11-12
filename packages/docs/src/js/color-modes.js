@@ -32,31 +32,43 @@
 
   setTheme(getPreferredTheme())
 
-  const showActiveTheme = (theme, focus = false) => {
-    const themeSwitcher = document.querySelector('#cxd-theme')
+  // The page can hold more than one toggler (the navbar and the navigation dialog of small
+  // screens). Each is a `[data-cxd-theme-toggler]` button with its own `.theme-icon-active`
+  // and `[data-cxd-theme-text]`; the menu items of every toggler are kept in step.
+  const showActiveTheme = (theme, focusFrom = null) => {
+    const togglers = document.querySelectorAll('[data-cxd-theme-toggler]')
 
-    if (!themeSwitcher) {
+    if (togglers.length === 0) {
       return
     }
 
-    const themeSwitcherText = document.querySelector('#cxd-theme-text')
-    const activeThemeIcon = document.querySelector('.theme-icon-active use')
     const buttonToActive = document.querySelector(`[data-cx-theme-value="${theme}"]`)
+
+    if (!buttonToActive) {
+      return
+    }
+
     const svgOfActiveButton = buttonToActive.querySelector('svg use').getAttribute('href')
 
     document.querySelectorAll('[data-cx-theme-value]').forEach((element) => {
-      element.classList.remove('selected')
-      element.setAttribute('aria-pressed', 'false')
+      const selected = element.dataset.cxThemeValue === theme
+      element.classList.toggle('selected', selected)
+      element.setAttribute('aria-pressed', String(selected))
     })
 
-    buttonToActive.classList.add('selected')
-    buttonToActive.setAttribute('aria-pressed', 'true')
-    activeThemeIcon.setAttribute('href', svgOfActiveButton)
-    const themeSwitcherLabel = `${themeSwitcherText.textContent} (${buttonToActive.dataset.cxThemeValue})`
-    themeSwitcher.setAttribute('aria-label', themeSwitcherLabel)
+    togglers.forEach((toggler) => {
+      const text = toggler.querySelector('[data-cxd-theme-text]')
+      const icon = toggler.querySelector('.theme-icon-active use')
+      icon?.setAttribute('href', svgOfActiveButton)
+      if (text) {
+        toggler.setAttribute('aria-label', `${text.textContent.trim()} (${theme})`)
+      }
+    })
 
-    if (focus) {
-      themeSwitcher.focus()
+    if (focusFrom) {
+      const menu = focusFrom.closest('.menu')
+      const toggler = menu?.previousElementSibling
+      ;(toggler?.matches('[data-cxd-theme-toggler]') ? toggler : togglers[0]).focus()
     }
   }
 
@@ -75,7 +87,7 @@
         const theme = toggle.getAttribute('data-cx-theme-value')
         setStoredTheme(theme)
         setTheme(theme)
-        showActiveTheme(theme, true)
+        showActiveTheme(theme, toggle)
       })
     })
   })

@@ -9,6 +9,7 @@ import {
   getChassisIconsFsPath
 } from '@chassis-ui/docs'
 import { writeBrandCSS } from '@chassis-ui/docs/integration'
+import { writeBrandPreview } from './brand-preview'
 import type { SiteConfig } from './config'
 
 // Directories that the site copies files from and to.
@@ -66,6 +67,7 @@ export function chassis({ config, root }: ChassisOptions): AstroIntegration[] {
           cmd = command
           // Reload the config when the integration is modified.
           addWatchFile(path.join(root, 'src/libs/astro.ts'))
+          addWatchFile(path.join(root, 'src/libs/brand-preview-css.js'))
         },
         'astro:config:done': () => {
           if (cmd === 'sync') return
@@ -84,7 +86,14 @@ export function chassis({ config, root }: ChassisOptions): AstroIntegration[] {
           copyStatic(paths)
           copyChassisAssets(paths)
           copyChassisCSS(paths)
-          writeBrandCSS({ root, destination: path.join(paths.public, 'static') })
+          // The files of @chassis-ui/css 0.14 hold the colours of website-tokens 0.3; the site
+          // installs 0.4. Remove `defaultBrand` when a release of the CSS is built with them.
+          writeBrandCSS({
+            root,
+            destination: path.join(paths.public, 'static'),
+            defaultBrand: true
+          })
+          writeBrandPreview({ root, destination: path.join(paths.public, 'static') })
           copyChassisIcons(paths)
           aliasStatic(paths)
           copyPagefindIndex(root, paths)

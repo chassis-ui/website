@@ -1,31 +1,116 @@
 @use "@chassis-ui/css/scss/mixins" as *;
 
 @layer custom {
+  // The site navbar: a full-width bar whose bottom border is the one line under the navigation.
+  // The links stretch to the height of the bar, so the indicator of the active link sits on
+  // that border.
   .cxd-navbar {
-    padding: 0;
+    --cx-navbar-padding-y: 0;
+    --cx-navbar-link-padding-x: var(--cx-space-xs);
+    --cx-navbar-link-padding-y: var(--cx-space-xs);
+    --cx-navbar-toggler-icon-color: var(--cx-fg-subtle);
     border-block-end: var(--cx-border-width-md) solid var(--cx-border-subtle);
 
     > .container {
-      position: relative;
+      flex-wrap: nowrap;
+      gap: var(--cx-space-md);
+      align-items: stretch;
     }
 
-    .navbar-toggler,
+    .navbar-brand {
+      align-self: center;
+      padding-block: var(--cx-space-md);
+      padding-inline-end: var(--cx-space-md);
+      margin: 0;
+
+      @include media-breakpoint-down(lg) {
+        padding-block: var(--cx-space-sm);
+      }
+    }
+
+    .navbar-toggler {
+      align-self: center;
+    }
+
+    .navbar-nav {
+      align-items: stretch;
+    }
+
     .nav-link {
-      --cx-caret-color: var(--cx-fg-color);
+      --cx-caret-color: currentcolor;
+      --cx-caret-spacing: 0;
+      display: flex;
+      gap: var(--cx-space-xs);
+      align-items: center;
+      height: 100%;
       @include font-size(var(--cx-font-size-sm));
       font-weight: var(--cx-font-weight-strong);
       text-transform: uppercase;
+
       .icon {
         --cx-icon-color: var(--cx-fg-color);
       }
+    }
+  }
 
-      @include media-breakpoint-up(lg) {
-        padding: var(--cx-space-lg) var(--cx-space-xs);
-        &.active {
-          padding-block-end: var(--cx-space-md);
-          border-block-end: var(--cx-border-width-2xl) solid var(--cx-primary-cue-main);
-        }
+  // The page links: the indicator of the active link replaces the bottom border of the bar.
+  .cxd-navbar-nav {
+    margin-block-end: calc(var(--cx-border-width-md) * -1);
+
+    > .nav-item > .nav-link {
+      border-block-end: var(--cx-border-width-2xl) solid transparent;
+
+      &.active {
+        border-block-end-color: var(--cx-primary-cue-main);
       }
     }
+  }
+
+  .cxd-navbar-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--cx-space-md);
+
+    &::before {
+      width: var(--cx-border-width-md);
+      height: var(--cx-space-xl);
+      content: "";
+      background-color: var(--cx-border-subtle);
+    }
+  }
+
+  // The navigation drawer of the screens below `lg`: the links in the font of the navbar.
+  .cxd-nav-drawer {
+    hr {
+      margin-block: var(--cx-space-xs);
+    }
+
+    .nav {
+      --cx-nav-link-padding-x: var(--cx-space-xs);
+      --cx-nav-link-padding-y: var(--cx-space-xs);
+      --cx-icon-color: var(--cx-fg-color);
+      margin: 0;
+    }
+
+    .nav-link {
+      @include font-size(var(--cx-font-size-sm));
+      font-weight: var(--cx-font-weight-strong);
+      text-transform: uppercase;
+    }
+  }
+
+  .cxd-nav-drawer-label {
+    padding: var(--cx-space-2xs) var(--cx-space-xs);
+    margin: 0;
+    @include font-size(var(--cx-font-size-xs));
+    font-weight: var(--cx-font-weight-strong);
+    color: var(--cx-fg-subtle);
+    text-transform: uppercase;
+  }
+
+  .cxd-nav-drawer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

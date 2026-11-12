@@ -1,17 +1,31 @@
 ---
 import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+import '@scss/pages.scss'
 ---
 
-<BaseLayout
-  overrides={{
-    body: { class: 'd-flex flex-column min-vh-100' },
-    main: { class: 'my-auto p-xl', id: 'content' }
-  }}
-  robots="noindex,follow"
-  title="404 - File not found"
->
-  <div class="text-center py-xl glitch">
-    <h1 class="display-1">404</h1>
-    <h2>File not found</h2>
-  </div>
+<BaseLayout robots="noindex,follow" title="404 - File not found">
+  <section class="error-page">
+    <div class="container 2xl">
+      <div class="grid">
+        <div class="col-span-full lg:col-span-7 vstack gap-lg">
+          <p class="font-label-lg fg-highlight m-0">ERROR 404</p>
+          <h1 class="font-h1 m-0">This page isn’t part of the system.</h1>
+          <p class="font-body-lg m-0">
+            The link may be out of date, or the page moved when the docs were reorganised. Start
+            again from the home page or the docs, or search from the top of the page.
+          </p>
+          <div class="d-flex flex-column sm:flex-row gap-sm pt-md">
+            <a class="button primary lg" href="/">
+              Back to the home page
+            </a>
+            <a class="button default outline lg" href="/docs/">
+              Read the docs
+              <Icon name="arrow-right-outline" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

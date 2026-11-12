@@ -1,15 +1,165 @@
 ---
-import SingleLayout from '@chassis-ui/docs/layouts/SingleLayout.astro'
-import ArchitectureSection from '@components/about/ArchitectureSection.astro'
-import BrandingSection from '@components/about/BrandingSection.astro'
-import ContributeSection from '@components/about/ContributeSection.astro'
+import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+import { getVersionedStaticPath } from '@chassis-ui/docs/site'
+import PageHero from '@components/PageHero.astro'
+
+const title = 'About'
+const lead =
+  'Chassis is an open-source design system toolkit for teams building at scale: multiple brands, multiple platforms, products that never stop evolving.'
+
+const stats = [
+  ['6', 'Packages'],
+  ['MIT', 'Licence'],
+  ['W3C', 'Compatible'],
+  ['3+', 'Platforms']
+]
+
+const logos = [
+  {
+    file: 'images/logo/logo-light.svg',
+    caption: 'For light backgrounds',
+    theme: 'light',
+    bg: 'bg-even'
+  },
+  {
+    file: 'images/logo/logo-dark.svg',
+    caption: 'For dark backgrounds',
+    theme: 'dark',
+    bg: 'bg-main'
+  }
+]
+
+const repositories = [
+  ['tokens', 'Design tokens and their transformers'],
+  ['figma', 'Figma component library'],
+  ['css', 'CSS framework'],
+  ['react', 'React components'],
+  ['assets', 'Asset distribution'],
+  ['icons', 'Icon library and sprites']
+]
 ---
 
-<SingleLayout
-  title="About Chassis"
-  description="Chassis is an open-source design system toolkit for teams building at scale — multiple brands, multiple platforms, products that never stop evolving."
->
-  <ArchitectureSection />
-  <BrandingSection />
-  <ContributeSection />
-</SingleLayout>
+<BaseLayout title="About Chassis" description={lead}>
+  <Fragment slot="main">
+    <main id="content">
+      <PageHero
+        title={title}
+        lead={lead}
+        meta="Open source  ·  MIT licensed  ·  Built in the open"
+      />
+
+      <div class="container 2xl page-section">
+        <section class="grid row-gap-xl lg:gap-6xl" aria-labelledby="about-packages">
+          <div class="col-span-full lg:col-span-6 vstack gap-md">
+            <h2 class="font-h2 m-0" id="about-packages">
+              One foundation, six packages.
+            </h2>
+            <p class="font-body-lg m-0">
+              Design tokens are the foundation. Every other package reads from them, so a decision
+              made once reaches Figma, the web, iOS and Android.
+            </p>
+            <p class="font-body-lg m-0">
+              Each package is useful on its own and can be adopted alone. All six are MIT licensed:
+              clone them, adapt them and build your own design system on them, with your tokens,
+              your brands and your platforms.
+            </p>
+          </div>
+          <dl class="col-span-full lg:col-span-6 about-stats m-0">
+            {stats.map(([value, label]) => (
+              <div class="bg-even rounded-md p-3xl d-flex flex-column-reverse align-items-center">
+                <dt class="font-md font-normal fg-subtle">{label}</dt>
+                <dd class="font-5xl font-mass m-0">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        <section class="grid row-gap-xl lg:gap-6xl" aria-labelledby="about-logo">
+          <div class="col-span-full lg:col-span-6 vstack gap-md">
+            <h2 class="font-h2 m-0" id="about-logo">
+              Using the Chassis logo.
+            </h2>
+            <p class="font-body-lg m-0">
+              Use the Chassis logo when you reference the project: in articles, talks or slides.
+            </p>
+            <p class="font-body-lg m-0">
+              Please don’t modify the logo or place it in a way that implies official endorsement of
+              your work. Both versions download as SVG.
+            </p>
+          </div>
+          <ul class="col-span-full lg:col-span-6 page-list about-logos">
+            {logos.map((logo) => (
+              <li class="vstack gap-sm">
+                <div
+                  class:list={[
+                    'about-logo-tile rounded-md d-flex align-items-center justify-content-center',
+                    logo.bg
+                  ]}
+                  data-cx-theme={logo.theme}
+                >
+                  <img
+                    src={getVersionedStaticPath(logo.file)}
+                    alt="Chassis"
+                    width="187"
+                    height="40"
+                  />
+                </div>
+                <p class="d-flex justify-content-between align-items-center font-body-sm m-0">
+                  <span class="fg-subtle">{logo.caption}</span>
+                  <a
+                    href={getVersionedStaticPath(logo.file)}
+                    download
+                    class="about-download d-inline-flex align-items-center gap-2xs font-strong"
+                  >
+                    <Icon name="download-outline" class="icon-reset icon-sm" />
+                    SVG
+                    <span class="visually-hidden">, {logo.caption.toLowerCase()}</span>
+                  </a>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section
+          class="grid row-gap-xl lg:gap-6xl"
+          id="contribute"
+          aria-labelledby="about-contribute"
+        >
+          <div class="col-span-full lg:col-span-6 vstack gap-md align-items-start">
+            <h2 class="font-h2 m-0" id="about-contribute">
+              Shaped by the people using it.
+            </h2>
+            <p class="font-body-lg m-0">
+              File an issue when something is broken, missing or unclear.
+            </p>
+            <p class="font-body-lg m-0">
+              Pull requests are welcome for typos, docs and small fixes. For anything larger, start
+              with an issue so we can agree on the approach before you write the code.
+            </p>
+            <a class="button default outline" href="https://github.com/chassis-ui">
+              <Icon name="github-brand" />
+              Browse repositories
+            </a>
+          </div>
+          <div class="col-span-full lg:col-span-6 bg-even rounded-md p-md vstack gap-sm">
+            <h3 class="font-label-sm fg-subtle m-0">Repositories on GitHub</h3>
+            <ul class="list flush">
+              {repositories.map(([repo, description]) => (
+                <li class="list-item about-repo">
+                  <Icon name="github-brand" class="icon-reset" />
+                  <a href={`https://github.com/chassis-ui/${repo}`} class="about-repo-link vstack">
+                    <span class="font-code font-sm fg-main">chassis-ui/{repo}</span>
+                    <span class="fg-subtle">{description}</span>
+                  </a>
+                  <Icon name="arrow-up-right-from-square-outline" class="icon-reset fg-subtle" />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      </div>
+    </main>
+  </Fragment>
+</BaseLayout>

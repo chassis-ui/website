@@ -1,0 +1,85 @@
+---
+/**
+ * Packages Section
+ *
+ * The six packages as cards, each a link to the home page of the package. The icons are in the
+ * `cx-sprite.svg` that the home page inlines.
+ */
+
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+import SectionHead from './SectionHead.astro'
+
+const packages = [
+  {
+    name: 'Chassis Tokens',
+    icon: 'cx-swatchbook',
+    href: '/tokens/',
+    body: 'Colours, type, spacing and motion as data. Builds Figma variables, CSS, Swift constants and Android resources.'
+  },
+  {
+    name: 'Chassis Figma',
+    icon: 'cx-figma',
+    href: '/figma/',
+    body: 'The component library, bound to the tokens. Switch brand or mode and the whole file follows.'
+  },
+  {
+    name: 'Chassis CSS',
+    icon: 'cx-brackets-curly',
+    href: '/css/',
+    body: 'Custom properties and utility classes from the tokens, named as in Figma. Works with any framework.'
+  },
+  {
+    name: 'Chassis Icons',
+    icon: 'cx-icons',
+    href: '/icons/',
+    body: 'One icon set, versioned, as a web font, an SVG sprite and plain SVGs. Save from Figma, get from Github'
+  },
+  {
+    name: 'Chassis Assets',
+    icon: 'cx-folder-tree',
+    href: '/assets/',
+    body: 'Logos, images and fonts for each brand, built for web, iOS and Android with one command.'
+  },
+  {
+    name: 'Chassis React',
+    icon: 'cx-react',
+    href: '/react/',
+    body: 'Accessible components built on React Aria. Styled with Chassis CSS, connected to Chassis Tokens.'
+  }
+]
+---
+
+<section class="home-section" aria-labelledby="home-packages-title">
+  <div class="container 2xl home-section-body">
+    <SectionHead
+      id="home-packages-title"
+      eyebrow="THE PACKAGES"
+      title={['Six versioned packages.', 'Adopt one, or the whole pipeline.']}
+      lead="Install what you need. Together they take a decision from Figma to production."
+    />
+    <ul class="grid m-0 p-0 home-packages">
+      {packages.map((item) => (
+        <li class="col-span-full md:col-span-6 lg:col-span-4 home-package position-relative rounded-md p-xl vstack gap-sm">
+          <span class="pb-xs">
+            <svg class="icon icon-primary home-package-icon" aria-hidden="true">
+              <use href={`#${item.icon}`} />
+            </svg>
+          </span>
+          <h3 class="font-title m-0">
+            <a class="stretched-link" href={item.href}>
+              {item.name}
+            </a>
+          </h3>
+          <p class="font-body fg-subtle m-0">{item.body}</p>
+          <span
+            class="pt-xs font-label-sm primary-fg-main d-inline-flex align-items-center gap-xs"
+            aria-hidden="true"
+          >
+            EXPLORE
+            <Icon name="arrow-right-outline" class="icon-reset icon-sm" />
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

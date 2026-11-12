@@ -1,0 +1,38 @@
+---
+/**
+ * Page Hero
+ *
+ * The dark band at the top of the Blog, About and Examples pages: the title, the lead and a
+ * line of facts on the first seven columns, and an optional aside on the last four (the
+ * `aside` slot). The breadcrumb of a nested page goes above the title (the `breadcrumb` slot).
+ */
+
+import '@scss/pages.scss'
+
+interface Props {
+  title: string
+  lead: string
+  /** The line of facts under the lead. */
+  meta?: string
+}
+
+const { title, lead, meta } = Astro.props
+---
+
+<header class="page-hero context alternate">
+  <div class="container 2xl">
+    <div class="grid row-gap-6xl">
+      <div class="col-span-full lg:col-span-7 vstack gap-3xl">
+        <slot name="breadcrumb" />
+        <h1 class="font-hero alternate-fg-main m-0">{title}</h1>
+        <p class="font-lead alternate-fg-main m-0">{lead}</p>
+        {meta && <p class="font-code font-sm alternate-fg-main m-0">{meta}</p>}
+      </div>
+      {Astro.slots.has('aside') && (
+        <div class="col-span-full lg:col-span-4 lg:col-start-9 align-self-center">
+          <slot name="aside" />
+        </div>
+      )}
+    </div>
+  </div>
+</header>

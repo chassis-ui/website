@@ -1,0 +1,95 @@
+---
+/**
+ * Idea Section
+ *
+ * One dark panel with three rails, one stage word above each: Decide (base, brand,
+ * application), Collect (the source) and Generate (web, iOS, Android).
+ */
+
+import RailItem from './RailItem.astro'
+import SectionHead from './SectionHead.astro'
+
+interface Station {
+  label: string
+  title?: string
+  body: string
+  wide?: boolean
+}
+
+const stages: { name: string; stations: Station[] }[] = [
+  {
+    name: 'DECIDE',
+    stations: [
+      {
+        label: 'BASE',
+        title: 'Everything has a default.',
+        body: 'Colour, type, spacing and motion are defined once, each colour with its dark pair.'
+      },
+      {
+        label: 'BRAND',
+        title: 'A brand overrides what differs.',
+        body: 'Its colours, typefaces and corner style replace the defaults.'
+      },
+      {
+        label: 'APPLICATION',
+        title: 'Every app ships with its brand.',
+        body: 'It adds only what is its own. Everything else comes from its brand and the base.'
+      }
+    ]
+  },
+  {
+    name: 'COLLECT',
+    stations: [
+      {
+        label: 'SOURCE',
+        body: 'Tokens, assets and icons each keep a single source for every brand and app. There is one place to look and one place to change.',
+        wide: true
+      }
+    ]
+  },
+  {
+    name: 'GENERATE',
+    stations: [
+      {
+        label: 'WEB',
+        body: 'Variables and classes, optimized images in web formats, icons as a font or a sprite.'
+      },
+      {
+        label: 'IOS',
+        body: 'Swift constants, with images and fonts named and formatted for iOS.'
+      },
+      {
+        label: 'ANDROID',
+        body: 'Android resources, with images and fonts named and formatted for Android.'
+      }
+    ]
+  }
+]
+---
+
+<section class="home-section" aria-labelledby="home-idea-title">
+  <div class="container 2xl home-section-body">
+    <SectionHead
+      id="home-idea-title"
+      eyebrow="THE IDEA"
+      title={['Change it once.', 'It changes everywhere.']}
+      lead="Decide in layers, from a shared base to each brand and app. Collect every decision in one source, and generate each platform from it."
+    />
+    <div class="home-idea-panel context alternate rounded-lg vstack gap-3xl">
+      {stages.map((stage) => (
+        <div class="vstack gap-md">
+          <h3 class="font-code font-sm font-normal alternate-fg-subtle m-0">{stage.name}</h3>
+          <ul class="home-rail home-idea-rail">
+            {stage.stations.map((station) => (
+              <RailItem class:list={[{ 'home-idea-wide': station.wide }]}>
+                <p class="font-label-sm alternate-fg-highlight m-0">{station.label}</p>
+                {station.title && <p class="font-title alternate-fg-main m-0">{station.title}</p>}
+                <p class="font-body alternate-fg-subtle m-0">{station.body}</p>
+              </RailItem>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

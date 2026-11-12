@@ -1,27 +1,30 @@
+@use "@chassis-ui/css/scss/mixins" as *;
+
 //
 // Footer
 //
 
 @layer custom {
   .cxd-footer {
-    --cx-fg-color: var(--cx-fg-subtle);
-    background-color: var(--cx-bg-evident);
-    .nav {
-      display: block;
-      > li {
-        display: list-item;
-        margin-block-end: var(--cx-space-xs);
-      }
+    padding-block: var(--cx-space-6xl);
+    background-color: var(--cx-bg-even);
+    border-block-start: var(--cx-border-width-md) solid var(--cx-border-subtle);
+
+    .cxd-site-logo > svg {
+      height: 2.5rem;
+    }
+
+    ul {
+      list-style: none;
     }
 
     a,
     .cxd-footer-link {
-      color: var(--cx-fg-color);
+      color: var(--cx-fg-main);
       text-decoration: none;
 
       &:hover,
-      &:focus {
-        color: var(--cx-hover-color);
+      &:focus-visible {
         text-decoration: underline;
       }
     }
@@ -33,6 +36,31 @@
       cursor: pointer;
       background: none;
       border: 0;
+    }
+  }
+
+  // Three equal columns of links from `md`, one under the other below it.
+  .cxd-footer-columns {
+    display: grid;
+    gap: var(--cx-space-md);
+
+    @include media-breakpoint-up(md) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--cx-space-6xl);
+    }
+  }
+
+  // The copyright and the privacy links on a hairline: one row from `md`, stacked below it.
+  .cxd-footer-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cx-space-md);
+    padding-block-start: var(--cx-space-md);
+    border-block-start: var(--cx-border-width-md) solid var(--cx-border-subtle);
+
+    @include media-breakpoint-up(md) {
+      flex-direction: row;
+      justify-content: space-between;
     }
   }
 }

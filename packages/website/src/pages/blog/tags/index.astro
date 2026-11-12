@@ -14,7 +14,7 @@ blogPages.forEach((page) => {
 const sortedTags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1])
 
 const frontmatter = {
-  title: 'Blog posts by tags',
+  title: 'Tags',
   description: `${blogPages.length} blog posts organized by ${tagCounts.size} tags`
 }
 ---
@@ -29,18 +29,19 @@ const frontmatter = {
     </li>
   </ol>
 
-  <section class="mb-2xl">
-    <header class="mb-md lg:mb-3xl">
-      <h2>Tags</h2>
-      <p class="font-lg">Topics covered across the blog</p>
-    </header>
-    <div class="d-flex flex-wrap gap-xs">
+  <section class="vstack gap-md" aria-labelledby="blog-tags-title">
+    <h2 class="font-h3 fg-subtle m-0" id="blog-tags-title">
+      All tags
+    </h2>
+    <ul class="page-list d-flex flex-wrap gap-md">
       {sortedTags.map(([tag, count]) => (
-        <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip lg neutral smooth">
-          {tag}
-          <span class="badge neutral -me-xs">{count}</span>
-        </a>
+        <li>
+          <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip primary smooth lg">
+            {tag}
+            <span class="badge primary -me-xs">{count}</span>
+          </a>
+        </li>
       ))}
-    </div>
+    </ul>
   </section>
 </BlogLayout>
