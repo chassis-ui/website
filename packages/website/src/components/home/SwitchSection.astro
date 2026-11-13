@@ -11,6 +11,10 @@
  * the edge of the card and the tokens are listed under it. A script places the lines and the
  * numbers on their parts (their `top`), as the parts move with the brand; without it the list is
  * shown.
+ *
+ * A switch runs in a view transition, where the browser has them and the visitor has not asked
+ * for less motion: `is-switching` names the card and each line and number for it
+ * (home-motion.scss).
  */
 
 import { previewBrandClass } from '@libs/brand-preview'
@@ -231,14 +235,43 @@ const switches = [
       figure.classList.add('is-placed')
     }
 
-    const set = (group: string, value: string) => {
+    const motion = window.matchMedia('(prefers-reduced-motion: no-preference)')
+    let switches = 0
+
+    const apply = (group: string, value: string) => {
       if (group === 'brand') {
         card.classList.toggle(previewClass, value === 'preview')
         name.textContent = value === 'preview' ? 'Your Brand' : 'Chassis'
       } else {
         card.dataset.cxTheme = value
       }
-      // The fonts of the other brand load when the card first uses them.
+    }
+
+    const set = (group: string, value: string) => {
+      if (motion.matches && 'startViewTransition' in document) {
+        const current = ++switches
+
+        root.classList.add('is-switching')
+        const transition = document.startViewTransition(async () => {
+          apply(group, value)
+          // The new state is the card in its fonts with the lines on its parts. The fonts of the
+          // other brand load when the card first uses them: the layout asks for them, and the
+          // transition waits for them, but not for long.
+          void card.offsetHeight
+          await Promise.race([
+            document.fonts.ready,
+            new Promise((resolve) => setTimeout(resolve, 300))
+          ])
+          place()
+        })
+        // A switch during a transition replaces it, and keeps the names.
+        const done = () => {
+          if (current === switches) root.classList.remove('is-switching')
+        }
+        transition.finished.then(done, done)
+      } else {
+        apply(group, value)
+      }
       document.fonts.ready.then(place)
     }
 

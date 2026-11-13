@@ -66,7 +66,7 @@ const groups = [
       title={['Pick the door that matches', 'what you already have.']}
       lead="Each door opens the docs of that package. You can add the other packages later, in any order."
     />
-    <div class="grid">
+    <div class="grid" data-reveal="children">
       {groups.map((group) => (
         <div class="col-span-full md:col-span-4 bg-even rounded-md pt-lg px-xl pb-sm vstack gap-sm">
           <h3 class="font-label-sm primary-fg-main m-0">{group.label}</h3>
@@ -78,7 +78,7 @@ const groups = [
                   href={door.href}
                 >
                   {door.name}
-                  <Icon name="arrow-right-outline" class="icon-reset icon-sm" />
+                  <Icon name="arrow-right-outline" class="icon-reset icon-sm home-arrow" />
                 </a>
                 <p class="font-body fg-subtle m-0">{door.body}</p>
               </li>

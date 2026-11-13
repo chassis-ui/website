@@ -39,3 +39,35 @@ bodyProps['class'] = 'home-body'
     <Fragment set:html={HomeIcons} />
   </div>
 </BaseLayout>
+
+<script>
+  // What is below the window when the page loads waits, and plays its motion when it scrolls
+  // into view (home-motion.scss). What is in the window or above it stays as it is.
+  if (
+    window.matchMedia('(prefers-reduced-motion: no-preference)').matches &&
+    'IntersectionObserver' in window
+  ) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // The place of an element among those that arrive together (the build adds the `cx-`
+        // to the property in home-motion.scss).
+        let place = 0
+
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue
+          const element = entry.target as HTMLElement
+          element.style.setProperty('--cx-home-reveal-delay', `${place++ * 0.15}s`)
+          entry.target.classList.replace('is-pending', 'is-revealed')
+          observer.unobserve(entry.target)
+        }
+      },
+      { rootMargin: '0px 0px -15% 0px' }
+    )
+
+    for (const element of document.querySelectorAll('[data-reveal]')) {
+      if (element.getBoundingClientRect().top < window.innerHeight) continue
+      element.classList.add('is-pending')
+      observer.observe(element)
+    }
+  }
+</script>

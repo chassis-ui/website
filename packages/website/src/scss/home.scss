@@ -6,6 +6,7 @@
 @use "@chassis-ui/css/scss/functions" as *;
 @use "@chassis-ui/css/scss/mixins" as *;
 @use "./backdrop";
+@use "./home-motion";
 
 @layer custom {
   .home-section {
@@ -413,4 +414,6 @@
       text-decoration: underline;
     }
   }
+
+  @include home-motion.styles();
 }

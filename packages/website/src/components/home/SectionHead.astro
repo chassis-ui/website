@@ -4,6 +4,7 @@
  *
  * The head of a home page section: the eyebrow over the title, then the lead, on the first
  * seven columns. The title has the section title style of the design (`.home-section-title`). The lines of the title break where the design breaks them from `lg`, and flow below.
+ * The title block and the lead rise in turn when the head scrolls into view (`data-reveal`).
  */
 
 interface Props {
@@ -21,7 +22,7 @@ const { id, eyebrow, title, lead } = Astro.props
 ---
 
 <div class="grid">
-  <div class="col-span-full lg:col-span-7 vstack gap-lg">
+  <div class="col-span-full lg:col-span-7 vstack gap-lg" data-reveal="children">
     <div class="vstack gap-xs">
       <p class="font-label-lg fg-highlight m-0">{eyebrow}</p>
       <h2 class="home-section-title" id={id}>

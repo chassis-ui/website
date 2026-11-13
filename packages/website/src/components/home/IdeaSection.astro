@@ -3,7 +3,8 @@
  * Idea Section
  *
  * One dark panel with three rails, one stage word above each: Decide (base, brand,
- * application), Collect (the source) and Generate (web, iOS, Android).
+ * application), Collect (the source) and Generate (web, iOS, Android). The rails draw in that
+ * order when the panel scrolls into view (home-motion.scss).
  */
 
 import RailItem from './RailItem.astro'
@@ -75,9 +76,9 @@ const stages: { name: string; stations: Station[] }[] = [
       title={['Change it once.', 'It changes everywhere.']}
       lead="Decide in layers, from a shared base to each brand and app. Collect every decision in one source, and generate each platform from it."
     />
-    <div class="home-idea-panel context alternate rounded-lg vstack gap-3xl">
+    <div class="home-idea-panel context alternate rounded-lg vstack gap-3xl" data-reveal="rails">
       {stages.map((stage) => (
-        <div class="vstack gap-md">
+        <div class="home-idea-stage vstack gap-md">
           <h3 class="font-code font-sm font-normal alternate-fg-subtle m-0">{stage.name}</h3>
           <ul class="home-rail home-idea-rail">
             {stage.stations.map((station) => (

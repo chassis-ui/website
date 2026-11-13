@@ -5,10 +5,14 @@
  * The claim of the home page on the alternate context, with its lead, the two actions, the
  * licence line and the illustration of one brand on web, iOS and Android, then the rail of the
  * six packages. The square grid and the light are backgrounds of the section (home.scss).
+ *
+ * The illustration is inline, so that its three devices (`.home-hero-device` in the file) can
+ * enter one by one. `home-enter` and `--cx-home-enter` give the order in which the text enters
+ * (home-motion.scss, where the build adds the `cx-` to `--home-enter`).
  */
 
 import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
-import illustration from '../../assets/home/hero-illustration.svg'
+import Illustration from '../../assets/home/hero-illustration.svg'
 import RailItem from './RailItem.astro'
 
 const packages = [
@@ -25,18 +29,21 @@ const packages = [
   <div class="container 2xl vstack home-hero-body">
     <div class="vstack gap-6xl">
       <h1 class="font-hero alternate-fg-main m-0" id="home-hero-title">
-        <span class="d-block">Your design system, defined once.</span>{' '}
-        <span class="d-block home-hero-highlight">
+        <span class="d-block home-enter">Your design system, defined once.</span>{' '}
+        <span class="d-block home-hero-highlight home-enter" style="--cx-home-enter: 1">
           <span class="lg:d-block">Every brand and platform</span> generated from it.
         </span>
       </h1>
       <div class="grid home-hero-row">
         <div class="col-span-full lg:col-span-6 vstack gap-6xl align-items-start">
-          <p class="font-lead alternate-fg-subtle m-0">
+          <p class="font-lead alternate-fg-subtle m-0 home-enter" style="--cx-home-enter: 2">
             Chassis is an open-source toolkit for teams that run several brands on web, iOS and
             Android. You make a design decision in one place and it reaches all of them.
           </p>
-          <div class="d-flex flex-column sm:flex-row gap-md w-100 sm:w-auto">
+          <div
+            class="d-flex flex-column sm:flex-row gap-md w-100 sm:w-auto home-enter"
+            style="--cx-home-enter: 3"
+          >
             <a class="button primary lg" href="#start">
               <Icon name="book-open-outline" />
               Getting Started
@@ -46,7 +53,7 @@ const packages = [
               View on GitHub
             </a>
           </div>
-          <p class="font-code font-sm alternate-fg-main m-0">
+          <p class="font-code font-sm alternate-fg-main m-0 home-enter" style="--cx-home-enter: 4">
             <span class="d-block sm:d-inline">OPEN SOURCE · MIT LICENSED</span>
             <span class="d-none sm:d-inline" aria-hidden="true">
               &nbsp;/&nbsp;
@@ -55,12 +62,10 @@ const packages = [
           </p>
         </div>
         <div class="col-span-full lg:col-span-6">
-          <img
+          <Illustration
             class="home-hero-illustration"
-            src={illustration.src}
-            width={illustration.width}
-            height={illustration.height}
-            alt="One app in the same brand on the web, on iOS and on Android"
+            role="img"
+            aria-label="One app in the same brand on the web, on iOS and on Android"
           />
         </div>
       </div>

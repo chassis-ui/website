@@ -57,7 +57,7 @@ const packages = [
       title={['Six versioned packages.', 'Adopt one, or the whole pipeline.']}
       lead="Install what you need. Together they take a decision from Figma to production."
     />
-    <ul class="grid m-0 p-0 home-packages">
+    <ul class="grid m-0 p-0 home-packages" data-reveal="children">
       {packages.map((item) => (
         <li class="col-span-full md:col-span-6 lg:col-span-4 home-package position-relative rounded-md p-xl vstack gap-sm">
           <span class="pb-xs">
@@ -76,7 +76,7 @@ const packages = [
             aria-hidden="true"
           >
             EXPLORE
-            <Icon name="arrow-right-outline" class="icon-reset icon-sm" />
+            <Icon name="arrow-right-outline" class="icon-reset icon-sm home-arrow" />
           </span>
         </li>
       ))}
