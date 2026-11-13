@@ -30,6 +30,10 @@ type Props = {
     // slot gives that id to an element of its own.
     main?: LayoutOverridesHTMLAttributes<'main'>
   }
+  // The context of the navbar, for a page that starts on a band of that context: `alternate` for a dark hero. The
+  // navbar is on the context while the first `.context.<name>` element of `<main>` is under it, and on the default
+  // one below that band.
+  navbarContext?: string
   // An override for the page title. If not defined, the title will either be the content of the `title` frontmatter
   // property when rendering a markdown page or default back to the one defined in the `config.yml` file.
   title?: string
@@ -50,7 +54,7 @@ type MarkdownProps = { frontmatter?: DocsFrontmatter }
 // files to a page by passing an array of objects containing the `src` and `async` properties.
 type ExtraJS = NonNullable<DocsFrontmatter['extraJs']>[number]
 
-const { frontmatter, layout, overrides, robots } = Astro.props
+const { frontmatter, layout, navbarContext, overrides, robots } = Astro.props
 
 const title = Astro.props.title ?? frontmatter?.title ?? getConfig().title
 const description = Astro.props.description
@@ -79,7 +83,7 @@ const mainProps = { id: 'content', ...overrides?.main }
     <slot name="styles" slot="styles" />
   </head>
   <body {...bodyProps}>
-    <Header layout={layout} title={title} />
+    <Header layout={layout} title={title} navbarContext={navbarContext} />
 
     {Astro.slots.has('main') ? (
       <slot name="main" />

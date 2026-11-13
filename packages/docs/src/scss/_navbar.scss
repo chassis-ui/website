@@ -32,6 +32,21 @@
       align-self: center;
     }
 
+    // A bar that changes context with the band of the page (`context` of Navigation.astro).
+    &[data-cxd-navbar-context] {
+      @include transition(background-color .3s ease, border-color .3s ease);
+
+      .cxd-site-logo path {
+        @include transition(fill .3s ease);
+      }
+    }
+
+    // On a context the logo takes its main text color where the file has the default one: the
+    // `icon-default` of its paths reads `--cx-default`.
+    &.context .cxd-site-logo {
+      --cx-default: var(--cx-fg-main);
+    }
+
     .navbar-nav {
       align-items: stretch;
     }

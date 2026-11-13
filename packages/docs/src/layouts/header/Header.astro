@@ -14,11 +14,13 @@ interface Props {
   layout: Layout
   /** Page title */
   title: string
+  /** The context of the navbar while the first band of the page is under it */
+  navbarContext?: string
 }
 
-const { layout } = Astro.props
+const { layout, navbarContext } = Astro.props
 ---
 
 <Skippy layout={layout} />
 
-<Navigation layout={layout} />
+<Navigation layout={layout} context={navbarContext} />

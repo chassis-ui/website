@@ -19,7 +19,7 @@ const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
 bodyProps['class'] = 'home-body'
 ---
 
-<BaseLayout {...Astro.props} overrides={{ body: bodyProps }}>
+<BaseLayout {...Astro.props} overrides={{ body: bodyProps }} navbarContext="alternate">
   <Fragment slot="styles">
     {/* The second brand of the Switch cards: its fonts, and its CSS scoped to the cards. */}
     <link rel="stylesheet" href={getVersionedStaticPath(previewBrandFiles.fonts)} />

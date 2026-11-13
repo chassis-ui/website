@@ -6,6 +6,14 @@
  * it shows the links, the search field, the Figma and GitHub links and the theme menu inline.
  * Below `lg` it shows the logo, a search button and a menu button that opens the navigation
  * drawer. Every link is a path of chassis-ui.com, so the bar is the same on every Chassis site.
+ * The Packages menu opens 8px above the bottom of the bar (`data-cx-offset`), where a menu opens
+ * 2px below it by default.
+ *
+ * With `context` the bar starts on that context, `alternate` for a page with a dark hero. The
+ * script below puts its menus on the context too (`menu context`), and returns the bar to the default context
+ * when the band of the page, the first `.context.<name>` element of `<main>`, has gone under
+ * it, and gives the context back when the band returns. Without the script the bar keeps the
+ * context.
  */
 
 import type { Layout } from '../../libs/layout'
@@ -20,9 +28,11 @@ import Icon from '../../components/shortcodes/Icon.astro'
 interface Props {
   /** Current layout context */
   layout: Layout
+  /** The context of the bar while the first band of the page is under it, as `alternate` */
+  context?: string
 }
 
-const { layout } = Astro.props
+const { layout, context } = Astro.props
 const { figmaHandle, githubOrg } = getConfig()
 const { pathname } = Astro.url
 
@@ -56,7 +66,10 @@ const figmaUrl = figmaHandle ? `https://figma.com/@${figmaHandle}` : undefined
 const githubUrl = githubOrg ? `https://github.com/${githubOrg}` : undefined
 ---
 
-<header class="navbar cxd-navbar sticky-top">
+<header
+  class:list={['navbar cxd-navbar sticky-top', context && ['context', context]]}
+  data-cxd-navbar-context={context}
+>
   <nav class="container 2xl" aria-label="Site navigation">
     {layout === 'docs' && (
       <button
@@ -83,6 +96,7 @@ const githubUrl = githubOrg ? `https://github.com/${githubOrg}` : undefined
           aria-expanded="false"
           data-cx-toggle="menu"
           data-cx-placement="bottom-start"
+          data-cx-offset="0,-8"
         >
           Packages
         </button>
@@ -209,3 +223,37 @@ const githubUrl = githubOrg ? `https://github.com/${githubOrg}` : undefined
   </nav>
 </dialog>
 <SearchDialog placeholder="Search docs…" />
+
+<script>
+  // The context of the navbar follows the band of the page. The line the band is measured
+  // against is the bottom of the navbar.
+  const navbar = document.querySelector<HTMLElement>('.cxd-navbar[data-cxd-navbar-context]')
+  const context = navbar?.dataset.cxdNavbarContext
+  const band = context && document.querySelector<HTMLElement>(`main .context.${context}`)
+
+  if (navbar && context && band && 'IntersectionObserver' in window) {
+    let observer: IntersectionObserver | undefined
+    let height = 0
+
+    const watch = () => {
+      if (navbar.offsetHeight === height) return
+      height = navbar.offsetHeight
+      observer?.disconnect()
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          navbar.classList.toggle('context', entry.isIntersecting)
+          navbar.classList.toggle(context, entry.isIntersecting)
+          // A menu with `context` takes the colors of the context of the bar.
+          for (const menu of navbar.querySelectorAll('.menu')) {
+            menu.classList.toggle('context', entry.isIntersecting)
+          }
+        },
+        { rootMargin: `-${height}px 0px 0px 0px` }
+      )
+      observer.observe(band)
+    }
+
+    new ResizeObserver(watch).observe(navbar)
+    watch()
+  }
+</script>

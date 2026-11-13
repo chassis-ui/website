@@ -37,7 +37,13 @@ const plural = (count: number, word: string) => `${count} ${word}${count === 1 ?
 const meta = `${plural(blogPages.length, 'post')}  ·  ${plural(tagCounts.size, 'tag')}`
 ---
 
-<BaseLayout {...Astro.props} title={title} description={description} layout="blog">
+<BaseLayout
+  {...Astro.props}
+  title={title}
+  description={description}
+  layout="blog"
+  navbarContext="alternate"
+>
   <Fragment slot="main">
     <main id="content">
       <PageHero title={title} lead={description} meta={meta}>
