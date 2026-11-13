@@ -78,24 +78,20 @@ $switch-duration: .35s;
     }
   }
 
-  @keyframes home-drift {
-    to {
-      transform: translate3d(-4rem, 2rem, 0);
-    }
-  }
-
-  // The light of the hero is a layer of its own, under the grid, so that it can move without a
-  // repaint. It is larger than the hero on the sides it is cut at, by more than it moves.
+  // The light of the hero is an element of its own, under the grid, so that it can move without
+  // a repaint: the script of HeroSection.astro leans it from its place towards the pointer. It
+  // is larger than the hero on the sides it is cut at, by more than it moves.
   .home-hero {
     background-image: none;
+  }
 
-    &::after {
-      position: absolute;
-      inset: 0 -6rem -6rem;
-      z-index: -2;
-      content: "";
-      background-image: backdrop.light(46.875rem 37.5rem, calc(50% + 21.3125rem) 37.5rem);
-    }
+  .home-hero-light {
+    position: absolute;
+    inset: 0 -16rem -6rem;
+    z-index: -2;
+    pointer-events: none;
+    background-image: backdrop.light(46.875rem 37.5rem, calc(50% + 21.3125rem) 37.5rem);
+    will-change: transform;
   }
 
   .home-rail-item {
@@ -149,10 +145,6 @@ $switch-duration: .35s;
 
     .home-hero-rail {
       @include draw-rails();
-    }
-
-    .home-hero::after {
-      animation: home-drift 18s ease-in-out infinite alternate;
     }
 
     //
