@@ -1,5 +1,5 @@
 {
   "rules": {
-    "prefer-native-element": ["error", { "exclude": ["region"] }]
+    "prefer-native-element": ["error", { "exclude": ["region", "progressbar"] }]
   }
 }
