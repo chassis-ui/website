@@ -71,12 +71,17 @@
     }
   }
 
-  // `<mark>` in a head or a hero is the highlight colour of the design, with no background.
+  // `<mark>` in a head or a hero is the highlight colour of the design, with no background:
+  // the colour of the eyebrow in a head, the cue colour in a hero.
   .cxd-section-head mark,
   .cxd-hero mark {
     padding: 0;
-    color: var(--cx-fg-highlight);
+    margin: 0;
     background-color: transparent;
+  }
+
+  .cxd-section-head mark {
+    color: var(--cx-fg-highlight);
   }
 
   .cxd-hero mark {
@@ -93,7 +98,7 @@
 
   .cxd-rail {
     --cxd-rail-gap: var(--cx-space-xl);
-    --cxd-rail-color: var(--cx-border-main);
+    --cxd-rail-color: var(--cx-cue-main);
     --cxd-rail-dot: var(--cx-cue-main);
     row-gap: var(--cx-space-xl);
     column-gap: var(--cxd-rail-gap);
@@ -172,10 +177,6 @@
     }
   }
 
-  .cxd-hero-highlight {
-    color: var(--cx-cue-main);
-  }
-
   .cxd-hero-illustration {
     > svg,
     > img,
@@ -190,20 +191,23 @@
   // copy button over its right end.
   .cxd-command-text {
     display: block;
-    overflow: hidden;
+    overflow: scroll;
     font-family: var(--cx-font-family-code);
     @include font-size(var(--cx-font-size-code-md));
     line-height: var(--cx-line-height-code-md);
     color: var(--cx-fg-main);
-    text-overflow: ellipsis;
     white-space: nowrap;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .cxd-command-copy {
     position: absolute;
     inset-block-start: 50%;
-    inset-inline-end: .4375rem;
-    --cx-icon-color: var(--cx-fg-main);
+    inset-inline-end: .5rem;
+    --cx-icon-color: var(--cx-icon-subtle);
     padding: var(--cx-space-3xs);
     background-color: transparent;
     border: 0;

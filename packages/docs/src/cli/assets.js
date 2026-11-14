@@ -22,9 +22,6 @@ export const DEFAULT_REPOSITORY = 'chassis-ui/website-assets'
 /** The variable that names a local checkout of the assets, to use its build in place of a release. */
 export const CHECKOUT_VARIABLE = 'CHASSIS_ASSETS_CHECKOUT'
 
-/** The files of the root that may set the variable, the later one first. Git ignores them. */
-export const CHECKOUT_FILES = ['.env.local', '.env']
-
 /**
  * The folder of a brand, under `vendor/assets` and in a build of the assets.
  * @param {{ app: string, brand: string }} selection
@@ -148,25 +145,19 @@ function unpack(data, output) {
 }
 
 // The checkout that the variable names, and where it is set: the environment of the command,
-// then `.env.local`, then `.env` of the root. A developer keeps the path of their own checkout
-// in `.env.local`, so that every run takes it. An empty value in the environment turns a file
-// off for one command.
+// then `.env.local` of the root, where a developer keeps the path of their own checkout so that
+// every run takes it. An empty value in the environment turns the file off for one command.
 function checkoutOf(root) {
   if (process.env[CHECKOUT_VARIABLE] !== undefined) {
     return { checkout: process.env[CHECKOUT_VARIABLE], from: 'the environment' }
   }
 
-  for (const name of CHECKOUT_FILES) {
-    const file = path.join(root, name)
+  const file = path.join(root, '.env.local')
+  const checkout = fs.existsSync(file)
+    ? parseEnv(fs.readFileSync(file, 'utf8'))[CHECKOUT_VARIABLE]
+    : undefined
 
-    if (!fs.existsSync(file)) continue
-
-    const value = parseEnv(fs.readFileSync(file, 'utf8'))[CHECKOUT_VARIABLE]
-
-    if (value !== undefined) return { checkout: value, from: name }
-  }
-
-  return {}
+  return checkout === undefined ? {} : { checkout, from: '.env.local' }
 }
 
 // A build of the assets from a checkout, for work on the assets and a site at once. A path

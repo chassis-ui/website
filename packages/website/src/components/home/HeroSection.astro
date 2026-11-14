@@ -27,18 +27,23 @@ const packages = [
 ---
 
 <Hero
-  title="Your design system, defined once."
-  highlight={['Every brand and platform', 'generated from it.']}
   lead="Chassis is an open-source toolkit for teams that run several brands on web, iOS and Android. You make a design decision in one place and it reaches all of them."
   illustration="images/illustrations/hero-home.svg"
   illustrationLabel="One app in the same brand on the web, on iOS and on Android"
 >
+  <Fragment slot="title">
+    <span class="d-block">Your design system, defined once.</span>{' '}
+    <mark class="d-block">
+      <span class="lg:d-block">Every brand and platform</span>{' '}
+      <span class="lg:d-block">generated from it.</span>
+    </mark>
+  </Fragment>
   <Fragment slot="actions">
     <a class="button primary lg" href="#start">
       <Icon name="book-open-outline" />
       Getting Started
     </a>
-    <a class="button white outline lg" href="https://github.com/chassis-ui">
+    <a class="button alternate lg" href="https://github.com/chassis-ui">
       <Icon name="github-brand" />
       View on GitHub
     </a>

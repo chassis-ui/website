@@ -42,16 +42,8 @@ const { layout, context } = Astro.props
 const { figmaHandle, githubOrg } = getConfig()
 const { pathname } = Astro.url
 
-const isActive = (path: string) => {
-  if (path === '/') {
-    return pathname === '/' || pathname === ''
-  }
-  // Remove trailing slashes for a cleaner comparison
-  const cleanPathname = pathname.endsWith('/') ? pathname.slice(0, -1) : pathname
-  const cleanLinkPath = path.endsWith('/') ? path.slice(0, -1) : path
-
-  return cleanPathname === cleanLinkPath || cleanPathname.startsWith(`${cleanLinkPath}/`)
-}
+// A link is active on its page and on the pages under it. The links have no trailing slash.
+const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`)
 
 const packages = [
   { href: '/tokens', label: 'Tokens' },

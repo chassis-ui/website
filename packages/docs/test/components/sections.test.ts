@@ -60,11 +60,7 @@ describe('<Section>', () => {
 })
 
 describe('<Hero>', () => {
-  const props = {
-    title: 'Defined once.',
-    highlight: ['Built for', 'every platform.'],
-    lead: 'A lead.'
-  }
+  const props = { title: 'Defined once.', lead: 'A lead.' }
 
   test('renders only the parts it is given', async () => {
     const html = await render(Hero, { props })
@@ -83,7 +79,15 @@ describe('<Hero>', () => {
     expect(html).toContain('<section class="cxd-hero context alternate" id="hero"')
   })
 
-  test('numbers the parts in the order in which they enter', async () => {
+  test('puts the title text in one part of the claim', async () => {
+    const html = await render(Hero, { props })
+
+    expect(html).toMatch(
+      /<h1 class="font-hero fg-main m-0 cxd-hero-title" id="hero-title" style="--cxd-enter: 0">\s*<span class="d-block">Defined once.<\/span>\s*<\/h1>/
+    )
+  })
+
+  test('numbers the parts in the order in which they enter, two for the claim', async () => {
     const html = await render(Hero, {
       props: { ...props, kicker: 'CHASSIS', command: 'pnpm add chassis' },
       slots: { actions: '<a href="/docs/">Docs</a>', meta: 'V1', illustration: '<svg></svg>' }
@@ -92,7 +96,6 @@ describe('<Hero>', () => {
     expect([...html.matchAll(/--cxd-enter: (\d)/g)].map((match) => match[1])).toEqual([
       '0',
       '1',
-      '2',
       '3',
       '4',
       '5',
@@ -107,7 +110,7 @@ describe('<Hero>', () => {
 })
 
 describe('the claim of <Hero>', () => {
-  test('takes markup of the page for the claim and the lead, which enters as one', async () => {
+  test('takes markup of the page for the claim and the lead', async () => {
     const html = await render(Hero, {
       slots: {
         title:
@@ -117,9 +120,9 @@ describe('the claim of <Hero>', () => {
     })
 
     expect(html).toMatch(
-      /<h1 class="font-hero fg-main m-0 cxd-hero-title cxd-enter" id="hero-title" style="--cxd-enter: 0">\s*<span class="d-block">Defined <em>once<\/em>.<\/span> <span><mark>Built<\/mark> everywhere.<\/span>\s*<\/h1>/
+      /<h1 class="font-hero fg-main m-0 cxd-hero-title" id="hero-title" style="--cxd-enter: 0">\s*<span class="d-block">Defined <em>once<\/em>.<\/span> <span><mark>Built<\/mark> everywhere.<\/span>\s*<\/h1>/
     )
-    expect(html).toMatch(/style="--cxd-enter: 1">\s*A <strong>lead<\/strong>.\s*<\/p>/)
+    expect(html).toMatch(/style="--cxd-enter: 2">\s*A <strong>lead<\/strong>.\s*<\/p>/)
   })
 })
 

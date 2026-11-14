@@ -7,3 +7,5 @@ The navbar, the footer and the docs layout follow the 2026-11 redesign of chassi
 `<BaseLayout>` takes `navbarContext`, for a page that starts on a band of a context: with `navbarContext="alternate"` the navbar is on the alternate context while the first `.context.alternate` element of `<main>` is under it, and on the default one below that band. The bar, its links, the search field, the logo and its menus follow the context. Without JavaScript the navbar keeps the context.
 
 `<ThemeToggler>` takes `label`, `placement` and `class`, and a page can hold more than one: `color-modes.js` keeps every `[data-cxd-theme-toggler]` in step. The ids `cxd-theme` and `cxd-theme-text` are gone; a site that styled them uses `.cxd-theme-toggler` and `[data-cxd-theme-text]`.
+
+The consent banner shows in `astro dev` too, so that its design can be worked on, when `analytics.googleId` is set. There it has no ID: a choice is stored, and nothing is loaded and no cookie is set.

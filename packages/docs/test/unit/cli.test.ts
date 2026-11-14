@@ -332,16 +332,12 @@ describe('vendorAssets', () => {
     expect(read(root)).toBe('changed')
   })
 
-  test('puts the environment before .env.local, and .env.local before .env', async () => {
+  test('puts the environment before .env.local', async () => {
     const { root, cacheDir, fetcher } = setup()
     const options = { root, cacheDir, fetcher: fetcher as typeof fetch }
-    const [first, second, third] = ['first', 'second', 'third'].map((content) =>
+    const [first, second] = ['first', 'second'].map((content) =>
       createTempDir({ 'dist/web/docs/chassis/fonts/fonts.css': content })
     )
-
-    fs.writeFileSync(path.join(root, '.env'), `${CHECKOUT_VARIABLE}=${third}\n`)
-    await vendorAssets(options)
-    expect(read(root)).toBe('third')
 
     fs.writeFileSync(path.join(root, '.env.local'), `${CHECKOUT_VARIABLE}=${second}\n`)
     await vendorAssets(options)

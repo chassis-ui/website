@@ -8,7 +8,7 @@ The sections of a package home page are components, under `@chassis-ui/docs/sect
 
 The copy button of a code block shows its check mark again: `initCopyButtons()` kept the path of the sprite file when it changed the icon.
 
-`chassis-docs vendor` reads `CHASSIS_ASSETS_CHECKOUT` from `.env.local` and `.env` in the root of the repository too, after the environment, so a developer keeps the path of their checkout of the assets there and every run copies its build. A path that is not absolute is from the root, where it was from the working directory. The copy is complete before it replaces the old one, and the removal of the old folder is tried again when macOS writes a file into it, which failed the command with `ENOTEMPTY`.
+`chassis-docs vendor` reads `CHASSIS_ASSETS_CHECKOUT` from `.env.local` in the root of the repository too, after the environment, so a developer keeps the path of their checkout of the assets there and every run copies its build. A path that is not absolute is from the root, where it was from the working directory. The copy is complete before it replaces the old one, and the removal of the old folder is tried again when macOS writes a file into it, which failed the command with `ENOTEMPTY`.
 
 The eyebrows, the kicker and the meta line of the hero, and the labels of rows, steps, cards and doors are set in capitals with CSS (`text-uppercase`): write them in normal case. `Cards` names its action `Explore` by default.
 

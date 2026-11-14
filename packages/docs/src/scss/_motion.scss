@@ -111,6 +111,16 @@ $hover-transition: .15s ease-in-out !default;
       @include rise(calc(var(--cxd-enter, 0) * #{$enter-step}));
     }
 
+    // The parts of the claim, which a page writes: the first at the place of the claim, the
+    // rest one step later.
+    .cxd-hero-title > * {
+      @include rise(calc(var(--cxd-enter, 0) * #{$enter-step}));
+    }
+
+    .cxd-hero-title > :not(:first-child) {
+      @include rise(calc((var(--cxd-enter, 0) + 1) * #{$enter-step}));
+    }
+
     .cxd-hero-part {
       @for $i from 1 through 3 {
         &:nth-of-type(#{$i}) {

@@ -3,7 +3,7 @@
  * Hero
  *
  * The claim of a home page on the alternate context: an optional kicker, space/context/medium
- * above the claim and its highlighted second sentence, then the lead, an optional command with
+ * above the claim, then the lead, an optional command with
  * a copy button, the actions and a meta line on the first six columns, and an illustration on
  * the last six. The square grid and the light are backgrounds of the section
  * (scss/sections.scss).
@@ -18,13 +18,24 @@
  * `navbarContext="alternate"` to its layout, so that the navbar is dark while the hero is
  * under it.
  *
- * The claim is `title` and `highlight`, or the `title` slot for markup of the page's own: each
- * `<span>` child is a line that breaks from `lg` (`d-block` on it breaks it at every width),
- * and `<mark>` inside is the highlight colour; `<em>`, `<strong>` and links work as written.
+ * The claim is the `title` slot, markup of the page's own, or the `title` text. Each direct
+ * child of the claim is a part: `<span>` is a line that breaks from `lg` (`d-block` on it
+ * breaks it at every width), and `<mark>` is the highlight colour. `<em>`, `<strong>` and links
+ * work as written. `{' '}` between two parts keeps a space where they flow: Astro drops the line
+ * break between them. A claim with a highlighted second sentence:
+ *
+ *   <Fragment slot="title">
+ *     <span class="d-block">Your design system, defined once.</span>{' '}
+ *     <mark class="d-block">
+ *       <span class="lg:d-block">Every brand and platform</span>{' '}
+ *       <span class="lg:d-block">generated from it.</span>
+ *     </mark>
+ *   </Fragment>
+ *
  * The lead is the `lead` text, or the `lead` slot with the same inline markup.
  *
- * The text enters in turn (`cxd-enter` and `--cxd-enter`, scss/_motion.scss); a claim of the
- * slot enters as one. In the
+ * The text enters in turn (`cxd-enter` and `--cxd-enter`, scss/_motion.scss): the kicker, the
+ * first part of the claim, the rest of the claim, the lead and what follows. In the
  * illustration, the elements with the class `cxd-hero-part` enter one by one, up to three.
  *
  * The light (`.cxd-hero-light`) leans towards the pointer: the script moves it a share of the
@@ -42,10 +53,8 @@ interface Props {
   /** The short line above the claim, such as the name of the package, in normal case: it is
    * set in capitals by CSS, as is the `meta` line. */
   kicker?: string
-  /** The first sentence of the claim, as text. The `title` slot takes markup instead. */
+  /** The claim, as text. The `title` slot takes markup instead. */
   title?: string
-  /** The lines of the second sentence, in the highlight colour. They break from `lg`. */
-  highlight?: string[]
   /** The paragraph under the claim, as text. The `lead` slot takes markup instead. */
   lead?: string
   /** A command to copy, such as the one that installs the package. */
@@ -56,16 +65,7 @@ interface Props {
   illustrationLabel?: string
 }
 
-const {
-  id = 'hero',
-  kicker,
-  title,
-  highlight,
-  lead,
-  command,
-  illustration,
-  illustrationLabel
-} = Astro.props
+const { id = 'hero', kicker, title, lead, command, illustration, illustrationLabel } = Astro.props
 const titleId = `${id}-title`
 
 function escapeAttribute(value: string): string {
@@ -86,9 +86,14 @@ const illustrationSvg =
     )
     .trim()
 
-// The place of each part in the order in which the text enters.
+// The place of each part in the order in which the text enters. The claim takes two: its first
+// part, then the rest.
 let place = 0
-const enter = () => `--cxd-enter: ${place++}`
+const enter = (places = 1) => {
+  const style = `--cxd-enter: ${place}`
+  place += places
+  return style
+}
 ---
 
 <section
@@ -102,36 +107,17 @@ const enter = () => `--cxd-enter: ${place++}`
       <div class="vstack gap-md">
         {kicker && (
           <p
-            class="font-code font-sm fg-highlight text-uppercase m-0 -mt-3xl cxd-enter"
+            class="font-label-lg fg-highlight text-uppercase m-0 -mt-3xl cxd-enter"
             style={enter()}
           >
             {kicker}
           </p>
         )}
-        {Astro.slots.has('title') ? (
-          <h1 class="font-hero fg-main m-0 cxd-hero-title cxd-enter" id={titleId} style={enter()}>
-            <slot name="title" />
-          </h1>
-        ) : (
-          <h1 class="font-hero fg-main m-0 cxd-hero-title" id={titleId}>
-            <span class="d-block cxd-enter" style={enter()}>
-              {title}
-            </span>
-            {highlight && (
-              <>
-                {' '}
-                <span class="d-block cxd-hero-highlight cxd-enter" style={enter()}>
-                  {highlight.map((line, index) => (
-                    <>
-                      {index > 0 && ' '}
-                      <span class="lg:d-block">{line}</span>
-                    </>
-                  ))}
-                </span>
-              </>
-            )}
-          </h1>
-        )}
+        <h1 class="font-hero fg-main m-0 cxd-hero-title" id={titleId} style={enter(2)}>
+          <slot name="title">
+            <span class="d-block">{title}</span>
+          </slot>
+        </h1>
       </div>
       <div class="grid row-gap-3xl md:row-gap-6xl lg:column-gap-6xl">
         <div class="col-span-full lg:col-span-6 d-flex flex-column gap-3xl md:gap-6xl align-items-start">
@@ -140,7 +126,7 @@ const enter = () => `--cxd-enter: ${place++}`
           </p>
           {command && (
             <div
-              class="cxd-command position-relative w-100 py-sm ps-md pe-5xl bg-even border border-main rounded-md cxd-enter"
+              class="cxd-command position-relative w-100 py-sm ps-md pe-5xl bg-even border rounded-md cxd-enter"
               style={enter()}
             >
               <code class="cxd-command-text">{command}</code>

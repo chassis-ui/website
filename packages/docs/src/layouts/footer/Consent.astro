@@ -2,35 +2,39 @@
 /**
  * Consent
  *
- * Asks before Google Analytics loads. Rendered in production builds, when
- * `analytics.googleId` is set in `config.yml`. Nothing is loaded and no cookie is set until
- * the visitor accepts. The choice is kept in `localStorage`, so every Chassis site served
- * from the same host shares it. The "Cookie settings" button of the footer opens the
- * banner again.
+ * Asks before Google Analytics loads. Rendered when `analytics.googleId` is set in
+ * `config.yml`. Nothing is loaded and no cookie is set until the visitor accepts. The choice is
+ * kept in `localStorage`, so every Chassis site served from the same host shares it. The
+ * "Cookie settings" button of the footer opens the banner again.
  */
 
 import { getConfig } from '../../site'
 
-const isProd = import.meta.env.PROD
 const { googleId } = getConfig().analytics
+// The dev server leaves the ID off the banner, for work on its design: there the banner stores
+// the choice and never loads Google Analytics.
+const isDev = import.meta.env.DEV
 ---
 
-{isProd && googleId && (
-  <section class="cxd-consent" aria-label="Cookie consent" data-google-id={googleId} hidden>
-    <div class="container 2xl">
-      <div class="notification default shadow-lg d-flex flex-wrap align-items-center gap-md p-md">
-        <p class="mb-0 flex-grow-1">
-          We would like to count visits with Google Analytics, which sets cookies. Nothing is sent
-          to Google unless you accept. <a href="/privacy/">Privacy notice</a>
-        </p>
-        <div class="d-flex gap-sm">
-          <button type="button" class="button primary" data-consent="granted">
-            Accept
-          </button>
-          <button type="button" class="button default" data-consent="denied">
-            Decline
-          </button>
-        </div>
+{googleId && (
+  <section
+    class="cxd-consent notification default shadow-lg rounded-zero border-0 border-top px-0 py-md"
+    aria-label="Cookie consent"
+    data-google-id={isDev ? undefined : googleId}
+    hidden
+  >
+    <div class="container 2xl w-100 d-flex flex-wrap align-items-center gap-md">
+      <p class="mb-0 flex-grow-1">
+        We would like to count visits with Google Analytics, which sets cookies. Nothing is sent to
+        Google unless you accept. <a href="/privacy/">Privacy notice</a>
+      </p>
+      <div class="d-flex gap-sm ms-auto">
+        <button type="button" class="button primary" data-consent="granted">
+          Accept
+        </button>
+        <button type="button" class="button default" data-consent="denied">
+          Decline
+        </button>
       </div>
     </div>
   </section>
@@ -102,11 +106,12 @@ const { googleId } = getConfig().analytics
     }
   }
 
-  if (banner && googleId) {
+  if (banner) {
     const choice = readChoice()
 
-    if (choice === 'granted') loadAnalytics(googleId)
-    else if (choice !== 'denied') banner.hidden = false
+    if (choice === 'granted') {
+      if (googleId) loadAnalytics(googleId)
+    } else if (choice !== 'denied') banner.hidden = false
 
     banner.addEventListener('click', (event) => {
       const button = (event.target as Element).closest<HTMLElement>('[data-consent]')
@@ -118,6 +123,7 @@ const { googleId } = getConfig().analytics
       saveChoice(decision)
       banner.hidden = true
 
+      if (!googleId) return
       if (decision === 'granted') loadAnalytics(googleId)
       else stopAnalytics(googleId)
     })

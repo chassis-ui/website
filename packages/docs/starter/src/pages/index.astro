@@ -129,19 +129,24 @@ const doors = [
 <BaseLayout title={title} description={description} navbarContext="alternate">
   <Hero
     kicker={title}
-    title="What the package is, in one line."
-    highlight={['What it does for the reader,', 'on two lines at most.']}
     lead={description}
     command="pnpm add your-package"
     illustration="images/illustrations/hero-home.svg"
     illustrationLabel="One app in the same brand on the web, on iOS and on Android"
   >
+    <Fragment slot="title">
+      <span class="d-block">What the package is, in one line.</span>{' '}
+      <mark class="d-block">
+        <span class="lg:d-block">What it does for the reader,</span>{' '}
+        <span class="lg:d-block">on two lines at most.</span>
+      </mark>
+    </Fragment>
     <Fragment slot="actions">
       <a class="button primary lg" href={getDocsPath('/getting-started/introduction/')}>
         <Icon name="book-open-outline" />
         Getting Started
       </a>
-      <a class="button white outline lg" href={repo}>
+      <a class="button alternate lg" href={repo}>
         <Icon name="github-brand" />
         View on GitHub
       </a>

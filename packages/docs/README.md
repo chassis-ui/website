@@ -106,25 +106,25 @@ repo: 'https://github.com/chassis-ui/css'
 currentVersion: '0.5.2'
 ```
 
-| Key                                           | Required | Meaning                                                                                                                            |
-| --------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `title`, `subtitle`, `description`, `authors` | yes      | Used in the page title and the meta tags                                                                                           |
-| `baseURL`                                     | yes      | Canonical URL of the site. The page at its path is the home page: `/css/` for `https://chassis-ui.com/css/`                        |
-| `docsPath`                                    | yes      | URL path of the docs pages. Starts with `/`                                                                                        |
-| `staticPath`                                  | no       | URL path that the pages load the static files from. Default `/static`. See [A site under a prefix](#a-site-under-a-prefix)         |
-| `repo`                                        | yes      | URL of the repository                                                                                                              |
-| `currentVersion`                              | yes      | Version that the site documents. Links to source files use the tag `v<currentVersion>`                                             |
-| `githubOrg`                                   | no       | GitHub organisation name, not a URL. The header links to it                                                                        |
-| `figmaHandle`                                 | no       | Figma Community handle. The header links to it                                                                                     |
-| `xUsername`                                   | no       | X handle. Used in the social meta tags                                                                                             |
-| `media.cloudinary`                            | no       | Cloud name of the Cloudinary account that holds the media library. See [Images of the media library](#images-of-the-media-library) |
-| `analytics.googleId`                          | no       | Google Analytics ID. In production builds, loaded after the visitor accepts in a consent banner                                    |
-| `anchors.min`, `anchors.max`                  | no       | Heading levels that get an anchor link. Default 2 to 5                                                                             |
-| `toc.min`, `toc.max`                          | no       | Heading levels in the table of contents. Default 2 to 6                                                                            |
-| `sourceDir`                                   | no       | Directory that `file` props are relative to, from the site's root, e.g. `"../css"`. Default `"."`                                  |
-| `sourcePath`                                  | no       | The same directory from the root of the repository, e.g. `"packages/css"`                                                          |
-| `sitePath`                                    | no       | The site's root from the root of the repository, e.g. `"packages/site"`                                                            |
-| `siteBranch`                                  | no       | The branch that "View on GitHub" links to. Default `main`                                                                          |
+| Key                                           | Required | Meaning                                                                                                                                          |
+| --------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `title`, `subtitle`, `description`, `authors` | yes      | Used in the page title and the meta tags                                                                                                         |
+| `baseURL`                                     | yes      | Canonical URL of the site. The page at its path is the home page: `/css/` for `https://chassis-ui.com/css/`                                      |
+| `docsPath`                                    | yes      | URL path of the docs pages. Starts with `/`                                                                                                      |
+| `staticPath`                                  | no       | URL path that the pages load the static files from. Default `/static`. See [A site under a prefix](#a-site-under-a-prefix)                       |
+| `repo`                                        | yes      | URL of the repository                                                                                                                            |
+| `currentVersion`                              | yes      | Version that the site documents. Links to source files use the tag `v<currentVersion>`                                                           |
+| `githubOrg`                                   | no       | GitHub organisation name, not a URL. The header links to it                                                                                      |
+| `figmaHandle`                                 | no       | Figma Community handle. The header links to it                                                                                                   |
+| `xUsername`                                   | no       | X handle. Used in the social meta tags                                                                                                           |
+| `media.cloudinary`                            | no       | Cloud name of the Cloudinary account that holds the media library. See [Images of the media library](#images-of-the-media-library)               |
+| `analytics.googleId`                          | no       | Google Analytics ID. In production builds, loaded after the visitor accepts in a consent banner. `astro dev` shows the banner but never loads it |
+| `anchors.min`, `anchors.max`                  | no       | Heading levels that get an anchor link. Default 2 to 5                                                                                           |
+| `toc.min`, `toc.max`                          | no       | Heading levels in the table of contents. Default 2 to 6                                                                                          |
+| `sourceDir`                                   | no       | Directory that `file` props are relative to, from the site's root, e.g. `"../css"`. Default `"."`                                                |
+| `sourcePath`                                  | no       | The same directory from the root of the repository, e.g. `"packages/css"`                                                                        |
+| `sitePath`                                    | no       | The site's root from the root of the repository, e.g. `"packages/site"`                                                                          |
+| `siteBranch`                                  | no       | The branch that "View on GitHub" links to. Default `main`                                                                                        |
 
 `file` props are those of `<ScssDocs>`, `<ScssDocsSimple>`, `<JsDocs>` and `<Code filePath>`.
 
@@ -314,13 +314,18 @@ import Facts from '@chassis-ui/docs/sections/Facts.astro'
 <BaseLayout title="Chassis Tokens" navbarContext="alternate">
   <Hero
     kicker="Chassis Tokens"
-    title="Design tokens, defined once."
-    highlight={['Every brand, theme and', 'platform built from them.']}
     lead="…"
     command="npx @chassis-ui/tokens init acme-tokens"
     illustration="images/illustrations/hero-tokens.svg"
     illustrationLabel="A sheet of tokens"
   >
+    <Fragment slot="title">
+      <span class="d-block">Design tokens, defined once.</span>{' '}
+      <mark class="d-block">
+        <span class="lg:d-block">Every brand, theme and</span>{' '}
+        <span class="lg:d-block">platform built from them.</span>
+      </mark>
+    </Fragment>
     <Fragment slot="actions">…</Fragment>
     <Fragment slot="meta">…</Fragment>
   </Hero>
@@ -337,23 +342,23 @@ import Facts from '@chassis-ui/docs/sections/Facts.astro'
 </BaseLayout>
 ```
 
-| Component  | What it renders                                                                                                                                                                                                                                                                                           |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Hero`     | The dark band at the top: `kicker`, `title`, `highlight` (the lines of the second sentence), `lead`, `command` (a line with a copy button), `illustration` and `illustrationLabel`, and the slots `title` and `lead` (markup in place of the text), `actions`, `meta`, `illustration` and the default one |
-| `Section`  | A section with its head (`eyebrow`, `title` as lines, `lead`) over its content, the default slot. The `title` and `lead` slots take markup in place of the text. `id` is the id of the section, and the title has `<id>-title`. A section without a title takes `label`                                   |
-| `Rows`     | Content: hairline rows. `rows` of `{ label, title, points }`                                                                                                                                                                                                                                              |
-| `Steps`    | Content: a dark panel of rails. `stages` of `{ name, stations }`, a station being `{ label, title?, body, wide? }`. Up to three stages, and three stations on a rail                                                                                                                                      |
-| `Cards`    | Content: a grid of linked cards. `cards` of `{ name, icon, href, body }`, `action` (default `Explore`). An icon is an id in `icons/cx-sprite.svg` of the assets of chassis-ui/website-assets; `sprite` names another file                                                                                 |
-| `Doors`    | Content: cards of links to pages. `groups` of `{ label, doors }`, a door being `{ name, href, body }`                                                                                                                                                                                                     |
-| `Facts`    | A section of its own: a strip of up to four `facts` of `{ name, detail }`, with `label` as its accessible name                                                                                                                                                                                            |
-| `RailItem` | One station of a rail, a child of a list with the class `cxd-rail`                                                                                                                                                                                                                                        |
+| Component  | What it renders                                                                                                                                                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Hero`     | The dark band at the top: `kicker`, `title`, `lead`, `command` (a line with a copy button), `illustration` and `illustrationLabel`, and the slots `title` and `lead` (markup in place of the text), `actions`, `meta`, `illustration` and the default one               |
+| `Section`  | A section with its head (`eyebrow`, `title` as lines, `lead`) over its content, the default slot. The `title` and `lead` slots take markup in place of the text. `id` is the id of the section, and the title has `<id>-title`. A section without a title takes `label` |
+| `Rows`     | Content: hairline rows. `rows` of `{ label, title, points }`                                                                                                                                                                                                            |
+| `Steps`    | Content: a dark panel of rails. `stages` of `{ name, stations }`, a station being `{ label, title?, body, wide? }`. Up to three stages, and three stations on a rail                                                                                                    |
+| `Cards`    | Content: a grid of linked cards. `cards` of `{ name, icon, href, body }`, `action` (default `Explore`). An icon is an id in `icons/cx-sprite.svg` of the assets of chassis-ui/website-assets; `sprite` names another file                                               |
+| `Doors`    | Content: cards of links to pages. `groups` of `{ label, doors }`, a door being `{ name, href, body }`                                                                                                                                                                   |
+| `Facts`    | A section of its own: a strip of up to four `facts` of `{ name, detail }`, with `label` as its accessible name                                                                                                                                                          |
+| `RailItem` | One station of a rail, a child of a list with the class `cxd-rail`                                                                                                                                                                                                      |
 
 The title and the lead of `Section` and of `Hero` are text by default. For markup of the page's own (a word in italics, a highlighted word or line, a link), fill the `title` and `lead` slots instead:
 
 ```astro
 <Section id="idea" eyebrow="The idea">
   <Fragment slot="title">
-    <span>Change it <em>once</em>.</span>
+    <span>Change it <em>once</em>.</span>{' '}
     <span>It changes <mark>everywhere</mark>.</span>
   </Fragment>
   <Fragment slot="lead">Decide in layers, from a <strong>shared base</strong> to each brand.</Fragment>
@@ -361,7 +366,7 @@ The title and the lead of `Section` and of `Hero` are text by default. For marku
 </Section>
 ```
 
-Each `<span>` child of a title is a line: it breaks from `lg` and flows below, and `d-block` on it breaks it at every width. `<mark>` is the highlight colour of the design, with no background. A hero whose claim is the `title` slot enters as one block.
+Each `<span>` child of a title is a line: it breaks from `lg` and flows below, and `d-block` on it breaks it at every width. Write `{' '}` between two lines: Astro drops the line break between them, and below `lg`, where they flow, the words would run together. `<mark>` is the highlight colour of the design, with no background. In a hero, each direct child of the claim is a part: the first enters, then the rest, so a highlighted second sentence is one `<mark class="d-block">` holding its lines.
 
 The components load their styles, `@chassis-ui/docs/scss/sections`, so a site imports no stylesheet for them. Write the eyebrow, the kicker, the meta line, and the labels of rows, steps, cards and doors in normal case, as `What you get` or `iOS`: the components set them in capitals with CSS, so the text stays readable as written to assistive technology and in search results. A page with a `Hero` passes `navbarContext="alternate"` to its layout.
 
@@ -438,7 +443,7 @@ The package installs a `chassis-docs` command with the build steps that every Ch
 }
 ```
 
-`vendor/assets` is not committed: add it to `.gitignore`. `CHASSIS_ASSETS_CHECKOUT=<path>` names a local checkout of the assets, and `vendor` copies its `dist/web/<app>/<brand>` instead, on every run, for work on the assets and a site at once. Set it for one command, or keep it in `.env.local` in the root of the repository, which Git must ignore: `vendor` reads the variable from the environment, then from `.env.local`, then from `.env`. A path that is not absolute is from the root. `CHASSIS_ASSETS_CHECKOUT= pnpm vendor` takes the release for one run. Build the checkout again after a change to the assets, then run `vendor`.
+`vendor/assets` is not committed: add it to `.gitignore`. `CHASSIS_ASSETS_CHECKOUT=<path>` names a local checkout of the assets, and `vendor` copies its `dist/web/<app>/<brand>` instead, on every run, for work on the assets and a site at once. Set it for one command, or keep it in `.env.local` in the root of the repository, which Git must ignore: `vendor` reads the variable from the environment, then from `.env.local`. A path that is not absolute is from the root. `CHASSIS_ASSETS_CHECKOUT= pnpm vendor` takes the release for one run. Build the checkout again after a change to the assets, then run `vendor`.
 
 #### A preview of another brand
 

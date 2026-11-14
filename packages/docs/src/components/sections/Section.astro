@@ -7,15 +7,19 @@
  * slot: `<Rows>`, `<Steps>`, `<Cards>`, `<Doors>`, or markup of the site's own, so a section
  * that only one site has lines up with the others.
  *
- * The title and the lead are text (`title`, `lead`) or the `title` and `lead` slots, for
- * markup of the page's own: lines as `<span>` children, and `<em>`, `<strong>`, links or
- * `<mark>` (the highlight colour) inside. See SectionHead.astro.
+ * The head sits on the first seven columns from `xl`, nine on a tablet (`lg`) and all of them
+ * below. The title has the section title style of the design (`.cxd-section-title`).
  *
- * What scrolls into view plays its motion (`js/reveal.js`): the head, and an element of the
- * content with `data-reveal="children"`, whose children rise in turn.
+ * The title and the lead are text (`title`, `lead`) or the `title` and `lead` slots, for
+ * markup of the page's own. Each `<span>` child of the title is a line that breaks from `lg`
+ * and flows below; `d-block` on it breaks it at every width. Inside, `<em>`, `<strong>`, links
+ * and `<mark>` (the highlight colour of the design) work as written. Write `{' '}` between two
+ * lines: Astro drops the line break between them.
+ *
+ * What scrolls into view plays its motion (`js/reveal.js`): the title block and the lead rise
+ * in turn, and so do the children of an element of the content with `data-reveal="children"`.
  */
 
-import SectionHead from './SectionHead.astro'
 import '../../scss/sections.scss'
 
 interface Props {
@@ -36,11 +40,8 @@ interface Props {
 
 const { id, eyebrow, title, lead, label, class: className } = Astro.props
 const titleId = `${id}-title`
-// The markup of the slots is rendered here and handed to the head: a slot passed on to it
-// would be there, empty, even when the page has none.
-const titleHtml = Astro.slots.has('title') ? await Astro.slots.render('title') : undefined
-const leadHtml = Astro.slots.has('lead') ? await Astro.slots.render('lead') : undefined
-const hasTitle = Boolean(title) || Boolean(titleHtml)
+const hasTitle = Boolean(title) || Astro.slots.has('title')
+const hasLead = Boolean(lead) || Astro.slots.has('lead')
 ---
 
 <section
@@ -51,14 +52,28 @@ const hasTitle = Boolean(title) || Boolean(titleHtml)
 >
   <div class="container 2xl cxd-section-body">
     {hasTitle && (
-      <SectionHead
-        id={titleId}
-        eyebrow={eyebrow}
-        title={title}
-        titleHtml={titleHtml}
-        lead={lead}
-        leadHtml={leadHtml}
-      />
+      <div class="grid cxd-section-head">
+        <div class="col-span-full lg:col-span-9 xl:col-span-7 vstack gap-lg" data-reveal="children">
+          <div class="vstack gap-xs">
+            {eyebrow && <p class="font-label-lg fg-highlight text-uppercase m-0">{eyebrow}</p>}
+            <h2 class="cxd-section-title" id={titleId}>
+              <slot name="title">
+                {title?.map((line, index) => (
+                  <>
+                    {index > 0 && ' '}
+                    <span>{line}</span>
+                  </>
+                ))}
+              </slot>
+            </h2>
+          </div>
+          {hasLead && (
+            <p class="cxd-section-lead m-0">
+              <slot name="lead">{lead}</slot>
+            </p>
+          )}
+        </div>
+      </div>
     )}
     <slot />
   </div>

@@ -37,12 +37,12 @@ const { css } = sass.compileString('@use "@chassis-ui/css/scss/root";', {
 
 /** Puts a selector of Chassis CSS under the scope class. */
 function scope(selectorText) {
-  if (selectorText === ':root' || selectorText === 'html') return selector
+  if (selectorText === ':root') return selector
   if (selectorText.startsWith('[data-cx-theme')) {
     return `${selector}${selectorText}, ${selector} ${selectorText}`
   }
   if (selectorText.startsWith('[dir=')) return `${selectorText} ${selector}`
-  // `:root:not(…)` and `:root .x` keep the scope where `:root` was.
+  // `:root:not(…)` keeps the scope where `:root` was.
   if (selectorText.startsWith(':root')) return `${selector}${selectorText.slice(5)}`
   return `${selector} ${selectorText}`
 }
@@ -50,7 +50,6 @@ function scope(selectorText) {
 const scopePlugin = {
   postcssPlugin: 'chassis-website-brand-scope',
   Rule(rule) {
-    if (rule.parent?.type === 'atrule' && /keyframes$/i.test(rule.parent.name)) return
     if (rule.__scoped) return
     rule.selectors = rule.selectors.map(scope)
     rule.__scoped = true
