@@ -135,7 +135,7 @@
   },
   "devDependencies": {
     "@astrojs/markdown-remark": "^7.3.6",
-    "@chassis-ui/css": "^0.14.0",
+    "@chassis-ui/css": "^0.15.0",
     "@pagefind/component-ui": "^1.6.0",
     "@shikijs/transformers": "^4.6.0",
     "astro": "^7.4.7",

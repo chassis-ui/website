@@ -54,7 +54,7 @@ const siblings = {
   icons: {
     repository: 'chassis-ui/icons',
     site: 'packages/site',
-    build: [['icons'], ['astro:build']]
+    build: [['astro:build']]
   },
   figma: {
     repository: 'chassis-ui/figma',
