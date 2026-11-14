@@ -1,5 +1,29 @@
 # @chassis-ui/docs
 
+## 0.15.0-next.0
+
+### Minor Changes
+
+- The sections of a package home page are components, under `@chassis-ui/docs/sections/`: `Hero`, `Section`, `Rows`, `Steps`, `Cards`, `Doors`, `Facts` and `RailItem`. A page lists the sections it needs in its own order, and puts a section of its own inside a `<Section>`, so it lines up with the others. They are the sections of the home page of chassis-ui.com, which now uses them. See "Home page sections" in the README; the home page of the starter site has all of them.
+
+  `Hero` takes a `kicker` and a `command`, a line with a copy button, beside the claim, the lead and its slots. A hero with nothing under its row ends with the padding it starts with (96px, 64px on phones); one with a rail under it, as on chassis-ui.com, keeps 24px. Its `illustration` names an SVG of the static files, which it inlines: the heroes of the Chassis sites are `images/illustrations/hero-<name>.svg` of chassis-ui/website-assets, so a site needs a release of the assets that has them. The components load their styles (`@chassis-ui/docs/scss/sections`). `@chassis-ui/docs/scss/motion` and `@chassis-ui/docs/scss/backdrop` give a site's own stylesheets the timing of the motion and the backdrop of a dark band, and `@chassis-ui/docs/js/reveal.js` plays the motion of what scrolls into view.
+
+  The copy button of a code block shows its check mark again: `initCopyButtons()` kept the path of the sprite file when it changed the icon.
+
+  `chassis-docs vendor` reads `CHASSIS_ASSETS_CHECKOUT` from `.env.local` in the root of the repository too, after the environment, so a developer keeps the path of their checkout of the assets there and every run copies its build. A path that is not absolute is from the root, where it was from the working directory. The copy is complete before it replaces the old one, and the removal of the old folder is tried again when macOS writes a file into it, which failed the command with `ENOTEMPTY`.
+
+  The eyebrows, the kicker and the meta line of the hero, and the labels of rows, steps, cards and doors are set in capitals with CSS (`text-uppercase`): write them in normal case. `Cards` names its action `Explore` by default.
+
+  `Section` and `Hero` take their title and lead as text or as markup, in the `title` and `lead` slots: a word in italics, a highlighted word or line (`<mark>`, in the highlight colour of the design) or a link. Each `<span>` child of a title is a line that breaks from `lg`.
+
+- The navbar, the footer and the docs layout follow the 2026-11 redesign of chassis-ui.com, in a `container 2xl`. The navbar is a full-width bar with one bottom border: the logo, a Packages menu with the six packages, named after the package of the page on a page of a package (there Docs leads to the docs of that package, and on a page of those docs the Docs link has the indicator, not the menu), Docs, Examples, Blog and About, the search field, the Figma and GitHub links and the theme menu. The indicator of the active link sits on the border of the bar. Below `lg` it shows the logo, a search button and a menu button that opens a navigation drawer with the same links and the theme menu. On a docs page it also shows, before the search button, a link with a caret that opens the docs navigation, named after the package of the page (`Tokens`), or `Docs` where the page is under no package; the list button before the logo is gone. The footer has the logo and a line about Chassis, the Docs, GitHub and Project columns, and the copyright with the Privacy and Cookie settings links on a hairline. The docs layout sits in a `container 2xl` instead of a fluid one, and "View on GitHub" is a medium button with the GitHub icon. Below `md` that link is its icon alone, beside the title. Below `lg` the table of contents is closed under a full-width "On this page" button, where it was open from `md`; the button is a `button default` with utilities, and the class `cxd-toc-toggle` is gone.
+
+  `<BaseLayout>` takes `navbarContext`, for a page that starts on a band of a context: with `navbarContext="alternate"` the navbar is on the alternate context while the first `.context.alternate` element of `<main>` is under it, and on the default one below that band. The bar, its links, the search field, the logo and its menus follow the context. Without JavaScript the navbar keeps the context.
+
+  `<ThemeToggler>` takes `label`, `placement` and `class`, and a page can hold more than one: `color-modes.js` keeps every `[data-cxd-theme-toggler]` in step. The ids `cxd-theme` and `cxd-theme-text` are gone; a site that styled them uses `.cxd-theme-toggler` and `[data-cxd-theme-text]`.
+
+  The consent banner shows in `astro dev` too, so that its design can be worked on, when `analytics.googleId` is set. There it has no ID: a choice is stored, and nothing is loaded and no cookie is set.
+
 ## 0.14.0
 
 ### Minor Changes
