@@ -14,11 +14,11 @@
  *
  * A switch runs in a view transition, where the browser has them and the visitor has not asked
  * for less motion: `is-switching` names the card and each line and number for it
- * (home-motion.scss).
+ * (scss/_home-motion.scss).
  */
 
 import { previewBrandClass } from '@libs/brand-preview'
-import SectionHead from './SectionHead.astro'
+import Section from '@chassis-ui/docs/sections/Section.astro'
 
 interface Spec {
   /** The part of the card the number points at. */
@@ -62,7 +62,7 @@ const specs: Spec[] = [
 const switches = [
   {
     name: 'brand',
-    label: 'BRAND',
+    label: 'Brand',
     options: [
       { value: 'chassis', label: 'Chassis' },
       { value: 'preview', label: 'Your brand' }
@@ -70,7 +70,7 @@ const switches = [
   },
   {
     name: 'mode',
-    label: 'MODE',
+    label: 'Mode',
     options: [
       { value: 'light', label: 'Light' },
       { value: 'dark', label: 'Dark' }
@@ -79,141 +79,141 @@ const switches = [
 ]
 ---
 
-<section class="home-section" aria-labelledby="home-switch-title">
-  <div class="container 2xl home-section-body">
-    <SectionHead
-      id="home-switch-title"
-      eyebrow="THE SWITCH"
-      title={['A new brand is a setting,', 'not a project.']}
-      lead="Pick a brand and a mode. The card changes, and the token names on the lines stay as they are."
-    />
-    <div class="home-switch" data-home-switch data-preview-class={previewBrandClass}>
-      <div class="home-switch-controls">
-        {switches.map((group) => (
-          <div class="home-switch-control">
-            <span class="font-code font-sm fg-subtle" id={`home-switch-${group.name}`}>
-              {group.label}
-            </span>
-            <div
-              class="nav nav-segments"
-              role="group"
-              aria-labelledby={`home-switch-${group.name}`}
-            >
-              {group.options.map((option, index) => (
-                <button
-                  type="button"
-                  class:list={['nav-link', { active: index === 0 }]}
-                  aria-pressed={index === 0 ? 'true' : 'false'}
-                  data-home-switch-set={group.name}
-                  value={option.value}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div class="home-switch-figure" data-home-switch-figure>
-        <div
-          class="home-switch-card bg-even border border-subtle rounded-md p-xl vstack gap-xl"
-          data-cx-theme="light"
-          data-home-switch-card
-          inert
-        >
-          <p class="d-flex align-items-center gap-sm font-h6 m-0" data-spec="brand">
-            <span class="home-switch-mark bg-primary rounded-sm"></span>
-            <span data-home-switch-name>Chassis</span>
-          </p>
-          <div class="vstack gap-xl">
-            <div class="bg-evident rounded-md p-md vstack gap-sm" data-spec="goal">
-              <div class="d-flex align-items-center justify-content-between" data-spec="goal-head">
-                <span class="font-sm font-strong">Shift goal</span>
-                <span class="font-label-sm fg-subtle">6 of 10</span>
-              </div>
-              <div
-                class="progress"
-                role="progressbar"
-                aria-label="Shift goal"
-                aria-valuenow="6"
-                aria-valuemin="0"
-                aria-valuemax="10"
+<Section
+  id="switch"
+  eyebrow="The switch"
+  title={['A new brand is a setting,', 'not a project.']}
+  lead="Pick a brand and a mode. The card changes, and the token names on the lines stay as they are."
+>
+  <div
+    class="d-flex flex-column gap-5xl align-items-center"
+    data-home-switch
+    data-preview-class={previewBrandClass}
+  >
+    <div class="d-flex flex-wrap gap-3xl justify-content-center">
+      {switches.map((group) => (
+        <div class="d-flex flex-column md:flex-row gap-xs md:gap-sm md:align-items-center">
+          <span class="font-code font-sm fg-subtle text-uppercase" id={`home-switch-${group.name}`}>
+            {group.label}
+          </span>
+          <div class="nav nav-segments" role="group" aria-labelledby={`home-switch-${group.name}`}>
+            {group.options.map((option, index) => (
+              <button
+                type="button"
+                class:list={['nav-link', { active: index === 0 }]}
+                aria-pressed={index === 0 ? 'true' : 'false'}
+                data-home-switch-set={group.name}
+                value={option.value}
               >
-                <div class="progress-bar" style="width: 60%"></div>
-              </div>
-            </div>
-            <div class="vstack gap-xs">
-              <p class="font-title m-0" data-spec="title">
-                Trip request
-              </p>
-              <p class="font-body fg-subtle m-0" data-spec="body">
-                Pickup at Central Station, 4 min away. Drop-off at the airport, 28 min.
-              </p>
-            </div>
-            <div class="nav nav-segments nav-justified" data-spec="segments">
-              <span class="nav-link active">Now</span>
-              <span class="nav-link">Scheduled</span>
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="home-switch-note">
-                Note to rider
-              </label>
-              <input
-                class="form-input"
-                id="home-switch-note"
-                type="text"
-                placeholder="I’m in the grey van"
-                data-spec="input"
-              />
-            </div>
-            <button class="button primary lg w-100" type="button" data-spec="button">
-              Accept trip
-            </button>
+                {option.label}
+              </button>
+            ))}
           </div>
         </div>
+      ))}
+    </div>
 
-        <div aria-hidden="true">
-          {specs.map((spec) => (
-            <>
-              {spec.start && (
-                <span class="home-spec start" data-spec-for={spec.start.target ?? spec.target}>
-                  <span class="home-spec-token">{spec.start.token}</span>
-                  <span class="home-spec-line"></span>
-                </span>
-              )}
-              {spec.end && (
-                <span class="home-spec end" data-spec-for={spec.target}>
-                  <span class="home-spec-line"></span>
-                  <span class="home-spec-token">{spec.end.token}</span>
-                </span>
-              )}
-            </>
-          ))}
-          {specs.map((spec, index) => (
-            <span class="home-spec-marker" data-spec-for={spec.target}>
-              {index + 1}
-            </span>
-          ))}
+    <div class="home-switch-figure" data-home-switch-figure>
+      <div
+        class="home-switch-card font-ui fg-main bg-even border border-subtle rounded-md p-xl vstack gap-xl"
+        data-cx-theme="light"
+        data-home-switch-card
+        inert
+      >
+        <p class="d-flex align-items-center gap-sm font-h6 m-0" data-spec="brand">
+          <span class="home-switch-mark d-inline-block flex-shrink-0 bg-primary rounded-sm"></span>
+          <span data-home-switch-name>Chassis</span>
+        </p>
+        <div class="vstack gap-xl">
+          <div class="bg-evident rounded-md p-md vstack gap-sm" data-spec="goal">
+            <div class="d-flex align-items-center justify-content-between" data-spec="goal-head">
+              <span class="font-sm font-strong">Shift goal</span>
+              <span class="font-label-sm fg-subtle">6 of 10</span>
+            </div>
+            <div
+              class="progress"
+              role="progressbar"
+              aria-label="Shift goal"
+              aria-valuenow="6"
+              aria-valuemin="0"
+              aria-valuemax="10"
+            >
+              <div class="progress-bar" style="width: 60%"></div>
+            </div>
+          </div>
+          <div class="vstack gap-xs">
+            <p class="font-title m-0" data-spec="title">
+              Trip request
+            </p>
+            <p class="font-body fg-subtle m-0" data-spec="body">
+              Pickup at Central Station, 4 min away. Drop-off at the airport, 28 min.
+            </p>
+          </div>
+          <div class="nav nav-segments nav-justified" data-spec="segments">
+            <span class="nav-link active">Now</span>
+            <span class="nav-link">Scheduled</span>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="home-switch-note">
+              Note to rider
+            </label>
+            <input
+              class="form-input"
+              id="home-switch-note"
+              type="text"
+              placeholder="I’m in the grey van"
+              data-spec="input"
+            />
+          </div>
+          <button class="button primary lg w-100" type="button" data-spec="button">
+            Accept trip
+          </button>
         </div>
       </div>
 
-      <ol class="home-spec-list" aria-label="The tokens of the card">
-        {specs.map((spec, index) => (
-          <li>
-            <span class="home-spec-number" aria-hidden="true">
-              {index + 1}
-            </span>
-            <span class="vstack">
-              {spec.start && <span>{spec.start.token}</span>}
-              {spec.end && <span>{spec.end.token}</span>}
-            </span>
-          </li>
+      <div aria-hidden="true">
+        {specs.map((spec) => (
+          <>
+            {spec.start && (
+              <span class="home-spec start" data-spec-for={spec.start.target ?? spec.target}>
+                <span class="home-spec-token">{spec.start.token}</span>
+                <span class="home-spec-line"></span>
+              </span>
+            )}
+            {spec.end && (
+              <span class="home-spec end" data-spec-for={spec.target}>
+                <span class="home-spec-line"></span>
+                <span class="home-spec-token">{spec.end.token}</span>
+              </span>
+            )}
+          </>
         ))}
-      </ol>
+        {specs.map((spec, index) => (
+          <span class="home-spec-marker" data-spec-for={spec.target}>
+            {index + 1}
+          </span>
+        ))}
+      </div>
     </div>
+
+    <ol
+      class="home-spec-list bulletless d-flex flex-column gap-sm align-self-stretch m-0 font-code fg-subtle"
+      aria-label="The tokens of the card"
+    >
+      {specs.map((spec, index) => (
+        <li class="d-flex gap-xs align-items-start">
+          <span class="home-spec-number" aria-hidden="true">
+            {index + 1}
+          </span>
+          <span class="vstack">
+            {spec.start && <span>{spec.start.token}</span>}
+            {spec.end && <span>{spec.end.token}</span>}
+          </span>
+        </li>
+      ))}
+    </ol>
   </div>
-</section>
+</Section>
 
 <script>
   // The brand and mode switches, and the place of each line and number on its part.

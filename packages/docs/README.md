@@ -298,6 +298,75 @@ chassisDocs({
 
 Code that runs while Astro loads its configuration uses the library functions of the root entry instead: `loadConfig()`, `loadData()`, `loadSidebar()` and the path helpers.
 
+## Home page sections
+
+The home page of a Chassis package is composed of sections. Each is a component, so a page lists the ones it needs in its own order, and a section that only one site has goes between them. The [starter site](starter/src/pages/index.astro) has a page with all of them.
+
+```astro
+---
+import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
+import Hero from '@chassis-ui/docs/sections/Hero.astro'
+import Section from '@chassis-ui/docs/sections/Section.astro'
+import Rows from '@chassis-ui/docs/sections/Rows.astro'
+import Facts from '@chassis-ui/docs/sections/Facts.astro'
+---
+
+<BaseLayout title="Chassis Tokens" navbarContext="alternate">
+  <Hero
+    kicker="Chassis Tokens"
+    title="Design tokens, defined once."
+    highlight={['Every brand, theme and', 'platform built from them.']}
+    lead="…"
+    command="npx @chassis-ui/tokens init acme-tokens"
+    illustration="images/illustrations/hero-tokens.svg"
+    illustrationLabel="A sheet of tokens"
+  >
+    <Fragment slot="actions">…</Fragment>
+    <Fragment slot="meta">…</Fragment>
+  </Hero>
+
+  <Section id="what" eyebrow="What you get" title={['One structure.', 'Native code.']} lead="…">
+    <Rows rows={rows} />
+  </Section>
+
+  <Section id="playground" eyebrow="TRY IT" title={['A section of this site only.']}>
+    <!-- The site's own markup -->
+  </Section>
+
+  <Facts label="Built on" facts={facts} />
+</BaseLayout>
+```
+
+| Component  | What it renders                                                                                                                                                                                                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Hero`     | The dark band at the top: `kicker`, `title`, `highlight` (the lines of the second sentence), `lead`, `command` (a line with a copy button), `illustration` and `illustrationLabel`, and the slots `title` and `lead` (markup in place of the text), `actions`, `meta`, `illustration` and the default one |
+| `Section`  | A section with its head (`eyebrow`, `title` as lines, `lead`) over its content, the default slot. The `title` and `lead` slots take markup in place of the text. `id` is the id of the section, and the title has `<id>-title`. A section without a title takes `label`                                   |
+| `Rows`     | Content: hairline rows. `rows` of `{ label, title, points }`                                                                                                                                                                                                                                              |
+| `Steps`    | Content: a dark panel of rails. `stages` of `{ name, stations }`, a station being `{ label, title?, body, wide? }`. Up to three stages, and three stations on a rail                                                                                                                                      |
+| `Cards`    | Content: a grid of linked cards. `cards` of `{ name, icon, href, body }`, `action` (default `Explore`). An icon is an id in `icons/cx-sprite.svg` of the assets of chassis-ui/website-assets; `sprite` names another file                                                                                 |
+| `Doors`    | Content: cards of links to pages. `groups` of `{ label, doors }`, a door being `{ name, href, body }`                                                                                                                                                                                                     |
+| `Facts`    | A section of its own: a strip of up to four `facts` of `{ name, detail }`, with `label` as its accessible name                                                                                                                                                                                            |
+| `RailItem` | One station of a rail, a child of a list with the class `cxd-rail`                                                                                                                                                                                                                                        |
+
+The title and the lead of `Section` and of `Hero` are text by default. For markup of the page's own (a word in italics, a highlighted word or line, a link), fill the `title` and `lead` slots instead:
+
+```astro
+<Section id="idea" eyebrow="The idea">
+  <Fragment slot="title">
+    <span>Change it <em>once</em>.</span>
+    <span>It changes <mark>everywhere</mark>.</span>
+  </Fragment>
+  <Fragment slot="lead">Decide in layers, from a <strong>shared base</strong> to each brand.</Fragment>
+  …
+</Section>
+```
+
+Each `<span>` child of a title is a line: it breaks from `lg` and flows below, and `d-block` on it breaks it at every width. `<mark>` is the highlight colour of the design, with no background. A hero whose claim is the `title` slot enters as one block.
+
+The components load their styles, `@chassis-ui/docs/scss/sections`, so a site imports no stylesheet for them. Write the eyebrow, the kicker, the meta line, and the labels of rows, steps, cards and doors in normal case, as `What you get` or `iOS`: the components set them in capitals with CSS, so the text stays readable as written to assistive technology and in search results. A page with a `Hero` passes `navbarContext="alternate"` to its layout.
+
+What is below the window when the page loads plays its motion when it scrolls into view, unless the reader prefers reduced motion. The head of a section does, and so does any element with `data-reveal="children"`, whose children rise in turn: put it on the wrapper of a section of your own. The illustration of the hero is an SVG under the static path, named by `illustration`, with `illustrationLabel` as what it shows: the heroes of the Chassis sites are `images/illustrations/hero-<name>.svg` of the assets of chassis-ui/website-assets. The file is inlined, and the build fails without it. In it, up to three elements with the class `cxd-hero-part` enter one by one. A site with a drawing of its own fills the `illustration` slot instead. A stylesheet of the site takes the timing from `@chassis-ui/docs/scss/motion` (`$enter-duration`, `$enter-timing`, `$enter-step`, `$hover-transition` and the `rise()` mixin), and the backdrop of a dark band from `@chassis-ui/docs/scss/backdrop` (the `alternate-backdrop()` mixin and the `light()` function).
+
 ## Images of the media library
 
 Images that do not belong in the repository, such as the covers of blog posts, are in a media library on Cloudinary. `media.cloudinary` of `config.yml` is the cloud name of the account, and a page names an image by its path in the library, such as `blog/2026/color-system/cover.jpg`. The path is the public ID of the image, with or without an extension. The folders of the library do not take part in it unless the public ID has them. A URL, a path that starts with `/`, `..` and a query are refused.
@@ -369,7 +438,7 @@ The package installs a `chassis-docs` command with the build steps that every Ch
 }
 ```
 
-`vendor/assets` is not committed: add it to `.gitignore`. `CHASSIS_ASSETS_CHECKOUT=<path>` names a local checkout of the assets, and `vendor` copies its `dist/web/<app>/<brand>` instead, for work on the assets and a site at once.
+`vendor/assets` is not committed: add it to `.gitignore`. `CHASSIS_ASSETS_CHECKOUT=<path>` names a local checkout of the assets, and `vendor` copies its `dist/web/<app>/<brand>` instead, on every run, for work on the assets and a site at once. Set it for one command, or keep it in `.env.local` in the root of the repository, which Git must ignore: `vendor` reads the variable from the environment, then from `.env.local`, then from `.env`. A path that is not absolute is from the root. `CHASSIS_ASSETS_CHECKOUT= pnpm vendor` takes the release for one run. Build the checkout again after a change to the assets, then run `vendor`.
 
 #### A preview of another brand
 
@@ -379,7 +448,7 @@ The package installs a `chassis-docs` command with the build steps that every Ch
 CHASSIS_BRAND=sinefil chassis-docs vendor && CHASSIS_BRAND=sinefil astro dev
 ```
 
-The files in `dist/css` of `@chassis-ui/css` hold the tokens of `chassis`, so a site calls `writeBrandCSS()` of `@chassis-ui/docs/integration` after it copies them. It compiles `css/chassis.css` and `css/chassis.min.css` for the brand, and does nothing for the default brand unless `defaultBrand: true` is passed, for a site that installs a newer `@chassis-ui/website-tokens` than the one the files of `@chassis-ui/css` were built with. For another brand it needs `postcss`, `autoprefixer` and `postcss-prefix-custom-properties` in the site.
+The files in `dist/css` of `@chassis-ui/css` hold the tokens of `chassis`, so a site calls `writeBrandCSS()` of `@chassis-ui/docs/integration` after it copies them. It compiles `css/chassis.css` and `css/chassis.min.css` for the brand, and does nothing for the default brand. For another brand it needs `postcss`, `autoprefixer` and `postcss-prefix-custom-properties` in the site.
 
 ```ts
 writeBrandCSS({ root, destination: path.join(publicDir, 'static') })
@@ -446,18 +515,22 @@ A rule or filter applies to every file that the command checks. To make an excep
 
 These import paths are the public API.
 
-| Path                            | Contents                                                                                                                                                                                                                                  |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@chassis-ui/docs`              | Library functions that work anywhere: config and data loaders, path helpers, `getSiteUrl`, `getDocsMarkdownConfig`, the remark and rehype plugins, `chassisAutoImport`, `generateToc`, `highlightCode`, image, media and string utilities |
-| `@chassis-ui/docs/integration`  | `chassisDocs()` and the type of its options                                                                                                                                                                                               |
-| `@chassis-ui/docs/schema`       | `z`, `configSchema`, `sidebarSchema`, `docsSchema`, `calloutsSchema`, the version validators, `zMediaPath`, and the types `ChassisConfig`, `Sidebar`, `SidebarItem`, `DocsFrontmatter`, `DocsPage`                                        |
-| `@chassis-ui/docs/site`         | What pages read from the site. See above                                                                                                                                                                                                  |
-| `@chassis-ui/docs/layouts/*`    | `BaseLayout.astro`, `DocsLayout.astro`, `RedirectLayout.astro`, `SingleLayout.astro`                                                                                                                                                      |
-| `@chassis-ui/docs/components/*` | `DocsSidebar.astro`, `FeatureCard.astro`, `MediaImage.astro`, `NavLink.astro`, `ResponsiveImage.astro`, `TableOfContents.astro`, `ThemeToggler.astro`                                                                                     |
-| `@chassis-ui/docs/shortcodes/*` | The MDX shortcodes                                                                                                                                                                                                                        |
-| `@chassis-ui/docs/js/*`         | Client-side scripts: `example-mode.js`, `clipboard.ts`, `color-modes.js` and others                                                                                                                                                       |
-| `@chassis-ui/docs/scss/main`    | The styles of the package. The integration loads them when the site has no stylesheet of its own                                                                                                                                          |
-| `@chassis-ui/docs/scss/vars`    | The Sass variables and custom properties of the docs, for a site's own stylesheets                                                                                                                                                        |
+| Path                             | Contents                                                                                                                                                                                                                                  |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@chassis-ui/docs`               | Library functions that work anywhere: config and data loaders, path helpers, `getSiteUrl`, `getDocsMarkdownConfig`, the remark and rehype plugins, `chassisAutoImport`, `generateToc`, `highlightCode`, image, media and string utilities |
+| `@chassis-ui/docs/integration`   | `chassisDocs()` and the type of its options                                                                                                                                                                                               |
+| `@chassis-ui/docs/schema`        | `z`, `configSchema`, `sidebarSchema`, `docsSchema`, `calloutsSchema`, the version validators, `zMediaPath`, and the types `ChassisConfig`, `Sidebar`, `SidebarItem`, `DocsFrontmatter`, `DocsPage`                                        |
+| `@chassis-ui/docs/site`          | What pages read from the site. See above                                                                                                                                                                                                  |
+| `@chassis-ui/docs/layouts/*`     | `BaseLayout.astro`, `DocsLayout.astro`, `RedirectLayout.astro`, `SingleLayout.astro`                                                                                                                                                      |
+| `@chassis-ui/docs/components/*`  | `DocsSidebar.astro`, `FeatureCard.astro`, `MediaImage.astro`, `NavLink.astro`, `ResponsiveImage.astro`, `TableOfContents.astro`, `ThemeToggler.astro`                                                                                     |
+| `@chassis-ui/docs/sections/*`    | `Cards.astro`, `Doors.astro`, `Facts.astro`, `Hero.astro`, `RailItem.astro`, `Rows.astro`, `Section.astro`, `Steps.astro`. See "Home page sections"                                                                                       |
+| `@chassis-ui/docs/shortcodes/*`  | The MDX shortcodes                                                                                                                                                                                                                        |
+| `@chassis-ui/docs/js/*`          | Client-side scripts: `example-mode.js`, `clipboard.ts`, `color-modes.js`, `reveal.js` and others                                                                                                                                          |
+| `@chassis-ui/docs/scss/main`     | The styles of the package. The integration loads them when the site has no stylesheet of its own                                                                                                                                          |
+| `@chassis-ui/docs/scss/vars`     | The Sass variables and custom properties of the docs, for a site's own stylesheets                                                                                                                                                        |
+| `@chassis-ui/docs/scss/sections` | The styles of the home page sections. The components load them                                                                                                                                                                            |
+| `@chassis-ui/docs/scss/motion`   | The timing and the mixins of the motion of the sections, for a site's own stylesheets                                                                                                                                                     |
+| `@chassis-ui/docs/scss/backdrop` | The backdrop of a dark band, for a site's own stylesheets                                                                                                                                                                                 |
 
 No other path resolves: `exports` in `package.json` lists these and nothing else. The layouts and components are listed by name, so the folders inside `layouts/` and `components/` are not reachable.
 

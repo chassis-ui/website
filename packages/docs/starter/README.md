@@ -40,7 +40,7 @@ A site in `site/` whose dependencies are in the root of the repository runs
 | `data/sidebar.yml`           | The entries of your pages                                                                                                                                                           |
 | `content/callouts/`          | Text that several pages show with `<Callout name>`                                                                                                                                  |
 | `package.json`               | The name                                                                                                                                                                            |
-| `src/pages/index.astro`      | The home page                                                                                                                                                                       |
+| `src/pages/index.astro`      | The copy of the home page, and the sections it keeps. See "Home page sections" in the README of the package                                                                         |
 | `static/other/manifest.json` | The name and the colors of the web app manifest                                                                                                                                     |
 
 ## What is in it

@@ -84,33 +84,41 @@ if (frontmatter.toc) {
     <main class="cxd-main">
       <div class="cxd-intro">
         <slot name="intro">
-          <div class="md:d-flex md:flex-row-reverse justify-content-between align-items-start">
-            <div class="mb-md md:mb-0 d-flex text-nowrap">
-              {
-                // This is needed because we want to show the badge if showBadge isn't present or is set to false
-                frontmatter.added &&
-                  ((frontmatter.added.showBadge !== undefined &&
-                    frontmatter.added.showBadge === true) ||
-                    frontmatter.added.showBadge === undefined) && (
-                    <span class="badge success smooth rounded-md me-xs">
-                      Added in v{frontmatter.added.version}
-                    </span>
-                  )
-              }
-              <a
-                class="button default"
-                href={githubUrl}
-                title="View and edit this file on GitHub"
-                target="_blank"
-                rel="noopener"
-              >
-                <Icon name="github-brand" />
-                View on GitHub
-              </a>
-            </div>
-            <h1 class="cxd-title mb-sm" id="content">
+          <div class="cxd-title-row">
+            <h1 class="cxd-title" id="content">
               {frontmatter.title}
             </h1>
+            {
+              // The badge shows unless `showBadge` is false.
+              frontmatter.added && frontmatter.added.showBadge !== false && (
+                <div class="cxd-title-badge">
+                  <span class="badge success smooth rounded-md">
+                    Added in v{frontmatter.added.version}
+                  </span>
+                </div>
+              )
+            }
+            {/* Below `md` the link is its icon alone. */}
+            <a
+              class="button default icon-only md:d-none"
+              href={githubUrl}
+              aria-label="View on GitHub"
+              title="View and edit this file on GitHub"
+              target="_blank"
+              rel="noopener"
+            >
+              <Icon name="github-brand" />
+            </a>
+            <a
+              class="button default d-none md:d-inline-flex text-nowrap"
+              href={githubUrl}
+              title="View and edit this file on GitHub"
+              target="_blank"
+              rel="noopener"
+            >
+              <Icon name="github-brand" />
+              View on GitHub
+            </a>
           </div>
           <div class="cxd-subtitle">
             {frontmatter.description && (
@@ -123,7 +131,7 @@ if (frontmatter.toc) {
       {frontmatter.toc && headings && (
         <div class="cxd-toc">
           <button
-            class="button default mb-lg text-decoration-none cxd-toc-toggle md:d-none"
+            class="button default w-100 justify-content-between mb-lg lg:d-none"
             type="button"
             data-cx-toggle="collapse"
             data-cx-target="#tocContents"
@@ -131,10 +139,10 @@ if (frontmatter.toc) {
             aria-controls="tocContents"
           >
             On this page
-            <Icon name="chevron-sort-solid" class="icon-sm" />
+            <Icon name="chevron-sort-solid" />
           </button>
-          <strong class="d-none md:d-block font-h6 my-xs">On this page</strong>
-          <hr class="d-none md:d-block my-xs" />
+          <strong class="d-none lg:d-block font-h6 my-xs">On this page</strong>
+          <hr class="d-none lg:d-block my-xs" />
           <div class="collapse cxd-toc-collapse" id="tocContents">
             <nav id="TableOfContents" aria-label="Table of contents">
               <slot name="toc">

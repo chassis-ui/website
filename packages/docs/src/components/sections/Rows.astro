@@ -1,0 +1,48 @@
+---
+/**
+ * Rows
+ *
+ * Hairline rows, the content of a `<Section>`: on each a label and a claim on the left, and
+ * its points on the right, each behind a check.
+ */
+
+import Icon from '../shortcodes/Icon.astro'
+import '../../scss/sections.scss'
+
+interface Row {
+  /** The short line above the claim, in normal case: it is set in capitals by CSS. */
+  label: string
+  /** The claim of the row. */
+  title: string
+  /** The points that support it. */
+  points: string[]
+}
+
+interface Props {
+  rows: Row[]
+}
+
+const { rows } = Astro.props
+---
+
+<div class="border-bottom border-subtle">
+  {rows.map((row) => (
+    <div class="grid row-gap-md py-xl border-top border-subtle">
+      <div class="col-span-full md:col-span-5 vstack gap-sm md:pe-6xl">
+        <p class="font-label-sm primary-fg-main text-uppercase m-0">{row.label}</p>
+        <h3 class="font-title-lg m-0">{row.title}</h3>
+      </div>
+      <ul class="col-span-full md:col-span-7 vstack gap-sm bulletless m-0 md:pt-xs">
+        {row.points.map((point) => (
+          <li class="d-flex gap-sm">
+            <Icon
+              name="check-solid"
+              class="icon-reset primary-fg-main icon-sm flex-shrink-0 mt-2xs"
+            />
+            <span class="font-body fg-subtle">{point}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>

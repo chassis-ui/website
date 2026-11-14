@@ -6,13 +6,13 @@
  * the left and three points on the right.
  */
 
-import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
-import SectionHead from './SectionHead.astro'
+import Rows from '@chassis-ui/docs/sections/Rows.astro'
+import Section from '@chassis-ui/docs/sections/Section.astro'
 
 const roles = [
   {
-    role: 'DESIGN',
-    claim: 'Use the same component for every brand.',
+    label: 'Design',
+    title: 'Use the same component for every brand.',
     points: [
       'Switch the variable mode to see another brand or dark mode. No second file to keep up.',
       'Each component has a documentation page beside it in the library.',
@@ -20,8 +20,8 @@ const roles = [
     ]
   },
   {
-    role: 'ENGINEERING',
-    claim: 'Install the tokens like any dependency.',
+    label: 'Engineering',
+    title: 'Install the tokens like any dependency.',
     points: [
       'A design change is a version bump, reviewed in a pull request.',
       'Web, iOS and Android build from the published tokens. No colour files kept by hand.',
@@ -29,8 +29,8 @@ const roles = [
     ]
   },
   {
-    role: 'PRODUCT',
-    claim: 'Launch a brand without a rebuild.',
+    label: 'Product',
+    title: 'Launch a brand without a rebuild.',
     points: [
       'A fix to a component lands in all brands and on all platforms at once.',
       'A brand ships with light and dark mode from its first release, with no extra work.',
@@ -40,34 +40,11 @@ const roles = [
 ]
 ---
 
-<section class="home-section" aria-labelledby="home-team-title">
-  <div class="container 2xl home-section-body">
-    <SectionHead
-      id="home-team-title"
-      eyebrow="FOR THE TEAM"
-      title={['What changes for each part of', 'the team.']}
-      lead="One change in the tokens means something different at each desk. Here is what a designer, an engineer and a product owner get from it."
-    />
-    <div class="home-rows">
-      {roles.map((item) => (
-        <div class="grid row-gap-md py-xl">
-          <div class="col-span-full md:col-span-5 vstack gap-sm md:pe-6xl">
-            <p class="font-label-sm primary-fg-main m-0">{item.role}</p>
-            <h3 class="font-title-lg m-0">{item.claim}</h3>
-          </div>
-          <ul class="col-span-full md:col-span-7 vstack gap-sm m-0 p-0 md:pt-xs home-points">
-            {item.points.map((point) => (
-              <li class="d-flex gap-sm">
-                <Icon
-                  name="check-solid"
-                  class="icon-reset primary-fg-main icon-sm home-point-icon"
-                />
-                <span class="font-body fg-subtle">{point}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
+<Section
+  id="team"
+  eyebrow="For the team"
+  title={['What changes for each part of', 'the team.']}
+  lead="One change in the tokens means something different at each desk. Here is what a designer, an engineer and a product owner get from it."
+>
+  <Rows rows={roles} />
+</Section>

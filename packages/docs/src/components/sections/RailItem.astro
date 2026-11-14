@@ -1,0 +1,22 @@
+---
+/**
+ * Rail Item
+ *
+ * One station on a rail: a line on top with a dot at its start, then the content. The items
+ * are the children of a list with the class `cxd-rail`, and the items of a row draw one
+ * continuous line across the gap between them (see `.cxd-rail` in scss/sections.scss).
+ */
+
+import '../../scss/sections.scss'
+
+interface Props {
+  /** Additional CSS classes, such as the column span of the item. */
+  class?: string
+}
+
+const { class: className } = Astro.props
+---
+
+<li class:list={['cxd-rail-item vstack gap-xs', className]}>
+  <slot />
+</li>

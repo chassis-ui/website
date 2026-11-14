@@ -2,12 +2,11 @@
 /**
  * Packages Section
  *
- * The six packages as cards, each a link to the home page of the package. The icons are in the
- * `cx-sprite.svg` that the home page inlines.
+ * The six packages as cards, each a link to the home page of the package.
  */
 
-import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
-import SectionHead from './SectionHead.astro'
+import Cards from '@chassis-ui/docs/sections/Cards.astro'
+import Section from '@chassis-ui/docs/sections/Section.astro'
 
 const packages = [
   {
@@ -49,37 +48,11 @@ const packages = [
 ]
 ---
 
-<section class="home-section" aria-labelledby="home-packages-title">
-  <div class="container 2xl home-section-body">
-    <SectionHead
-      id="home-packages-title"
-      eyebrow="THE PACKAGES"
-      title={['Six versioned packages.', 'Adopt one, or the whole pipeline.']}
-      lead="Install what you need. Together they take a decision from Figma to production."
-    />
-    <ul class="grid m-0 p-0 home-packages" data-reveal="children">
-      {packages.map((item) => (
-        <li class="col-span-full md:col-span-6 lg:col-span-4 home-package position-relative rounded-md p-xl vstack gap-sm">
-          <span class="pb-xs">
-            <svg class="icon icon-primary home-package-icon" aria-hidden="true">
-              <use href={`#${item.icon}`} />
-            </svg>
-          </span>
-          <h3 class="font-title m-0">
-            <a class="stretched-link" href={item.href}>
-              {item.name}
-            </a>
-          </h3>
-          <p class="font-body fg-subtle m-0">{item.body}</p>
-          <span
-            class="pt-xs font-label-sm primary-fg-main d-inline-flex align-items-center gap-xs"
-            aria-hidden="true"
-          >
-            EXPLORE
-            <Icon name="arrow-right-outline" class="icon-reset icon-sm home-arrow" />
-          </span>
-        </li>
-      ))}
-    </ul>
-  </div>
-</section>
+<Section
+  id="packages"
+  eyebrow="The packages"
+  title={['Six versioned packages.', 'Adopt one, or the whole pipeline.']}
+  lead="Install what you need. Together they take a decision from Figma to production."
+>
+  <Cards cards={packages} />
+</Section>

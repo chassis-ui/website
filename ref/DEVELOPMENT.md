@@ -136,6 +136,13 @@ each web archive, so the same commit of this repository always builds the same s
 - `CHASSIS_ASSETS_CHECKOUT=<path>` names a local checkout of chassis-ui/website-assets, and
   `pnpm vendor` copies its `dist/web/<app>/<brand>` instead, for work on the assets and a site
   at once. Without the variable the next run takes the release again.
+- To use the checkout on every run, `pnpm dev` and `pnpm build` too, put the variable in
+  `.env.local` in the root, which Git ignores (see `.env.example`). After a change to the
+  assets, run `pnpm build` in the checkout, then `pnpm vendor` here, and reload the dev server
+  (save `packages/website/astro.config.ts`). `CHASSIS_ASSETS_CHECKOUT= pnpm vendor` takes the
+  release for one run. CI has no `.env.local`, so it always builds with the pinned release: a
+  page that needs a file of the checkout fails there until the assets are released and
+  `pnpm sync-assets` moves the pin.
 
 Changes to the assets belong in the chassis-ui/website-assets repository, not in `vendor/assets`.
 

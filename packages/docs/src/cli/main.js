@@ -13,7 +13,8 @@ of the repository.
 Commands:
   vendor                 Unpack the archive of the assets that vendor/assets.json pins into
                          vendor/assets. $CHASSIS_BRAND and $CHASSIS_APP choose another one,
-                         and $${CHECKOUT_VARIABLE} copies the build of a local checkout
+                         and $${CHECKOUT_VARIABLE} or a .env.local with it, copies
+                         the build of a local checkout
   sync-assets            Move vendor/assets.json to a release of the assets, and unpack it
       --version <x.y.z>  The release (default: the latest)
       --repository <o/r> The GitHub repository (default: the one of vendor/assets.json)

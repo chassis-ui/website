@@ -65,7 +65,7 @@ const repositories = [
               your brands and your platforms.
             </p>
           </div>
-          <dl class="col-span-full lg:col-span-6 about-stats m-0">
+          <dl class="col-span-full lg:col-span-6 d-grid grid-cols-2 gap-md m-0">
             {stats.map(([value, label]) => (
               <div class="bg-even rounded-md p-3xl d-flex flex-column-reverse align-items-center">
                 <dt class="font-md font-normal fg-subtle">{label}</dt>
@@ -88,12 +88,12 @@ const repositories = [
               your work. Both versions download as SVG.
             </p>
           </div>
-          <ul class="col-span-full lg:col-span-6 page-list about-logos">
+          <ul class="col-span-full lg:col-span-6 bulletless m-0 d-grid sm:grid-cols-2 gap-xl">
             {logos.map((logo) => (
               <li class="vstack gap-sm">
                 <div
                   class:list={[
-                    'about-logo-tile rounded-md d-flex align-items-center justify-content-center',
+                    'about-logo-tile p-xl rounded-md d-flex align-items-center justify-content-center',
                     logo.bg
                   ]}
                   data-cx-theme={logo.theme}
@@ -101,6 +101,7 @@ const repositories = [
                   <img
                     src={getVersionedStaticPath(logo.file)}
                     alt="Chassis"
+                    class="image fluid"
                     width="187"
                     height="40"
                   />
@@ -110,7 +111,7 @@ const repositories = [
                   <a
                     href={getVersionedStaticPath(logo.file)}
                     download
-                    class="about-download d-inline-flex align-items-center gap-2xs font-strong"
+                    class="page-plain-link d-inline-flex align-items-center gap-2xs font-strong"
                   >
                     <Icon name="download-outline" class="icon-reset icon-sm" />
                     SVG
@@ -144,16 +145,22 @@ const repositories = [
             </a>
           </div>
           <div class="col-span-full lg:col-span-6 bg-even rounded-md p-md vstack gap-sm">
-            <h3 class="font-label-sm fg-subtle m-0">Repositories on GitHub</h3>
-            <ul class="list flush">
+            <h3 class="font-label fg-subtle m-0">Repositories on GitHub</h3>
+            <ul class="list flush border-top border-subtle">
               {repositories.map(([repo, description]) => (
-                <li class="list-item about-repo">
+                <li class="list-item d-flex gap-md px-0 align-items-center bg-transparent">
                   <Icon name="github-brand" class="icon-reset" />
-                  <a href={`https://github.com/chassis-ui/${repo}`} class="about-repo-link vstack">
-                    <span class="font-code font-sm fg-main">chassis-ui/{repo}</span>
+                  <a
+                    href={`https://github.com/chassis-ui/${repo}`}
+                    class="about-repo-link stretched-link flex-fill vstack"
+                  >
+                    <span class="font-code font-sm">chassis-ui/{repo}</span>
                     <span class="fg-subtle">{description}</span>
                   </a>
-                  <Icon name="arrow-up-right-from-square-outline" class="icon-reset fg-subtle" />
+                  <Icon
+                    name="arrow-up-right-from-square-outline"
+                    class="icon-sm icon-reset fg-subtle"
+                  />
                 </li>
               ))}
             </ul>

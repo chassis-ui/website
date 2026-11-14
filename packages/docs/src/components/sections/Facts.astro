@@ -1,0 +1,36 @@
+---
+/**
+ * Facts
+ *
+ * A strip of up to four facts between two hairlines, each a name and a line about it. It is a
+ * section of its own, without a head.
+ */
+
+import '../../scss/sections.scss'
+
+interface Fact {
+  name: string
+  detail: string
+}
+
+interface Props {
+  facts: Fact[]
+  /** The accessible name of the section. */
+  label?: string
+}
+
+const { facts, label = 'Facts' } = Astro.props
+---
+
+<section class="cxd-facts py-3xl" aria-label={label}>
+  <div class="container 2xl">
+    <dl class="grid py-xl m-0 border-top border-bottom border-subtle cxd-facts-list">
+      {facts.map((fact) => (
+        <div class="col-span-6 md:col-span-3 vstack gap-2xs">
+          <dt class="font-h5 m-0">{fact.name}</dt>
+          <dd class="font-sm m-0">{fact.detail}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>

@@ -1,0 +1,48 @@
+// The backdrop of the dark (alternate) bands of the Chassis sites: a full-width square grid
+// with a line on the centre of the page, and a soft radial light of the primary colour. The
+// grid cell is 96px, 80px on phones.
+
+@use "@chassis-ui/css/scss/functions" as *;
+@use "@chassis-ui/css/scss/mixins" as *;
+
+// The light: a radial glow of the primary colour, of `$size` at `$position`.
+@function light($size, $position) {
+  @return radial-gradient(
+    $size at $position,
+    #{to-opacity(var(--cx-primary-50), .5)},
+    #{to-opacity(var(--cx-primary-50), .2)} 50%,
+    transparent 100%
+  );
+}
+
+// The band itself: the alternate background, the grid in `::before`, and the light when a size
+// and a position are given. A band whose light is an element of its own passes none.
+@mixin alternate-backdrop($light-size: null, $light-position: null) {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--cx-bg-main);
+  isolation: isolate;
+
+  @if $light-size {
+    background-image: light($light-size, $light-position);
+  }
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    content: "";
+    --cxd-backdrop-line: var(--cx-border-width-md);
+    --cxd-backdrop-x: linear-gradient(to right, var(--cx-border-subtle) var(--cxd-backdrop-line), transparent var(--cxd-backdrop-line));
+    --cxd-backdrop-y: linear-gradient(to bottom, var(--cx-border-subtle) var(--cxd-backdrop-line), transparent var(--cxd-backdrop-line));
+    background-image: var(--cxd-backdrop-x), var(--cxd-backdrop-y);
+    background-position: calc(50% + 3rem) 0;
+    background-size: 6rem 6rem;
+    opacity: .4;
+
+    @include media-breakpoint-down(sm) {
+      background-position: calc(50% + 2.5rem) 0;
+      background-size: 5rem 5rem;
+    }
+  }
+}

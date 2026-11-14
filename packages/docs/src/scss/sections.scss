@@ -1,0 +1,292 @@
+// The sections of a home page: the hero, the head of a section, hairline rows, rails, the panel
+// of steps, cards, doors and facts (components/sections). A component of a section loads this
+// file, so a page without one does not.
+//
+// Values that no context token carries are named where they are used: the head-to-content gap
+// (space/unit/64, space/context/6xlarge on phones), the top padding of the hero (space/unit/96)
+// and the lights.
+//
+// The custom properties are written with their `--cxd-` prefix: a site may or may not prefix
+// the ones of its own.
+
+@use "@chassis-ui/css/scss/functions" as *;
+@use "@chassis-ui/css/scss/mixins" as *;
+@use "./backdrop";
+@use "./motion" as motion;
+
+@layer custom {
+  .cxd-section {
+    padding-block: var(--cx-space-6xl);
+
+    @include media-breakpoint-down(md) {
+      padding-block: var(--cx-space-3xl);
+    }
+  }
+
+  // The head of a section and its content: space/unit/64.
+  .cxd-section-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+
+    @include media-breakpoint-down(md) {
+      gap: var(--cx-space-3xl);
+    }
+  }
+
+  // The title of a section: the text style `section-title-lg` of the design, the heading face
+  // at prose/5xlarge, and `section-title-sm` (prose/2xlarge on the h3 line height) on phones.
+  .cxd-section-title {
+    margin: 0;
+    font-family: var(--cx-font-family-heading);
+    @include font-size(var(--cx-font-size-prose-5xl));
+    font-weight: var(--cx-font-weight-heading);
+    @include line-height(1.25em);
+
+    @include media-breakpoint-down(md) {
+      @include font-size(var(--cx-font-size-h2));
+      @include line-height(1.25em);
+    }
+  }
+
+  // The lead of a section: body/large, and body/medium on phones as in the design. The text
+  // classes of Chassis CSS take no breakpoint, so the two sizes are set here.
+  .cxd-section-lead {
+    font-family: var(--cx-font-family-body);
+    @include font-size(var(--cx-font-size-body-md));
+    font-weight: var(--cx-font-weight-body);
+    @include line-height(var(--cx-line-height-body-md));
+
+    @include media-breakpoint-up(md) {
+      @include font-size(var(--cx-font-size-body-lg));
+      @include line-height(var(--cx-line-height-body-lg));
+    }
+  }
+
+  // The lines of a title: each `<span>` child breaks from `lg` and flows below.
+  .cxd-section-title > span,
+  .cxd-hero-title > span {
+    @include media-breakpoint-up(lg) {
+      display: block;
+    }
+  }
+
+  // `<mark>` in a head or a hero is the highlight colour of the design, with no background.
+  .cxd-section-head mark,
+  .cxd-hero mark {
+    padding: 0;
+    color: var(--cx-fg-highlight);
+    background-color: transparent;
+  }
+
+  .cxd-hero mark {
+    color: var(--cx-cue-main);
+  }
+
+  //
+  // Rails
+  //
+  // A row of stations. Each item draws the line above it into the gap that follows it, so the
+  // items of a row draw one line, and a row that wraps draws one line per row. The rail clips
+  // the line of the last item of a row at its edge. The dot sits at the start of each item.
+  //
+
+  .cxd-rail {
+    --cxd-rail-gap: var(--cx-space-xl);
+    --cxd-rail-color: var(--cx-border-main);
+    --cxd-rail-dot: var(--cx-cue-main);
+    row-gap: var(--cx-space-xl);
+    column-gap: var(--cxd-rail-gap);
+    padding: 0;
+    margin: 0;
+    overflow-x: clip;
+    list-style: none;
+  }
+
+  .cxd-rail-item {
+    position: relative;
+    padding-block-start: var(--cx-space-xl);
+
+    &::before {
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline: 0 calc(var(--cxd-rail-gap) * -1);
+      content: "";
+      border-block-start: var(--cx-border-width-md) solid var(--cxd-rail-color);
+    }
+
+    &::after {
+      position: absolute;
+      inset-block-start: -.1875rem;
+      inset-inline-start: 0;
+      width: .4375rem;
+      height: .4375rem;
+      content: "";
+      background-color: var(--cxd-rail-dot);
+      @include border-radius(50%);
+    }
+  }
+
+  //
+  // Hero
+  //
+  // The light is an element of its own, under the grid, so that it can move without a repaint:
+  // the script of Hero.astro leans it from its place towards the pointer. It is larger than the
+  // hero on the sides it is cut at, by more than it moves.
+  //
+
+  .cxd-hero {
+    padding-block: 6rem var(--cx-space-md);
+    @include backdrop.alternate-backdrop();
+
+    // space/unit/64 on phones.
+    @include media-breakpoint-down(md) {
+      padding-block-start: 4rem;
+    }
+  }
+
+  // A hero with nothing under its row, such as the rail of the home page, ends with the
+  // padding it starts with.
+  .cxd-hero-end {
+    padding-block-end: 4rem;
+
+    @include media-breakpoint-down(md) {
+      padding-block-end: 2rem;
+    }
+  }
+
+  .cxd-hero-light {
+    position: absolute;
+    inset: 0 -16rem -6rem;
+    z-index: -2;
+    pointer-events: none;
+    background-image: backdrop.light(46.875rem 37.5rem, calc(50% + 21.3125rem) 37.5rem);
+    will-change: transform;
+  }
+
+  .cxd-hero-body {
+    gap: 6rem;
+
+    @include media-breakpoint-down(lg) {
+      gap: var(--cx-space-6xl);
+    }
+  }
+
+  .cxd-hero-highlight {
+    color: var(--cx-cue-main);
+  }
+
+  .cxd-hero-illustration {
+    > svg,
+    > img,
+    > picture > img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  // The command of the hero: one line that ends in an ellipsis where it does not fit, with the
+  // copy button over its right end.
+  .cxd-command-text {
+    display: block;
+    overflow: hidden;
+    font-family: var(--cx-font-family-code);
+    @include font-size(var(--cx-font-size-code-md));
+    line-height: var(--cx-line-height-code-md);
+    color: var(--cx-fg-main);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cxd-command-copy {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-end: .4375rem;
+    --cx-icon-color: var(--cx-fg-main);
+    padding: var(--cx-space-3xs);
+    background-color: transparent;
+    border: 0;
+    @include border-radius(var(--cx-border-radius-md));
+    transform: translateY(-50%);
+
+    &:hover {
+      --cx-icon-color: var(--cx-cue-main);
+    }
+
+    > .icon {
+      display: block;
+    }
+  }
+
+  .cxd-hero-meta a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  //
+  // Steps: a dark panel of rails
+  //
+
+  // The light of the panel; its colour, padding and grid are utilities.
+  .cxd-steps-panel {
+    background-image: backdrop.light(50rem 28.125rem, 50% 20.75rem);
+  }
+
+  .cxd-steps-rail {
+    --cxd-rail-gap: var(--cx-space-6xl);
+  }
+
+  //
+  // Cards and doors
+  //
+
+  // The card takes its background here, not from `bg-even`: a utility would win over the hover.
+  .cxd-card {
+    background-color: var(--cx-bg-even);
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    &:hover {
+      background-color: var(--cx-bg-evident);
+    }
+  }
+
+  .cxd-card-icon {
+    --cx-icon-size: 2rem;
+  }
+
+  .cxd-door {
+    color: var(--cx-fg-main);
+    text-decoration: none;
+
+    // The arrow is in the colour of the name, not the colour of the link. A utility of the
+    // icon (`icon-reset`) would win over this layer, so the arrow has none.
+    .cxd-arrow {
+      --cx-icon-color: currentcolor;
+    }
+
+    &:hover {
+      color: var(--cx-fg-highlight);
+    }
+  }
+
+  //
+  // Facts
+  //
+
+  // A fact may be one long word, such as the name of a tool; it breaks rather than run past
+  // its column on phones.
+  .cxd-facts-list {
+    overflow-wrap: anywhere;
+  }
+
+  @include motion.styles();
+}

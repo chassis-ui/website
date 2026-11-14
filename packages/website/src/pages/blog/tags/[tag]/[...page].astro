@@ -53,12 +53,16 @@ const frontmatter = {
 ---
 
 <BlogLayout frontmatter={frontmatter}>
-  <ol class="breadcrumb" slot="breadcrumb">
+  <ol class="breadcrumb mb-0 md:-mt-3xl" slot="breadcrumb">
     <li class="breadcrumb-item">
-      <a href="/blog">Blog</a>
+      <a href="/blog" class="text-decoration-none">
+        Blog
+      </a>
     </li>
     <li class="breadcrumb-item">
-      <a href="/blog/tags">Tags</a>
+      <a href="/blog/tags" class="text-decoration-none">
+        Tags
+      </a>
     </li>
     <li class="breadcrumb-item" aria-current="page">
       {tag}

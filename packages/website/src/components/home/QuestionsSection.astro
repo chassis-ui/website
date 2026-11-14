@@ -8,7 +8,7 @@
  * `website`, is filled.
  */
 
-import SectionHead from './SectionHead.astro'
+import Section from '@chassis-ui/docs/sections/Section.astro'
 
 const questions = [
   [
@@ -34,122 +34,119 @@ const questions = [
 ]
 ---
 
-<section class="home-section" aria-labelledby="home-questions-title">
-  <div class="container 2xl home-section-body">
-    <SectionHead
-      id="home-questions-title"
-      eyebrow="BEFORE YOU ADOPT"
-      title={['Questions teams ask before', 'adopting.']}
-      lead="Short answers on platforms, frameworks, team size and licensing. If yours is not here, tell us what you work with."
-    />
-    <div class="grid row-gap-6xl align-items-start">
-      <div class="col-span-full lg:col-span-7 accordion flush lg" data-cx-accordion>
-        {questions.map(([question, answer], index) => (
-          <details name="home-questions" open={index === 0}>
-            <summary>
-              <h3 class="accordion-title">{question}</h3>
-            </summary>
-            <div class="accordion-body">
-              <p class="m-0">{answer}</p>
-            </div>
-          </details>
-        ))}
-      </div>
-      <div class="col-span-full lg:col-span-5 lg:col-start-8">
-        <form
-          id="support-form"
-          class="bg-even rounded-xl p-3xl vstack gap-lg"
-          novalidate
-          aria-label="Contact form"
-        >
-          <!-- Honeypot: hidden from real users, bots fill it -->
+<Section
+  id="questions"
+  eyebrow="Before you adopt"
+  title={['Questions teams ask before', 'adopting.']}
+  lead="Short answers on platforms, frameworks, team size and licensing. If yours is not here, tell us what you work with."
+>
+  <div class="grid row-gap-6xl align-items-start">
+    <div class="col-span-full lg:col-span-7 accordion flush lg" data-cx-accordion>
+      {questions.map(([question, answer], index) => (
+        <details name="home-questions" open={index === 0}>
+          <summary>
+            <h3 class="accordion-title">{question}</h3>
+          </summary>
+          <div class="accordion-body">
+            <p class="m-0">{answer}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+    <div class="col-span-full lg:col-span-5 lg:col-start-8">
+      <form
+        id="support-form"
+        class="bg-even rounded-xl p-3xl vstack gap-lg"
+        novalidate
+        aria-label="Contact form"
+      >
+        <!-- Honeypot: hidden from real users, bots fill it -->
+        <input
+          type="text"
+          name="website"
+          class="visually-hidden"
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+        />
+        <div class="form-field">
+          <label for="nameInput" class="form-label">
+            Name <span aria-hidden="true">*</span>
+          </label>
           <input
             type="text"
-            name="website"
-            class="visually-hidden"
-            tabindex="-1"
-            autocomplete="off"
-            aria-hidden="true"
+            class="form-input"
+            id="nameInput"
+            name="name"
+            maxlength="100"
+            placeholder="Your name"
+            required
+            autocomplete="name"
           />
-          <div class="form-field">
-            <label for="nameInput" class="form-label">
-              Name <span aria-hidden="true">*</span>
-            </label>
-            <input
-              type="text"
-              class="form-input"
-              id="nameInput"
-              name="name"
-              maxlength="100"
-              placeholder="Your name"
-              required
-              autocomplete="name"
-            />
-          </div>
-          <div class="form-field">
-            <label for="emailInput" class="form-label">
-              Email <span aria-hidden="true">*</span>
-            </label>
-            <input
-              type="email"
-              class="form-input"
-              id="emailInput"
-              name="email"
-              maxlength="254"
-              placeholder="you@company.com"
-              required
-              autocomplete="email"
-            />
-          </div>
-          <div class="form-field">
-            <label for="companyInput" class="form-label">
-              Company
-            </label>
-            <input
-              type="text"
-              class="form-input"
-              id="companyInput"
-              name="company"
-              maxlength="100"
-              placeholder="Company name"
-              autocomplete="organization"
-            />
-          </div>
-          <div class="form-field">
-            <label for="topicSelect" class="form-label">
-              Topic <span aria-hidden="true">*</span>
-            </label>
-            <select class="form-input" id="topicSelect" name="topic" required>
-              <option value="">Choose an option</option>
-              <option value="setting-up-chassis">Setting up Chassis</option>
-              <option value="design-system-architecture">Design System Architecture</option>
-              <option value="figma-components">Figma Components</option>
-              <option value="token-integration">Token Integration</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div
-            id="support-form-message"
-            role="alert"
-            aria-live="polite"
-            class="notification"
-            hidden
-          ></div>
-          <div class="d-flex flex-column md:flex-row md:align-items-center justify-content-between gap-md">
-            <p class="font-body-sm fg-subtle m-0">
-              <a class="home-form-note" href="/privacy/">
-                We use your details only to answer you.
-              </a>
-            </p>
-            <button type="submit" class="button primary">
-              Submit
-            </button>
-          </div>
-        </form>
-      </div>
+        </div>
+        <div class="form-field">
+          <label for="emailInput" class="form-label">
+            Email <span aria-hidden="true">*</span>
+          </label>
+          <input
+            type="email"
+            class="form-input"
+            id="emailInput"
+            name="email"
+            maxlength="254"
+            placeholder="you@company.com"
+            required
+            autocomplete="email"
+          />
+        </div>
+        <div class="form-field">
+          <label for="companyInput" class="form-label">
+            Company
+          </label>
+          <input
+            type="text"
+            class="form-input"
+            id="companyInput"
+            name="company"
+            maxlength="100"
+            placeholder="Company name"
+            autocomplete="organization"
+          />
+        </div>
+        <div class="form-field">
+          <label for="topicSelect" class="form-label">
+            Topic <span aria-hidden="true">*</span>
+          </label>
+          <select class="form-input" id="topicSelect" name="topic" required>
+            <option value="">Choose an option</option>
+            <option value="setting-up-chassis">Setting up Chassis</option>
+            <option value="design-system-architecture">Design System Architecture</option>
+            <option value="figma-components">Figma Components</option>
+            <option value="token-integration">Token Integration</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div
+          id="support-form-message"
+          role="alert"
+          aria-live="polite"
+          class="notification"
+          hidden
+        ></div>
+        <div class="d-flex flex-column md:flex-row md:align-items-center justify-content-between gap-md">
+          <p class="font-body-sm fg-subtle m-0">
+            <a class="home-form-note" href="/privacy/">
+              We use your details only to answer you.
+            </a>
+          </p>
+          <button type="submit" class="button primary">
+            Submit
+          </button>
+        </div>
+      </form>
     </div>
   </div>
-</section>
+</Section>
 
 <script>
   const form = document.querySelector<HTMLFormElement>('#support-form')

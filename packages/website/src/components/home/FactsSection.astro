@@ -5,23 +5,14 @@
  * Four facts about the project between two hairlines, under the doors.
  */
 
+import Facts from '@chassis-ui/docs/sections/Facts.astro'
+
 const facts = [
-  ['MIT License', 'Every package is free to own'],
-  ['Open Source', 'Source codes are on Github'],
-  ['W3C Standards', 'Tokens in the DTCG format'],
-  ['Public Library', 'Download from Figma Community']
+  { name: 'MIT License', detail: 'Every package is free to own' },
+  { name: 'Open Source', detail: 'Source codes are on Github' },
+  { name: 'W3C Standards', detail: 'Tokens in the DTCG format' },
+  { name: 'Public Library', detail: 'Download from Figma Community' }
 ]
 ---
 
-<section class="home-facts" aria-label="Facts">
-  <div class="container 2xl">
-    <dl class="grid py-xl m-0 home-facts-list">
-      {facts.map(([fact, detail]) => (
-        <div class="col-span-6 md:col-span-3 vstack gap-2xs">
-          <dt class="font-h5 mb-2xs">{fact}</dt>
-          <dd class="font-sm m-0">{detail}</dd>
-        </div>
-      ))}
-    </dl>
-  </div>
-</section>
+<Facts facts={facts} />

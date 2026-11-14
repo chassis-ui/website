@@ -113,16 +113,11 @@ export function getChassisTokensFsPath(options: ChassisPathOptions = {}): string
 /**
  * A Sass load path with the `_chassis-tokens.scss` of the brand of the build, written for it,
  * or nothing for the default brand, which the default token source of `@chassis-ui/css` loads.
- * With `defaultBrand`, it is written for the default brand too: it then forwards the tokens that
- * the site installs, not those of the dependency of `@chassis-ui/css`.
  */
-export function getBrandTokensLoadPath(
-  root = process.cwd(),
-  { defaultBrand = false }: { defaultBrand?: boolean } = {}
-): string | undefined {
+export function getBrandTokensLoadPath(root = process.cwd()): string | undefined {
   const { brand, app, isDefault } = getChassisBrand({ root })
 
-  if (isDefault && !defaultBrand) return undefined
+  if (isDefault) return undefined
 
   const tokens = path.join(getChassisTokensFsPath({ root }), 'main')
   const directory = path.join(root, 'node_modules/.cache/chassis-docs/tokens', app, brand)

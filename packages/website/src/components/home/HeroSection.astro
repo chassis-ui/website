@@ -2,145 +2,63 @@
 /**
  * Hero Section
  *
- * The claim of the home page on the alternate context, with its lead, the two actions, the
- * licence line and the illustration of one brand on web, iOS and Android, then the rail of the
- * six packages. The square grid and the light are backgrounds of the section (home.scss).
+ * The claim of the home page, with its lead, the two actions, the licence line and the
+ * illustration of one brand on web, iOS and Android, then the rail of the six packages. Each
+ * station is one link to the home page of its package, so its name and its line enter as one;
+ * its name takes the highlight colour on hover (`.home-rail-link`).
  *
- * The illustration is inline, so that its three devices (`.home-hero-device` in the file) can
- * enter one by one. `home-enter` and `--cx-home-enter` give the order in which the text enters
- * (home-motion.scss, where the build adds the `cx-` to `--home-enter`).
- *
- * The light (`.home-hero-light`) leans towards the pointer: the script moves it a share of the
- * way from its centre to the pointer, and back when the pointer leaves the hero.
+ * The illustration is `images/illustrations/hero-home.svg` of the assets
+ * (chassis-ui/website-assets). The hero inlines it, so that its three devices
+ * (`.cxd-hero-part` in the file) can enter one by one.
  */
 
+import Hero from '@chassis-ui/docs/sections/Hero.astro'
+import RailItem from '@chassis-ui/docs/sections/RailItem.astro'
 import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
-import Illustration from '../../assets/home/hero-illustration.svg'
-import RailItem from './RailItem.astro'
 
 const packages = [
-  { name: 'Tokens', body: 'Design decisions, themed per brand.' },
-  { name: 'Figma', body: 'One library for all brands and platforms.' },
-  { name: 'CSS', body: 'Variables and classes with Figma’s names.' },
-  { name: 'React', body: 'Accessible components.' },
-  { name: 'Assets', body: 'Logos, images and fonts per brand.' },
-  { name: 'Icons', body: 'One set for design and code.' }
+  { name: 'Tokens', href: '/tokens/', body: 'Design decisions, themed per brand.' },
+  { name: 'Figma', href: '/figma/', body: 'One library for all brands and platforms.' },
+  { name: 'CSS', href: '/css/', body: 'Variables and classes with Figma’s names.' },
+  { name: 'React', href: '/react/', body: 'Accessible components.' },
+  { name: 'Assets', href: '/assets/', body: 'Logos, images and fonts per brand.' },
+  { name: 'Icons', href: '/icons/', body: 'One set for design and code.' }
 ]
 ---
 
-<section class="home-hero context alternate" aria-labelledby="home-hero-title">
-  <div class="home-hero-light" aria-hidden="true"></div>
-  <div class="container 2xl vstack home-hero-body">
-    <div class="vstack gap-6xl">
-      <h1 class="font-hero alternate-fg-main m-0" id="home-hero-title">
-        <span class="d-block home-enter">Your design system, defined once.</span>{' '}
-        <span class="d-block home-hero-highlight home-enter" style="--cx-home-enter: 1">
-          <span class="lg:d-block">Every brand and platform</span> generated from it.
-        </span>
-      </h1>
-      <div class="grid home-hero-row">
-        <div class="col-span-full lg:col-span-6 vstack gap-6xl align-items-start">
-          <p class="font-lead alternate-fg-subtle m-0 home-enter" style="--cx-home-enter: 2">
-            Chassis is an open-source toolkit for teams that run several brands on web, iOS and
-            Android. You make a design decision in one place and it reaches all of them.
-          </p>
-          <div
-            class="d-flex flex-column sm:flex-row gap-md w-100 sm:w-auto home-enter"
-            style="--cx-home-enter: 3"
-          >
-            <a class="button primary lg" href="#start">
-              <Icon name="book-open-outline" />
-              Getting Started
-            </a>
-            <a class="button white outline lg" href="https://github.com/chassis-ui">
-              <Icon name="github-brand" />
-              View on GitHub
-            </a>
-          </div>
-          <p class="font-code font-sm alternate-fg-main m-0 home-enter" style="--cx-home-enter: 4">
-            <span class="d-block sm:d-inline">OPEN SOURCE · MIT LICENSED</span>
-            <span class="d-none sm:d-inline" aria-hidden="true">
-              &nbsp;/&nbsp;
-            </span>
-            <span class="d-block sm:d-inline">WEB · IOS · ANDROID</span>
-          </p>
-        </div>
-        <div class="col-span-full lg:col-span-6">
-          <Illustration
-            class="home-hero-illustration"
-            role="img"
-            aria-label="One app in the same brand on the web, on iOS and on Android"
-          />
-        </div>
-      </div>
-    </div>
-    <ul class="home-rail grid home-hero-rail" aria-label="The six packages">
-      {packages.map((item) => (
-        <RailItem class="col-span-6 md:col-span-4 lg:col-span-2">
-          <p class="font-title-sm alternate-fg-main m-0">{item.name}</p>
-          <p class="font-body-sm alternate-fg-subtle m-0">{item.body}</p>
-        </RailItem>
-      ))}
-    </ul>
-  </div>
-</section>
-
-<script>
-  // The light of the hero leans towards the pointer, a share of the way from its centre, and
-  // returns when the pointer leaves. Its centre is 341px right of the middle of the hero and
-  // 600px down, as in the backdrop. Each frame a point follows the target a little and the light
-  // follows that point, so the light starts and stops gently however the pointer moves.
-  const hero = document.querySelector<HTMLElement>('.home-hero')
-  const light = hero?.querySelector<HTMLElement>('.home-hero-light')
-  const share = 0.2
-  const reach = { x: 192, up: 64, down: 128 }
-  // The time in which each of the two covers about two thirds of what is left, in ms.
-  const ease = 140
-
-  if (
-    hero &&
-    light &&
-    window.matchMedia('(hover: hover) and (prefers-reduced-motion: no-preference)').matches
-  ) {
-    const target = { x: 0, y: 0 }
-    const point = { x: 0, y: 0 }
-    const place = { x: 0, y: 0 }
-    let frame = 0
-    let last = 0
-
-    const step = (now: number) => {
-      const part = 1 - Math.exp(-Math.min(now - last, 64) / ease)
-      last = now
-      point.x += (target.x - point.x) * part
-      point.y += (target.y - point.y) * part
-      place.x += (point.x - place.x) * part
-      place.y += (point.y - place.y) * part
-
-      if (Math.abs(target.x - place.x) < 0.1 && Math.abs(target.y - place.y) < 0.1) {
-        point.x = place.x = target.x
-        point.y = place.y = target.y
-        frame = 0
-      } else {
-        frame = requestAnimationFrame(step)
-      }
-      light.style.transform = `translate3d(${place.x.toFixed(2)}px, ${place.y.toFixed(2)}px, 0)`
-    }
-
-    const lean = (x: number, y: number) => {
-      target.x = Math.max(-reach.x, Math.min(reach.x, x))
-      target.y = Math.max(-reach.up, Math.min(reach.down, y))
-      if (frame) return
-      last = performance.now()
-      frame = requestAnimationFrame(step)
-    }
-
-    hero.addEventListener('pointermove', (event) => {
-      const box = hero.getBoundingClientRect()
-      lean(
-        (event.clientX - box.left - (box.width / 2 + 341)) * share,
-        (event.clientY - box.top - 600) * share
-      )
-    })
-    hero.addEventListener('pointerleave', () => lean(0, 0))
-  }
-</script>
+<Hero
+  title="Your design system, defined once."
+  highlight={['Every brand and platform', 'generated from it.']}
+  lead="Chassis is an open-source toolkit for teams that run several brands on web, iOS and Android. You make a design decision in one place and it reaches all of them."
+  illustration="images/illustrations/hero-home.svg"
+  illustrationLabel="One app in the same brand on the web, on iOS and on Android"
+>
+  <Fragment slot="actions">
+    <a class="button primary lg" href="#start">
+      <Icon name="book-open-outline" />
+      Getting Started
+    </a>
+    <a class="button white outline lg" href="https://github.com/chassis-ui">
+      <Icon name="github-brand" />
+      View on GitHub
+    </a>
+  </Fragment>
+  <Fragment slot="meta">
+    <span class="d-block sm:d-inline">Open source · MIT licensed</span>
+    <span class="d-none sm:d-inline" aria-hidden="true">
+      {' '}
+      &nbsp;/&nbsp;{' '}
+    </span>
+    <span class="d-block sm:d-inline">Web · iOS · Android</span>
+  </Fragment>
+  <ul class="cxd-rail grid cxd-hero-rail" aria-label="The six packages">
+    {packages.map((item) => (
+      <RailItem class="col-span-6 md:col-span-4 lg:col-span-2 py-lg">
+        <a class="vstack gap-xs home-rail-link" href={item.href}>
+          <span class="font-title-sm">{item.name}</span>
+          <span class="font-body-sm fg-subtle">{item.body}</span>
+        </a>
+      </RailItem>
+    ))}
+  </ul>
+</Hero>

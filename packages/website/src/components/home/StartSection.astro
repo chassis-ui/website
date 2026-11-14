@@ -6,12 +6,12 @@
  * "Getting Started" button scrolls here (`#start`).
  */
 
-import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
-import SectionHead from './SectionHead.astro'
+import Doors from '@chassis-ui/docs/sections/Doors.astro'
+import Section from '@chassis-ui/docs/sections/Section.astro'
 
 const groups = [
   {
-    label: 'YOU OWN THE DECISIONS',
+    label: 'You own the decisions',
     doors: [
       {
         name: 'Tokens',
@@ -26,7 +26,7 @@ const groups = [
     ]
   },
   {
-    label: 'YOU OWN THE FILES',
+    label: 'You own the files',
     doors: [
       {
         name: 'Assets',
@@ -41,7 +41,7 @@ const groups = [
     ]
   },
   {
-    label: 'YOU WANT TO BUILD TODAY',
+    label: 'You want to build today',
     doors: [
       {
         name: 'CSS',
@@ -58,34 +58,11 @@ const groups = [
 ]
 ---
 
-<section class="home-section" id="start" aria-labelledby="home-start-title">
-  <div class="container 2xl home-section-body">
-    <SectionHead
-      id="home-start-title"
-      eyebrow="READY TO START?"
-      title={['Pick the door that matches', 'what you already have.']}
-      lead="Each door opens the docs of that package. You can add the other packages later, in any order."
-    />
-    <div class="grid" data-reveal="children">
-      {groups.map((group) => (
-        <div class="col-span-full md:col-span-4 bg-even rounded-md pt-lg px-xl pb-sm vstack gap-sm">
-          <h3 class="font-label-sm primary-fg-main m-0">{group.label}</h3>
-          <ul class="m-0 p-0 home-doors">
-            {group.doors.map((door) => (
-              <li class="vstack gap-xs py-md">
-                <a
-                  class="home-door font-title d-inline-flex align-items-center gap-xs"
-                  href={door.href}
-                >
-                  {door.name}
-                  <Icon name="arrow-right-outline" class="icon-reset icon-sm home-arrow" />
-                </a>
-                <p class="font-body fg-subtle m-0">{door.body}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
+<Section
+  id="start"
+  eyebrow="Ready to start?"
+  title={['Pick the door that matches', 'what you already have.']}
+  lead="Each door opens the docs of that package. You can add the other packages later, in any order."
+>
+  <Doors groups={groups} />
+</Section>

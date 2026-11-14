@@ -20,8 +20,8 @@ export const previewBrandFiles = {
 
 /**
  * Writes the CSS and the fonts of the preview brand into `destination` (the `static` folder
- * of `public`): the custom properties and the components the Switch cards use, compiled from
- * the tokens of the brand and scoped to `previewBrandClass`, and the fonts of its assets.
+ * of `public`): the custom properties of the brand, compiled from its tokens and scoped to
+ * `previewBrandClass`, and the fonts of its assets.
  */
 export function writeBrandPreview({ root, destination }: { root: string; destination: string }) {
   const tokens = path.join(path.dirname(getChassisTokensFsPath({ root })), previewBrand, 'main')

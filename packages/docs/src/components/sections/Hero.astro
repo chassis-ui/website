@@ -1,0 +1,251 @@
+---
+/**
+ * Hero
+ *
+ * The claim of a home page on the alternate context: an optional kicker, space/context/medium
+ * above the claim and its highlighted second sentence, then the lead, an optional command with
+ * a copy button, the actions and a meta line on the first six columns, and an illustration on
+ * the last six. The square grid and the light are backgrounds of the section
+ * (scss/sections.scss).
+ *
+ * The illustration is an SVG of the static files, named by `illustration`: the heroes of the
+ * Chassis sites are `images/illustrations/hero-<name>.svg` of the assets of
+ * chassis-ui/website-assets. It is inlined, so its parts can enter one by one, and the build
+ * fails without the file. A site with a drawing of its own fills the `illustration` slot.
+ *
+ * Slots: `actions` (buttons), `meta` (the line under them), `illustration`, and the default
+ * one for what follows the row, such as a rail. A page with this hero passes
+ * `navbarContext="alternate"` to its layout, so that the navbar is dark while the hero is
+ * under it.
+ *
+ * The claim is `title` and `highlight`, or the `title` slot for markup of the page's own: each
+ * `<span>` child is a line that breaks from `lg` (`d-block` on it breaks it at every width),
+ * and `<mark>` inside is the highlight colour; `<em>`, `<strong>` and links work as written.
+ * The lead is the `lead` text, or the `lead` slot with the same inline markup.
+ *
+ * The text enters in turn (`cxd-enter` and `--cxd-enter`, scss/_motion.scss); a claim of the
+ * slot enters as one. In the
+ * illustration, the elements with the class `cxd-hero-part` enter one by one, up to three.
+ *
+ * The light (`.cxd-hero-light`) leans towards the pointer: the script moves it a share of the
+ * way from its centre to the pointer, and back when the pointer leaves the hero.
+ */
+
+import fs from 'node:fs'
+import Icon from '../shortcodes/Icon.astro'
+import { getPublicFsPath } from '../../site'
+import '../../scss/sections.scss'
+
+interface Props {
+  /** The id of the section. The claim has `<id>-title`. */
+  id?: string
+  /** The short line above the claim, such as the name of the package, in normal case: it is
+   * set in capitals by CSS, as is the `meta` line. */
+  kicker?: string
+  /** The first sentence of the claim, as text. The `title` slot takes markup instead. */
+  title?: string
+  /** The lines of the second sentence, in the highlight colour. They break from `lg`. */
+  highlight?: string[]
+  /** The paragraph under the claim, as text. The `lead` slot takes markup instead. */
+  lead?: string
+  /** A command to copy, such as the one that installs the package. */
+  command?: string
+  /** The SVG of the illustration under the static path, as `images/illustrations/hero-home.svg`. */
+  illustration?: string
+  /** What the illustration shows, for assistive technology. Without it the drawing is hidden. */
+  illustrationLabel?: string
+}
+
+const {
+  id = 'hero',
+  kicker,
+  title,
+  highlight,
+  lead,
+  command,
+  illustration,
+  illustrationLabel
+} = Astro.props
+const titleId = `${id}-title`
+
+function escapeAttribute(value: string): string {
+  return value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;')
+}
+
+// The file is read from the static files that the site copied into `public`.
+const illustrationSvg =
+  illustration &&
+  fs
+    .readFileSync(getPublicFsPath(`static/${illustration}`), 'utf8')
+    .replace(/^\s*<\?xml[^>]*\?>\s*/, '')
+    .replace(
+      /^<svg\b/,
+      illustrationLabel
+        ? `<svg role="img" aria-label="${escapeAttribute(illustrationLabel)}"`
+        : '<svg aria-hidden="true" focusable="false"'
+    )
+    .trim()
+
+// The place of each part in the order in which the text enters.
+let place = 0
+const enter = () => `--cxd-enter: ${place++}`
+---
+
+<section
+  class:list={['cxd-hero context alternate', { 'cxd-hero-end': !Astro.slots.has('default') }]}
+  id={id}
+  aria-labelledby={titleId}
+>
+  <div class="cxd-hero-light" aria-hidden="true"></div>
+  <div class="container 2xl vstack cxd-hero-body">
+    <div class="d-flex flex-column gap-3xl md:gap-6xl">
+      <div class="vstack gap-md">
+        {kicker && (
+          <p
+            class="font-code font-sm fg-highlight text-uppercase m-0 -mt-3xl cxd-enter"
+            style={enter()}
+          >
+            {kicker}
+          </p>
+        )}
+        {Astro.slots.has('title') ? (
+          <h1 class="font-hero fg-main m-0 cxd-hero-title cxd-enter" id={titleId} style={enter()}>
+            <slot name="title" />
+          </h1>
+        ) : (
+          <h1 class="font-hero fg-main m-0 cxd-hero-title" id={titleId}>
+            <span class="d-block cxd-enter" style={enter()}>
+              {title}
+            </span>
+            {highlight && (
+              <>
+                {' '}
+                <span class="d-block cxd-hero-highlight cxd-enter" style={enter()}>
+                  {highlight.map((line, index) => (
+                    <>
+                      {index > 0 && ' '}
+                      <span class="lg:d-block">{line}</span>
+                    </>
+                  ))}
+                </span>
+              </>
+            )}
+          </h1>
+        )}
+      </div>
+      <div class="grid row-gap-3xl md:row-gap-6xl lg:column-gap-6xl">
+        <div class="col-span-full lg:col-span-6 d-flex flex-column gap-3xl md:gap-6xl align-items-start">
+          <p class="font-lead fg-subtle m-0 cxd-enter" style={enter()}>
+            <slot name="lead">{lead}</slot>
+          </p>
+          {command && (
+            <div
+              class="cxd-command position-relative w-100 py-sm ps-md pe-5xl bg-even border border-main rounded-md cxd-enter"
+              style={enter()}
+            >
+              <code class="cxd-command-text">{command}</code>
+              <button
+                type="button"
+                class="cxd-command-copy"
+                aria-label="Copy the command"
+                data-clipboard-text={command}
+              >
+                <Icon name="copy-outline" />
+              </button>
+            </div>
+          )}
+          {Astro.slots.has('actions') && (
+            <div
+              class="d-flex flex-column sm:flex-row gap-sm sm:gap-md w-100 sm:w-auto cxd-enter"
+              style={enter()}
+            >
+              <slot name="actions" />
+            </div>
+          )}
+          {Astro.slots.has('meta') && (
+            <p
+              class="font-code font-sm fg-subtle text-uppercase m-0 cxd-hero-meta cxd-enter"
+              style={enter()}
+            >
+              <slot name="meta" />
+            </p>
+          )}
+        </div>
+        {(illustrationSvg || Astro.slots.has('illustration')) && (
+          <div class="col-span-full lg:col-span-6 cxd-hero-illustration">
+            <slot name="illustration">
+              <Fragment set:html={illustrationSvg} />
+            </slot>
+          </div>
+        )}
+      </div>
+    </div>
+    <slot />
+  </div>
+</section>
+
+<script>
+  import { initCopyButtons } from '../../js/clipboard'
+
+  if (document.querySelector('.cxd-command-copy')) {
+    initCopyButtons('.cxd-command-copy', (trigger) => trigger.getAttribute('data-clipboard-text')!)
+  }
+
+  // The light of the hero leans towards the pointer, a share of the way from its centre, and
+  // returns when the pointer leaves. Its centre is 341px right of the middle of the hero and
+  // 600px down, as in the styles. Each frame a point follows the target a little and the light
+  // follows that point, so the light starts and stops gently however the pointer moves.
+  const hero = document.querySelector<HTMLElement>('.cxd-hero')
+  const light = hero?.querySelector<HTMLElement>('.cxd-hero-light')
+  const share = 0.2
+  const reach = { x: 192, up: 64, down: 128 }
+  // The time in which each of the two covers about two thirds of what is left, in ms.
+  const ease = 140
+
+  if (
+    hero &&
+    light &&
+    window.matchMedia('(hover: hover) and (prefers-reduced-motion: no-preference)').matches
+  ) {
+    const target = { x: 0, y: 0 }
+    const point = { x: 0, y: 0 }
+    const place = { x: 0, y: 0 }
+    let frame = 0
+    let last = 0
+
+    const step = (now: number) => {
+      const part = 1 - Math.exp(-Math.min(now - last, 64) / ease)
+      last = now
+      point.x += (target.x - point.x) * part
+      point.y += (target.y - point.y) * part
+      place.x += (point.x - place.x) * part
+      place.y += (point.y - place.y) * part
+
+      if (Math.abs(target.x - place.x) < 0.1 && Math.abs(target.y - place.y) < 0.1) {
+        point.x = place.x = target.x
+        point.y = place.y = target.y
+        frame = 0
+      } else {
+        frame = requestAnimationFrame(step)
+      }
+      light.style.transform = `translate3d(${place.x.toFixed(2)}px, ${place.y.toFixed(2)}px, 0)`
+    }
+
+    const lean = (x: number, y: number) => {
+      target.x = Math.max(-reach.x, Math.min(reach.x, x))
+      target.y = Math.max(-reach.up, Math.min(reach.down, y))
+      if (frame) return
+      last = performance.now()
+      frame = requestAnimationFrame(step)
+    }
+
+    hero.addEventListener('pointermove', (event) => {
+      const box = hero.getBoundingClientRect()
+      lean(
+        (event.clientX - box.left - (box.width / 2 + 341)) * share,
+        (event.clientY - box.top - 600) * share
+      )
+    })
+    hero.addEventListener('pointerleave', () => lean(0, 0))
+  }
+</script>

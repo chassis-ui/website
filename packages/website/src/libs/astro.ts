@@ -86,13 +86,7 @@ export function chassis({ config, root }: ChassisOptions): AstroIntegration[] {
           copyStatic(paths)
           copyChassisAssets(paths)
           copyChassisCSS(paths)
-          // The files of @chassis-ui/css 0.14 hold the colours of website-tokens 0.3; the site
-          // installs 0.4. Remove `defaultBrand` when a release of the CSS is built with them.
-          writeBrandCSS({
-            root,
-            destination: path.join(paths.public, 'static'),
-            defaultBrand: true
-          })
+          writeBrandCSS({ root, destination: path.join(paths.public, 'static') })
           writeBrandPreview({ root, destination: path.join(paths.public, 'static') })
           copyChassisIcons(paths)
           aliasStatic(paths)

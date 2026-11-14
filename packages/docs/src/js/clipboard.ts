@@ -18,7 +18,10 @@ export function initCopyButtons(
     const tooltipBtn = Tooltip.getInstance(event.trigger)
     const originalHref = useEl?.getAttribute('href')
 
-    if (originalHref === '#check-solid') {
+    // The icon is a symbol of a sprite file, or of the page itself: only the name changes.
+    const checkHref = originalHref?.replace(/#.*$/, '#check-solid')
+
+    if (originalHref === checkHref) {
       return
     }
 
@@ -34,8 +37,8 @@ export function initCopyButtons(
 
     event.clearSelection()
 
-    if (useEl) {
-      useEl.setAttribute('href', '#check-solid')
+    if (useEl && checkHref) {
+      useEl.setAttribute('href', checkHref)
     }
 
     setTimeout(() => {

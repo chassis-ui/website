@@ -1,58 +1,13 @@
-// The motion of the home page. `home.scss` includes `styles` at its end, so these rules follow
-// the ones they add to.
-//
-// Chassis has no general motion tokens yet, only the transitions of its components. The values
-// here follow those: the timing of the drawer for what enters, and the .15s ease-in-out of the
-// button for hover.
-//
-// Everything is under `prefers-reduced-motion: no-preference`. The hero plays on load, with CSS
-// alone. What is further down the page plays when it scrolls into view: the script of the page
-// (pages/index.astro) puts `is-pending` on each `[data-reveal]` that is below the window, and
-// replaces it with `is-revealed` when it arrives. Without the script nothing is hidden.
+// The motion of the sections that only the home page has. `home.scss` includes `styles` at its
+// end, so these rules follow the ones they add to. The motion of the shared sections, its
+// timing and the script that reveals what scrolls into view are in `@chassis-ui/docs`
+// (scss/_motion.scss, js/reveal.js).
 
-@use "@chassis-ui/css/scss/mixins" as *;
-@use "./backdrop";
+@use "@chassis-ui/docs/scss/motion";
 
-$enter-duration: .6s;
-$enter-timing: cubic-bezier(.22, 1, .36, 1);
-$enter-step: .08s;
-$hover-transition: .15s ease-in-out;
 $switch-duration: .35s;
 
-// Rise into place from `$delay` on, and stay hidden until then.
-@mixin rise($delay: 0s) {
-  animation: home-rise $enter-duration $enter-timing $delay both;
-}
-
-// Draw the rails of a block: the line of each station from its dot to the next station, one
-// after the other, with the dot and the content of the station as its line starts. A station
-// starts at `--home-rail-base` plus its place in the row times `--home-rail-step`, the time a
-// line takes.
-@mixin draw-rails {
-  .home-rail-item {
-    &::before {
-      transform-origin: left center;
-      animation: home-draw var(--home-rail-step) linear var(--home-rail-delay) both;
-    }
-
-    &::after {
-      animation: home-pop .3s $enter-timing var(--home-rail-delay) both;
-    }
-
-    > * {
-      @include rise(var(--home-rail-delay));
-    }
-  }
-}
-
 @mixin styles {
-  @keyframes home-rise {
-    from {
-      opacity: 0;
-      transform: translateY(1rem);
-    }
-  }
-
   @keyframes home-slide {
     from {
       opacity: 0;
@@ -60,145 +15,16 @@ $switch-duration: .35s;
     }
   }
 
-  @keyframes home-fade {
-    from {
-      opacity: 0;
-    }
-  }
-
-  @keyframes home-draw {
-    from {
-      transform: scaleX(0);
-    }
-  }
-
-  @keyframes home-pop {
-    from {
-      transform: scale(0);
-    }
-  }
-
-  // The light of the hero is an element of its own, under the grid, so that it can move without
-  // a repaint: the script of HeroSection.astro leans it from its place towards the pointer. It
-  // is larger than the hero on the sides it is cut at, by more than it moves.
-  .home-hero {
-    background-image: none;
-  }
-
-  .home-hero-light {
-    position: absolute;
-    inset: 0 -16rem -6rem;
-    z-index: -2;
-    pointer-events: none;
-    background-image: backdrop.light(46.875rem 37.5rem, calc(50% + 21.3125rem) 37.5rem);
-    will-change: transform;
-  }
-
-  .home-rail-item {
-    --home-rail-delay: calc(var(--home-rail-base, 0s) + var(--home-rail-index, 0) * var(--home-rail-step, .1s));
-
-    @for $i from 2 through 6 {
-      &:nth-child(#{$i}) {
-        --home-rail-index: #{$i - 1};
-      }
-    }
-  }
-
-  .home-hero-rail {
-    --home-rail-base: .5s;
-    --home-rail-step: .07s;
-  }
-
-  .home-idea-stage {
-    --home-rail-step: .2s;
-
-    @for $i from 2 through 3 {
-      &:nth-child(#{$i}) {
-        --home-rail-base: #{($i - 1) * .7s};
-      }
-    }
-  }
-
-  @for $i from 2 through 6 {
-    [data-reveal="children"] > :nth-child(#{$i}) {
-      --home-reveal-index: #{$i - 1};
-    }
-  }
-
   @media screen and (prefers-reduced-motion: no-preference) {
-    //
-    // Hero: the lines of the claim, the lead, the actions and the licence line in turn
-    // (`--home-enter` is the place of each), the three devices, then the rail.
-    //
-
-    .home-enter {
-      @include rise(calc(var(--home-enter, 0) * #{$enter-step}));
-    }
-
-    .home-hero-device {
-      @for $i from 1 through 3 {
-        &:nth-of-type(#{$i}) {
-          @include rise(#{.2s + $i * .12s});
-        }
-      }
-    }
-
-    .home-hero-rail {
-      @include draw-rails();
-    }
-
-    //
-    // On scroll
-    //
-
-    [data-reveal="children"].is-pending > *,
-    [data-reveal="row"].is-pending > *,
-    [data-reveal="rails"].is-pending .home-idea-stage {
-      opacity: 0;
-    }
-
-    [data-reveal="children"].is-revealed > * {
-      @include rise(calc(var(--home-reveal-index, 0) * #{$enter-step}));
-    }
-
     // Problem: a row slides in from the right, its number, statement and consequence as one.
     // Rows that arrive together play one after the other: the script gives each its
-    // `--home-reveal-delay`.
+    // `--cxd-reveal-delay`.
+    [data-reveal="row"].is-pending > * {
+      opacity: 0;
+    }
+
     [data-reveal="row"].is-revealed > * {
-      animation: home-slide $enter-duration $enter-timing var(--home-reveal-delay, 0s) both;
-    }
-
-    // Idea: Decide, then Collect, then Generate, each stage word as its rail starts.
-    [data-reveal="rails"].is-revealed {
-      @include draw-rails();
-
-      .home-idea-stage > h3 {
-        animation: home-fade $enter-duration ease var(--home-rail-base, 0s) both;
-      }
-
-      // The source spans two stations.
-      .home-idea-wide::before {
-        animation-duration: calc(var(--home-rail-step) * 2);
-      }
-    }
-
-    //
-    // Hover
-    //
-
-    .home-package {
-      @include transition(background-color $hover-transition);
-    }
-
-    .home-arrow {
-      @include transition(transform $hover-transition);
-    }
-
-    .home-package:hover .home-arrow,
-    .home-package:focus-within .home-arrow,
-    .home-door:hover .home-arrow,
-    .home-door:focus-visible .home-arrow {
-      transform: translateX(.25rem);
+      animation: home-slide motion.$enter-duration motion.$enter-timing var(--cxd-reveal-delay, 0s) both;
     }
 
     //
@@ -225,7 +51,7 @@ $switch-duration: .35s;
     ::view-transition-group(home-switch-card),
     ::view-transition-group(.home-switch-part) {
       animation-duration: $switch-duration;
-      animation-timing-function: $enter-timing;
+      animation-timing-function: motion.$enter-timing;
     }
 
     // The two cards at their own size, not stretched to the height between them.

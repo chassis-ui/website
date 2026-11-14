@@ -1,0 +1,172 @@
+// The motion of the sections. `sections.scss` includes `styles` at its end, so these rules
+// follow the ones they add to.
+//
+// Chassis has no general motion tokens yet, only the transitions of its components. The values
+// here follow those: the timing of the drawer for what enters, and the .15s ease-in-out of the
+// button for hover. A site's own sections take them from here (`@chassis-ui/docs/scss/motion`).
+//
+// Everything is under `prefers-reduced-motion: no-preference`. The hero plays on load, with CSS
+// alone. What is further down the page plays when it scrolls into view: `js/reveal.js` puts
+// `is-pending` on each `[data-reveal]` that is below the window, and replaces it with
+// `is-revealed` when it arrives. Without the script nothing is hidden.
+
+@use "@chassis-ui/css/scss/mixins" as *;
+
+$enter-duration: .6s !default;
+$enter-timing: cubic-bezier(.22, 1, .36, 1) !default;
+$enter-step: .08s !default;
+$hover-transition: .15s ease-in-out !default;
+
+// Rise into place from `$delay` on, and stay hidden until then.
+@mixin rise($delay: 0s) {
+  animation: cxd-rise $enter-duration $enter-timing $delay both;
+}
+
+// Draw the rails of a block: the line of each station from its dot to the next station, one
+// after the other, with the dot and the content of the station as its line starts. A station
+// starts at `--cxd-rail-base` plus its place in the row times `--cxd-rail-step`, the time a
+// line takes.
+@mixin draw-rails {
+  .cxd-rail-item {
+    &::before {
+      transform-origin: left center;
+      animation: cxd-draw var(--cxd-rail-step) linear var(--cxd-rail-delay) both;
+    }
+
+    &::after {
+      animation: cxd-pop .3s $enter-timing var(--cxd-rail-delay) both;
+    }
+
+    > * {
+      @include rise(var(--cxd-rail-delay));
+    }
+  }
+}
+
+@mixin styles {
+  @keyframes cxd-rise {
+    from {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+  }
+
+  @keyframes cxd-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes cxd-draw {
+    from {
+      transform: scaleX(0);
+    }
+  }
+
+  @keyframes cxd-pop {
+    from {
+      transform: scale(0);
+    }
+  }
+
+  .cxd-rail-item {
+    --cxd-rail-delay: calc(var(--cxd-rail-base, 0s) + var(--cxd-rail-index, 0) * var(--cxd-rail-step, .1s));
+
+    @for $i from 2 through 6 {
+      &:nth-child(#{$i}) {
+        --cxd-rail-index: #{$i - 1};
+      }
+    }
+  }
+
+  .cxd-hero-rail {
+    --cxd-rail-base: .5s;
+    --cxd-rail-step: .07s;
+  }
+
+  .cxd-steps-stage {
+    --cxd-rail-step: .2s;
+
+    @for $i from 2 through 3 {
+      &:nth-child(#{$i}) {
+        --cxd-rail-base: #{($i - 1) * .7s};
+      }
+    }
+  }
+
+  @for $i from 2 through 6 {
+    [data-reveal="children"] > :nth-child(#{$i}) {
+      --cxd-reveal-index: #{$i - 1};
+    }
+  }
+
+  @media screen and (prefers-reduced-motion: no-preference) {
+    //
+    // Hero: the kicker, the lines of the claim, the lead, the command, the actions and the meta
+    // line in turn (`--cxd-enter` is the place of each), the parts of the illustration, then
+    // the rail.
+    //
+
+    .cxd-enter {
+      @include rise(calc(var(--cxd-enter, 0) * #{$enter-step}));
+    }
+
+    .cxd-hero-part {
+      @for $i from 1 through 3 {
+        &:nth-of-type(#{$i}) {
+          @include rise(#{.2s + $i * .12s});
+        }
+      }
+    }
+
+    .cxd-hero-rail {
+      @include draw-rails();
+    }
+
+    //
+    // On scroll
+    //
+
+    [data-reveal="children"].is-pending > *,
+    [data-reveal="rails"].is-pending .cxd-steps-stage {
+      opacity: 0;
+    }
+
+    [data-reveal="children"].is-revealed > * {
+      @include rise(calc(var(--cxd-reveal-index, 0) * #{$enter-step}));
+    }
+
+    // Steps: one stage after the other, each stage word as its rail starts.
+    [data-reveal="rails"].is-revealed {
+      @include draw-rails();
+
+      .cxd-steps-stage > h3 {
+        animation: cxd-fade $enter-duration ease var(--cxd-rail-base, 0s) both;
+      }
+
+      // A wide station spans two.
+      .cxd-steps-wide::before {
+        animation-duration: calc(var(--cxd-rail-step) * 2);
+      }
+    }
+
+    //
+    // Hover
+    //
+
+    .cxd-card {
+      @include transition(background-color $hover-transition);
+    }
+
+    .cxd-arrow {
+      @include transition(transform $hover-transition);
+    }
+
+    .cxd-card:hover .cxd-arrow,
+    .cxd-card:focus-within .cxd-arrow,
+    .cxd-door:hover .cxd-arrow,
+    .cxd-door:focus-visible .cxd-arrow {
+      transform: translateX(.25rem);
+    }
+  }
+}

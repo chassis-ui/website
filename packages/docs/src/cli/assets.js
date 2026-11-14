@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
+import { parseEnv } from 'node:util'
 import { unzipSync } from 'fflate'
 import {
   ASSETS_PIN,
@@ -20,6 +21,9 @@ export const DEFAULT_REPOSITORY = 'chassis-ui/website-assets'
 
 /** The variable that names a local checkout of the assets, to use its build in place of a release. */
 export const CHECKOUT_VARIABLE = 'CHASSIS_ASSETS_CHECKOUT'
+
+/** The files of the root that may set the variable, the later one first. Git ignores them. */
+export const CHECKOUT_FILES = ['.env.local', '.env']
 
 /**
  * The folder of a brand, under `vendor/assets` and in a build of the assets.
@@ -109,12 +113,24 @@ async function fetchArchive({ repository, version, name, digest, cacheDir, fetch
   return data
 }
 
+// Removes a folder. macOS may write a file into it while it is removed (Finder, Spotlight),
+// and the removal of the folder then finds it not empty: it is tried again.
+function removeDir(dir) {
+  fs.rmSync(dir, { force: true, recursive: true, maxRetries: 10, retryDelay: 100 })
+}
+
+// Puts the folder `work` in the place of `output`.
+function replaceDir(work, output) {
+  removeDir(output)
+  fs.renameSync(work, output)
+}
+
 // Writes the whole archive into a folder of its own, then puts that in the place of `output`.
 function unpack(data, output) {
   const work = `${output}.tmp`
   const files = unzipSync(data, { filter: ({ name }) => !name.endsWith('/') })
 
-  fs.rmSync(work, { force: true, recursive: true })
+  removeDir(work)
   fs.mkdirSync(work, { recursive: true })
 
   for (const [name, content] of Object.entries(files)) {
@@ -128,31 +144,62 @@ function unpack(data, output) {
     fs.writeFileSync(file, content)
   }
 
-  fs.rmSync(output, { force: true, recursive: true })
-  fs.renameSync(work, output)
+  replaceDir(work, output)
 }
 
-// A build of the assets from a checkout, for work on the assets and a site at once.
-function copyCheckout(checkout, selection, output, stamp) {
-  const source = path.resolve(checkout, assetsOutput(selection))
+// The checkout that the variable names, and where it is set: the environment of the command,
+// then `.env.local`, then `.env` of the root. A developer keeps the path of their own checkout
+// in `.env.local`, so that every run takes it. An empty value in the environment turns a file
+// off for one command.
+function checkoutOf(root) {
+  if (process.env[CHECKOUT_VARIABLE] !== undefined) {
+    return { checkout: process.env[CHECKOUT_VARIABLE], from: 'the environment' }
+  }
+
+  for (const name of CHECKOUT_FILES) {
+    const file = path.join(root, name)
+
+    if (!fs.existsSync(file)) continue
+
+    const value = parseEnv(fs.readFileSync(file, 'utf8'))[CHECKOUT_VARIABLE]
+
+    if (value !== undefined) return { checkout: value, from: name }
+  }
+
+  return {}
+}
+
+// A build of the assets from a checkout, for work on the assets and a site at once. A path
+// that is not absolute is from the root.
+function copyCheckout({ checkout, from }, root, selection, output, stamp) {
+  const source = path.resolve(root, checkout, assetsOutput(selection))
 
   if (!fs.existsSync(source)) {
     throw new CommandError(
-      `${CHECKOUT_VARIABLE} is ${checkout}, which has no ${assetsOutput(selection)}. Build it there first.`
+      `${CHECKOUT_VARIABLE} of ${from} is ${checkout}, which has no ${assetsOutput(selection)}. Build it there first.`
     )
   }
 
-  fs.rmSync(output, { force: true, recursive: true })
+  // The copy is whole before it takes the place of the old one, as an archive is.
+  const work = `${output}.tmp`
+
+  removeDir(work)
   fs.mkdirSync(path.dirname(output), { recursive: true })
-  fs.cpSync(source, output, { recursive: true })
+  fs.cpSync(source, work, { recursive: true })
+  replaceDir(work, output)
   // So that the next run without the variable takes the release again.
   fs.rmSync(stamp, { force: true })
-  log(`Copied ${source} to ${path.join(ASSETS_PATH, assetsOutput(selection))}`, 'success')
+  log(
+    `Copied ${source} to ${path.join(ASSETS_PATH, assetsOutput(selection))} (${CHECKOUT_VARIABLE} of ${from})`,
+    'success'
+  )
 }
 
 /**
  * Fills `vendor/assets/dist/web/<app>/<brand>` with the archive of the release that
  * `vendor/assets.json` pins. It does nothing when the folder already holds that archive.
+ * With `CHASSIS_ASSETS_CHECKOUT`, in the environment or in `.env.local` of the root, it copies
+ * the build of that checkout instead, on every run.
  * @param {{ root?: string, cacheDir?: string, fetcher?: typeof fetch, run?: typeof defaultRun }} [options]
  */
 export async function vendorAssets({
@@ -165,10 +212,10 @@ export async function vendorAssets({
   const output = path.join(root, ASSETS_PATH, assetsOutput(selection))
   // Beside the folder and not in it: a site copies the whole folder to its static files.
   const stamp = `${output}.sha256`
-  const checkout = process.env[CHECKOUT_VARIABLE]
+  const local = checkoutOf(root)
 
-  if (checkout) {
-    copyCheckout(checkout, selection, output, stamp)
+  if (local.checkout) {
+    copyCheckout(local, root, selection, output, stamp)
     return
   }
 

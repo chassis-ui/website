@@ -1,0 +1,69 @@
+---
+/**
+ * Section
+ *
+ * A section of a home page: its head (the eyebrow, the title and the lead) over its content,
+ * in the container of the page, with the spacing of the design. The content is the default
+ * slot: `<Rows>`, `<Steps>`, `<Cards>`, `<Doors>`, or markup of the site's own, so a section
+ * that only one site has lines up with the others.
+ *
+ * The title and the lead are text (`title`, `lead`) or the `title` and `lead` slots, for
+ * markup of the page's own: lines as `<span>` children, and `<em>`, `<strong>`, links or
+ * `<mark>` (the highlight colour) inside. See SectionHead.astro.
+ *
+ * What scrolls into view plays its motion (`js/reveal.js`): the head, and an element of the
+ * content with `data-reveal="children"`, whose children rise in turn.
+ */
+
+import SectionHead from './SectionHead.astro'
+import '../../scss/sections.scss'
+
+interface Props {
+  /** The id of the section, the target of a link to it. The title has `<id>-title`. */
+  id: string
+  /** The short line above the title, in normal case: it is set in capitals by CSS. */
+  eyebrow?: string
+  /** The lines of the title, as text. The `title` slot takes markup instead. A section without
+   * a title takes `label`. */
+  title?: string[]
+  /** The paragraph under the title, as text. The `lead` slot takes markup instead. */
+  lead?: string
+  /** The accessible name of a section without a title. */
+  label?: string
+  /** Additional CSS classes of the section. */
+  class?: string
+}
+
+const { id, eyebrow, title, lead, label, class: className } = Astro.props
+const titleId = `${id}-title`
+// The markup of the slots is rendered here and handed to the head: a slot passed on to it
+// would be there, empty, even when the page has none.
+const titleHtml = Astro.slots.has('title') ? await Astro.slots.render('title') : undefined
+const leadHtml = Astro.slots.has('lead') ? await Astro.slots.render('lead') : undefined
+const hasTitle = Boolean(title) || Boolean(titleHtml)
+---
+
+<section
+  class:list={['cxd-section', className]}
+  id={id}
+  aria-labelledby={hasTitle ? titleId : undefined}
+  aria-label={hasTitle ? undefined : label}
+>
+  <div class="container 2xl cxd-section-body">
+    {hasTitle && (
+      <SectionHead
+        id={titleId}
+        eyebrow={eyebrow}
+        title={title}
+        titleHtml={titleHtml}
+        lead={lead}
+        leadHtml={leadHtml}
+      />
+    )}
+    <slot />
+  </div>
+</section>
+
+<script>
+  import '../../js/reveal.js'
+</script>

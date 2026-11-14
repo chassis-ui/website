@@ -67,8 +67,8 @@ const byline = [data.author, date, getReadingTime(blogPage.body || '')]
   layout="blog"
 >
   <div class="container 2xl">
-    <nav class="blog-back py-xl" aria-label="Breadcrumb">
-      <a href="/blog/" class="blog-back-link d-inline-flex align-items-center gap-xs">
+    <nav class="d-flex py-xl mb-xl border-bottom border-subtle" aria-label="Breadcrumb">
+      <a href="/blog/" class="icon-link font-sm font-strong text-decoration-none text-uppercase">
         <Icon name="arrow-left-outline" class="icon-reset icon-sm" />
         Back to Blog
       </a>
@@ -76,7 +76,7 @@ const byline = [data.author, date, getReadingTime(blogPage.body || '')]
     <div class="grid">
       <article class="col-span-full lg:col-span-8 lg:col-start-3 vstack gap-3xl pt-md pb-6xl">
         {tags.length > 0 && (
-          <ul class="page-list d-flex flex-wrap gap-md" aria-label="Tags">
+          <ul class="bulletless m-0 d-flex flex-wrap gap-md" aria-label="Tags">
             {tags.map((tag) => (
               <li>
                 <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip primary smooth">
@@ -118,11 +118,11 @@ const byline = [data.author, date, getReadingTime(blogPage.body || '')]
         </div>
 
         {(previous || next) && (
-          <nav class="grid blog-pager" aria-label="Other posts">
+          <nav class="grid row-gap-md" aria-label="Other posts">
             {previous && (
               <a
                 href={getBlogPostUrl(previous)}
-                class="col-span-full md:col-span-6 blog-pager-link"
+                class="col-span-full md:col-span-6 vstack gap-2xs px-lg py-md rounded-md text-decoration-none blog-pager-link"
               >
                 <span class="font-label-sm fg-subtle">Previous</span>
                 <span class="font-title-sm">{previous.data.title}</span>
@@ -131,7 +131,7 @@ const byline = [data.author, date, getReadingTime(blogPage.body || '')]
             {next && (
               <a
                 href={getBlogPostUrl(next)}
-                class="col-span-full md:col-span-6 md:col-start-7 blog-pager-link text-end"
+                class="col-span-full md:col-span-6 md:col-start-7 vstack gap-2xs px-lg py-md rounded-md text-decoration-none text-end blog-pager-link"
               >
                 <span class="font-label-sm fg-subtle">Next</span>
                 <span class="font-title-sm">{next.data.title}</span>

@@ -20,14 +20,6 @@
       // border-style: solid;
       border-inline-start: var(--cx-border-width) var(--cx-border-style) var(--cx-border-subtle);
     }
-    @include media-breakpoint-between(md, lg) {
-      padding: .5rem 1rem;
-      margin-block-end: 1rem;
-      background-color: var(--cx-bg-even);
-      border: var(--cx-border-width) var(--cx-border-style) var(--cx-border-subtle);
-      @include border-radius(var(--cx-border-radius-md));
-    }
-
     nav {
       @include font-size(.875rem);
 
@@ -73,48 +65,19 @@
     }
   }
 
-  .cxd-toc-toggle {
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-
-    @include media-breakpoint-down(sm) {
-      justify-content: space-between;
-      width: 100%;
-    }
-
-    @include media-breakpoint-down(md) {
-      color: var(--cx-fg-color);
-      border: var(--cx-border-width) var(--cx-border-style) var(--cx-border-color);
-      @include border-radius(var(--cx-border-radius-md));
-
-      &:hover,
-      &:focus,
-      &:active,
-      &[aria-expanded="true"] {
-        color: var(--cxd-subtle);
-        background-color: var(--cx-bg-color);
-        // border-color: var(--cxd-subtle);
-      }
-
-      &:focus,
-      &[aria-expanded="true"] {
-        box-shadow: 0 0 0 3px #{to-opacity(var(--cxd-subtle), .25)};
-      }
-    }
-  }
-
+  // Below `lg` the list is a collapse under the "On this page" button.
   .cxd-toc-collapse {
-    @include media-breakpoint-down(md) {
+    @include media-breakpoint-down(lg) {
       nav {
         padding: 1.25rem 1.25rem 1.25rem 1rem;
+        margin-block-end: var(--cx-space-lg);
         background-color: var(--cx-bg-even);
         border: var(--cx-border-width) solid var(--cx-border-subtle);
         @include border-radius(var(--cx-border-radius-md));
       }
     }
 
-    @include media-breakpoint-up(md) {
+    @include media-breakpoint-up(lg) {
       display: block;
     }
   }

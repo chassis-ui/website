@@ -28,7 +28,7 @@ posts.forEach((post) => {
       <h2 class="font-h3 fg-subtle m-0" id={`blog-year-${year}`}>
         {year}
       </h2>
-      <div class="blog-rows">
+      <div class="border-bottom border-subtle">
         {yearPosts.map((post) => (
           <BlogPostRow post={post} />
         ))}

@@ -2,9 +2,10 @@
 // scoped to one class. `writeBrandPreview()` runs this file in a process of its own: Astro
 // loads its config through a Vite module runner, which is closed by the time of the hooks.
 //
-// The output holds the custom properties of the brand (the `:root` of Chassis CSS, in the `root`
-// layer) and the components that the preview card uses, every rule under the scope class. The
-// card sets its theme with `data-cx-theme`, so the theme rules apply to the scope element too.
+// The output holds only the custom properties of the brand (the `:root` of Chassis CSS and its
+// themes, in the `root` layer), under the scope class. The components of the card are those of
+// the page: their rules are the same for every brand and read these properties. The card sets
+// its theme with `data-cx-theme`, so the theme rules apply to the scope element too.
 
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
@@ -20,16 +21,6 @@ const { chassisPostcss } = await import(
   require.resolve('@chassis-ui/css/postcss', { paths: [root] })
 )
 
-const partials = [
-  'root',
-  'button',
-  'nav',
-  'progress',
-  'forms/form-field',
-  'forms/form-label',
-  'forms/form-input'
-]
-
 // A load path whose `_chassis-tokens.scss` forwards the tokens of the brand.
 const loadPath = path.join(root, 'node_modules/.cache/chassis-website/brand-preview')
 fs.mkdirSync(loadPath, { recursive: true })
@@ -38,14 +29,11 @@ fs.writeFileSync(
   `@forward "${path.relative(loadPath, tokens).split(path.sep).join('/')}";\n`
 )
 
-const { css } = sass.compileString(
-  partials.map((partial) => `@use "@chassis-ui/css/scss/${partial}";`).join('\n'),
-  {
-    loadPaths: [loadPath, path.join(root, 'node_modules')],
-    quietDeps: true,
-    style: 'compressed'
-  }
-)
+const { css } = sass.compileString('@use "@chassis-ui/css/scss/root";', {
+  loadPaths: [loadPath, path.join(root, 'node_modules')],
+  quietDeps: true,
+  style: 'compressed'
+})
 
 /** Puts a selector of Chassis CSS under the scope class. */
 function scope(selectorText) {

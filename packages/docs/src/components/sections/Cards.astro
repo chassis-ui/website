@@ -1,0 +1,59 @@
+---
+/**
+ * Cards
+ *
+ * A grid of cards, the content of a `<Section>`: three on a row from `lg`, two from `md`. A
+ * card is one link, with an icon, a name, a body and the word of its action.
+ *
+ * The icons are those of `icons/cx-sprite.svg` of the assets that every Chassis site unpacks
+ * (chassis-ui/website-assets), the marks of the Chassis packages among them (`cx-swatchbook`,
+ * `cx-figma`, `cx-brackets-curly`, `cx-react`, `cx-folder-tree`, `cx-icons`). `sprite` names
+ * another file.
+ */
+
+import Icon from '../shortcodes/Icon.astro'
+import { getVersionedStaticPath } from '../../site'
+import '../../scss/sections.scss'
+
+interface Card {
+  name: string
+  /** The id of the icon in the sprite. */
+  icon: string
+  href: string
+  body: string
+}
+
+interface Props {
+  cards: Card[]
+  /** The word next to the arrow of each card, in normal case: it is set in capitals by CSS. */
+  action?: string
+  /** The sprite of the icons, under the static path. */
+  sprite?: string
+}
+
+const { cards, action = 'Explore', sprite = 'icons/cx-sprite.svg' } = Astro.props
+const spritePath = getVersionedStaticPath(sprite)
+---
+
+<ul class="grid row-gap-xl bulletless m-0" data-reveal="children">
+  {cards.map((card) => (
+    <li class="col-span-full md:col-span-6 lg:col-span-4 cxd-card position-relative rounded-md p-md lg:p-xl vstack gap-sm">
+      <span class="pb-xs">
+        <Icon name={card.icon} sprite={spritePath} size={32} class="icon-primary cxd-card-icon" />
+      </span>
+      <h3 class="font-title m-0">
+        <a class="stretched-link" href={card.href}>
+          {card.name}
+        </a>
+      </h3>
+      <p class="font-body fg-subtle m-0">{card.body}</p>
+      <span
+        class="pt-xs font-label-sm primary-fg-main text-uppercase d-inline-flex align-items-center gap-xs"
+        aria-hidden="true"
+      >
+        {action}
+        <Icon name="arrow-right-outline" class="icon-reset icon-sm cxd-arrow" />
+      </span>
+    </li>
+  ))}
+</ul>

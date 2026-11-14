@@ -1,14 +1,189 @@
 ---
-import SingleLayout from '@chassis-ui/docs/layouts/SingleLayout.astro'
+/**
+ * The home page of a package, composed of the sections of `@chassis-ui/docs`. Replace the
+ * copy, keep the sections you need, and put a section of your own between them inside a
+ * `<Section>`. See "Home page sections" in the README of the package.
+ */
+
+import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
+import Cards from '@chassis-ui/docs/sections/Cards.astro'
+import Doors from '@chassis-ui/docs/sections/Doors.astro'
+import Facts from '@chassis-ui/docs/sections/Facts.astro'
+import Hero from '@chassis-ui/docs/sections/Hero.astro'
+import Rows from '@chassis-ui/docs/sections/Rows.astro'
+import Section from '@chassis-ui/docs/sections/Section.astro'
+import Steps from '@chassis-ui/docs/sections/Steps.astro'
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
 import { getConfig, getDocsPath } from '@chassis-ui/docs/site'
 
-const { description, title } = getConfig()
+const { description, title, repo, currentVersion } = getConfig()
+
+const benefits = [
+  {
+    label: 'First benefit',
+    title: 'Say what the reader gets, in one line.',
+    points: [
+      'A point that supports the claim, in one or two lines.',
+      'A second point. Three points per row keep the rows even.',
+      'A third point.'
+    ]
+  },
+  {
+    label: 'Second benefit',
+    title: 'One claim per row, for one kind of reader.',
+    points: ['A point for this claim.', 'A second point.', 'A third point.']
+  },
+  {
+    label: 'Third benefit',
+    title: 'Three rows fill the section.',
+    points: ['A point for this claim.', 'A second point.', 'A third point.']
+  }
+]
+
+const steps = [
+  {
+    name: 'From start to result',
+    stations: [
+      {
+        label: '01 · First',
+        title: 'Name the first step.',
+        body: 'What the reader does first, in two lines at most.'
+      },
+      {
+        label: '02 · Then',
+        title: 'Name the second step.',
+        body: 'What happens next, and what does it for them.'
+      },
+      {
+        label: '03 · Last',
+        title: 'Name the result.',
+        body: 'What the reader has when the steps are done.'
+      }
+    ]
+  }
+]
+
+const related = [
+  {
+    name: 'Chassis Tokens',
+    icon: 'cx-swatchbook',
+    href: 'https://chassis-ui.com/tokens/',
+    body: 'Design decisions as data, built for the web, iOS and Android.'
+  },
+  {
+    name: 'Chassis CSS',
+    icon: 'cx-brackets-curly',
+    href: 'https://chassis-ui.com/css/',
+    body: 'Custom properties and classes built from the tokens.'
+  },
+  {
+    name: 'Chassis Figma',
+    icon: 'cx-figma',
+    href: 'https://chassis-ui.com/figma/',
+    body: 'The component library, bound to the tokens.'
+  }
+]
+
+const facts = [
+  { name: 'First fact', detail: 'What the package is built on' },
+  { name: 'Second fact', detail: 'A standard it follows' },
+  { name: 'Third fact', detail: 'A tool it works with' },
+  { name: 'Fourth fact', detail: 'Its licence' }
+]
+
+// A door is one page of the docs, with its real title. The groups follow `data/sidebar.yml`.
+const doors = [
+  {
+    label: 'Getting started',
+    doors: [
+      {
+        name: 'Introduction',
+        href: getDocsPath('/getting-started/introduction/'),
+        body: 'What the site documents and how its pages are organized.'
+      },
+      {
+        name: 'Shortcodes',
+        href: getDocsPath('/getting-started/shortcodes/'),
+        body: 'Every shortcode that a page can use, with an example.'
+      }
+    ]
+  },
+  {
+    label: 'Guides',
+    doors: [
+      {
+        name: 'Navigation',
+        href: getDocsPath('/guides/navigation/'),
+        body: 'How the sidebar and its groups are defined.'
+      },
+      {
+        name: 'Grouped Page',
+        href: getDocsPath('/guides/grouped-page/'),
+        body: 'A page inside a group of the sidebar.'
+      }
+    ]
+  }
+]
 ---
 
-<SingleLayout title={title} description={description}>
-  <div class="container 2xl py-xl">
-    <a class="button primary" href={getDocsPath('/getting-started/introduction/')}>
-      Read the docs
-    </a>
-  </div>
-</SingleLayout>
+<BaseLayout title={title} description={description} navbarContext="alternate">
+  <Hero
+    kicker={title}
+    title="What the package is, in one line."
+    highlight={['What it does for the reader,', 'on two lines at most.']}
+    lead={description}
+    command="pnpm add your-package"
+    illustration="images/illustrations/hero-home.svg"
+    illustrationLabel="One app in the same brand on the web, on iOS and on Android"
+  >
+    <Fragment slot="actions">
+      <a class="button primary lg" href={getDocsPath('/getting-started/introduction/')}>
+        <Icon name="book-open-outline" />
+        Getting Started
+      </a>
+      <a class="button white outline lg" href={repo}>
+        <Icon name="github-brand" />
+        View on GitHub
+      </a>
+    </Fragment>
+    <Fragment slot="meta">Currently v{currentVersion}</Fragment>
+  </Hero>
+
+  <Section
+    id="what"
+    eyebrow="What you get"
+    title={['The promise of the package', 'on two lines of the title.']}
+    lead="Two lines that say who the package is for and what changes for them."
+  >
+    <Rows rows={benefits} />
+  </Section>
+
+  <Section
+    id="how"
+    eyebrow="How it works"
+    title={['From the first step', 'to the result.']}
+    lead="Two lines that say how many steps there are and what none of them asks of the reader."
+  >
+    <Steps stages={steps} />
+  </Section>
+
+  <Section
+    id="works-with"
+    eyebrow="Works with"
+    title={['Where the package sits', 'among the others.']}
+    lead="Two lines that say which packages this one reads from, and which ones read from it."
+  >
+    <Cards cards={related} />
+  </Section>
+
+  <Facts label="Built on" facts={facts} />
+
+  <Section
+    id="docs"
+    eyebrow="Get started"
+    title={['Start with the page', 'that matches your task.']}
+    lead="Each link opens one page of the docs."
+  >
+    <Doors groups={doors} />
+  </Section>
+</BaseLayout>

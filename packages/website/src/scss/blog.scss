@@ -1,60 +1,15 @@
-// The blog: the list of posts, the pagination, the post and its pager.
+// The blog: what utilities cannot do. The hover colours of links (a utility would win over the
+// hover, which is in the custom layer) and the text of a post, whose Markdown has no classes.
 
 @use "@chassis-ui/css/scss/mixins" as *;
 
 @layer custom {
-  //
-  // List
-  //
-
-  .blog-rows {
-    border-block-end: var(--cx-border-width-md) solid var(--cx-border-subtle);
-
-    > .blog-row {
-      border-block-start: var(--cx-border-width-md) solid var(--cx-border-subtle);
-    }
-  }
-
+  // The title of a row: the main colour, the highlight colour on hover.
   .blog-row-title {
     color: var(--cx-fg-main);
-    text-decoration: none;
 
     &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  .blog-row-more {
-    color: var(--cx-link-main);
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  .blog-pagination {
-    border-block-start: var(--cx-border-width-md) solid var(--cx-border-subtle);
-  }
-
-  //
-  // Post
-  //
-
-  .blog-back {
-    border-block-end: var(--cx-border-width-md) solid var(--cx-border-subtle);
-  }
-
-  // The back link: the font of a medium button, upper case, in the colour of links.
-  .blog-back-link {
-    @include font-size(var(--cx-font-size-md));
-    font-weight: var(--cx-font-weight-strong);
-    color: var(--cx-link-main);
-    text-decoration: none;
-    text-transform: uppercase;
-
-    &:hover {
-      text-decoration: underline;
+      color: var(--cx-fg-highlight);
     }
   }
 
@@ -92,20 +47,10 @@
     }
   }
 
-  // The previous and next posts: two cards without a border.
-  .blog-pager {
-    row-gap: var(--cx-space-md);
-  }
-
+  // A previous or next post: a card on bg-even, bg-evident on hover.
   .blog-pager-link {
-    display: flex;
-    flex-direction: column;
-    gap: var(--cx-space-2xs);
-    padding: var(--cx-space-md) var(--cx-space-lg);
     color: var(--cx-link-main);
-    text-decoration: none;
     background-color: var(--cx-bg-even);
-    @include border-radius(var(--cx-border-radius-md));
 
     &:hover {
       background-color: var(--cx-bg-evident);

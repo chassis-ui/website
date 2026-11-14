@@ -63,21 +63,26 @@ const lead = 'Working multi-brand projects built with Chassis, with their source
                 View on GitHub
               </a>
             </div>
-            <ul class="col-span-full page-list examples-pair">
+            <ul class="col-span-full bulletless m-0 d-grid md:grid-cols-2 gap-xl md:gap-6xl">
               {example.sites.map((site) => (
                 <li class="vstack gap-md align-items-start">
-                  <a href={site.url} class="examples-preview rounded-md" tabindex="-1">
+                  <a
+                    href={site.url}
+                    class="d-block w-100 overflow-hidden bg-evident rounded-md"
+                    tabindex="-1"
+                  >
                     <img
                       src={site.image.src}
                       width={site.image.width}
                       height={site.image.height}
                       alt={site.alt}
                       loading="lazy"
+                      class="d-block w-100 h-auto"
                     />
                   </a>
                   <a
                     href={site.url}
-                    class="examples-link font-sm font-strong d-inline-flex align-items-center gap-xs"
+                    class="icon-link icon-link-hover font-sm font-strong text-decoration-none"
                   >
                     {site.label}
                     <Icon name="arrow-right-outline" class="icon-reset icon-sm" />
@@ -87,7 +92,7 @@ const lead = 'Working multi-brand projects built with Chassis, with their source
             </ul>
           </section>
         ))}
-        <div class="examples-pair">
+        <div class="d-grid md:grid-cols-2 gap-xl md:gap-6xl">
           {apps.map((app) => (
             <section class="vstack gap-md align-items-start" aria-label={app.title}>
               <h2 class="font-h2 m-0">{app.title}</h2>

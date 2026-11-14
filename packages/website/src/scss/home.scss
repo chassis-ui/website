@@ -1,201 +1,51 @@
-// The home page. Values that no context token carries are named where they are used: the
-// head-to-content gap (space/unit/64, space/context/6xlarge on phones), the top padding of the
-// hero (space/unit/96), the cell of the hero grid, the lights, the width of the Switch card and
-// the length of its spec lines.
+// The sections that only the home page has: the Problem rows, the Switch card and the contact
+// form. The sections it shares with the home pages of the packages are in
+// `@chassis-ui/docs/scss/sections`. Values that no context token carries are named where they
+// are used: the width of the Switch card and the length of its spec lines.
 
 @use "@chassis-ui/css/scss/functions" as *;
 @use "@chassis-ui/css/scss/mixins" as *;
-@use "./backdrop";
 @use "./home-motion";
 
 @layer custom {
-  .home-section {
-    padding-block: var(--cx-space-6xl);
-  }
-
-  // The head of a section and its content: space/unit/64.
-  .home-section-body {
-    display: flex;
-    flex-direction: column;
-    gap: 4rem;
-
-    @include media-breakpoint-down(md) {
-      gap: var(--cx-space-6xl);
-    }
-  }
-
-  // The title of a section: the text style `section-title-lg` of the design, the heading face
-  // at prose/5xlarge, and `section-title-sm` (prose/2xlarge on the h3 line height) on phones.
-  .home-section-title {
-    margin: 0;
-    font-family: var(--cx-font-family-heading);
-    @include font-size(var(--cx-font-size-prose-5xl));
-    font-weight: var(--cx-font-weight-heading);
-    @include line-height(var(--cx-line-height-prose-5xl));
-
-    @include media-breakpoint-down(md) {
-      @include font-size(var(--cx-font-size-prose-2xl));
-      @include line-height(var(--cx-line-height-h3));
-    }
-  }
-
-  // Hairline rows: a line above each row and one under the last.
-  .home-rows {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    border-block-end: var(--cx-border-width-md) solid var(--cx-border-subtle);
-
-    > * {
-      border-block-start: var(--cx-border-width-md) solid var(--cx-border-subtle);
-    }
-  }
-
-  //
-  // Rails
-  //
-  // A row of stations. Each item draws the line above it into the gap that follows it, so the
-  // items of a row draw one line, and a row that wraps draws one line per row. The rail clips
-  // the line of the last item of a row at its edge. The dot sits at the start of each item.
-  //
-
-  .home-rail {
-    --home-rail-gap: var(--cx-space-xl);
-    --home-rail-color: var(--cx-alternate-border-main);
-    --home-rail-dot: var(--cx-alternate-cue-main);
-    row-gap: var(--cx-space-xl);
-    column-gap: var(--home-rail-gap);
-    padding: 0;
-    margin: 0;
-    overflow-x: clip;
-    list-style: none;
-  }
-
-  .home-rail-item {
-    position: relative;
-    padding-block-start: var(--cx-space-xl);
-
-    &::before {
-      position: absolute;
-      inset-block-start: 0;
-      inset-inline: 0 calc(var(--home-rail-gap) * -1);
-      content: "";
-      border-block-start: var(--cx-border-width-md) solid var(--home-rail-color);
-    }
-
-    &::after {
-      position: absolute;
-      inset-block-start: -.1875rem;
-      inset-inline-start: 0;
-      width: .4375rem;
-      height: .4375rem;
-      content: "";
-      background-color: var(--home-rail-dot);
-      @include border-radius(50%);
-    }
-  }
-
   //
   // Hero
   //
 
-  .home-hero {
-    padding-block: 6rem var(--cx-space-xl);
-    @include backdrop.alternate-backdrop(46.875rem 37.5rem, calc(50% + 21.3125rem) 37.5rem);
-  }
+  // A station of the rail is a link: its name in the main colour, the highlight colour on
+  // hover. The colours are those of the context of the hero.
+  .home-rail-link {
+    color: var(--cx-fg-main);
+    text-decoration: none;
 
-  .home-hero-body {
-    gap: 6rem;
-
-    @include media-breakpoint-down(lg) {
-      gap: var(--cx-space-6xl);
+    &:hover,
+    &:focus-visible {
+      color: var(--cx-fg-highlight);
     }
-  }
-
-  .home-hero-highlight {
-    color: var(--cx-alternate-cue-main);
-  }
-
-  // The design sets 48 between the columns of this row (the grid of the page sets 24); below
-  // `lg` the columns stack and the grid keeps its gutter.
-  .home-hero-row {
-    row-gap: var(--cx-space-6xl);
-
-    @include media-breakpoint-up(lg) {
-      column-gap: var(--cx-space-6xl);
-    }
-  }
-
-  .home-hero-illustration {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  .home-hero-rail .home-rail-item {
-    padding-block: var(--cx-space-lg);
   }
 
   //
-  // Idea
+  // Problem
+  //
+  // The statement of a row: the h2 style from `md`, the h4 style on phones. The heading text
+  // classes of Chassis CSS take no breakpoint, so the two sizes are set here.
   //
 
-  .home-idea-panel {
-    padding: var(--cx-space-xl);
-    background-color: var(--cx-alternate-bg-main);
-    background-image: backdrop.light(50rem 28.125rem, 50% 20.75rem);
+  .home-problem-statement {
+    font-family: var(--cx-font-family-heading);
+    @include font-size(var(--cx-font-size-h3));
+    font-weight: var(--cx-font-weight-heading);
+    @include line-height(var(--cx-line-height-h3));
 
     @include media-breakpoint-up(md) {
-      padding: var(--cx-space-6xl);
-    }
-  }
-
-  .home-idea-rail {
-    --home-rail-gap: var(--cx-space-6xl);
-    display: grid;
-
-    @include media-breakpoint-up(md) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  .home-idea-wide {
-    @include media-breakpoint-up(md) {
-      grid-column: span 2;
+      @include font-size(var(--cx-font-size-h2));
+      @include line-height(var(--cx-line-height-h2));
     }
   }
 
   //
   // Switch
   //
-
-  // The switches above the card, the card, then (below `lg`) the list of its tokens.
-  .home-switch {
-    display: flex;
-    flex-direction: column;
-    gap: var(--cx-space-5xl);
-    align-items: center;
-  }
-
-  .home-switch-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--cx-space-3xl);
-    justify-content: center;
-  }
-
-  // A label and its switch: side by side from `md`, the label above below it.
-  .home-switch-control {
-    display: flex;
-    flex-direction: column;
-    gap: var(--cx-space-xs);
-
-    @include media-breakpoint-up(md) {
-      flex-direction: row;
-      gap: var(--cx-space-sm);
-      align-items: center;
-    }
-  }
 
   // The card and its specs: the script sets the `top` of each line and number to the middle of
   // its part.
@@ -297,35 +147,14 @@
   }
 
   // The tokens of each number. From `lg` the lines show them, and the list is for assistive
-  // technology only.
+  // technology only. Its text is `font-sm` in size on the line height of the body, which the
+  // text class would change.
   .home-spec-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--cx-space-sm);
-    align-self: stretch;
-    padding: 0;
-    margin: 0;
-    font-family: var(--cx-font-family-code);
     @include font-size(var(--cx-font-size-sm));
-    color: var(--cx-fg-subtle);
-    list-style: none;
-
-    > li {
-      display: flex;
-      gap: var(--cx-space-xs);
-      align-items: flex-start;
-    }
 
     @include media-breakpoint-up(lg) {
       @include visually-hidden();
     }
-  }
-
-  // A card sets its own theme, and the preview brand its own fonts: the text takes them here,
-  // not from the body of the page.
-  .home-switch-card {
-    font-family: var(--cx-font-family-ui);
-    color: var(--cx-fg-main);
   }
 
   // The progress bar of the design (Progress Bar - 10 Segments): an 8px track in dim-slight with
@@ -338,72 +167,13 @@
   }
 
   .home-switch-mark {
-    display: inline-block;
-    flex-shrink: 0;
     width: 1rem;
     height: 1rem;
   }
 
   //
-  // Team, packages and doors
+  // Contact
   //
-
-  .home-points {
-    list-style: none;
-  }
-
-  .home-point-icon {
-    flex-shrink: 0;
-    margin-block-start: .25rem;
-  }
-
-  .home-packages {
-    list-style: none;
-  }
-
-  // The card takes its background here, not from `bg-even`: a utility would win over the hover.
-  .home-package {
-    background-color: var(--cx-bg-even);
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    &:hover {
-      background-color: var(--cx-bg-evident);
-    }
-  }
-
-  .home-package-icon {
-    width: 2rem;
-    height: 2rem;
-  }
-
-  .home-doors {
-    list-style: none;
-
-    > li {
-      border-block-start: var(--cx-border-width-md) solid var(--cx-border-subtle);
-    }
-  }
-
-  .home-door {
-    color: var(--cx-fg-main);
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  //
-  // Facts and contact
-  //
-
-  .home-facts-list {
-    border-block: var(--cx-border-width-md) solid var(--cx-border-subtle);
-  }
 
   // The line under the form links to the privacy page and reads as plain text until hovered.
   .home-form-note {

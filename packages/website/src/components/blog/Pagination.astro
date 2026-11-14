@@ -23,7 +23,7 @@ const pages = Array.from({ length: page.lastPage }, (_, i) => i + 1)
 ---
 
 {page.lastPage > 1 && (
-  <nav aria-label={ariaLabel} class="blog-pagination d-flex justify-content-center p-md">
+  <nav aria-label={ariaLabel} class="d-flex border-top border-subtle justify-content-center p-md">
     <ul class="pagination">
       <li class:list={[{ disabled: !page.url.prev }]}>
         {page.url.prev ? (

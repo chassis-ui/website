@@ -1,20 +1,19 @@
-// The pages under the site chrome: the page hero of Blog, About and Examples, and the bodies of
-// About, Examples, Privacy and the 404 page. Values that no context token
+// The pages under the site chrome: what utilities cannot do. The page hero of Blog, About and
+// Examples, the bands of the pages, hover states and the 404 page. Values that no context token
 // carries are named where they are used: the padding of the bands (space/unit/64) and the
 // lights.
 
 @use "@chassis-ui/css/scss/mixins" as *;
-@use "./backdrop";
+@use "@chassis-ui/docs/scss/backdrop";
 
 @layer custom {
   .page-hero {
     padding-block: 4rem;
-    @include backdrop.alternate-backdrop(46.875rem 30rem, calc(50% + 21.3125rem) 30rem);
-  }
+    @include backdrop.alternate-backdrop(48rem 28rem, 75% 28rem);
 
-  // The panel of an aside in the hero: dark on dark, with a hairline.
-  .page-hero-panel {
-    border: var(--cx-border-width-md) solid var(--cx-alternate-border-subtle);
+    @include media-breakpoint-down(md) {
+      padding-block: 2rem;
+    }
   }
 
   // A light section under the hero: space/unit/64 above and below, and between its blocks.
@@ -25,126 +24,31 @@
     padding-block: 4rem;
   }
 
-  .page-list {
-    padding: 0;
-    margin: 0;
-    list-style: none;
+  // A link with no underline until hovered: the download links of About and the site links of
+  // Examples. A utility would win over the hover, so both are set here.
+  .page-plain-link {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   //
   // About
   //
 
-  .about-stats {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--cx-space-md);
-  }
-
-  .about-logos {
-    display: grid;
-    gap: var(--cx-space-xl);
-
-    @include media-breakpoint-up(sm) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
   // A logo on a tile of its own theme: the tile is as high as the stat tiles beside the text.
   .about-logo-tile {
     min-height: 7.5rem;
-    padding: var(--cx-space-xl);
-
-    img {
-      max-width: 100%;
-      height: auto;
-    }
   }
 
-  .about-download {
-    color: var(--cx-link-main);
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  // One repository: the GitHub mark, the name and what it is, the external-link mark. The whole
-  // row is the link.
-  .about-repo {
-    position: relative;
-    display: flex;
-    gap: var(--cx-space-md);
-    align-items: center;
-    background-color: transparent;
-  }
-
+  // The row of a repository is the link (`stretched-link`); its name is underlined on hover.
   .about-repo-link {
-    flex: 1;
+    color: var(--cx-fg-main);
     text-decoration: none;
-
-    &::after {
-      position: absolute;
-      inset: 0;
-      content: "";
-    }
-
-    &:hover .font-code {
-      text-decoration: underline;
-    }
-  }
-
-  //
-  // Examples
-  //
-
-  // Two blocks side by side, 48 apart from `md` (the design sets 48, the grid 24): the sites of
-  // the web example, and the iOS and Android apps.
-  .examples-pair {
-    display: grid;
-    gap: var(--cx-space-xl);
-
-    @include media-breakpoint-up(md) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--cx-space-6xl);
-    }
-  }
-
-  .examples-preview {
-    display: block;
-    width: 100%;
-    overflow: hidden;
-    background-color: var(--cx-bg-evident);
-
-    img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-  }
-
-  .examples-link {
-    color: var(--cx-link-main);
-    text-decoration: none;
-
     &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  //
-  // Privacy
-  //
-
-  // The policy: the header, then each heading with its paragraphs, in body/medium.
-  .privacy {
-    > header {
-      margin-block-end: var(--cx-space-md);
-    }
-
-    p {
-      margin-block: 0 var(--cx-space-md);
+      color: var(--cx-fg-highlight);
     }
   }
 

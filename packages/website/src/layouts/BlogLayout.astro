@@ -52,14 +52,14 @@ const meta = `${plural(blogPages.length, 'post')}  ·  ${plural(tagCounts.size, 
             <slot name="breadcrumb" />
           </nav>
         )}
-        <div class="page-hero-panel rounded-md p-xl vstack gap-xl" slot="aside">
+        <div class="bg-main border border-subtle rounded-md p-xl vstack gap-xl" slot="aside">
           <p class="d-flex align-items-baseline justify-content-between gap-xs m-0">
-            <span class="font-title-sm alternate-fg-main">Popular Tags</span>
-            <a href="/blog/tags/" class="link-alternate">
+            <span class="font-title-sm fg-main">Popular Tags</span>
+            <a href="/blog/tags/" class="text-decoration-none">
               View all tags
             </a>
           </p>
-          <ul class="page-list d-flex flex-wrap gap-md">
+          <ul class="bulletless m-0 d-flex flex-wrap gap-md">
             {popularTags.map((tag) => (
               <li>
                 <a href={`/blog/tags/${encodeURIComponent(tag)}/`} class="chip primary smooth">

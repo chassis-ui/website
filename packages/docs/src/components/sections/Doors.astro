@@ -1,0 +1,52 @@
+---
+/**
+ * Doors
+ *
+ * Three cards of doors, the content of a `<Section>`: a label, then the doors, each a link to
+ * one page with a line about it.
+ */
+
+import Icon from '../shortcodes/Icon.astro'
+import '../../scss/sections.scss'
+
+interface Door {
+  /** The title of the page. */
+  name: string
+  href: string
+  body: string
+}
+
+interface Group {
+  /** The short line above the doors, in normal case: it is set in capitals by CSS. */
+  label: string
+  doors: Door[]
+}
+
+interface Props {
+  groups: Group[]
+}
+
+const { groups } = Astro.props
+---
+
+<div class="grid row-gap-xl" data-reveal="children">
+  {groups.map((group) => (
+    <div class="col-span-full md:col-span-4 bg-even rounded-md pt-lg px-md lg:px-xl pb-xs vstack gap-sm">
+      <h3 class="font-label-sm primary-fg-main text-uppercase m-0">{group.label}</h3>
+      <ul class="bulletless m-0">
+        {group.doors.map((door) => (
+          <li class="vstack gap-xs py-md position-relative border-top border-subtle">
+            <a
+              class="cxd-door font-title d-inline-flex align-items-center gap-xs stretched-link"
+              href={door.href}
+            >
+              {door.name}
+              <Icon name="arrow-right-outline" class="icon-sm cxd-arrow" />
+            </a>
+            <p class="font-body fg-subtle m-0">{door.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>

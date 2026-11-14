@@ -312,6 +312,72 @@ describe('vendorAssets', () => {
 
     expect(fs.readFileSync(path.join(root, output, 'fonts/fonts.css'), 'utf8')).toBe('a')
   })
+
+  // The checkout of `.env.local`
+  const read = (root: string) => fs.readFileSync(path.join(root, output, 'fonts/fonts.css'), 'utf8')
+
+  test('takes the checkout that .env.local names, on every run', async () => {
+    const { root, cacheDir, fetcher } = setup()
+    const options = { root, cacheDir, fetcher: fetcher as typeof fetch }
+    const checkout = createTempDir({ 'dist/web/docs/chassis/fonts/fonts.css': 'local' })
+
+    fs.writeFileSync(path.join(root, '.env.local'), `# Mine\n${CHECKOUT_VARIABLE}=${checkout}\n`)
+    await vendorAssets(options)
+
+    expect(read(root)).toBe('local')
+
+    fs.writeFileSync(path.join(checkout, 'dist/web/docs/chassis/fonts/fonts.css'), 'changed')
+    await vendorAssets(options)
+
+    expect(read(root)).toBe('changed')
+  })
+
+  test('puts the environment before .env.local, and .env.local before .env', async () => {
+    const { root, cacheDir, fetcher } = setup()
+    const options = { root, cacheDir, fetcher: fetcher as typeof fetch }
+    const [first, second, third] = ['first', 'second', 'third'].map((content) =>
+      createTempDir({ 'dist/web/docs/chassis/fonts/fonts.css': content })
+    )
+
+    fs.writeFileSync(path.join(root, '.env'), `${CHECKOUT_VARIABLE}=${third}\n`)
+    await vendorAssets(options)
+    expect(read(root)).toBe('third')
+
+    fs.writeFileSync(path.join(root, '.env.local'), `${CHECKOUT_VARIABLE}=${second}\n`)
+    await vendorAssets(options)
+    expect(read(root)).toBe('second')
+
+    vi.stubEnv(CHECKOUT_VARIABLE, first)
+    await vendorAssets(options)
+    expect(read(root)).toBe('first')
+  })
+
+  test('takes the release when the environment sets the variable to nothing', async () => {
+    const { root, cacheDir, fetcher } = setup()
+    const checkout = createTempDir({ 'dist/web/docs/chassis/fonts/fonts.css': 'local' })
+
+    fs.writeFileSync(path.join(root, '.env.local'), `${CHECKOUT_VARIABLE}=${checkout}\n`)
+    vi.stubEnv(CHECKOUT_VARIABLE, '')
+    await vendorAssets({ root, cacheDir, fetcher: fetcher as typeof fetch })
+
+    expect(read(root)).toBe('a')
+  })
+
+  test('reads a path that is not absolute from the root, and names the file when it has no build', async () => {
+    const { root, cacheDir, fetcher } = setup()
+    const options = { root, cacheDir, fetcher: fetcher as typeof fetch }
+
+    fs.mkdirSync(path.join(root, 'assets/dist/web/docs/chassis/fonts'), { recursive: true })
+    fs.writeFileSync(path.join(root, 'assets/dist/web/docs/chassis/fonts/fonts.css'), 'beside')
+    fs.writeFileSync(path.join(root, '.env.local'), `${CHECKOUT_VARIABLE}=assets\n`)
+    await vendorAssets(options)
+
+    expect(read(root)).toBe('beside')
+
+    fs.writeFileSync(path.join(root, '.env.local'), `${CHECKOUT_VARIABLE}=nowhere\n`)
+
+    await expect(vendorAssets(options)).rejects.toThrow(/of \.env\.local is nowhere/)
+  })
 })
 
 describe('syncAssets', () => {

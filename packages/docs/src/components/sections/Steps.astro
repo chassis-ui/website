@@ -1,0 +1,55 @@
+---
+/**
+ * Steps
+ *
+ * One dark panel of rails, the content of a `<Section>`: a stage word above each rail, and up
+ * to three stations on a rail, each a label, an optional title and a body. A `wide` station
+ * spans two. The rails draw one after the other when the panel scrolls into view
+ * (scss/_motion.scss).
+ */
+
+import RailItem from './RailItem.astro'
+import '../../scss/sections.scss'
+
+interface Station {
+  /** The short line of the station, in normal case: it is set in capitals by CSS. */
+  label: string
+  title?: string
+  body: string
+  /** The station spans two of the three columns. */
+  wide?: boolean
+}
+
+interface Stage {
+  /** The word above the rail, in normal case: it is set in capitals by CSS. */
+  name: string
+  stations: Station[]
+}
+
+interface Props {
+  /** The rails of the panel, up to three. */
+  stages: Stage[]
+}
+
+const { stages } = Astro.props
+---
+
+<div
+  class="cxd-steps-panel context alternate bg-main p-xl md:p-6xl rounded-lg vstack gap-3xl"
+  data-reveal="rails"
+>
+  {stages.map((stage) => (
+    <div class="cxd-steps-stage vstack gap-md">
+      <h3 class="font-code font-sm font-normal fg-subtle text-uppercase m-0">{stage.name}</h3>
+      <ul class="cxd-rail cxd-steps-rail d-grid md:grid-cols-3">
+        {stage.stations.map((station) => (
+          <RailItem class:list={[{ 'cxd-steps-wide md:col-span-2': station.wide }]}>
+            <p class="font-label-sm fg-highlight text-uppercase m-0">{station.label}</p>
+            {station.title && <p class="font-title fg-main m-0">{station.title}</p>}
+            <p class="font-body fg-subtle m-0">{station.body}</p>
+          </RailItem>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>

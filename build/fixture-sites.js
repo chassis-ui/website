@@ -155,8 +155,8 @@ function createRepository(name, layout, tarball, tempDir) {
   }
 
   // Every Chassis site unpacks an archive of the assets into `vendor/assets`. The fixture
-  // tests the package, not the assets, so a stand-in for each brand holds the two files that
-  // the layouts need at build time.
+  // tests the package, not the assets, so a stand-in for each brand holds the files that the
+  // layouts and the hero of the home page need at build time.
   for (const brand of ['chassis', previewBrand]) {
     const imagesDir = path.join(repositoryDir, `vendor/assets/dist/web/docs/${brand}/images`)
 
@@ -165,6 +165,11 @@ function createRepository(name, layout, tarball, tempDir) {
     fs.writeFileSync(
       path.join(imagesDir, 'site-logo.svg'),
       '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>\n'
+    )
+    fs.mkdirSync(path.join(imagesDir, 'illustrations'))
+    fs.writeFileSync(
+      path.join(imagesDir, 'illustrations/hero-home.svg'),
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 264"/>\n'
     )
   }
 

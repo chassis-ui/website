@@ -23,7 +23,7 @@ const day = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long' })
 const byline = [post.data.author, getReadingTime(post.body || '')].filter(Boolean).join('  ·  ')
 ---
 
-<article class="grid row-gap-md py-3xl blog-row">
+<article class="grid row-gap-md py-3xl border-top border-subtle">
   <a href={url} class="col-span-full md:col-span-4" tabindex="-1" aria-hidden="true">
     {post.data.image ? (
       <MediaImage
@@ -50,13 +50,16 @@ const byline = [post.data.author, getReadingTime(post.body || '')].filter(Boolea
       {day}
     </time>
     <h3 class="font-h2 m-0">
-      <a href={url} class="blog-row-title">
+      <a href={url} class="text-decoration-none blog-row-title">
         {post.data.title}
       </a>
     </h3>
-    <p class="fg-subtle m-0">{byline}</p>
-    {post.data.description && <p class="font-body m-0">{post.data.description}</p>}
-    <a href={url} class="blog-row-more font-sm font-strong d-inline-flex align-items-center gap-xs">
+    <p class="fg-subtle mb-xs">{byline}</p>
+    {post.data.description && <p class="font-body">{post.data.description}</p>}
+    <a
+      href={url}
+      class="icon-link icon-link-hover font-sm font-strong text-decoration-none text-uppercase"
+    >
       Read More
       <Icon name="arrow-right-outline" class="icon-reset icon-sm" />
       <span class="visually-hidden">: {post.data.title}</span>
