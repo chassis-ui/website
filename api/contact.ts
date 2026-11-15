@@ -12,11 +12,11 @@ const TOPIC_LABELS: Record<string, string> = {
   other: 'Other'
 }
 
-// The form sends four short fields. Anything larger is not from the form.
-const MAX_BODY_BYTES = 8 * 1024
+// The form sends four short fields and a message. Anything larger is not from the form.
+const MAX_BODY_BYTES = 16 * 1024
 
-// The same limits are set as `maxlength` on the form in `ContactSection.astro` of the home page.
-const MAX_LENGTHS = { name: 100, email: 254, company: 100 } as const
+// The same limits are set as `maxlength` on the form in `QuestionsSection.astro` of the home page.
+const MAX_LENGTHS = { name: 100, email: 254, company: 100, message: 2000 } as const
 
 function reply(status: number, body: Record<string, unknown>): Response {
   return new Response(JSON.stringify(body), {
@@ -87,6 +87,17 @@ function singleLine(value: FormDataEntryValue | null): string {
     .trim()
 }
 
+// The message keeps its line breaks. Other control characters become spaces, and the lines
+// lose their trailing spaces.
+function multiLine(value: FormDataEntryValue | null): string {
+  return (value?.toString() ?? '')
+    .replace(/\r\n?/g, '\n')
+    .replace(/[^\P{Cc}\n]+/gu, ' ')
+    .replace(/[^\S\n]+$/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, '&amp;')
@@ -127,6 +138,7 @@ export default async function handler(request: Request): Promise<Response> {
   const email = singleLine(data.get('email'))
   const company = singleLine(data.get('company'))
   const topic = singleLine(data.get('topic'))
+  const message = multiLine(data.get('message'))
 
   // Server-side validation
   if (!name || !email || !topic) {
@@ -136,7 +148,8 @@ export default async function handler(request: Request): Promise<Response> {
   if (
     name.length > MAX_LENGTHS.name ||
     email.length > MAX_LENGTHS.email ||
-    company.length > MAX_LENGTHS.company
+    company.length > MAX_LENGTHS.company ||
+    message.length > MAX_LENGTHS.message
   ) {
     return reply(400, { error: 'One of the fields is too long.' })
   }
@@ -163,6 +176,8 @@ export default async function handler(request: Request): Promise<Response> {
         <p><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>
         <p><strong>Company:</strong> ${company ? escapeHtml(company) : '—'}</p>
         <p><strong>Topic:</strong> ${topicLabel}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message ? escapeHtml(message).replace(/\n/g, '<br>') : '—'}</p>
       `
     })
 

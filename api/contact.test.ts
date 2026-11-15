@@ -62,6 +62,26 @@ describe('POST /api/contact', () => {
     })
     expect(message.html).toContain('<strong>Company:</strong> Analytical Engines')
     expect(message.html).toContain('<strong>Topic:</strong> Figma Components')
+    expect(message.html).toContain('<p>—</p>')
+  })
+
+  test('sends the message with its line breaks', async () => {
+    await handler(
+      post({ ...valid, message: '  Do we need Tokens Studio?\r\n\r\n\r\n\r\nWe use Figma.\t \n' })
+    )
+
+    expect(send.mock.calls[0][0].html).toContain(
+      '<p>Do we need Tokens Studio?<br><br>We use Figma.</p>'
+    )
+  })
+
+  test('escapes the message and removes its control characters', async () => {
+    await handler(post({ ...valid, message: '<script>alert(1)</script>\u0000\u0007& more' }))
+
+    const { html } = send.mock.calls[0][0]
+
+    expect(html).toContain('<p>&lt;script&gt;alert(1)&lt;/script&gt; &amp; more</p>')
+    expect(html).not.toContain('<script>')
   })
 
   test('trims the fields', async () => {
@@ -156,7 +176,8 @@ describe('POST /api/contact', () => {
   test.each([
     ['name', 101],
     ['email', 255],
-    ['company', 101]
+    ['company', 101],
+    ['message', 2001]
   ])('rejects a %s longer than %i characters', async (field, length) => {
     const value = field === 'email' ? `${'a'.repeat(length - 12)}@example.com` : 'a'.repeat(length)
     const response = await handler(post({ ...valid, [field]: value }))
@@ -174,7 +195,8 @@ describe('POST /api/contact', () => {
         ...valid,
         name: 'a'.repeat(100),
         email: `${'a'.repeat(242)}@example.com`,
-        company: 'a'.repeat(100)
+        company: 'a'.repeat(100),
+        message: '\u{1F600}'.repeat(1000)
       })
     )
 
@@ -182,14 +204,14 @@ describe('POST /api/contact', () => {
   })
 
   test('rejects an oversized body', async () => {
-    const response = await handler(post({ ...valid, company: 'a'.repeat(9000) }))
+    const response = await handler(post({ ...valid, company: 'a'.repeat(17000) }))
 
     expect(await json(response)).toEqual({ status: 413, body: { error: 'Request too large' } })
     expect(send).not.toHaveBeenCalled()
   })
 
   test('rejects an oversized body by its Content-Length', async () => {
-    const response = await handler(post(valid, { 'Content-Length': '9000' }))
+    const response = await handler(post(valid, { 'Content-Length': '17000' }))
 
     expect(response.status).toBe(413)
   })
