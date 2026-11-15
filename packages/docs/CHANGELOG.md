@@ -1,5 +1,44 @@
 # @chassis-ui/docs
 
+## 0.15.0
+
+### Minor Changes
+
+- The sections of a package home page are components, under `@chassis-ui/docs/sections/`: `Hero`, `Section`, `Rows`, `Steps`, `Cards`, `Doors`, `Facts` and `RailItem`. A page lists the sections it needs in its own order, and puts a section of its own inside a `<Section>`, so it lines up with the others. They are the sections of the home page of chassis-ui.com, which now uses them. See "Home page sections" in the README; the home page of the starter site has all of them.
+
+  `Hero` takes a `kicker` and a `command`, a line with a copy button, beside the claim, the lead and its slots. A hero with nothing under its row ends with the padding it starts with (96px, 64px on phones); one with a rail under it, as on chassis-ui.com, keeps 24px. Its `illustration` names an SVG of the static files, which it inlines: the heroes of the Chassis sites are `images/illustrations/hero-<name>.svg` of chassis-ui/website-assets, so a site needs a release of the assets that has them. The components load their styles (`@chassis-ui/docs/scss/sections`). `@chassis-ui/docs/scss/motion` and `@chassis-ui/docs/scss/backdrop` give a site's own stylesheets the timing of the motion and the backdrop of a dark band, and `@chassis-ui/docs/js/reveal.js` plays the motion of what scrolls into view.
+
+  The copy button of a code block shows its check mark again: `initCopyButtons()` kept the path of the sprite file when it changed the icon.
+
+  `chassis-docs vendor` reads `CHASSIS_ASSETS_CHECKOUT` from `.env.local` in the root of the repository too, after the environment, so a developer keeps the path of their checkout of the assets there and every run copies its build. A path that is not absolute is from the root, where it was from the working directory. The copy is complete before it replaces the old one, and the removal of the old folder is tried again when macOS writes a file into it, which failed the command with `ENOTEMPTY`.
+
+  The eyebrows, the kicker and the meta line of the hero, and the labels of rows, steps, cards and doors are set in capitals with CSS (`text-uppercase`): write them in normal case. `Cards` names its action `Explore` by default.
+
+  `Section` and `Hero` take their title and lead as text or as markup, in the `title` and `lead` slots: a word in italics, a highlighted word or line (`<mark>`, in the highlight color of the design) or a link. Each `<span>` child of a title is a line that breaks from `lg`.
+
+- The navbar, the footer and the docs layout follow the 2026-11 redesign of chassis-ui.com, in a `container 2xl`. The navbar is a full-width bar with one bottom border: the logo, a Packages menu with the six packages, named after the package of the page on a page of a package (there Docs leads to the docs of that package, and on a page of those docs the Docs link has the indicator, not the menu), Docs, Examples, Blog and About, the search field, the Figma and GitHub links and the theme menu. The indicator of the active link sits on the border of the bar. Below `lg` it shows the logo, a search button and a menu button that opens a navigation drawer with the same links and the theme menu. On a docs page it also shows, before the search button, a link with a caret that opens the docs navigation, named after the package of the page (`Tokens`), or `Docs` where the page is under no package; the list button before the logo is gone. The footer has the logo and a line about Chassis, the Docs, GitHub and Project columns, and the copyright with the Privacy and Cookie settings links on a hairline. The docs layout sits in a `container 2xl` instead of a fluid one, and "View on GitHub" is a medium button with the GitHub icon. Below `md` that link is its icon alone, beside the title. Below `lg` the table of contents is closed under a full-width "On this page" button, where it was open from `md`; the button is a `button default` with utilities, and the class `cxd-toc-toggle` is gone.
+
+  `<BaseLayout>` takes `navbarContext`, for a page that starts on a band of a context: with `navbarContext="alternate"` the navbar is on the alternate context while the first `.context.alternate` element of `<main>` is under it, and on the default one below that band. The bar, its links, the search field, the logo and its menus follow the context. Without JavaScript the navbar keeps the context.
+
+  `<ThemeToggler>` takes `label`, `placement` and `class`, and a page can hold more than one: `color-modes.js` keeps every `[data-cxd-theme-toggler]` in step. The ids `cxd-theme` and `cxd-theme-text` are gone; a site that styled them uses `.cxd-theme-toggler` and `[data-cxd-theme-text]`.
+
+  The consent banner shows in `astro dev` too, so that its design can be worked on, when `analytics.googleId` is set. There it has no ID: a choice is stored, and nothing is loaded and no cookie is set.
+
+### Patch Changes
+
+- The messages, comments and docs of the package use American spelling. The error for a `githubOrg` that is a URL now reads "Expected a GitHub organization name, not a URL", and the class that marks the center of the light of the `Hero` is `cxd-hero-light-center`.
+- `CHASSIS_BRAND` and `CHASSIS_APP` are read from `.env.local` in the root of the repository too, after the environment, as `CHASSIS_ASSETS_CHECKOUT` is, so a developer who previews another brand for a while keeps it there and every command takes it: `chassis-docs vendor`, the asset and token paths, `writeBrandCSS()` and the Sass tokens of the integration. Astro does not put that file in `process.env`, so `getChassisBrand()` reads it. An empty value in the environment, as in `CHASSIS_BRAND= pnpm dev`, turns the file off for one command. `vendor` and `writeBrandCSS()` print a warning that names the settings the file holds.
+
+  `CHASSIS_COMPILE_CSS=true`, in the environment or in `.env.local`, compiles `css/chassis.css` and `css/chassis.min.css` for the default brand too, from the `@chassis-ui/website-tokens` that the site installs, in place of the files of `@chassis-ui/css`, for work with tokens newer than those of the release of the CSS. The Sass tokens of the integration follow it. Another value than `true`, `false`, `1` or `0` fails the build.
+
+  `chassis-docs vendor --all` unpacks the archive of every brand that `vendor/assets.json` has for the app of the build, the brand of the build first, for a site that shows more than one brand, and `getPinnedBrands()` returns those brands by name. So a site names no brand but the default one in its scripts or code. The docs use `acme` as a placeholder for the name of another brand.
+
+- The light of the `Hero` stays behind the illustration at every width: from `lg` its center follows the right half of the container, up to the width of the container, and 32rem below the top of the hero whether a rail follows or not; below `lg` it is in the middle. The script that leans the light towards the pointer reads that center from the styles (`.cxd-hero-light-centre`) instead of fixed numbers. The light of `Steps` is placed by the share of the panel, so it stays behind its rails on phones too.
+- The parts of the claim of the hero slide in from the right in place of rising; the kicker, the lead and what follows still rise. `@chassis-ui/docs/scss/motion` has a `slide()` mixin beside `rise()` for a site's own sections.
+- Below `lg` the navbar has no gap between the docs link, the search button and the menu button, and the icon of the menu button ends on the edge of the container. The logo is 28px high there and has no padding after it, so the bar fits a 360px screen. On a 375px screen the menu button of a docs page no longer runs off the bar.
+- The lead of a `Section` is set in the prose family and its elegant weight, prose/xl from `md` and prose/large on phones. The lead of the `Hero` takes the color of the band at 80% opacity in place of `fg-subtle`. A card of `Cards` has a border, transparent until hover, when the card takes the primary background and border; both fade in. The body of a card fills its height, so the action lines of a row align.
+- The stage word above a rail of `Steps` is set in the main color, not the subtle one, and from `md` the rails are as far apart as the padding of the panel.
+
 ## 0.15.0-next.0
 
 ### Minor Changes

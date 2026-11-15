@@ -9,10 +9,15 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 ### Added
 
 - `CHASSIS_BRAND` and `CHASSIS_APP` can be kept in `.env.local`, so plain `pnpm dev` and `pnpm build` preview another brand until the line is removed, and `CHASSIS_COMPILE_CSS=true` compiles `chassis.css` for `chassis` from the installed `@chassis-ui/website-tokens` in place of the prebuilt files of `@chassis-ui/css`. `.env.example` shows the three. See "Preview another brand" in [ref/DEVELOPMENT.md](ref/DEVELOPMENT.md).
+- The contact form of the home page has an optional Message field, of 2000 characters at most, and `/api/contact/` puts the message in the email it sends.
 
 ### Changed
 
 - No file of the repository names a brand but `chassis`. `pnpm vendor` unpacks every brand that `vendor/assets.json` pins (`chassis-docs vendor --all`), the second brand of the brand preview on the home page is the first pinned brand that is not the brand of the build, and its CSS and fonts are served from `/static/brand-preview/`, where the path held the name of the brand. The docs use `acme` as a placeholder for another brand. The pages look the same.
+- The site has the 2026-11 redesign: a new home page with the Problem, Idea, Switch, Packages, Team, Start, Facts and Questions sections, and the navbar, the footer and the docs layout of `@chassis-ui/docs` 0.15.0.
+- The copy of the home page is rewritten, section by section, and checked against the READMEs of the packages.
+- The site, the comments and the docs of the repository use American spelling.
+- Below `lg` the navbar fits a 360px screen: the logo is 28px high, the buttons have no gap, and the bar keeps its height of 56px.
 
 ## 2026-11-10
 
