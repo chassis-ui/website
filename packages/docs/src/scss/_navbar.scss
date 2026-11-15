@@ -15,6 +15,13 @@
       flex-wrap: nowrap;
       gap: var(--cx-space-md);
       align-items: stretch;
+
+      // Below `lg` the docs link, the search button and the menu button sit side by side.
+      @include media-breakpoint-down(lg) {
+        gap: 0;
+        // The height of the bar with the logo of the larger screens.
+        min-height: 3.5rem;
+      }
     }
 
     .navbar-brand {
@@ -25,11 +32,20 @@
 
       @include media-breakpoint-down(lg) {
         padding-block: var(--cx-space-sm);
+        padding-inline-end: 0;
+
+        // A smaller logo leaves room for the docs link on a phone.
+        > svg {
+          height: 1.75rem;
+        }
       }
     }
 
+    // The icon of the menu button ends on the edge of the container, as the logo starts on it:
+    // the button gives its own padding back.
     .navbar-toggler {
       align-self: center;
+      margin-inline-end: calc(var(--cx-space-xs) * -1);
     }
 
     // A bar that changes context with the band of the page (`context` of Navigation.astro).
