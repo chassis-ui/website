@@ -26,6 +26,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { getPinnedBrands } from '../packages/docs/src/libs/brand.js'
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const packageDir = path.join(repositoryRoot, 'packages/docs')
@@ -61,20 +62,14 @@ const removedImports = [
   '@chassis-ui/docs/src/js/color-modes.js'
 ]
 
-// The brand of the preview build: a brand of `@chassis-ui/website-tokens` other than the
-// default, the first one that the tokens of the website have.
+// The brand of the preview build: a brand other than the default, the first one that
+// `vendor/assets.json` pins. The pin is read, not a package: this script runs before an install.
 const defaultBrand = 'chassis'
-const previewBrand = fs
-  .readdirSync(
-    path.join(
-      repositoryRoot,
-      'packages/website/node_modules/@chassis-ui/website-tokens/dist/web/docs'
-    ),
-    { withFileTypes: true }
-  )
-  .find((entry) => entry.isDirectory() && entry.name !== defaultBrand)?.name
+const previewBrand = getPinnedBrands({ root: repositoryRoot }).find(
+  (brand) => brand !== defaultBrand
+)
 
-assert.ok(previewBrand, 'The tokens of the website have no brand but the default')
+assert.ok(previewBrand, 'vendor/assets.json pins no brand but the default')
 
 const layouts = {
   root: {
