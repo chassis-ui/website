@@ -518,7 +518,7 @@ The package now brings these itself. Remove each one that your own code does not
 | `analytics.google_id` | `analytics.googleId`                        |
 | `docsDir`             | Delete it. The site root is the Astro root. |
 
-- `githubOrg` is the name of the organisation, such as `chassis-ui`. A URL is rejected.
+- `githubOrg` is the name of the organization, such as `chassis-ui`. A URL is rejected.
 - `sourceDir` is now relative to the site's root, not to the working directory of the
   build. For a site that is built from its own directory, the value stays the same.
 - The schema is strict. A key that the package does not know fails the build. See step 4
@@ -708,7 +708,7 @@ The stylesheet that every page loads was `@scss/docs.scss`. It is now `src/scss/
 in the site's root, which is the same file. Pass `styles` to the integration to name
 another one.
 
-### What changes in behaviour
+### What changes in behavior
 
 - **Broken `[[docsref:]]` links fail the build.** Five sites only logged them. Fix the
   links, or pass `brokenDocsrefs: 'warn'` until they are fixed.

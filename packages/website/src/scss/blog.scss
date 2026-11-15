@@ -1,10 +1,10 @@
-// The blog: what utilities cannot do. The hover colours of links (a utility would win over the
+// The blog: what utilities cannot do. The hover colors of links (a utility would win over the
 // hover, which is in the custom layer) and the text of a post, whose Markdown has no classes.
 
 @use "@chassis-ui/css/scss/mixins" as *;
 
 @layer custom {
-  // The title of a row: the main colour, the highlight colour on hover.
+  // The title of a row: the main color, the highlight color on hover.
   .blog-row-title {
     color: var(--cx-fg-main);
 

@@ -14,7 +14,7 @@ const roles = [
     label: 'Design',
     title: 'Use the same component for every brand.',
     points: [
-      'Switch the variable mode to see another brand or dark mode. No second file to keep up.',
+      'Switch the variable mode to see another brand or dark mode. No second file to maintain.',
       'Each component has a documentation page beside it in the library.',
       'The names you see in Figma are the names developers use.'
     ]
@@ -24,17 +24,17 @@ const roles = [
     title: 'Install the tokens like any dependency.',
     points: [
       'A design change is a version bump, reviewed in a pull request.',
-      'Web, iOS and Android build from the published tokens. No colour files kept by hand.',
-      'Classes and variables match the Figma names, so a design is readable without a redline.'
+      'Web, iOS and Android build from the published tokens. No values copied by hand.',
+      'Classes and variables match the Figma names, so a design is readable without a spec.'
     ]
   },
   {
     label: 'Product',
-    title: 'Launch a brand without a rebuild.',
+    title: 'Ship a feature to every brand at once.',
     points: [
-      'A fix to a component lands in all brands and on all platforms at once.',
-      'A brand ships with light and dark mode from its first release, with no extra work.',
-      'The web, iOS and Android apps release from one set of decisions, so they stay in step.'
+      'A fix to a token reaches every brand and platform with the next release.',
+      'A new product or feature has dark mode from its first release.',
+      'The web, iOS and Android apps release from the same decisions, so they stay in step.'
     ]
   }
 ]
@@ -43,8 +43,8 @@ const roles = [
 <Section
   id="team"
   eyebrow="For the team"
-  title={['What changes for each part of', 'the team.']}
-  lead="One change in the tokens means something different at each desk. Here is what a designer, an engineer and a product owner get from it."
+  title={['One change.', 'Less work at every desk.']}
+  lead="The whole team works in a shared language, from Figma to code. A change ships as a new version, and nobody has to pass it along."
 >
   <Rows rows={roles} />
 </Section>

@@ -68,7 +68,7 @@ describe('loadConfig', () => {
 
   test('rejects a URL in githubOrg', () => {
     expect(() => load(`${minimal}githubOrg: 'https://github.com/chassis-ui'\n`)).toThrow(
-      'Expected a GitHub organisation name, not a URL'
+      'Expected a GitHub organization name, not a URL'
     )
   })
 

@@ -44,7 +44,7 @@
     @include line-height(1.25em);
 
     @include media-breakpoint-down(md) {
-      @include font-size(var(--cx-font-size-h2));
+      @include font-size(var(--cx-font-size-3xl));
       @include line-height(1.25em);
     }
   }
@@ -71,8 +71,8 @@
     }
   }
 
-  // `<mark>` in a head or a hero is the highlight colour of the design, with no background:
-  // the colour of the eyebrow in a head, the cue colour in a hero.
+  // `<mark>` in a head or a hero is the highlight color of the design, with no background:
+  // the color of the eyebrow in a head, the cue color in a hero.
   .cxd-section-head mark,
   .cxd-hero mark {
     padding: 0;
@@ -139,11 +139,11 @@
   // the script of Hero.astro leans it from its place towards the pointer. It is larger than the
   // hero on the sides it is cut at, by more than it moves.
   //
-  // Its centre is behind the illustration. From `lg` the illustration is the right half of the
-  // container: its centre is a quarter of the width right of the middle, up to the width of the
+  // Its center is behind the illustration. From `lg` the illustration is the right half of the
+  // container: its center is a quarter of the width right of the middle, up to the width of the
   // container, and about 32rem below the top of the hero, whatever follows the row. Below `lg`
-  // the illustration is under the text, in the middle. `.cxd-hero-light-centre` marks the
-  // centre, for the script.
+  // the illustration is under the text, in the middle. `.cxd-hero-light-center` marks the
+  // center, for the script.
   //
 
   .cxd-hero {
@@ -182,7 +182,7 @@
     }
   }
 
-  .cxd-hero-light-centre {
+  .cxd-hero-light-center {
     position: absolute;
     inset-block-start: var(--cxd-hero-light-y);
     inset-inline-start: var(--cxd-hero-light-x);
@@ -255,7 +255,7 @@
   // Steps: a dark panel of rails
   //
 
-  // The light of the panel; its colour, padding and grid are utilities.
+  // The light of the panel; its color, padding and grid are utilities.
   .cxd-steps-panel {
     background-image: backdrop.light(48rem 28rem, 50% 40%);
   }
@@ -293,7 +293,7 @@
     color: var(--cx-fg-main);
     text-decoration: none;
 
-    // The arrow is in the colour of the name, not the colour of the link. A utility of the
+    // The arrow is in the color of the name, not the color of the link. A utility of the
     // icon (`icon-reset`) would win over this layer, so the arrow has none.
     .cxd-arrow {
       --cx-icon-color: currentcolor;

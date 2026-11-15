@@ -7,7 +7,7 @@ export class CommandError extends Error {}
 const colors = { info: 'cyan', success: 'green', warning: 'yellow', error: 'red' }
 
 /**
- * Prints a message in the colour of its type. Errors and warnings go to stderr.
+ * Prints a message in the color of its type. Errors and warnings go to stderr.
  * @param {string} message
  * @param {'info' | 'success' | 'warning' | 'error'} [type]
  */

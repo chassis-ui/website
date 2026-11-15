@@ -3,7 +3,7 @@
  * Start Section
  *
  * Three cards of doors, each door a link to the documentation of a package. The hero's
- * "Getting Started" button scrolls here (`#start`).
+ * "Get started" button scrolls here (`#start`).
  */
 
 import Doors from '@chassis-ui/docs/sections/Doors.astro'
@@ -16,12 +16,12 @@ const groups = [
       {
         name: 'Tokens',
         href: '/tokens/docs/',
-        body: 'Define colour, type, spacing and motion once, per brand.'
+        body: 'Define color, type, spacing and motion for each brand.'
       },
       {
         name: 'Figma',
         href: '/figma/docs/',
-        body: 'Build the screens on components bound to those tokens.'
+        body: 'Design screens with components bound to the Chassis tokens.'
       }
     ]
   },
@@ -31,27 +31,27 @@ const groups = [
       {
         name: 'Assets',
         href: '/assets/docs/',
-        body: 'One folder for every brand’s logos, images and fonts, built per platform.'
+        body: 'Keep every brand’s logos, images and fonts in one source, built for each platform.'
       },
       {
         name: 'Icons',
         href: '/icons/docs/',
-        body: 'One icon set, named once, for design and code.'
+        body: 'Turn your SVG icons into a font, a sprite and files for iOS and Android.'
       }
     ]
   },
   {
-    label: 'You want to build today',
+    label: 'You own the code',
     doors: [
       {
         name: 'CSS',
         href: '/css/docs/',
-        body: 'Utility classes and custom properties, in Chassis styling until your tokens arrive.'
+        body: 'Build with components and utility classes, in Chassis styling until your tokens arrive.'
       },
       {
         name: 'React',
         href: '/react/docs/',
-        body: 'Accessible components on React Aria, styled by the same CSS.'
+        body: 'Use accessible components built on React Aria, styled by Chassis CSS.'
       }
     ]
   }
@@ -60,9 +60,9 @@ const groups = [
 
 <Section
   id="start"
-  eyebrow="Ready to start?"
-  title={['Pick the door that matches', 'what you already have.']}
-  lead="Each door opens the docs of that package. You can add the other packages later, in any order."
+  eyebrow="Get started"
+  title={['Start from', 'where you are today.']}
+  lead="Start with the package closest to your work. The others can follow when you need them."
 >
   <Doors groups={groups} />
 </Section>

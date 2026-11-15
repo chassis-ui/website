@@ -72,7 +72,7 @@ the site, validates its HTML, and checks its links and its accessibility, which 
 of CI does too.
 
 `pnpm site:lint:a11y` runs axe on every page of the built site, in the light and the dark
-colour mode, against WCAG 2.2 A and AA. Colour contrast is left out for now. It needs Google
+color mode, against WCAG 2.2 A and AA. Color contrast is left out for now. It needs Google
 Chrome installed.
 
 `pnpm site:lint:csp https://chassis-ui.com` opens pages of a deployment in Chrome, the

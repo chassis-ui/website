@@ -171,7 +171,7 @@ done
 
 This means sub-project sitemaps and canonical tags correctly reference `chassis-ui.com/...` URLs in production builds — not the bare `*.vercel.app` host.
 
-The `Disallow: /` and `X-Robots-Tag: noindex` rules remain the primary defence against direct `*.vercel.app` indexing regardless.
+The `Disallow: /` and `X-Robots-Tag: noindex` rules remain the primary defense against direct `*.vercel.app` indexing regardless.
 
 ## 🐛 Troubleshooting
 

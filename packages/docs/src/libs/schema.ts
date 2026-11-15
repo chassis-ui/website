@@ -61,10 +61,10 @@ export const configSchema = z.strictObject({
   docsPath: z.string().startsWith('/'),
   /** Figma Community handle, without the `@`. The header links to it when set. */
   figmaHandle: z.string().optional(),
-  /** GitHub organisation or user name, not a URL. The header links to it when set. */
+  /** GitHub organization or user name, not a URL. The header links to it when set. */
   githubOrg: z
     .string()
-    .regex(/^[\w.-]+$/, 'Expected a GitHub organisation name, not a URL')
+    .regex(/^[\w.-]+$/, 'Expected a GitHub organization name, not a URL')
     .optional(),
   /**
    * The media library that `<MediaImage>` and a `media:` thumbnail load images from: the

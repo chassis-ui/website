@@ -83,7 +83,7 @@ const switches = [
   id="switch"
   eyebrow="The switch"
   title={['A new brand is a setting,', 'not a project.']}
-  lead="Pick a brand and a mode. The card changes, and the token names on the lines stay as they are."
+  lead="Brands and color modes are sets of values for the same tokens. Change the values and every component follows, while the token names stay as they are."
 >
   <div
     class="d-flex flex-column gap-5xl align-items-center"
@@ -128,7 +128,7 @@ const switches = [
           <div class="bg-evident rounded-md p-md vstack gap-sm" data-spec="goal">
             <div class="d-flex align-items-center justify-content-between" data-spec="goal-head">
               <span class="font-sm font-strong">Shift goal</span>
-              <span class="font-label-sm fg-subtle">6 of 10</span>
+              <span class="font-label-sm fg-subtle">6 of 10 trips</span>
             </div>
             <div
               class="progress"
@@ -146,7 +146,7 @@ const switches = [
               Trip request
             </p>
             <p class="font-body fg-subtle m-0" data-spec="body">
-              Pickup at Central Station, 4 min away. Drop-off at the airport, 28 min.
+              Pickup at Central Station, 4 min away. Drop-off at the airport, a 28 min trip.
             </p>
           </div>
           <div class="nav nav-segments nav-justified" data-spec="segments">
@@ -161,7 +161,7 @@ const switches = [
               class="form-input"
               id="home-switch-note"
               type="text"
-              placeholder="I’m in the grey van"
+              placeholder="I’m in the gray van"
               data-spec="input"
             />
           </div>
@@ -241,7 +241,7 @@ const switches = [
     const apply = (group: string, value: string) => {
       if (group === 'brand') {
         card.classList.toggle(previewClass, value === 'preview')
-        name.textContent = value === 'preview' ? 'Your Brand' : 'Chassis'
+        name.textContent = value === 'preview' ? 'Your brand' : 'Chassis'
       } else {
         card.dataset.cxTheme = value
       }

@@ -114,7 +114,7 @@ currentVersion: '0.5.2'
 | `staticPath`                                  | no       | URL path that the pages load the static files from. Default `/static`. See [A site under a prefix](#a-site-under-a-prefix)                       |
 | `repo`                                        | yes      | URL of the repository                                                                                                                            |
 | `currentVersion`                              | yes      | Version that the site documents. Links to source files use the tag `v<currentVersion>`                                                           |
-| `githubOrg`                                   | no       | GitHub organisation name, not a URL. The header links to it                                                                                      |
+| `githubOrg`                                   | no       | GitHub organization name, not a URL. The header links to it                                                                                      |
 | `figmaHandle`                                 | no       | Figma Community handle. The header links to it                                                                                                   |
 | `xUsername`                                   | no       | X handle. Used in the social meta tags                                                                                                           |
 | `media.cloudinary`                            | no       | Cloud name of the Cloudinary account that holds the media library. See [Images of the media library](#images-of-the-media-library)               |
@@ -366,7 +366,7 @@ The title and the lead of `Section` and of `Hero` are text by default. For marku
 </Section>
 ```
 
-Each `<span>` child of a title is a line: it breaks from `lg` and flows below, and `d-block` on it breaks it at every width. Write `{' '}` between two lines: Astro drops the line break between them, and below `lg`, where they flow, the words would run together. `<mark>` is the highlight colour of the design, with no background. In a hero, each direct child of the claim is a part: the first enters, then the rest, so a highlighted second sentence is one `<mark class="d-block">` holding its lines.
+Each `<span>` child of a title is a line: it breaks from `lg` and flows below, and `d-block` on it breaks it at every width. Write `{' '}` between two lines: Astro drops the line break between them, and below `lg`, where they flow, the words would run together. `<mark>` is the highlight color of the design, with no background. In a hero, each direct child of the claim is a part: the first enters, then the rest, so a highlighted second sentence is one `<mark class="d-block">` holding its lines.
 
 The components load their styles, `@chassis-ui/docs/scss/sections`, so a site imports no stylesheet for them. Write the eyebrow, the kicker, the meta line, and the labels of rows, steps, cards and doors in normal case, as `What you get` or `iOS`: the components set them in capitals with CSS, so the text stays readable as written to assistive technology and in search results. A page with a `Hero` passes `navbarContext="alternate"` to its layout.
 

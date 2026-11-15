@@ -12,8 +12,8 @@ const pains = [
   ['A token changed in Figma.', 'Three codebases did not.'],
   ['The web has tokens.', 'iOS and Android have raw values.'],
   ['Brand B is a fork of brand A.', 'Nobody dares to pull updates.'],
-  ['Custom icon required.', 'Four names for the same icon.'],
-  ['Dark mode came later.', 'By hand, once per platform.']
+  ['Each team exported the icon.', 'It has four names now.'],
+  ['Dark mode came later.', 'Each platform added it by hand.']
 ]
 ---
 
@@ -21,7 +21,7 @@ const pains = [
   id="problem"
   eyebrow="The problem"
   title={['Design systems assume', 'one brand, one platform.']}
-  lead="Real products are a passenger app, a driver app and an ops console, each on a different stack and platform, expected to feel like one. Chassis is for what happens then."
+  lead="A real product is several apps, like rider, driver and operations, each on its own platform, expected to feel like one. Chassis is built for that."
 >
   <ol class="bulletless m-0 border-bottom border-subtle">
     {pains.map(([statement, consequence], index) => (

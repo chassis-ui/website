@@ -4,7 +4,7 @@
  * Accessibility check
  *
  * Serves the built site in `_site` and runs axe on every page, in the light and the dark
- * colour mode, against WCAG 2.2 level A and AA. Fails when axe finds a violation. Colour
+ * color mode, against WCAG 2.2 level A and AA. Fails when axe finds a violation. Color
  * contrast is left out until the design is reviewed, see F35 in ref/ROADMAP.md. It uses
  * the Chrome that is installed on the machine, as GitHub's runners have, so nothing is
  * downloaded.
@@ -37,7 +37,7 @@ const TYPES = {
   '.woff2': 'font/woff2'
 }
 
-// Enough of Vercel's behaviour for the pages to load: `/about/` serves `about/index.html`,
+// Enough of Vercel's behavior for the pages to load: `/about/` serves `about/index.html`,
 // and a missing file gets `404.html`
 async function serve(request, response) {
   const url = new URL(request.url, 'http://localhost')
@@ -124,7 +124,7 @@ for (const { id, impact, help, helpUrl, found } of violations.values()) {
 }
 
 console.log(
-  `\n${pages.length} pages in ${SCHEMES.length} colour modes: ` +
+  `\n${pages.length} pages in ${SCHEMES.length} color modes: ` +
     `${violations.size} rules violated`
 )
 

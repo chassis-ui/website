@@ -13,32 +13,48 @@ import Section from '@chassis-ui/docs/sections/Section.astro'
 const questions = [
   [
     'Can we adopt only part of it?',
-    'Yes. Each package works on its own. Start with the tokens or the Figma library and add the rest when you need it.'
+    'Yes. Each package works alone. Start with one and add the others when you need them.'
   ],
   [
     'Which platforms does it cover?',
-    'Web, iOS and Android. Figma gets the decisions as variables.'
+    'Web, iOS and Android. Tokens, assets and icons are built for all three. The CSS and the React components are for the web.'
   ],
   [
     'Which frameworks does it work with?',
-    'The CSS works with any framework. The React components are built on React Aria. Other stacks use the CSS directly.'
+    'Any. The CSS is plain classes and variables, so it works in every framework, and with Tailwind CSS v4. React also has a component library.'
+  ],
+  [
+    'Can we use the tokens without Chassis CSS?',
+    'Yes. The tokens are also built as plain Sass variables, which any CSS setup can use. On iOS and Android they are Swift constants and Android resources.'
   ],
   [
     'Is it only for large companies?',
     'No. It pays off from the second brand or the second platform, at any team size.'
   ],
   [
+    'How do we add a brand?',
+    'Add the brand’s token values and its logos, images and fonts, then run the build. Nothing in the components changes.'
+  ],
+  [
+    'How do we get updates?',
+    'Each package has version numbers. You update it like any other dependency, when you choose to.'
+  ],
+  [
     'Does it work with AI agents?',
-    'Yes. Public agent skills let an agent build Figma designs from the library, turn them into Chassis markup and add a brand.'
+    'Yes. Chassis publishes skills for AI agents. With them an agent can build a Figma design from the library, turn it into code and add a brand.'
+  ],
+  [
+    'Is it free to use?',
+    'Yes. Every package is open source under the MIT license, which allows commercial use.'
   ]
 ]
 ---
 
 <Section
   id="questions"
-  eyebrow="Before you adopt"
-  title={['Questions teams ask before', 'adopting.']}
-  lead="Short answers on platforms, frameworks, team size and licensing. If yours is not here, tell us what you work with."
+  eyebrow="Questions"
+  title={['Short answers', 'before you adopt.']}
+  lead="Adopting a system is a commitment, so ask first. If your question is not here, send it to us and we will write back."
 >
   <div class="grid row-gap-6xl align-items-start">
     <div class="col-span-full lg:col-span-7 accordion flush lg" data-cx-accordion>
@@ -79,7 +95,6 @@ const questions = [
             id="nameInput"
             name="name"
             maxlength="100"
-            placeholder="Your name"
             required
             autocomplete="name"
           />
@@ -109,7 +124,6 @@ const questions = [
             id="companyInput"
             name="company"
             maxlength="100"
-            placeholder="Company name"
             autocomplete="organization"
           />
         </div>
@@ -118,13 +132,19 @@ const questions = [
             Topic <span aria-hidden="true">*</span>
           </label>
           <select class="form-input" id="topicSelect" name="topic" required>
-            <option value="">Choose an option</option>
+            <option value="">Choose a topic</option>
             <option value="setting-up-chassis">Setting up Chassis</option>
-            <option value="design-system-architecture">Design System Architecture</option>
-            <option value="figma-components">Figma Components</option>
-            <option value="token-integration">Token Integration</option>
+            <option value="design-system-architecture">Design system architecture</option>
+            <option value="figma-components">Figma components</option>
+            <option value="token-integration">Token integration</option>
             <option value="other">Other</option>
           </select>
+        </div>
+        <div class="form-field">
+          <label for="messageInput" class="form-label">
+            Message
+          </label>
+          <textarea class="form-input" id="messageInput" name="message" rows="4" maxlength="2000" />
         </div>
         <div
           id="support-form-message"
@@ -140,7 +160,7 @@ const questions = [
             </a>
           </p>
           <button type="submit" class="button primary">
-            Submit
+            Send
           </button>
         </div>
       </form>
@@ -196,7 +216,7 @@ const questions = [
 
     if (response.ok && json?.ok) {
       form.reset()
-      messageEl.textContent = "Thank you! We'll be in touch soon."
+      messageEl.textContent = 'Thank you. We will write back soon.'
       messageEl.classList.add('success')
     } else {
       messageEl.textContent =

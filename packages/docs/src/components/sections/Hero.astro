@@ -20,7 +20,7 @@
  *
  * The claim is the `title` slot, markup of the page's own, or the `title` text. Each direct
  * child of the claim is a part: `<span>` is a line that breaks from `lg` (`d-block` on it
- * breaks it at every width), and `<mark>` is the highlight colour. `<em>`, `<strong>` and links
+ * breaks it at every width), and `<mark>` is the highlight color. `<em>`, `<strong>` and links
  * work as written. `{' '}` between two parts keeps a space where they flow: Astro drops the line
  * break between them. A claim with a highlighted second sentence:
  *
@@ -40,7 +40,7 @@
  * illustration, the elements with the class `cxd-hero-part` enter one by one, up to three.
  *
  * The light (`.cxd-hero-light`) leans towards the pointer: the script moves it a share of the
- * way from its centre to the pointer, and back when the pointer leaves the hero.
+ * way from its center to the pointer, and back when the pointer leaves the hero.
  */
 
 import fs from 'node:fs'
@@ -103,7 +103,7 @@ const enter = (places = 1) => {
   aria-labelledby={titleId}
 >
   <div class="cxd-hero-light" aria-hidden="true">
-    <span class="cxd-hero-light-centre"></span>
+    <span class="cxd-hero-light-center"></span>
   </div>
   <div class="container 2xl vstack cxd-hero-body">
     <div class="d-flex flex-column gap-3xl md:gap-6xl">
@@ -180,14 +180,14 @@ const enter = (places = 1) => {
     initCopyButtons('.cxd-command-copy', (trigger) => trigger.getAttribute('data-clipboard-text')!)
   }
 
-  // The light of the hero leans towards the pointer, a share of the way from its centre, and
-  // returns when the pointer leaves. Its centre is where the styles put it, which
-  // `.cxd-hero-light-centre` marks; the offsets ignore the transform of the light. Each frame a
+  // The light of the hero leans towards the pointer, a share of the way from its center, and
+  // returns when the pointer leaves. Its center is where the styles put it, which
+  // `.cxd-hero-light-center` marks; the offsets ignore the transform of the light. Each frame a
   // point follows the target a little and the light follows that point, so the light starts and
   // stops gently however the pointer moves.
   const hero = document.querySelector<HTMLElement>('.cxd-hero')
   const light = hero?.querySelector<HTMLElement>('.cxd-hero-light')
-  const centre = light?.querySelector<HTMLElement>('.cxd-hero-light-centre')
+  const center = light?.querySelector<HTMLElement>('.cxd-hero-light-center')
   const share = 0.2
   const reach = { x: 192, up: 64, down: 128 }
   // The time in which each of the two covers about two thirds of what is left, in ms.
@@ -196,7 +196,7 @@ const enter = (places = 1) => {
   if (
     hero &&
     light &&
-    centre &&
+    center &&
     window.matchMedia('(hover: hover) and (prefers-reduced-motion: no-preference)').matches
   ) {
     const target = { x: 0, y: 0 }
@@ -234,8 +234,8 @@ const enter = (places = 1) => {
     hero.addEventListener('pointermove', (event) => {
       const box = hero.getBoundingClientRect()
       lean(
-        (event.clientX - box.left - (light.offsetLeft + centre.offsetLeft)) * share,
-        (event.clientY - box.top - (light.offsetTop + centre.offsetTop)) * share
+        (event.clientX - box.left - (light.offsetLeft + center.offsetLeft)) * share,
+        (event.clientY - box.top - (light.offsetTop + center.offsetTop)) * share
       )
     })
     hero.addEventListener('pointerleave', () => lean(0, 0))

@@ -1,11 +1,11 @@
 // The backdrop of the dark (alternate) bands of the Chassis sites: a full-width square grid
-// with a line on the centre of the page, and a soft radial light of the primary colour. The
+// with a line on the center of the page, and a soft radial light of the primary color. The
 // grid cell is 96px, 80px on phones.
 
 @use "@chassis-ui/css/scss/functions" as *;
 @use "@chassis-ui/css/scss/mixins" as *;
 
-// The light: a radial glow of the primary colour, of `$size` at `$position`.
+// The light: a radial glow of the primary color, of `$size` at `$position`.
 @function light($size, $position) {
   @return radial-gradient(
     $size at $position,

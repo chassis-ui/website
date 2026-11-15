@@ -119,7 +119,7 @@ describe('<DocsSidebar>', () => {
     expect(await renderSidebar()).toContain('<li class="cxd-links-subgroup">Guides</li>')
   })
 
-  test('colours the icon of a group with iconColor', async () => {
+  test('colors the icon of a group with iconColor', async () => {
     expect(await renderSidebar()).toContain('style="color: var(--cx-primary);"')
   })
 

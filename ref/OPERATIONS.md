@@ -124,9 +124,9 @@ issues a short-lived credential for each run. There is nothing to rotate.
 - If an unexpected version appears on npm, check its provenance on the package page, which
   names the workflow run that built it. Then deprecate it as above, and review who can push
   to `main` and who has access to the package on npm.
-- No workflow of the Chassis repositories reads the organisation secret `NPM_CHASSIS_UI`
+- No workflow of the Chassis repositories reads the organization secret `NPM_CHASSIS_UI`
   any more, checked on 2026-10-05: every package is published with trusted publishing.
-  Delete the secret from the organisation and revoke its token on npm, if they still
+  Delete the secret from the organization and revoke its token on npm, if they still
   exist.
 
 ## Content security policy reports

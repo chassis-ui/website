@@ -61,7 +61,7 @@ describe('getDocsMarkdownConfig', () => {
     ).toMatchObject({ handlers })
   })
 
-  test('highlights with Shiki in both themes, without a default colour', () => {
+  test('highlights with Shiki in both themes, without a default color', () => {
     const config = getDocsMarkdownConfig({ anchors: { min: 2, max: 3 } })
 
     expect(config.syntaxHighlight).toBe('shiki')

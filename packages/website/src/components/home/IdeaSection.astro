@@ -3,7 +3,7 @@
  * Idea Section
  *
  * One dark panel with three rails, one stage word above each: Decide (base, brand,
- * application), Collect (the source) and Generate (web, iOS, Android). The rails draw in that
+ * app), Collect (images, icons, fonts) and Generate (web, iOS, Android). The rails draw in that
  * order when the panel scrolls into view.
  */
 
@@ -16,18 +16,15 @@ const stages = [
     stations: [
       {
         label: 'Base',
-        title: 'Everything has a default.',
-        body: 'Colour, type, spacing and motion are defined once, each colour with its dark pair.'
+        body: 'Color, type, spacing and motion each have a default, and each color its dark pair.'
       },
       {
         label: 'Brand',
-        title: 'A brand overrides what differs.',
-        body: 'Its colours, typefaces and corner style replace the defaults.'
+        body: 'A brand overrides what differs: its colors, typefaces and corner radii.'
       },
       {
-        label: 'Application',
-        title: 'Every app ships with its brand.',
-        body: 'It adds only what is its own. Everything else comes from its brand and the base.'
+        label: 'App',
+        body: 'An app starts from its brand and adds only what is its own.'
       }
     ]
   },
@@ -35,9 +32,16 @@ const stages = [
     name: 'Collect',
     stations: [
       {
-        label: 'Source',
-        body: 'Tokens, assets and icons each keep a single source for every brand and app. There is one place to look and one place to change.',
-        wide: true
+        label: 'Images',
+        body: 'Logos, images and illustrations, exported from your design tool into the source.'
+      },
+      {
+        label: 'Icons',
+        body: 'Icons, exported from your design tool into the same source.'
+      },
+      {
+        label: 'Fonts',
+        body: 'Font files and licenses from a foundry or a service like Google Fonts, in the same source.'
       }
     ]
   },
@@ -46,15 +50,15 @@ const stages = [
     stations: [
       {
         label: 'Web',
-        body: 'Variables and classes, optimized images in web formats, icons as a font or a sprite.'
+        body: 'CSS variables and classes, with images, fonts and icons named and formatted for the web.'
       },
       {
         label: 'iOS',
-        body: 'Swift constants, with images and fonts named and formatted for iOS.'
+        body: 'Swift constants, with images, fonts and icons named and formatted for iOS.'
       },
       {
         label: 'Android',
-        body: 'Android resources, with images and fonts named and formatted for Android.'
+        body: 'Android resources, with images, fonts and icons named and formatted for Android.'
       }
     ]
   }
@@ -65,7 +69,7 @@ const stages = [
   id="idea"
   eyebrow="The idea"
   title={['Change it once.', 'It changes everywhere.']}
-  lead="Decide in layers, from a shared base to each brand and app. Collect every decision in one source, and generate each platform from it."
+  lead="A brand changes only the defaults it needs to, and an app adds only what is its own. Every platform is built from the same source."
 >
   <Steps stages={stages} />
 </Section>

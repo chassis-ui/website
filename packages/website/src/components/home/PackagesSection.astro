@@ -10,40 +10,40 @@ import Section from '@chassis-ui/docs/sections/Section.astro'
 
 const packages = [
   {
-    name: 'Chassis Tokens',
+    name: 'Tokens',
     icon: 'cx-swatchbook',
     href: '/tokens/',
-    body: 'Colours, type, spacing and motion as data. Builds Figma variables, CSS, Swift constants and Android resources.'
+    body: 'Colors, type, spacing and motion as data, synced with Figma. Built into code for web, iOS and Android.'
   },
   {
-    name: 'Chassis Figma',
+    name: 'Figma',
     icon: 'cx-figma',
     href: '/figma/',
-    body: 'The component library, bound to the tokens. Switch brand or mode and the whole file follows.'
+    body: 'The component library, bound to the tokens. Switch the brand or the color mode and the whole file follows.'
   },
   {
-    name: 'Chassis CSS',
+    name: 'CSS',
     icon: 'cx-brackets-curly',
     href: '/css/',
-    body: 'Custom properties and utility classes from the tokens, named as in Figma. Works with any framework.'
+    body: 'Components and utility classes built on the tokens, named as in Figma. Works with any JavaScript framework, or none.'
   },
   {
-    name: 'Chassis Icons',
-    icon: 'cx-icons',
-    href: '/icons/',
-    body: 'One icon set, versioned, as a web font, an SVG sprite and plain SVGs. Save from Figma, get from Github'
-  },
-  {
-    name: 'Chassis Assets',
-    icon: 'cx-folder-tree',
-    href: '/assets/',
-    body: 'Logos, images and fonts for each brand, built for web, iOS and Android with one command.'
-  },
-  {
-    name: 'Chassis React',
+    name: 'React',
     icon: 'cx-react',
     href: '/react/',
-    body: 'Accessible components built on React Aria. Styled with Chassis CSS, connected to Chassis Tokens.'
+    body: 'Accessible, typed components built on React Aria and styled with Chassis CSS. A new brand needs no change to component code.'
+  },
+  {
+    name: 'Assets',
+    icon: 'cx-folder-tree',
+    href: '/assets/',
+    body: 'Builds each brand’s logos, images and fonts from the source into the names and formats of web, iOS and Android.'
+  },
+  {
+    name: 'Icons',
+    icon: 'cx-icons',
+    href: '/icons/',
+    body: 'Builds your SVG files into an icon font, a sprite and optimized SVGs. Adds an asset catalog for iOS and drawables for Android.'
   }
 ]
 ---
@@ -52,7 +52,7 @@ const packages = [
   id="packages"
   eyebrow="The packages"
   title={['Six versioned packages.', 'Adopt one, or the whole pipeline.']}
-  lead="Install what you need. Together they take a decision from Figma to production."
+  lead="Take what you need. Together they carry a decision from the token file to the shipped app."
 >
   <Cards cards={packages} />
 </Section>

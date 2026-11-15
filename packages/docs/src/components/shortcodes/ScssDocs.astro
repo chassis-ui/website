@@ -128,7 +128,7 @@ try {
     content = rawContent.replaceAll(' !default', '')
   }
 
-  // Normalise indentation by removing the common leading-space prefix.
+  // Normalize indentation by removing the common leading-space prefix.
   const lines = content.split('\n')
   const spaceCounts = lines
     .filter((line) => line.trim().length > 0)

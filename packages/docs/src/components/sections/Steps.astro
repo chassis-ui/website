@@ -35,12 +35,12 @@ const { stages } = Astro.props
 ---
 
 <div
-  class="cxd-steps-panel context alternate bg-main p-xl md:p-6xl rounded-lg vstack gap-3xl"
+  class="cxd-steps-panel context alternate bg-main p-xl md:p-6xl rounded-lg vstack gap-3xl md:gap-6xl"
   data-reveal="rails"
 >
   {stages.map((stage) => (
     <div class="cxd-steps-stage vstack gap-md">
-      <h3 class="font-code font-sm font-normal fg-subtle text-uppercase m-0">{stage.name}</h3>
+      <h3 class="font-code font-sm font-normal fg-main text-uppercase m-0">{stage.name}</h3>
       <ul class="cxd-rail cxd-steps-rail d-grid md:grid-cols-3">
         {stage.stations.map((station) => (
           <RailItem class:list={[{ 'cxd-steps-wide md:col-span-2': station.wide }]}>

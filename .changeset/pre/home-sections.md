@@ -12,4 +12,4 @@ The copy button of a code block shows its check mark again: `initCopyButtons()` 
 
 The eyebrows, the kicker and the meta line of the hero, and the labels of rows, steps, cards and doors are set in capitals with CSS (`text-uppercase`): write them in normal case. `Cards` names its action `Explore` by default.
 
-`Section` and `Hero` take their title and lead as text or as markup, in the `title` and `lead` slots: a word in italics, a highlighted word or line (`<mark>`, in the highlight colour of the design) or a link. Each `<span>` child of a title is a line that breaks from `lg`.
+`Section` and `Hero` take their title and lead as text or as markup, in the `title` and `lead` slots: a word in italics, a highlighted word or line (`<mark>`, in the highlight color of the design) or a link. Each `<span>` child of a title is a line that breaks from `lg`.

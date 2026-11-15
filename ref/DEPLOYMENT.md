@@ -95,7 +95,7 @@ does not run again when the same commit is pushed to `staging` and `main`: the r
 the `develop` run belong to the commit, and the ruleset and the release workflow read them
 there. A push to `staging` runs nothing in Actions, and a push to `main` runs `release.yml`
 only. The deployment that Vercel makes after each of the two then starts `lighthouse.yml`,
-`links.yml` and `csp.yml`. The pushes to `develop` are not cancelled by a newer one, so each
+`links.yml` and `csp.yml`. The pushes to `develop` are not canceled by a newer one, so each
 commit keeps its results; a newer push to a pull request cancels the run of the older.
 
 ### Releasing the website

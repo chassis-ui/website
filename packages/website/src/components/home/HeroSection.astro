@@ -2,10 +2,10 @@
 /**
  * Hero Section
  *
- * The claim of the home page, with its lead, the two actions, the licence line and the
+ * The claim of the home page, with its lead, the two actions, the license line and the
  * illustration of one brand on web, iOS and Android, then the rail of the six packages. Each
  * station is one link to the home page of its package, so its name and its line enter as one;
- * its name takes the highlight colour on hover (`.home-rail-link`).
+ * its name takes the highlight color on hover (`.home-rail-link`).
  *
  * The illustration is `images/illustrations/hero-home.svg` of the assets
  * (chassis-ui/website-assets). The hero inlines it, so that its three devices
@@ -18,16 +18,16 @@ import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
 
 const packages = [
   { name: 'Tokens', href: '/tokens/', body: 'Design decisions, themed per brand.' },
-  { name: 'Figma', href: '/figma/', body: 'One library for all brands and platforms.' },
+  { name: 'Figma', href: '/figma/', body: 'The library for every brand and platform.' },
   { name: 'CSS', href: '/css/', body: 'Variables and classes with Figma’s names.' },
-  { name: 'React', href: '/react/', body: 'Accessible components.' },
+  { name: 'React', href: '/react/', body: 'Accessible components on the same CSS.' },
   { name: 'Assets', href: '/assets/', body: 'Logos, images and fonts per brand.' },
-  { name: 'Icons', href: '/icons/', body: 'One set for design and code.' }
+  { name: 'Icons', href: '/icons/', body: 'The same icons in design and code.' }
 ]
 ---
 
 <Hero
-  lead="Chassis is an open-source toolkit for teams that run several brands on web, iOS and Android. You make a design decision in one place and it reaches all of them."
+  lead="Chassis is an open-source toolkit for teams with more than one brand, app or platform. You make a design decision in one place and it reaches all of them."
   illustration="images/illustrations/hero-home.svg"
   illustrationLabel="One app in the same brand on the web, on iOS and on Android"
 >
@@ -41,7 +41,7 @@ const packages = [
   <Fragment slot="actions">
     <a class="button primary lg" href="#start">
       <Icon name="book-open-outline" />
-      Getting Started
+      Get started
     </a>
     <a class="button alternate lg" href="https://github.com/chassis-ui">
       <Icon name="github-brand" />

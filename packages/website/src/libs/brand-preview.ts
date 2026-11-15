@@ -20,7 +20,7 @@ export const previewBrandFiles = {
 /**
  * The second brand of the brand preview on the home page (the Switch section): the first brand
  * that `vendor/assets.json` pins other than the brand of the build. No file names it, and
- * neither does the page: its cards read "Your Brand".
+ * neither does the page: its cards read "Your brand".
  */
 function getPreviewBrand(root: string): string {
   const { brand } = getChassisBrand({ root })

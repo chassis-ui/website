@@ -3,8 +3,8 @@ baseURL:                "https://chassis-ui.com"
 
 docsPath:               "/docs"
 
-subtitle:               "Design Systems that Scale & Sync"
-description:            "Build and scale multi-brand products with an open-source design system featuring design tokens, Figma libraries, semantic CSS, and asset management tools."
+subtitle:               "One design system for every brand and platform"
+description:            "Chassis is an open-source toolkit for teams that run several brands on web, iOS and Android: design tokens, a Figma library, CSS, React components, assets and icons, built from the same decisions."
 authors:                "Ozgur Gunes and Chassis UI contributors"
 
 currentVersion:         "0.1.0"
