@@ -1,9 +1,14 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { getChassisBrand, getSearchDirectories } from './brand.js'
+import {
+  compilesChassisCSS,
+  getChassisBrand,
+  getPinnedBrands,
+  getSearchDirectories
+} from './brand.js'
 
-export { getChassisBrand }
+export { getChassisBrand, getPinnedBrands }
 
 // Public paths of the package and the directories behind them. They match `exports` in
 // `package.json`.
@@ -112,12 +117,13 @@ export function getChassisTokensFsPath(options: ChassisPathOptions = {}): string
 
 /**
  * A Sass load path with the `_chassis-tokens.scss` of the brand of the build, written for it,
- * or nothing for the default brand, which the default token source of `@chassis-ui/css` loads.
+ * or nothing for the default brand, which the default token source of `@chassis-ui/css` loads,
+ * unless `CHASSIS_COMPILE_CSS` takes the tokens that the site installs for it too.
  */
 export function getBrandTokensLoadPath(root = process.cwd()): string | undefined {
-  const { brand, app, isDefault } = getChassisBrand({ root })
+  if (!compilesChassisCSS({ root })) return undefined
 
-  if (isDefault) return undefined
+  const { brand, app } = getChassisBrand({ root })
 
   const tokens = path.join(getChassisTokensFsPath({ root }), 'main')
   const directory = path.join(root, 'node_modules/.cache/chassis-docs/tokens', app, brand)

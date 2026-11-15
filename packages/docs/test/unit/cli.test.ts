@@ -166,7 +166,7 @@ function fakeRelease(files: Record<string, string>) {
       ? Response.json({
           tag_name: 'v1.2.0',
           assets: [
-            { name: 'website-assets-web-docs-sinefil-1.2.0.zip', digest: 'sha256:b' },
+            { name: 'website-assets-web-docs-acme-1.2.0.zip', digest: 'sha256:b' },
             { name: 'website-assets-web-docs-chassis-1.2.0.zip', digest },
             { name: 'website-assets-ios-demo-chassis-1.2.0.zip', digest: 'sha256:c' },
             { name: 'website-assets-manifest-1.2.0.json', digest: 'sha256:d' }
@@ -186,7 +186,7 @@ function pinOf(digest: string, brand = 'chassis') {
     brand,
     archives: {
       'website-assets-web-docs-chassis-1.2.0.zip': digest,
-      'website-assets-web-docs-sinefil-1.2.0.zip': 'sha256:b'
+      'website-assets-web-docs-acme-1.2.0.zip': 'sha256:b'
     }
   })
 }
@@ -276,12 +276,39 @@ describe('vendorAssets', () => {
   test('fails on an unknown brand or app and names what the pin has', async () => {
     const { root, cacheDir, fetcher, urls } = setup()
 
-    vi.stubEnv('CHASSIS_BRAND', 'acme')
+    vi.stubEnv('CHASSIS_BRAND', 'globex')
 
     await expect(
       vendorAssets({ root, cacheDir, fetcher: fetcher as typeof fetch })
-    ).rejects.toThrow(/brand 'acme' at 1.2.0. It has: docs-chassis, docs-sinefil/)
+    ).rejects.toThrow(/brand 'globex' at 1.2.0. It has: docs-chassis, docs-acme/)
     expect(urls).toEqual([])
+  })
+
+  test('unpacks every brand of the app with all, the brand of the build first', async () => {
+    const { root, cacheDir, fetcher, urls, digest } = setup()
+    const options = { root, cacheDir, fetcher: fetcher as typeof fetch, all: true }
+    const pin = JSON.parse(pinOf(digest))
+
+    pin.archives['website-assets-web-docs-acme-1.2.0.zip'] = digest
+    pin.archives['website-assets-ios-demo-chassis-1.2.0.zip'] = 'sha256:c'
+    fs.writeFileSync(path.join(root, ASSETS_PIN), JSON.stringify(pin))
+    await vendorAssets(options)
+
+    expect(urls.map((url) => url.split('/').at(-1))).toEqual([
+      'website-assets-web-docs-chassis-1.2.0.zip',
+      'website-assets-web-docs-acme-1.2.0.zip'
+    ])
+    expect(fs.readdirSync(path.join(root, ASSETS_PATH, 'dist/web/docs')).toSorted()).toEqual([
+      'acme',
+      'acme.sha256',
+      'chassis',
+      'chassis.sha256'
+    ])
+
+    vi.stubEnv('CHASSIS_BRAND', 'globex')
+
+    await expect(vendorAssets(options)).rejects.toThrow(/brand 'globex'/)
+    expect(urls).toHaveLength(2)
   })
 
   test('fails without a pin, and on a brand that is no name', async () => {
@@ -395,7 +422,7 @@ describe('syncAssets', () => {
       brand: 'chassis',
       archives: {
         'website-assets-web-docs-chassis-1.2.0.zip': digest,
-        'website-assets-web-docs-sinefil-1.2.0.zip': 'sha256:b'
+        'website-assets-web-docs-acme-1.2.0.zip': 'sha256:b'
       }
     })
     expect(fs.existsSync(path.join(root, ASSETS_PATH, 'dist/web/docs/chassis/fonts'))).toBe(true)

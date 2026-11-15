@@ -61,8 +61,20 @@ const removedImports = [
   '@chassis-ui/docs/src/js/color-modes.js'
 ]
 
-// The brand of the preview build. A brand of `@chassis-ui/website-tokens` other than the default.
-const previewBrand = 'sinefil'
+// The brand of the preview build: a brand of `@chassis-ui/website-tokens` other than the
+// default, the first one that the tokens of the website have.
+const defaultBrand = 'chassis'
+const previewBrand = fs
+  .readdirSync(
+    path.join(
+      repositoryRoot,
+      'packages/website/node_modules/@chassis-ui/website-tokens/dist/web/docs'
+    ),
+    { withFileTypes: true }
+  )
+  .find((entry) => entry.isDirectory() && entry.name !== defaultBrand)?.name
+
+assert.ok(previewBrand, 'The tokens of the website have no brand but the default')
 
 const layouts = {
   root: {
@@ -157,7 +169,7 @@ function createRepository(name, layout, tarball, tempDir) {
   // Every Chassis site unpacks an archive of the assets into `vendor/assets`. The fixture
   // tests the package, not the assets, so a stand-in for each brand holds the files that the
   // layouts and the hero of the home page need at build time.
-  for (const brand of ['chassis', previewBrand]) {
+  for (const brand of [defaultBrand, previewBrand]) {
     const imagesDir = path.join(repositoryDir, `vendor/assets/dist/web/docs/${brand}/images`)
 
     fs.mkdirSync(imagesDir, { recursive: true })

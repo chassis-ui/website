@@ -45,7 +45,7 @@ The site runs at `http://localhost:4321`.
 `pnpm dev` runs `pnpm vendor` first, which unpacks the assets into `vendor/assets`: logo,
 favicons and fonts. The site cannot start without them. They come from the release of
 chassis-ui/website-assets that `vendor/assets.json` pins, and the first run downloads about
-36 MB. To preview another brand, set `CHASSIS_BRAND`, as in `CHASSIS_BRAND=sinefil pnpm dev`.
+36 MB. To preview another brand, set `CHASSIS_BRAND`, as in `CHASSIS_BRAND=acme pnpm dev`.
 
 ## Commands
 

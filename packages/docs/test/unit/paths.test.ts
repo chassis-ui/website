@@ -11,8 +11,10 @@ import {
   getInstalledPackageFsPath,
   getNodeModulesFsPaths,
   getPackageRoot,
+  getPinnedBrands,
   resolvePackageFilePath
 } from '../../src/libs/paths'
+import { compilesChassisCSS, getFileSettings } from '../../src/libs/brand.js'
 import { createTempDir } from '../helpers/temp'
 
 afterEach(() => {
@@ -47,6 +49,14 @@ describe('resolvePackageFilePath', () => {
     expect(() => resolvePackageFilePath('libs/config.ts')).toThrow('is not a public path')
   })
 })
+
+// Without the settings of the brand in the environment, where the config of the tests turns
+// them off, so that `.env.local` of a repository is read.
+function unset() {
+  for (const name of ['CHASSIS_BRAND', 'CHASSIS_APP', 'CHASSIS_COMPILE_CSS']) {
+    vi.stubEnv(name, undefined)
+  }
+}
 
 // A repository with a hoisted `node_modules` and a site in `packages/site`, as in pnpm
 // workspaces.
@@ -140,29 +150,133 @@ describe('getChassisBrand', () => {
 
   test('reads the pin at the root of the repository', () => {
     const { site } = repository({
-      'vendor/assets.json': JSON.stringify({ brand: 'sinefil', app: 'demo' })
+      'vendor/assets.json': JSON.stringify({ brand: 'acme', app: 'demo' })
     })
 
     expect(getChassisBrand({ root: site })).toEqual({
-      brand: 'sinefil',
+      brand: 'acme',
       app: 'demo',
       isDefault: false
     })
   })
 
   test('takes the variables over the pin', () => {
-    const { site } = repository({ 'vendor/assets.json': JSON.stringify({ brand: 'sinefil' }) })
+    const { site } = repository({ 'vendor/assets.json': JSON.stringify({ brand: 'acme' }) })
 
-    vi.stubEnv('CHASSIS_BRAND', 'acme')
+    vi.stubEnv('CHASSIS_BRAND', 'globex')
     vi.stubEnv('CHASSIS_APP', 'demo')
 
-    expect(getChassisBrand({ root: site })).toMatchObject({ brand: 'acme', app: 'demo' })
+    expect(getChassisBrand({ root: site })).toMatchObject({ brand: 'globex', app: 'demo' })
   })
 
   test('rejects a brand that is no name', () => {
     vi.stubEnv('CHASSIS_BRAND', '../up')
 
     expect(() => getChassisBrand()).toThrow('Expected letters, digits and hyphens')
+  })
+
+  // The settings of `.env.local`
+  test('reads .env.local at the root of the repository, over the pin', () => {
+    const { site } = repository({
+      'vendor/assets.json': JSON.stringify({ brand: 'globex' }),
+      '.env.local': '# Mine\nCHASSIS_BRAND=acme\nCHASSIS_COMPILE_CSS=true\n'
+    })
+
+    unset()
+
+    expect(getChassisBrand({ root: site })).toEqual({
+      brand: 'acme',
+      app: 'docs',
+      isDefault: false
+    })
+    expect(getFileSettings({ root: site })).toEqual([
+      'CHASSIS_BRAND=acme',
+      'CHASSIS_COMPILE_CSS=true'
+    ])
+  })
+
+  test('reads .env.local of the root itself where no folder above is a repository', () => {
+    const root = createTempDir({ '.env.local': 'CHASSIS_BRAND=globex\n' })
+
+    unset()
+
+    expect(getChassisBrand({ root }).brand).toBe('globex')
+  })
+
+  test('puts the environment before .env.local, and an empty value turns the file off', () => {
+    const { site } = repository({ '.env.local': 'CHASSIS_BRAND=acme\n' })
+
+    unset()
+    vi.stubEnv('CHASSIS_BRAND', 'globex')
+
+    expect(getChassisBrand({ root: site }).brand).toBe('globex')
+
+    vi.stubEnv('CHASSIS_BRAND', '')
+
+    expect(getChassisBrand({ root: site })).toMatchObject({ brand: 'chassis', isDefault: true })
+    expect(getFileSettings({ root: site })).toEqual([])
+  })
+})
+
+describe('getPinnedBrands', () => {
+  test('lists the brands of the app of the build that the pin has, by name', () => {
+    const { site } = repository({
+      'vendor/assets.json': JSON.stringify({
+        version: '1.2.0',
+        archives: {
+          'website-assets-web-docs-globex-1.2.0.zip': 'sha256:a',
+          'website-assets-web-docs-chassis-1.2.0.zip': 'sha256:b',
+          'website-assets-web-demo-acme-1.2.0.zip': 'sha256:c',
+          'website-assets-ios-docs-acme-1.2.0.zip': 'sha256:d'
+        }
+      })
+    })
+
+    expect(getPinnedBrands({ root: site })).toEqual(['chassis', 'globex'])
+
+    vi.stubEnv('CHASSIS_APP', 'demo')
+
+    expect(getPinnedBrands({ root: site })).toEqual(['acme'])
+  })
+
+  test('is empty without a pin', () => {
+    expect(getPinnedBrands({ root: repository({}).site })).toEqual([])
+  })
+})
+
+describe('compilesChassisCSS', () => {
+  test('is false for the default brand and true for another', () => {
+    const { site } = repository({})
+
+    unset()
+
+    expect(compilesChassisCSS({ root: site })).toBe(false)
+
+    vi.stubEnv('CHASSIS_BRAND', 'globex')
+
+    expect(compilesChassisCSS({ root: site })).toBe(true)
+  })
+
+  test('takes the switch for the default brand, from .env.local or the environment', () => {
+    const { site } = repository({ '.env.local': 'CHASSIS_COMPILE_CSS=true\n' })
+
+    unset()
+
+    expect(compilesChassisCSS({ root: site })).toBe(true)
+
+    vi.stubEnv('CHASSIS_COMPILE_CSS', '0')
+
+    expect(compilesChassisCSS({ root: site })).toBe(false)
+  })
+
+  test('rejects a switch that is not true or false', () => {
+    const { site } = repository({ '.env.local': 'CHASSIS_COMPILE_CSS=yes\n' })
+
+    unset()
+
+    expect(() => compilesChassisCSS({ root: site })).toThrow(
+      "CHASSIS_COMPILE_CSS of .env.local is 'yes'. Expected true or false."
+    )
   })
 })
 
@@ -175,10 +289,10 @@ describe('getBrandTokensLoadPath', () => {
 
   test('forwards the tokens of the brand', () => {
     const { site } = repository({
-      'packages/site/node_modules/@chassis-ui/website-tokens/dist/web/docs/sinefil/main.scss': ''
+      'packages/site/node_modules/@chassis-ui/website-tokens/dist/web/docs/acme/main.scss': ''
     })
 
-    vi.stubEnv('CHASSIS_BRAND', 'sinefil')
+    vi.stubEnv('CHASSIS_BRAND', 'acme')
 
     const directory = getBrandTokensLoadPath(site) as string
     const [, target] = /"(.+)"/.exec(
@@ -188,14 +302,29 @@ describe('getBrandTokensLoadPath', () => {
     expect(fs.existsSync(`${path.resolve(directory, target)}.scss`)).toBe(true)
   })
 
+  test('forwards the tokens that the site installs for the default brand, with the switch', () => {
+    const { site } = repository({
+      'packages/site/node_modules/@chassis-ui/website-tokens/dist/web/docs/chassis/main.scss': ''
+    })
+
+    vi.stubEnv('CHASSIS_COMPILE_CSS', 'true')
+
+    const directory = getBrandTokensLoadPath(site) as string
+
+    expect(directory).toMatch(/tokens[/\\]docs[/\\]chassis$/)
+    expect(fs.readFileSync(path.join(directory, '_chassis-tokens.scss'), 'utf8')).toMatch(
+      /website-tokens\/dist\/web\/docs\/chassis\/main"/
+    )
+  })
+
   test('fails on a brand that the tokens do not have', () => {
     const { site } = repository({
       'packages/site/node_modules/@chassis-ui/website-tokens/dist/web/docs/chassis/': ''
     })
 
-    vi.stubEnv('CHASSIS_BRAND', 'acme')
+    vi.stubEnv('CHASSIS_BRAND', 'globex')
 
-    expect(() => getBrandTokensLoadPath(site)).toThrow('dist/web/docs/acme')
+    expect(() => getBrandTokensLoadPath(site)).toThrow('dist/web/docs/globex')
   })
 })
 
@@ -203,13 +332,13 @@ describe('getChassisAssetsFsPath', () => {
   test('finds the folder of the brand', () => {
     const { root, site } = repository({
       'vendor/assets/dist/web/docs/chassis/': '',
-      'vendor/assets/dist/web/docs/sinefil/': ''
+      'vendor/assets/dist/web/docs/acme/': ''
     })
 
-    vi.stubEnv('CHASSIS_BRAND', 'sinefil')
+    vi.stubEnv('CHASSIS_BRAND', 'acme')
 
     expect(getChassisAssetsFsPath({ root: site })).toBe(
-      path.join(root, 'vendor/assets/dist/web/docs/sinefil')
+      path.join(root, 'vendor/assets/dist/web/docs/acme')
     )
   })
 

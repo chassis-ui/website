@@ -1,21 +1,38 @@
 import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
-import { getChassisAssetsFsPath, getChassisTokensFsPath } from '@chassis-ui/docs'
-
-/**
- * The second brand of the brand preview on the home page (the Switch section). The page never
- * names it: its cards read "Your Brand".
- */
-export const previewBrand = 'sinefil'
+import {
+  getChassisAssetsFsPath,
+  getChassisBrand,
+  getChassisTokensFsPath,
+  getPinnedBrands
+} from '@chassis-ui/docs'
 
 /** The class that scopes the preview brand's CSS. */
 export const previewBrandClass = 'home-brand-preview'
 
 /** URL paths, under the static path of the site, of the files the preview loads. */
 export const previewBrandFiles = {
-  css: `brands/${previewBrand}/brand.css`,
-  fonts: `brands/${previewBrand}/fonts/fonts.css`
+  css: 'brand-preview/brand.css',
+  fonts: 'brand-preview/fonts/fonts.css'
+}
+
+/**
+ * The second brand of the brand preview on the home page (the Switch section): the first brand
+ * that `vendor/assets.json` pins other than the brand of the build. No file names it, and
+ * neither does the page: its cards read "Your Brand".
+ */
+function getPreviewBrand(root: string): string {
+  const { brand } = getChassisBrand({ root })
+  const previewBrand = getPinnedBrands({ root }).find((name) => name !== brand)
+
+  if (!previewBrand) {
+    throw new Error(
+      `The brand preview of the home page needs a second brand, and vendor/assets.json pins no brand but '${brand}'.`
+    )
+  }
+
+  return previewBrand
 }
 
 /**
@@ -24,6 +41,7 @@ export const previewBrandFiles = {
  * `previewBrandClass`, and the fonts of its assets.
  */
 export function writeBrandPreview({ root, destination }: { root: string; destination: string }) {
+  const previewBrand = getPreviewBrand(root)
   const tokens = path.join(path.dirname(getChassisTokensFsPath({ root })), previewBrand, 'main')
   const assets = path.join(path.dirname(getChassisAssetsFsPath({ root })), previewBrand)
   const fonts = path.join(assets, 'fonts')

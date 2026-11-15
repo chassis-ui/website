@@ -428,7 +428,7 @@ The package installs a `chassis-docs` command with the build steps that every Ch
 | `chassis-docs vnu [paths]`           | Validates `paths` with the [Nu Html Checker](https://validator.github.io/validator/). Skipped, with a warning, when Java is missing                                                             |
 | `chassis-docs help`                  | Lists the commands and their options                                                                                                                                                            |
 
-`vendor` and `sync-assets` work from any folder of the repository, and need neither Git LFS nor a submodule. `sync-assets --version <x.y.z>` picks a release, and `--repository <owner/name>` another repository with the same archive names. It asks the GitHub API, and sends `GH_TOKEN` or `GITHUB_TOKEN` when one is set. `vendor` only downloads the archive, into `chassis-docs/assets/` of `XDG_CACHE_HOME` or `~/.cache`.
+`vendor` and `sync-assets` work from any folder of the repository, and need neither Git LFS nor a submodule. `sync-assets --version <x.y.z>` picks a release, and `--repository <owner/name>` another repository with the same archive names. It asks the GitHub API, and sends `GH_TOKEN` or `GITHUB_TOKEN` when one is set. `vendor` only downloads the archive, into `chassis-docs/assets/` of `XDG_CACHE_HOME` or `~/.cache`. `vendor --all` unpacks the archive of every brand that the pin has for the app, for a site that shows more than the brand of the build, and `getPinnedBrands()` lists those brands.
 
 ```json
 {
@@ -438,7 +438,7 @@ The package installs a `chassis-docs` command with the build steps that every Ch
   "brand": "chassis",
   "archives": {
     "website-assets-web-docs-chassis-0.5.0.zip": "sha256:…",
-    "website-assets-web-docs-sinefil-0.5.0.zip": "sha256:…"
+    "website-assets-web-docs-acme-0.5.0.zip": "sha256:…"
   }
 }
 ```
@@ -447,13 +447,13 @@ The package installs a `chassis-docs` command with the build steps that every Ch
 
 #### A preview of another brand
 
-`CHASSIS_BRAND` and `CHASSIS_APP` choose another archive and other tokens for one run, over `brand` and `app` of `vendor/assets.json`, whose defaults are `chassis` and `docs`. Each brand has its own folder, and a brand or an app that the pin or the tokens lack fails the build. The tokens of a site's own `_chassis-tokens.scss` still win.
+`CHASSIS_BRAND` and `CHASSIS_APP` choose another archive and other tokens, over `brand` and `app` of `vendor/assets.json`, whose defaults are `chassis` and `docs`. Each brand has its own folder, and a brand or an app that the pin or the tokens lack fails the build. The tokens of a site's own `_chassis-tokens.scss` still win. Like `CHASSIS_ASSETS_CHECKOUT`, they are read from the environment, then from `.env.local` in the root of the repository, so a developer can keep a brand there for every run; an empty value in the environment turns the file off for one command. Astro does not put `.env.local` in `process.env`, so `getChassisBrand()` reads it itself, and `vendor` and `writeBrandCSS()` print a warning that names the settings the file holds. In the examples, `acme` stands for the name of a brand that the release of the assets and the tokens have.
 
 ```sh
-CHASSIS_BRAND=sinefil chassis-docs vendor && CHASSIS_BRAND=sinefil astro dev
+CHASSIS_BRAND=acme chassis-docs vendor && CHASSIS_BRAND=acme astro dev
 ```
 
-The files in `dist/css` of `@chassis-ui/css` hold the tokens of `chassis`, so a site calls `writeBrandCSS()` of `@chassis-ui/docs/integration` after it copies them. It compiles `css/chassis.css` and `css/chassis.min.css` for the brand, and does nothing for the default brand. For another brand it needs `postcss`, `autoprefixer` and `postcss-prefix-custom-properties` in the site.
+The files in `dist/css` of `@chassis-ui/css` hold the tokens of `chassis`, so a site calls `writeBrandCSS()` of `@chassis-ui/docs/integration` after it copies them. It compiles `css/chassis.css` and `css/chassis.min.css` for the brand, and does nothing for the default brand, unless `CHASSIS_COMPILE_CSS=true` (in the environment or in `.env.local`): then it compiles them for `chassis` too, from the `@chassis-ui/website-tokens` that the site installs, for work with tokens newer than those of the release of the CSS, and the Sass tokens of the integration follow. To compile, it needs `postcss`, `autoprefixer` and `postcss-prefix-custom-properties` in the site.
 
 ```ts
 writeBrandCSS({ root, destination: path.join(publicDir, 'static') })

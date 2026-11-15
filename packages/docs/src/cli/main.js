@@ -15,6 +15,7 @@ Commands:
                          vendor/assets. $CHASSIS_BRAND and $CHASSIS_APP choose another one,
                          and $${CHECKOUT_VARIABLE} or a .env.local with it, copies
                          the build of a local checkout
+      --all              Unpack every brand of the app that vendor/assets.json has
   sync-assets            Move vendor/assets.json to a release of the assets, and unpack it
       --version <x.y.z>  The release (default: the latest)
       --repository <o/r> The GitHub repository (default: the one of vendor/assets.json)
@@ -43,9 +44,9 @@ function ignoresOf(values, paths) {
 
 const commands = {
   vendor: {
-    options: {},
-    run: async () => {
-      await vendorAssets()
+    options: { all: { type: 'boolean' } },
+    run: async ({ values }) => {
+      await vendorAssets({ all: values.all })
       return 0
     }
   },

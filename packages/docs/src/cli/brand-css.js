@@ -6,7 +6,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { CommandError, importPeer, log } from './shared.js'
 
-const { loadPaths, cssDir, destination } = JSON.parse(process.argv[2])
+const { loadPaths, cssDir, destination, label, warning } = JSON.parse(process.argv[2])
 
 try {
   const sass = await importPeer('sass')
@@ -38,6 +38,8 @@ try {
       fs.writeFileSync(path.join(destination, file), result.css)
     })
   )
+  log(`Compiled Chassis CSS for ${label}`, 'success')
+  if (warning) log(warning, 'warning')
 } catch (error) {
   if (!(error instanceof CommandError)) throw error
 

@@ -4,6 +4,12 @@ import { getViteConfig } from 'astro/config'
 
 const fixtureRoot = fileURLToPath(new URL('test/fixture/', import.meta.url))
 
+// The tests are for the default build. An empty value turns off a brand or a switch that a
+// developer keeps in `.env.local` or in their shell, which the fixture site would take.
+for (const name of ['CHASSIS_BRAND', 'CHASSIS_APP', 'CHASSIS_COMPILE_CSS']) {
+  process.env[name] = ''
+}
+
 // The Vite config of the fixture site, so that tests can render components with the
 // container API. The unit tests run in it too, which costs nothing.
 export default getViteConfig(

@@ -2,22 +2,26 @@ import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { parseEnv } from 'node:util'
 import { unzipSync } from 'fflate'
 import {
+  archivePrefix,
   ASSETS_PIN,
   DEFAULT_APP,
   DEFAULT_BRAND,
+  DEFAULT_REPOSITORY,
   findPinRoot,
-  getChassisBrand
+  getChassisBrand,
+  getFileSettings,
+  getPinnedBrands,
+  readSetting,
+  SETTINGS_FILE
 } from '../libs/brand.js'
 import { CommandError, log, run as defaultRun } from './shared.js'
 
 /** Where every Chassis site unpacks the assets. Not committed. */
 export const ASSETS_PATH = 'vendor/assets'
 
-/** The repository whose releases hold the assets of the Chassis sites. */
-export const DEFAULT_REPOSITORY = 'chassis-ui/website-assets'
+export { DEFAULT_REPOSITORY }
 
 /** The variable that names a local checkout of the assets, to use its build in place of a release. */
 export const CHECKOUT_VARIABLE = 'CHASSIS_ASSETS_CHECKOUT'
@@ -51,11 +55,6 @@ function readPin(root) {
   }
 
   return JSON.parse(fs.readFileSync(file, 'utf8'))
-}
-
-/** The start of the name of a web archive of the repository. */
-function archivePrefix(repository) {
-  return `${repository.split('/')[1]}-web-`
 }
 
 // Downloads are kept outside the repository, by repository and name, as the name holds the
@@ -145,19 +144,11 @@ function unpack(data, output) {
 }
 
 // The checkout that the variable names, and where it is set: the environment of the command,
-// then `.env.local` of the root, where a developer keeps the path of their own checkout so that
-// every run takes it. An empty value in the environment turns the file off for one command.
+// then `.env.local` of the root. See `readSetting()`.
 function checkoutOf(root) {
-  if (process.env[CHECKOUT_VARIABLE] !== undefined) {
-    return { checkout: process.env[CHECKOUT_VARIABLE], from: 'the environment' }
-  }
+  const { value, from } = readSetting(CHECKOUT_VARIABLE, { root })
 
-  const file = path.join(root, '.env.local')
-  const checkout = fs.existsSync(file)
-    ? parseEnv(fs.readFileSync(file, 'utf8'))[CHECKOUT_VARIABLE]
-    : undefined
-
-  return checkout === undefined ? {} : { checkout, from: '.env.local' }
+  return { checkout: value, from }
 }
 
 // A build of the assets from a checkout, for work on the assets and a site at once. A path
@@ -189,17 +180,33 @@ function copyCheckout({ checkout, from }, root, selection, output, stamp) {
 /**
  * Fills `vendor/assets/dist/web/<app>/<brand>` with the archive of the release that
  * `vendor/assets.json` pins. It does nothing when the folder already holds that archive.
+ * With `all` it does so for every brand of the app that the pin has, for a site that shows
+ * more than the brand of the build.
  * With `CHASSIS_ASSETS_CHECKOUT`, in the environment or in `.env.local` of the root, it copies
  * the build of that checkout instead, on every run.
- * @param {{ root?: string, cacheDir?: string, fetcher?: typeof fetch, run?: typeof defaultRun }} [options]
+ * @param {{ root?: string, all?: boolean, cacheDir?: string, fetcher?: typeof fetch, run?: typeof defaultRun }} [options]
  */
 export async function vendorAssets({
   run = defaultRun,
   root = repositoryRoot(run),
+  all = false,
   cacheDir = defaultCacheDir(),
   fetcher = fetch
 } = {}) {
   const selection = selectionOf(root)
+  const settings = getFileSettings({ root })
+  // The brand of the build first: one that the pin lacks fails before anything is written.
+  const brands = all ? new Set([selection.brand, ...getPinnedBrands({ root })]) : [selection.brand]
+
+  // A setting left in the file is easy to forget, so the command says it has one.
+  if (settings.length) log(`${SETTINGS_FILE} sets ${settings.join(' and ')}.`, 'warning')
+
+  for (const brand of brands) {
+    await vendorBrand({ ...selection, brand }, { root, cacheDir, fetcher })
+  }
+}
+
+async function vendorBrand(selection, { root, cacheDir, fetcher }) {
   const output = path.join(root, ASSETS_PATH, assetsOutput(selection))
   // Beside the folder and not in it: a site copies the whole folder to its static files.
   const stamp = `${output}.sha256`

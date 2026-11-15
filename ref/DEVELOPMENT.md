@@ -127,9 +127,11 @@ the index of the last build.
 each web archive, so the same commit of this repository always builds the same site.
 `vendor/assets` is what `pnpm vendor` unpacks from it, and is not committed.
 
-- `pnpm vendor` unpacks the pinned archive. `pnpm dev` and `pnpm build` run it, and it does
-  nothing when the folder already holds the archive. A download is kept in `~/.cache/chassis-docs`
-  (`XDG_CACHE_HOME` moves it). A digest that does not match fails the command.
+- `pnpm vendor` unpacks the pinned archive of every brand (`chassis-docs vendor --all`): the
+  home page shows a second brand beside the brand of the build. `pnpm dev` and `pnpm build` run
+  it, and it does nothing for a folder that already holds its archive. A download is kept in
+  `~/.cache/chassis-docs` (`XDG_CACHE_HOME` moves it). A digest that does not match fails the
+  command.
 - `pnpm sync-assets` moves the pin to the latest release and unpacks it. `--version` picks
   another release. Check the site, compare it with the build before the move, then commit
   `vendor/assets.json` on its own.
@@ -148,14 +150,18 @@ Changes to the assets belong in the chassis-ui/website-assets repository, not in
 
 ### Preview another brand
 
-The site is deployed for the `chassis` brand. Set `CHASSIS_BRAND` to see it with another:
+The site is deployed for the `chassis` brand. Set `CHASSIS_BRAND` to see it with another, a
+brand that the release of the assets and the tokens have. `acme` stands for its name here:
 
 ```bash
-CHASSIS_BRAND=sinefil pnpm dev
+CHASSIS_BRAND=acme pnpm dev
 ```
 
-The archive of the brand is downloaded the first time and unpacked beside the others, and only
-the brand of the run reaches `public/`. The tokens come from `@chassis-ui/website-tokens`, and
+No file of this repository names a brand but `chassis`: the brands are those of
+`vendor/assets.json`, and the second brand of the brand preview on the home page is the first
+of them that is not the brand of the build.
+
+Only the brand of the run reaches `public/`. The tokens come from `@chassis-ui/website-tokens`, and
 `css/chassis.css` and `css/chassis.min.css` are compiled with them, in place of the files of
 `@chassis-ui/css`, which hold the tokens of `chassis`: a start takes some seconds longer. The
 look changes and the words do not: `config.yml` and the pages stay those of Chassis.
@@ -163,6 +169,27 @@ look changes and the words do not: `config.yml` and the pages stay those of Chas
 `CHASSIS_APP` picks the app in the same way. The releases have one web app today, `docs`, so
 another value fails and lists what exists. `brand` and `app` of `vendor/assets.json` are the
 defaults, and an unknown brand fails before anything is written.
+
+To keep a brand for a while, put `CHASSIS_BRAND=acme` in `.env.local` in the root (see
+`.env.example`): then plain `pnpm dev` and `pnpm build` take it, and print a warning that
+names what `.env.local` sets, since a line left there changes every local build. Astro does not
+load that file into `process.env`, so `@chassis-ui/docs` reads it, the variable of the command
+first: `CHASSIS_BRAND= pnpm dev` takes `chassis` for one run. Remove the line to go back.
+`pnpm test` ignores these settings.
+
+### Compile Chassis CSS from newer tokens
+
+For `chassis`, the site copies the prebuilt `css/chassis.css` and `css/chassis.min.css` of
+`@chassis-ui/css`, which hold the tokens of the `@chassis-ui/website-tokens` the release of the
+CSS was built with. When the site installs newer tokens, `CHASSIS_COMPILE_CSS=true` compiles
+the two files from them, as for another brand, and the Sass of the site takes them too:
+
+```bash
+CHASSIS_COMPILE_CSS=true pnpm dev
+```
+
+It can be kept in `.env.local` too. CI and Vercel never set it, so a deployment always has the
+files of the release: move to a release of the CSS built with the tokens before you ship.
 
 ## Examples
 
@@ -172,7 +199,7 @@ repository and its websites.
 
 The vanilla HTML example is [chassis-ui/vanilla-example](https://github.com/chassis-ui/vanilla-example).
 It is deployed as a website per brand from the same commit, `example-1.chassis-ui.com` for
-`chassis` and `example-2.chassis-ui.com` for `sinefil`, each a Vercel project of its own.
+`chassis` and `example-2.chassis-ui.com` for a second brand, each a Vercel project of its own.
 The sites are not proxied under chassis-ui.com, so `vercel.json` has no rule for them and
 the checks of this repository do not open them. Its README covers the build and the brands.
 

@@ -21,7 +21,7 @@ repositories use. See [`build/fixture-sites.js`](https://github.com/chassis-ui/w
    `pnpm sync-assets` writes `vendor/assets.json`, with the latest release of
    [chassis-ui/website-assets](https://github.com/chassis-ui/website-assets). Commit that file,
    and add `vendor/assets` to `.gitignore`. `pnpm dev` unpacks the archive of the release.
-   `CHASSIS_BRAND=sinefil pnpm dev` previews another brand.
+   `CHASSIS_BRAND=acme pnpm dev` previews another brand.
 
 `pnpm lint:html` validates the built site. See
 [Commands](https://www.npmjs.com/package/@chassis-ui/docs#commands) in the README of the

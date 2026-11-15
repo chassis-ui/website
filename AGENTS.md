@@ -25,7 +25,7 @@ Related sibling repos (separate git projects, not part of this monorepo):
 - Package manager: **pnpm** (see `packageManager` in package.json). Do not use npm/yarn.
 - Node: 24 (`.nvmrc`); `engines` allows `>=22.12.0`.
 - Install: `pnpm install`
-- Dev server: `pnpm dev` (`pnpm vendor`, then Astro dev at `localhost:4321`). `CHASSIS_BRAND=sinefil pnpm dev` previews another brand
+- Dev server: `pnpm dev` (`pnpm vendor`, then Astro dev at `localhost:4321`). `CHASSIS_BRAND=acme pnpm dev` previews another brand
 - Build: `pnpm build` (`pnpm vendor` + site + pagefind, as Vercel); `pnpm site` adds vnu HTML lint
 - Preview: `pnpm preview` (serves `_site/`)
 - Lint: `pnpm lint` (eslint + stylelint + prettier for both packages, then `pnpm spellcheck`)
