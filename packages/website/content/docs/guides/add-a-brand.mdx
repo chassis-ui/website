@@ -1,0 +1,61 @@
+---
+title: Add a Brand
+description: The steps that add a brand to a repository of tokens and a repository of assets, export it to Figma and release it.
+toc: true
+---
+
+## Introduction
+
+This guide adds a brand to a design system that already has one. A brand lives in two repositories under one name: a repository of tokens, which holds its colors, its typefaces and its corner radii, and a repository of assets, which holds its fonts and its images. Nothing in a component changes.
+
+The tokens come first, because the fonts of a brand are placed by the families and the weights that its tokens name.
+
+## Prerequisites
+
+- A repository of tokens and a repository of assets, each written by the `init` command of its builder. [Installation]([[docsref:/getting-started/installation]]) covers both commands.
+- A name for the brand, in lowercase letters, digits and single hyphens, such as `acme`. It is the same in both repositories.
+- The colors, the typefaces and the corner radii that the brand changes.
+- The font files of each typeface, with their licenses.
+- The logos, the favicons and the app icon of the brand, as the designer exported them.
+
+## Add the token set
+
+In the repository of tokens, a brand needs a token set, an option of the `brand` group, and its name in `chassis.build.brands` of `package.json`. The token set declares only the tokens that the brand changes, and every other token keeps its default. [Add a brand](/tokens/docs/getting-started/tokens-studio/#add-a-brand) in the Tokens Studio guide of Chassis Tokens has the steps and the names of the tokens.
+
+Then check the source and build it:
+
+```bash
+npx chassis-tokens lint-source
+npx chassis-tokens build
+```
+
+The build writes the output of the new brand beside that of the other brands, for each platform.
+
+## Add the fonts and images
+
+In the repository of assets, the files of a brand go in the folder of the brand under `source/`, with the names that the other brands use. A page or an app that names a file gets the file of the brand it was built for.
+
+- [Font Assets](/assets/docs/asset-types/fonts/) of Chassis Assets covers the fonts, their stylesheets and their licenses.
+- [Image Assets](/assets/docs/asset-types/images/) covers the logos and the other images.
+- [App Icons](/assets/docs/asset-types/app-icons/) covers the icon of a native app.
+
+Add the name of the brand to `chassis.build.brands` of `package.json`. Then check the source, build it and check the output:
+
+```bash
+npx chassis-assets lint-source
+npx chassis-assets build
+npx chassis-assets verify
+```
+
+## Export to Figma
+
+The brand reaches Figma through Tokens Studio. A designer exports the token sets to Figma, which adds the brand as a Mode of the Variables, and publishes the library. [Figma Variables](/tokens/docs/getting-started/figma-variables/) of Chassis Tokens covers the export, and [Theme Switching](/figma/docs/design-with-chassis/working-with-themes/) of Chassis Figma covers how a frame switches to the brand.
+
+## Release the brand
+
+Release a new version of each repository, with the brand in its changelog. A site or an app then takes the two new versions and builds with the name of the brand.
+
+## Next steps
+
+- [AI Agents]([[docsref:/guides/ai-agents]]) covers the skill that does the steps in the two repositories for you.
+- [Tokens Studio](/tokens/docs/getting-started/tokens-studio/) of Chassis Tokens covers the token sets and the groups that select them.

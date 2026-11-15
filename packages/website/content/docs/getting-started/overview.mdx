@@ -1,0 +1,97 @@
+---
+title: Documentation
+description: Guides to Chassis as a whole, and the way into the documentation of each package.
+toc: true
+sections:
+  - title: Introduction
+    description: What Chassis is, what each package is, and how the packages connect.
+  - title: Installation
+    description: Where to start, and the first command of each start.
+  - title: Support
+    description: How to follow the project, report a problem and contribute.
+---
+
+export const guides = [
+  {
+    title: 'Add a Brand',
+    href: '/docs/guides/add-a-brand/',
+    description: 'The steps that add a brand to the tokens, the assets and Figma.'
+  },
+  {
+    title: 'AI Agents',
+    href: '/docs/guides/ai-agents/',
+    description: 'What an agent can do with the Chassis skills, and how to set one up.'
+  },
+  {
+    title: 'Chassis MCP',
+    href: '/docs/reference/chassis-mcp/',
+    description: 'How a client connects to the MCP server, and what the server serves.'
+  }
+]
+
+export const packages = [
+  {
+    title: 'Chassis Tokens',
+    href: '/tokens/docs/',
+    description: 'The token sets, the build, and how to use the tokens on the web, iOS and Android.'
+  },
+  {
+    title: 'Chassis Figma',
+    href: '/figma/docs/',
+    description: 'How to set up the libraries, switch themes, and the components of the library.'
+  },
+  {
+    title: 'Chassis CSS',
+    href: '/css/docs/',
+    description: 'Installation, core concepts, customization, layout, forms, components and utilities.'
+  },
+  {
+    title: 'Chassis React',
+    href: '/react/docs/',
+    description: 'Installation, theming and accessibility, and every component with live examples.'
+  },
+  {
+    title: 'Chassis Assets',
+    href: '/assets/docs/',
+    description: 'The asset types, the build, and how to use the assets on the web, iOS and Android.'
+  },
+  {
+    title: 'Chassis Icons',
+    href: '/icons/docs/',
+    description: 'How to draw icons for a set, build it, and use it as a font, a sprite or app files.'
+  }
+]
+
+## Guides
+
+The guides cover work that spans several packages, and the reference covers the MCP server.
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+  {guides.map((item) => (
+    <div>
+      <a class="d-block text-decoration-none" href={item.href}>
+        <strong class="d-block font-h5 mb-2xs">{item.title}</strong>
+        <span class="fg-subtle">{item.description}</span>
+      </a>
+    </div>
+  ))}
+</div>
+
+## Package documentation
+
+Each package has its own documentation, with everything about that package.
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+  {packages.map((item) => (
+    <div>
+      <a class="d-block text-decoration-none" href={item.href}>
+        <strong class="d-block font-h5 mb-2xs">{item.title}</strong>
+        <span class="fg-subtle">{item.description}</span>
+      </a>
+    </div>
+  ))}
+</div>
+
+## Get help
+
+Each package has its own issue tracker on GitHub. [Support]([[docsref:/getting-started/support]]) covers where to report a problem.

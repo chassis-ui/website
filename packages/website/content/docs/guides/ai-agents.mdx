@@ -1,0 +1,62 @@
+---
+title: AI Agents
+description: What an AI agent can do with the Chassis skills, and how to set one up and ask for the work.
+toc: true
+---
+
+## Introduction
+
+Chassis publishes skills for AI agents. A skill is the instructions that an agent follows for one kind of work, with the reference files that it reads on the way. With a skill, an agent works with the names that the library, the tokens and the classes have, and does not guess them.
+
+This guide sets the skills up in Claude Code and runs one. For Cursor and other clients, [Chassis MCP]([[docsref:/reference/chassis-mcp]]) has the configuration.
+
+## Prerequisites
+
+- [Claude Code](https://claude.com/claude-code), or another client that connects to an MCP server.
+- For the two design skills, a Figma account with access to the library and to the file that the agent works in. [Library Setup](/figma/docs/getting-started/library-setup/) of Chassis Figma covers the libraries.
+- For `chassis-implement-design`, a project that uses Chassis CSS.
+- For `chassis-add-brand`, a repository of tokens and a repository of assets. [Add a Brand]([[docsref:/guides/add-a-brand#prerequisites]]) lists what the agent asks you for.
+
+## Install the plugin
+
+The plugin adds the skills as commands and connects the MCP servers of Chassis and of Figma. In Claude Code:
+
+```text
+/plugin marketplace add chassis-ui/mcp
+/plugin install chassis-ui@chassis-ui
+```
+
+Figma asks you to sign in the first time that a skill uses it.
+
+## Run a skill
+
+Each skill covers one kind of work. Describe the work in your own words, or run the command of the skill:
+
+<CxTable>
+| Skill | Command | What the agent does |
+| --- | --- | --- |
+| `chassis-create-design` | `/chassis-ui:chassis-create-design` | Builds or updates a screen in Figma with the components of the library, bound to its Variables and styles. It also reconnects a screen whose layers were detached |
+| `chassis-implement-design` | `/chassis-ui:chassis-implement-design` | Turns a Figma design into HTML with Chassis CSS, in a plain CSS project or a Tailwind CSS project |
+| `chassis-add-brand` | `/chassis-ui:chassis-add-brand` | Adds a brand to a repository of tokens and a repository of assets, and runs their checks |
+</CxTable>
+
+A request in your own words names the work and where it happens:
+
+```text
+Add the brand acme to the tokens in ../acme-tokens and the assets in ../acme-assets.
+```
+
+## Read the report
+
+The agent ends with a report of what it built, which checks it ran, and what it left out. It commits, pushes and releases nothing unless you ask.
+
+`chassis-add-brand` leaves two steps to people: the export of the brand to Figma, which a designer does in Tokens Studio, and the release of each repository. [Add a Brand]([[docsref:/guides/add-a-brand#export-to-figma]]) covers both.
+
+## Use the agent of Figma
+
+Figma has an agent of its own, which takes a skill as one uploaded file. Chassis has a skill for it, which builds screens with the library from inside Figma. [Using the Figma Agent](/figma/docs/design-with-chassis/using-the-figma-agent/) of Chassis Figma covers the upload.
+
+## Next steps
+
+- [Chassis MCP]([[docsref:/reference/chassis-mcp]]) covers the server behind the skills: how other clients connect, and its tools.
+- [Add a Brand]([[docsref:/guides/add-a-brand]]) covers the steps that `chassis-add-brand` takes, for when you do them by hand.

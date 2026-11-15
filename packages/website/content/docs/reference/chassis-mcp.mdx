@@ -1,0 +1,114 @@
+---
+title: Chassis MCP
+description: How a client connects to the Chassis MCP server, and the tools, prompts and resources that the server serves.
+toc: true
+---
+
+## Introduction
+
+Chassis MCP is the MCP server that serves the Chassis skills to an AI agent. [AI Agents]([[docsref:/guides/ai-agents]]) covers the skills and what an agent does with them; this page covers the server.
+
+The server is hosted at `https://mcp.chassis-ui.com/mcp`. It speaks Streamable HTTP, needs no account and no key, and keeps no session. It is not an npm package: the hosted server is the only one, and it always serves the current skills.
+
+## Connect a client
+
+A client connects by the address of the server. The configuration differs by client.
+
+### Claude Code
+
+The plugin connects the server, adds the skills as commands and connects the Figma server too. [Install the plugin]([[docsref:/guides/ai-agents#install-the-plugin]]) has its two commands. To connect the server alone:
+
+```bash
+claude mcp add --transport http chassis-ui https://mcp.chassis-ui.com/mcp
+```
+
+### Cursor
+
+Add the server to `.cursor/mcp.json` of a project, or to `~/.cursor/mcp.json` for every project:
+
+```json
+{
+  "mcpServers": {
+    "chassis-ui": {
+      "url": "https://mcp.chassis-ui.com/mcp"
+    }
+  }
+}
+```
+
+### Other clients
+
+A client that reads `.mcp.json`, such as VS Code, takes the server with its transport:
+
+```json
+{
+  "mcpServers": {
+    "chassis-ui": {
+      "type": "http",
+      "url": "https://mcp.chassis-ui.com/mcp"
+    }
+  }
+}
+```
+
+A client that looks a server up in the [MCP registry](https://registry.modelcontextprotocol.io) finds it as `com.chassis-ui/mcp`.
+
+### Stdio bridge
+
+A client that only starts local servers over stdio reaches the server through a bridge such as [`mcp-remote`](https://github.com/punkpeye/mcp-remote):
+
+```json
+{
+  "mcpServers": {
+    "chassis-ui": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.chassis-ui.com/mcp"]
+    }
+  }
+}
+```
+
+## Figma server
+
+The skills `chassis-create-design` and `chassis-implement-design` read and write Figma through the MCP server of Figma, in the same session. The Claude Code plugin connects it. In another client, add `https://mcp.figma.com/mcp` beside the Chassis server. `chassis-add-brand` needs no Figma tool.
+
+## Tools
+
+A tool returns the instructions of a skill or checks the work of one. The agent calls a skill tool first, then fetches the reference files that the instructions name.
+
+<CxTable>
+| Tool | Returns |
+| --- | --- |
+| `chassis_create_design` | The instructions of the skill that builds or updates a Figma screen, with an index of its reference files |
+| `chassis_implement_design` | The instructions of the skill that turns a Figma design into Chassis CSS markup, with an index of its reference files |
+| `chassis_add_brand` | The instructions of the skill that adds a brand, with an index of its reference files |
+| `chassis_get_reference` | A reference file of a skill, one section of it, or several sections in one call |
+| `chassis_check_classes` | Which of the given class names or markup use a class that Chassis CSS does not have, and the section of the class catalog to read for it |
+</CxTable>
+
+## Prompts
+
+A prompt loads a skill into the conversation by name: `chassis-create-design`, `chassis-implement-design` and `chassis-add-brand`. The prompt `chassis-ui` builds or reconnects a Figma screen with the library in one command.
+
+## Resources
+
+Every skill and every reference file is a resource, which an agent reads when it needs one.
+
+## Health check
+
+The address `https://mcp.chassis-ui.com/health` answers with the version of the server:
+
+```json
+{ "ok": true, "version": "<version>" }
+```
+
+Opened in a browser, the address of the server shows a page in place of an error.
+
+## Privacy
+
+The server stores no request, sets no cookie and asks for no credentials. Its host records each request in its logs: the path, the status, the duration and the IP address of the client. The [privacy policy](https://github.com/chassis-ui/mcp/blob/main/PRIVACY.md) of the server has the details.
+
+## Next steps
+
+- [AI Agents]([[docsref:/guides/ai-agents]]) covers the skills, and how to ask an agent for the work.
+- [chassis-ui/mcp](https://github.com/chassis-ui/mcp) holds the server, the skills and the plugin, under the MIT license.

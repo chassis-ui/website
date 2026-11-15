@@ -10,6 +10,9 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 
 - `CHASSIS_BRAND` and `CHASSIS_APP` can be kept in `.env.local`, so plain `pnpm dev` and `pnpm build` preview another brand until the line is removed, and `CHASSIS_COMPILE_CSS=true` compiles `chassis.css` for `chassis` from the installed `@chassis-ui/website-tokens` in place of the prebuilt files of `@chassis-ui/css`. `.env.example` shows the three. See "Preview another brand" in [ref/DEVELOPMENT.md](ref/DEVELOPMENT.md).
 - The contact form of the home page has an optional Message field, of 2000 characters at most, and `/api/contact/` puts the message in the email it sends.
+- The docs have an Overview page, `/docs/getting-started/overview/`, which links every guide and the documentation of each package. `/docs/` leads to it, where it led to the Introduction.
+- The docs have two guides, Add a Brand and AI Agents, and a reference page for Chassis MCP: how a client connects to the MCP server, and what it serves.
+- `WRITING.md` is the style guide of the docs pages: voice, vocabulary, what each page owns and the order of its sections. It follows the guides of the packages.
 
 ### Changed
 
@@ -18,6 +21,7 @@ The package `@chassis-ui/docs` has its own changelog, [packages/docs/CHANGELOG.m
 - The copy of the home page is rewritten, section by section, and checked against the READMEs of the packages.
 - The site, the comments and the docs of the repository use American spelling.
 - Below `lg` the navbar fits a 360px screen: the logo is 28px high, the buttons have no gap, and the bar keeps its height of 56px.
+- The docs are rewritten to `WRITING.md`. A fact has one home: the Introduction describes the packages, Installation gives the first command of each start and links the docs of the package for the rest, and the steps of Chassis CSS that it repeated are gone. Support replaces Next steps, and `/docs/getting-started/next-steps/` leads to it.
 
 ## 2026-11-10
 

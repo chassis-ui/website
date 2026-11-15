@@ -1,50 +1,61 @@
 ---
-title: Introduction
-description: What Chassis is, the projects it is made of, and which of them you install.
+title: Welcome to Chassis
+description: What Chassis is, what each package is, and how the packages connect.
 toc: true
 ---
 
-Chassis is an open-source design system toolkit for products with several brands and platforms. It is made of separate projects, each in its own repository and each under the MIT license. The design tokens come first, and the other projects build on them.
+## Introduction
 
-## The projects
+Chassis is an open-source toolkit for teams with more than one brand, app or platform. A design decision is made in one place, as a design token, and reaches every brand, every app and every platform from there.
 
-### Chassis Tokens
+Chassis is made of packages. Each one has its own repository, its own version and its own documentation, and each is under the MIT license. A team adopts one package, or all of them.
 
-Chassis Tokens builds a repository of design tokens in [Tokens Studio](https://tokens.studio) format, synced with Figma. A [Style Dictionary](https://styledictionary.com) build turns them into SCSS variables for the web, Swift constants for iOS and resources for Android. The builder is published to npm as `@chassis-ui/tokens`, with the `chassis-tokens` command. The tokens of Chassis are one such repository, [chassis-ui/website-tokens](https://github.com/chassis-ui/website-tokens), and its output is published to npm as `@chassis-ui/website-tokens`. iOS apps can also install it as a Swift package, and Android apps as a library from the GitHub releases. To use tokens of your own, start a repository with `chassis-tokens init` and build your own brands.
+## How the packages connect
 
-### Chassis CSS
+The design tokens come first, and the other packages read them:
 
-Chassis CSS is a CSS framework built on the tokens. It has components, utility classes, context classes that change the color palette of an element (`primary`, `success`, `danger` and others), and JavaScript plugins, typed with TypeScript, for the interactive components. It ships compiled CSS, the Sass source and an entry for Tailwind CSS v4. It is published to npm as `@chassis-ui/css`. Chassis CSS is derived from [Bootstrap](https://getbootstrap.com/).
+- **Tokens** holds the decisions: color, type, spacing and motion, for each brand, theme and app.
+- **Figma** is bound to the tokens as Variables, so a design uses the same names as the code.
+- **CSS** is built on the tokens, and **React** is styled by CSS.
+- **Assets** and **Icons** build the files that tokens cannot hold: fonts, images and icons.
 
-### Chassis Icons
+A brand has the same name in every package. A site or an app that builds with that name gets the tokens, the fonts, the images and the icons of the brand.
 
-Chassis Icons builds a repository of SVG files into an icon library: optimized SVGs, an SVG sprite, an icon font with its CSS and SCSS, and, when a set asks for them, an asset catalog for iOS and resources for Android. The builder is published to npm as `@chassis-ui/icons`, with the `chassis-icons` command. The icons of Chassis are one such repository, [chassis-ui/website-icons](https://github.com/chassis-ui/website-icons), and its output is published to npm as `@chassis-ui/website-icons`. To make an icon library of your own, start a repository with `chassis-icons init` and save your SVG files into it.
+## Builders and their sets
 
-### Chassis Assets
+Tokens, Assets and Icons are builders. A builder holds a build and no files of a brand: its `init` command writes a repository for your team, and its build turns the files of that repository into the output of each platform.
 
-Chassis Assets copies, renames and distributes design assets, such as fonts, images and illustrations, for each brand, app and platform: web, iOS and Android. It is published to npm as `@chassis-ui/assets`, and builds a repository of assets of your own. The assets of the Chassis sites and apps are in `chassis-ui/website-assets`, which releases an archive per platform, app and brand.
-
-### Chassis Figma
-
-Chassis Figma documents the Chassis component library in Figma: how the components map to design tokens and to code. It is documentation only, and there is nothing to install.
-
-### Chassis React
-
-Chassis React is a library of React components, written in TypeScript, built on [React Aria](https://react-spectrum.adobe.com/react-aria/) and styled with Chassis CSS. It is published to npm as `@chassis-ui/react` and needs React and React DOM 18 or later.
-
-## At a glance
+Chassis has a repository of its own for each builder, which the Chassis sites and the Figma library use. A team with a design system of its own uses its own repositories in their place:
 
 <CxTable>
-| Project | Repository | npm package |
+| Set | Repository | npm package |
 | --- | --- | --- |
-| Chassis Tokens | [chassis-ui/tokens](https://github.com/chassis-ui/tokens) | `@chassis-ui/tokens` |
 | The tokens of Chassis | [chassis-ui/website-tokens](https://github.com/chassis-ui/website-tokens) | `@chassis-ui/website-tokens` |
-| Chassis CSS | [chassis-ui/css](https://github.com/chassis-ui/css) | `@chassis-ui/css` |
-| Chassis Icons | [chassis-ui/icons](https://github.com/chassis-ui/icons) | `@chassis-ui/icons` |
 | The icons of Chassis | [chassis-ui/website-icons](https://github.com/chassis-ui/website-icons) | `@chassis-ui/website-icons` |
-| Chassis Assets | [chassis-ui/assets](https://github.com/chassis-ui/assets) | None |
-| Chassis Figma | [chassis-ui/figma](https://github.com/chassis-ui/figma) | None |
-| Chassis React | [chassis-ui/react](https://github.com/chassis-ui/react) | `@chassis-ui/react` |
+| The assets of Chassis | [chassis-ui/website-assets](https://github.com/chassis-ui/website-assets) | None. It releases archives |
 </CxTable>
 
-To add Chassis to a web project, continue with [Installation]([[docsref:/getting-started/installation]]).
+## The packages
+
+Each package is described by what it does. Its documentation holds the rest.
+
+<CxTable>
+| Package | What it is | Repository | npm package |
+| --- | --- | --- | --- |
+| [Chassis Tokens](/tokens/) | The builder of design tokens. It turns a repository of [Tokens Studio](https://tokens.studio) files, synced with Figma, into SCSS for the web, Swift for iOS and resources for Android | [chassis-ui/tokens](https://github.com/chassis-ui/tokens) | `@chassis-ui/tokens` |
+| [Chassis Figma](/figma/) | The component library in Figma, published on Figma Community. A team duplicates the libraries and publishes them to its own workspace | [chassis-ui/figma](https://github.com/chassis-ui/figma) | None |
+| [Chassis CSS](/css/) | A CSS framework built on the tokens: components, utility classes and JavaScript plugins for the interactive components. Derived from [Bootstrap](https://getbootstrap.com/) | [chassis-ui/css](https://github.com/chassis-ui/css) | `@chassis-ui/css` |
+| [Chassis React](/react/) | React components built on [React Aria](https://react-spectrum.adobe.com/react-aria/) and styled with Chassis CSS | [chassis-ui/react](https://github.com/chassis-ui/react) | `@chassis-ui/react` |
+| [Chassis Assets](/assets/) | The builder of design files. It copies the fonts and images of each brand and app into the names, formats and folders of each platform | [chassis-ui/assets](https://github.com/chassis-ui/assets) | `@chassis-ui/assets` |
+| [Chassis Icons](/icons/) | The builder of icon sets. It turns a repository of SVG files into an icon font, a sprite, optimized SVG files and the files of apps | [chassis-ui/icons](https://github.com/chassis-ui/icons) | `@chassis-ui/icons` |
+</CxTable>
+
+## AI agents
+
+Chassis MCP is not a package of the design system. It is a server that gives an AI agent the skills to work with the packages: to build a design in Figma from the library, to turn a design into Chassis CSS markup, and to add a brand. Its repository is [chassis-ui/mcp](https://github.com/chassis-ui/mcp).
+
+## Next steps
+
+- [Installation]([[docsref:/getting-started/installation]]) covers where to start, and the first command of each start.
+- [Add a Brand]([[docsref:/guides/add-a-brand]]) follows one brand through the tokens, the assets and Figma.
+- [AI Agents]([[docsref:/guides/ai-agents]]) covers what an agent can do with the skills.

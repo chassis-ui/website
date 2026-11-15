@@ -1,184 +1,70 @@
 ---
 title: Installation
-description: Add Chassis CSS and the icons of Chassis to a web project from npm, and use the compiled CSS or compile it from the Sass source.
+description: Where to start with Chassis, and the first command of each start, for a design system of your own or for a web project.
 toc: true
 ---
 
-Chassis CSS, the icons of Chassis and the design tokens of Chassis are published to npm as `@chassis-ui/css`, `@chassis-ui/website-icons` and `@chassis-ui/website-tokens`. This page adds them to a web project. [Chassis CSS](/css/docs/getting-started/installation/) and [Chassis Icons](/icons/) document each package in full.
+## Introduction
 
-## Requirements
+Chassis is installed one package at a time. This guide helps you choose the package to start with and gives its first command. The documentation of that package takes it from there.
 
-- [Node.js](https://nodejs.org/) 22.12 or later. `@chassis-ui/website-tokens` requires it in its `engines` field, and `@chassis-ui/css` requires Node.js 22.
-- A package manager: [pnpm](https://pnpm.io/), [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/).
+There are two ways in. A design system of your own starts with Tokens, Figma, Assets or Icons. A web project that uses Chassis as it is starts with CSS.
 
-## Install the packages
+## Prerequisites
 
-Install Chassis CSS and the icons of Chassis:
+- [Node.js](https://nodejs.org/) 22.12 or later, for every package that is installed from npm.
+- A [Figma](https://www.figma.com/) account that can publish libraries, to start with Chassis Figma.
 
-```sh
-# pnpm
-pnpm add @chassis-ui/css @chassis-ui/website-icons
+## Start with the tokens
 
-# npm
+Start here when you own the design decisions: color, type, spacing and motion for each brand. Run the `init` command of Chassis Tokens:
+
+```bash
+npx @chassis-ui/tokens init acme-tokens
+```
+
+The command writes a repository of tokens into the folder `acme-tokens`. The [Quick Start Guide](/tokens/docs/getting-started/quick-start/) of Chassis Tokens changes a token, builds it and uses it in a project.
+
+## Start with Figma
+
+Start here when you design screens. Duplicate the libraries from [Figma Community](https://www.figma.com/@[[config:figmaHandle]]) and publish them to your team. [Library Setup](/figma/docs/getting-started/library-setup/) of Chassis Figma has the steps.
+
+## Start with the assets
+
+Start here when you own the files of a brand: its logos, images and fonts. Run the `init` command of Chassis Assets:
+
+```bash
+npx @chassis-ui/assets init acme-assets
+```
+
+The command writes a repository of assets into the folder `acme-assets`. The [Quick Start](/assets/docs/getting-started/quick-start/) of Chassis Assets runs its first build.
+
+## Start with the icons
+
+Start here when you have a set of SVG icons. Run the `init` command of Chassis Icons:
+
+```bash
+npx @chassis-ui/icons init acme-icons
+```
+
+The command writes a repository of icons into the folder `acme-icons`. The [Quick Start](/icons/docs/getting-started/quick-start/) of Chassis Icons builds the set and releases it.
+
+## Start with a web project
+
+Start here when you build a website or a web app. Install Chassis CSS, and the icons of Chassis if you want them. In your project:
+
+```bash
 npm install @chassis-ui/css @chassis-ui/website-icons
-
-# yarn
-yarn add @chassis-ui/css @chassis-ui/website-icons
 ```
 
-The JavaScript plugins of Chassis CSS use two peer dependencies: `@floating-ui/dom` for menus, popovers and tooltips, and `vanilla-calendar-pro` for the datepicker. npm 7 and later installs them automatically. To install them yourself:
+The compiled CSS has the styling of Chassis. To style it with tokens of your own, build them with Chassis Tokens and compile Chassis CSS from its Sass source.
 
-```sh
-pnpm add @floating-ui/dom vanilla-calendar-pro
-```
+- [Installation](/css/docs/getting-started/installation/) of Chassis CSS covers the compiled CSS, the Sass source and the JavaScript.
+- [Chassis CSS](/icons/docs/use-in-project/chassis-css/) of Chassis Icons covers the icons in a page that uses Chassis CSS.
+- [Introduction](/react/docs/getting-started/introduction/) of Chassis React covers the React components, which use the stylesheet of Chassis CSS.
 
-Two more peer dependencies are optional: `postcss-prefix-custom-properties`, for the [PostCSS step](#add-the-prefix-to-custom-properties) of a Sass build, and `tailwindcss`, for the Tailwind CSS entry.
+## Next steps
 
-You need `@chassis-ui/website-tokens` only when you [compile from Sass](#compile-from-sass). The compiled CSS already contains the default tokens.
-
-## Use the compiled CSS
-
-`dist/css/chassis.min.css` holds all of Chassis CSS, compiled with the default tokens and the default settings. Link it in your HTML:
-
-```html
-<link rel="stylesheet" href="node_modules/@chassis-ui/css/dist/css/chassis.min.css">
-```
-
-Or import it in a project with a bundler:
-
-```js
-import '@chassis-ui/css/dist/css/chassis.min.css'
-```
-
-`dist/css/` also has `chassis-grid.css`, `chassis-reboot.css` and `chassis-utilities.css`, the grid, the reset and the utility classes on their own, each with a minified build.
-
-## Add the JavaScript
-
-Interactive components, such as dialogs, menus and tooltips, need the JavaScript. The builds are ES modules. `chassis.bundle.min.js` includes both peer dependencies:
-
-```html
-<script type="module" src="node_modules/@chassis-ui/css/dist/js/chassis.bundle.min.js"></script>
-```
-
-`chassis.min.js` leaves them out, and expects them to be resolved separately.
-
-Components with a data attribute API, such as `data-cx-toggle="tooltip"`, initialize themselves. To control a component from code, import its plugin:
-
-```js
-import { Dialog } from '@chassis-ui/css'
-
-Dialog.getOrCreateInstance('#welcome-dialog').show()
-```
-
-The [JavaScript guide](/css/docs/getting-started/javascript/) of Chassis CSS covers the data attributes, the programmatic API, the events and the full list of plugins.
-
-## Add the icons
-
-`@chassis-ui/website-icons` holds the icon font and the SVG sprite in its `dist/web/` folder, and each icon as an SVG file in `dist/svgs/`.
-
-To use the icon font, link its stylesheet and give an element the `cx-` class of the icon. The `icon` class comes from Chassis CSS:
-
-```html
-<link rel="stylesheet" href="node_modules/@chassis-ui/website-icons/dist/web/chassis-icons.min.css">
-
-<span class="icon cx-rocket-solid" aria-hidden="true"></span>
-```
-
-The stylesheet loads `chassis-icons.woff2` and `chassis-icons.woff` from its own folder. When you copy it into your project, copy the font files next to it.
-
-To use the SVG sprite, reference an icon by its name:
-
-```html
-<svg class="icon" width="24" height="24" aria-hidden="true">
-  <use href="node_modules/@chassis-ui/website-icons/dist/web/chassis-icons.svg#rocket-solid"></use>
-</svg>
-```
-
-Serve the sprite from the same origin as the page. `<use>` does not load a sprite from another domain.
-
-## Compile from Sass
-
-Compile Chassis CSS from its Sass source to change its settings or use other tokens. Install the tokens and [Dart Sass](https://sass-lang.com/dart-sass/):
-
-```sh
-pnpm add @chassis-ui/website-tokens
-pnpm add -D sass
-```
-
-Chassis CSS uses the Sass module system. Configure the settings with `@use ... with`, before the main import:
-
-```scss
-// scss/styles.scss
-@use "@chassis-ui/css/scss/config" with (
-  $enable-dark-mode: false
-);
-@use "@chassis-ui/css/scss/chassis";
-```
-
-Sass needs two load paths: `node_modules`, and the `scss/vendor` folder of `@chassis-ui/css`. That folder holds `_chassis-tokens.scss`, which forwards the default tokens from `@chassis-ui/website-tokens`. To use other tokens, put a `_chassis-tokens.scss` of your own in a folder that comes before it on the load path.
-
-```sh
-pnpm exec sass \
-  --load-path=node_modules/@chassis-ui/css/scss/vendor \
-  --load-path=node_modules \
-  scss/styles.scss dist/styles.css
-```
-
-The guides of Chassis CSS set the same load paths in [Vite](/css/docs/getting-started/vite/), [Webpack](/css/docs/getting-started/webpack/) and [Parcel](/css/docs/getting-started/parcel/). [Sass customization](/css/docs/customize/sass/) covers the settings and the token sources.
-
-### Add the prefix to custom properties
-
-Sass writes the custom properties without a prefix, such as `--primary`. The compiled CSS in `dist/css/` has the `--cx-` prefix, which a PostCSS plugin of Chassis CSS adds. Install PostCSS and the plugin's peer dependency:
-
-```sh
-pnpm add -D postcss-cli postcss-prefix-custom-properties
-```
-
-Add a PostCSS configuration next to `package.json`:
-
-```js
-// postcss.config.mjs
-import { chassisPrefix } from '@chassis-ui/css/postcss'
-
-export default {
-  plugins: [chassisPrefix()]
-}
-```
-
-Run it after every Sass compile:
-
-```sh
-pnpm exec postcss dist/styles.css -o dist/styles.css
-```
-
-The prefix is optional unless you use the Tailwind CSS entry. The [installation guide](/css/docs/getting-started/installation/) of Chassis CSS explains when to use it and how to choose another prefix.
-
-## Try it from a CDN
-
-To try Chassis CSS without installing anything, load it from jsDelivr, as the [quick start](/css/docs/getting-started/quick-start/) of Chassis CSS does. These links are for version 0.14.0:
-
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@chassis-ui/css@0.14.0/dist/css/chassis.min.css" integrity="sha384-lDzLKprPM68pAchvByLYQJxnW5mqsw6+40MjyE9EeXG1sub3gmOItrSXLUUnmZLf" crossorigin="anonymous">
-
-<script type="module" src="https://cdn.jsdelivr.net/npm/@chassis-ui/css@0.14.0/dist/js/chassis.bundle.min.js" integrity="sha384-Du/Sv3rXK6JMypXaEI9ayalblI5XrFGBAEMRKSaYOskg7H7AhcFx0QAdqmf8vTUf" crossorigin="anonymous"></script>
-```
-
-The CDN build uses the default tokens and settings. For your own tokens or settings, install the packages and compile from Sass.
-
-## Chassis React
-
-Chassis React uses the stylesheet of Chassis CSS. Install both, with React and React DOM 18 or later in your project:
-
-```sh
-pnpm add @chassis-ui/react @chassis-ui/css
-```
-
-The [Chassis React repository](https://github.com/chassis-ui/react) explains how to import the styles and the components.
-
-## A working example
-
-[The vanilla HTML example](https://github.com/chassis-ui/vanilla-example) is a plain HTML page that uses Chassis CSS and Chassis Icons from npm, with the fonts and the logo of Chassis Assets. Use it as a reference for the files a page needs.
-
-The example is one repository that is deployed as a website per brand: the same page with the design tokens, the fonts and the logo of each brand. The [examples page](/examples/) links every site.
-
-Continue with [Next steps]([[docsref:/getting-started/next-steps]]).
+- [Introduction]([[docsref:/getting-started/introduction]]) covers what each package is and how the packages connect.
+- [Add a Brand]([[docsref:/guides/add-a-brand]]) adds a second brand to a repository of tokens and a repository of assets.
+- [The vanilla HTML example](https://github.com/chassis-ui/vanilla-example) is a plain HTML page with Chassis CSS, the icons and the assets of Chassis, deployed once per brand. The [examples page](/examples/) links each site.

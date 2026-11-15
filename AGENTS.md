@@ -48,6 +48,8 @@ Run the relevant lint/check command after making changes before considering a ta
   (`stylelint.config.js`) — don't hand-format against their rules.
 - Content (blog, docs) lives in Astro content collections under
   `packages/website/src/content`.
+- The docs pages (`packages/website/content/docs`) follow [WRITING.md](WRITING.md): voice,
+  vocabulary, what each page owns and the order of its sections. Read it before editing one.
 - Name a sibling by its GitHub repository, as in `chassis-ui/css`. Never by a local folder
   name or a relative path: those differ per contributor.
 - `vendor/assets` is unpacked from a release — don't edit its contents; changes belong in the

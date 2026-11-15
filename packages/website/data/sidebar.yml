@@ -1,10 +1,25 @@
 # This file holds all sidebar menu's entries for the Chassis website docs.
-# A page's file name is the slug of its title: "Next steps" is `next-steps.mdx`.
+# A page's file name is the slug of its title, in the folder named by the slug of its group:
+# "Add a Brand" of "Guides" is `guides/add-a-brand.mdx`. WRITING.md says what each page owns.
 
-- title: Getting started
+- title: Getting Started
   icon: rocket-solid
   iconColor: primary
   pages:
+    - title: Overview
     - title: Introduction
     - title: Installation
-    - title: Next steps
+    - title: Support
+
+- title: Guides
+  icon: signs-post-solid
+  iconColor: primary
+  pages:
+    - title: Add a Brand
+    - title: AI Agents
+
+- title: Reference
+  icon: book-open-solid
+  iconColor: primary
+  pages:
+    - title: Chassis MCP

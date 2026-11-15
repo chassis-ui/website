@@ -4,8 +4,9 @@
 @layer custom {
   .cxd-sidebar {
     --cx-cue-main: var(--cx-secondary-cue-main);
-    --cx-bg-active: var(--cx-secondary-bg-solid);
-    --cx-fg-active: var(--cx-secondary-fg-solid);
+    // The link of the open page: a tint of the primary color, as in the design of the docs.
+    --cx-bg-active: var(--cx-primary-bg-evident);
+    --cx-fg-active: var(--cx-primary-fg-main);
     --cx-bg-highlight: var(--cx-default-bg-highlight);
     --cx-fg-highlight: var(--cx-fg-main);
 
@@ -157,7 +158,6 @@
     }
 
     &.active {
-      font-weight: 600;
       color: var(--cx-fg-active);
       background-color: var(--cx-bg-active);
     }
