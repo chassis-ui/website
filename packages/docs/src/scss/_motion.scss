@@ -22,6 +22,11 @@ $hover-transition: .15s ease-in-out !default;
   animation: cxd-rise $enter-duration $enter-timing $delay both;
 }
 
+// Slide into place from the right, from `$delay` on, and stay hidden until then.
+@mixin slide($delay: 0s) {
+  animation: cxd-slide $enter-duration $enter-timing $delay both;
+}
+
 // Draw the rails of a block: the line of each station from its dot to the next station, one
 // after the other, with the dot and the content of the station as its line starts. A station
 // starts at `--cxd-rail-base` plus its place in the row times `--cxd-rail-step`, the time a
@@ -48,6 +53,13 @@ $hover-transition: .15s ease-in-out !default;
     from {
       opacity: 0;
       transform: translateY(1rem);
+    }
+  }
+
+  @keyframes cxd-slide {
+    from {
+      opacity: 0;
+      transform: translateX(2rem);
     }
   }
 
@@ -104,7 +116,7 @@ $hover-transition: .15s ease-in-out !default;
     //
     // Hero: the kicker, the lines of the claim, the lead, the command, the actions and the meta
     // line in turn (`--cxd-enter` is the place of each), the parts of the illustration, then
-    // the rail.
+    // the rail. The claim slides in from the right; the rest rises.
     //
 
     .cxd-enter {
@@ -114,11 +126,11 @@ $hover-transition: .15s ease-in-out !default;
     // The parts of the claim, which a page writes: the first at the place of the claim, the
     // rest one step later.
     .cxd-hero-title > * {
-      @include rise(calc(var(--cxd-enter, 0) * #{$enter-step}));
+      @include slide(calc(var(--cxd-enter, 0) * #{$enter-step}));
     }
 
     .cxd-hero-title > :not(:first-child) {
-      @include rise(calc((var(--cxd-enter, 0) + 1) * #{$enter-step}));
+      @include slide(calc((var(--cxd-enter, 0) + 1) * #{$enter-step}));
     }
 
     .cxd-hero-part {
@@ -165,7 +177,7 @@ $hover-transition: .15s ease-in-out !default;
     //
 
     .cxd-card {
-      @include transition(background-color $hover-transition);
+      @include transition(background-color $hover-transition, border-color $hover-transition);
     }
 
     .cxd-arrow {

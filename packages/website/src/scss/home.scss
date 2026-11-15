@@ -27,19 +27,19 @@
   //
   // Problem
   //
-  // The statement of a row: the h2 style from `md`, the h4 style on phones. The heading text
-  // classes of Chassis CSS take no breakpoint, so the two sizes are set here.
+  // The statement of a row: the prose family in the heading weight, the 3xl size from `md` and
+  // 2xl on phones. The text classes of Chassis CSS take no breakpoint, so the two sizes are set
+  // here.
   //
 
   .home-problem-statement {
-    font-family: var(--cx-font-family-heading);
-    @include font-size(var(--cx-font-size-h3));
+    font-family: var(--cx-font-family-prose);
+    @include font-size(var(--cx-font-size-2xl));
     font-weight: var(--cx-font-weight-heading);
-    @include line-height(var(--cx-line-height-h3));
+    @include line-height(1.25em);
 
     @include media-breakpoint-up(md) {
-      @include font-size(var(--cx-font-size-h2));
-      @include line-height(var(--cx-line-height-h2));
+      @include font-size(var(--cx-font-size-3xl));
     }
   }
 

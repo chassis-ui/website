@@ -49,17 +49,17 @@
     }
   }
 
-  // The lead of a section: body/large, and body/medium on phones as in the design. The text
+  // The lead of a section: prose/xl, and prose/large on phones, in the elegant weight. The text
   // classes of Chassis CSS take no breakpoint, so the two sizes are set here.
   .cxd-section-lead {
-    font-family: var(--cx-font-family-body);
-    @include font-size(var(--cx-font-size-body-md));
-    font-weight: var(--cx-font-weight-body);
-    @include line-height(var(--cx-line-height-body-md));
+    font-family: var(--cx-font-family-prose);
+    @include font-size(var(--cx-font-size-prose-lg));
+    font-weight: var(--cx-font-weight-prose-elegant);
+    @include line-height(var(--cx-line-height-prose-lg));
 
     @include media-breakpoint-up(md) {
-      @include font-size(var(--cx-font-size-body-lg));
-      @include line-height(var(--cx-line-height-body-lg));
+      @include font-size(var(--cx-font-size-prose-xl));
+      @include line-height(var(--cx-line-height-prose-xl));
     }
   }
 
@@ -139,6 +139,12 @@
   // the script of Hero.astro leans it from its place towards the pointer. It is larger than the
   // hero on the sides it is cut at, by more than it moves.
   //
+  // Its centre is behind the illustration. From `lg` the illustration is the right half of the
+  // container: its centre is a quarter of the width right of the middle, up to the width of the
+  // container, and about 32rem below the top of the hero, whatever follows the row. Below `lg`
+  // the illustration is under the text, in the middle. `.cxd-hero-light-centre` marks the
+  // centre, for the script.
+  //
 
   .cxd-hero {
     padding-block: 6rem var(--cx-space-md);
@@ -161,12 +167,25 @@
   }
 
   .cxd-hero-light {
+    --cxd-hero-light-x: 50%;
+    --cxd-hero-light-y: 56%;
     position: absolute;
     inset: 0 -16rem -6rem;
     z-index: -2;
     pointer-events: none;
-    background-image: backdrop.light(46.875rem 37.5rem, calc(50% + 21.3125rem) 37.5rem);
+    background-image: backdrop.light(48rem 36rem, var(--cxd-hero-light-x) var(--cxd-hero-light-y));
     will-change: transform;
+
+    @include media-breakpoint-up(lg) {
+      --cxd-hero-light-x: calc(50% + min(25vw, 22.5rem));
+      --cxd-hero-light-y: 32rem;
+    }
+  }
+
+  .cxd-hero-light-centre {
+    position: absolute;
+    inset-block-start: var(--cxd-hero-light-y);
+    inset-inline-start: var(--cxd-hero-light-x);
   }
 
   .cxd-hero-body {
@@ -238,7 +257,7 @@
 
   // The light of the panel; its colour, padding and grid are utilities.
   .cxd-steps-panel {
-    background-image: backdrop.light(50rem 28.125rem, 50% 20.75rem);
+    background-image: backdrop.light(48rem 28rem, 50% 40%);
   }
 
   .cxd-steps-rail {
@@ -249,9 +268,11 @@
   // Cards and doors
   //
 
-  // The card takes its background here, not from `bg-even`: a utility would win over the hover.
+  // The card takes its background and border here, not from `bg-even` and `border`: a utility
+  // would win over the hover. On hover it takes the primary background and border.
   .cxd-card {
     background-color: var(--cx-bg-even);
+    border: var(--cx-border-width-md) solid transparent;
 
     a {
       color: inherit;
@@ -259,7 +280,8 @@
     }
 
     &:hover {
-      background-color: var(--cx-bg-evident);
+      background-color: var(--cx-primary-bg-main);
+      border-color: var(--cx-primary-border-main);
     }
   }
 

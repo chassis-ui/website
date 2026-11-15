@@ -35,7 +35,8 @@
  * The lead is the `lead` text, or the `lead` slot with the same inline markup.
  *
  * The text enters in turn (`cxd-enter` and `--cxd-enter`, scss/_motion.scss): the kicker, the
- * first part of the claim, the rest of the claim, the lead and what follows. In the
+ * first part of the claim, the rest of the claim, the lead and what follows. The parts of the
+ * claim slide in from the right; the rest rises. In the
  * illustration, the elements with the class `cxd-hero-part` enter one by one, up to three.
  *
  * The light (`.cxd-hero-light`) leans towards the pointer: the script moves it a share of the
@@ -101,7 +102,9 @@ const enter = (places = 1) => {
   id={id}
   aria-labelledby={titleId}
 >
-  <div class="cxd-hero-light" aria-hidden="true"></div>
+  <div class="cxd-hero-light" aria-hidden="true">
+    <span class="cxd-hero-light-centre"></span>
+  </div>
   <div class="container 2xl vstack cxd-hero-body">
     <div class="d-flex flex-column gap-3xl md:gap-6xl">
       <div class="vstack gap-md">
@@ -121,7 +124,7 @@ const enter = (places = 1) => {
       </div>
       <div class="grid row-gap-3xl md:row-gap-6xl lg:column-gap-6xl">
         <div class="col-span-full lg:col-span-6 d-flex flex-column gap-3xl md:gap-6xl align-items-start">
-          <p class="font-lead fg-subtle m-0 cxd-enter" style={enter()}>
+          <p class="font-lead opacity-80 m-0 cxd-enter" style={enter()}>
             <slot name="lead">{lead}</slot>
           </p>
           {command && (
@@ -178,11 +181,13 @@ const enter = (places = 1) => {
   }
 
   // The light of the hero leans towards the pointer, a share of the way from its centre, and
-  // returns when the pointer leaves. Its centre is 341px right of the middle of the hero and
-  // 600px down, as in the styles. Each frame a point follows the target a little and the light
-  // follows that point, so the light starts and stops gently however the pointer moves.
+  // returns when the pointer leaves. Its centre is where the styles put it, which
+  // `.cxd-hero-light-centre` marks; the offsets ignore the transform of the light. Each frame a
+  // point follows the target a little and the light follows that point, so the light starts and
+  // stops gently however the pointer moves.
   const hero = document.querySelector<HTMLElement>('.cxd-hero')
   const light = hero?.querySelector<HTMLElement>('.cxd-hero-light')
+  const centre = light?.querySelector<HTMLElement>('.cxd-hero-light-centre')
   const share = 0.2
   const reach = { x: 192, up: 64, down: 128 }
   // The time in which each of the two covers about two thirds of what is left, in ms.
@@ -191,6 +196,7 @@ const enter = (places = 1) => {
   if (
     hero &&
     light &&
+    centre &&
     window.matchMedia('(hover: hover) and (prefers-reduced-motion: no-preference)').matches
   ) {
     const target = { x: 0, y: 0 }
@@ -228,8 +234,8 @@ const enter = (places = 1) => {
     hero.addEventListener('pointermove', (event) => {
       const box = hero.getBoundingClientRect()
       lean(
-        (event.clientX - box.left - (box.width / 2 + 341)) * share,
-        (event.clientY - box.top - 600) * share
+        (event.clientX - box.left - (light.offsetLeft + centre.offsetLeft)) * share,
+        (event.clientY - box.top - (light.offsetTop + centre.offsetTop)) * share
       )
     })
     hero.addEventListener('pointerleave', () => lean(0, 0))
