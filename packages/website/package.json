@@ -32,7 +32,7 @@
     "@floating-ui/dom": "^1.8.0",
     "@pagefind/component-ui": "^1.6.0",
     "@shikijs/transformers": "^4.6.0",
-    "astro": "^7.4.7",
+    "astro": "^7.4.12",
     "autoprefixer": "^10.6.2",
     "postcss": "^8.5.32",
     "postcss-prefix-custom-properties": "^0.1.0",
